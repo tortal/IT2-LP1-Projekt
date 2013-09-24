@@ -1,7 +1,7 @@
 package it.chalmers.tendu;
 
-import it.chalmers.tendu.network.BluetoothHandler;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;

@@ -1,4 +1,6 @@
-package it.chalmers.tendu.network;
+package it.chalmers.tendu.network.bluetooth;
+
+import it.chalmers.tendu.network.INetworkHandler;
 
 public class BluetoothHandler implements INetworkHandler {
 
