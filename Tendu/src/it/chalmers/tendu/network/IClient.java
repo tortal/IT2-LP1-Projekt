@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network;
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 import it.chalmers.tendu.gamemodel.MiniGame;
 
