@@ -1,5 +1,10 @@
+/*-******THIS OUR MAIN MODEL*********/
 package it.chalmers.tendu.gamemodel;
 
-public class GameRound {
+import it.chalmers.tendu.settings.ISettings;
 
+public class GameRound {
+	public GameRound(ISettings settings) {
+		
+	}
 }
