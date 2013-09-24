@@ -13,6 +13,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        initialize(new Tendu(), cfg);
+        Network networkCommunicator = new Network();
+        initialize(new Tendu(networkCommunicator), cfg);
     }
 }
