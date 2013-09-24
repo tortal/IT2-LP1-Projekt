@@ -1,5 +1,8 @@
 package it.chalmers.tendu;
 
+import it.chalmers.tendu.defaults.GameState;
+import it.chalmers.tendu.screens.*;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -34,6 +37,8 @@ public class Tendu extends Game {
 		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
+		this.setScreen(new MainMenuScreen());
 	}
 
 	@Override
@@ -43,7 +48,7 @@ public class Tendu extends Game {
 	}
 
 	@Override
-	public void render() {		
+	public void render() {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -63,5 +68,13 @@ public class Tendu extends Game {
 
 	@Override
 	public void resume() {
+	}
+	
+	public void miniGameFinished(GameState state) {
+		if(state == GameState.WON) {
+			//vi vann
+		} else if (state == GameState.LOST){
+			//vi fšrlorade
+		}
 	}
 }
