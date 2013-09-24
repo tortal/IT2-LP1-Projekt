@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network;
 
-public interface INetwork {
+public interface INetworkHandler {
 	public void joinGame();
 	public void hostGame();
 }

@@ -1,5 +1,7 @@
 package it.chalmers.tendu;
 
+import it.chalmers.tendu.network.BluetoothHandler;
+import it.chalmers.tendu.network.INetworkHandler;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -13,7 +15,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        Network networkCommunicator = new Network();
-        initialize(new Tendu(networkCommunicator), cfg);
+        INetworkHandler bluetoothHandler = new BluetoothHandler();
+        initialize(new Tendu(bluetoothHandler), cfg);
     }
 }

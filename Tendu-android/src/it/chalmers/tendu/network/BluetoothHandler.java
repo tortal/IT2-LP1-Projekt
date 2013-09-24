@@ -1,19 +1,17 @@
-package it.chalmers.tendu;
+package it.chalmers.tendu.network;
 
-import it.chalmers.tendu.network.INetwork;
-
-public class Network implements INetwork {
+public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void joinGame() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void hostGame() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }
