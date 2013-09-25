@@ -1,6 +1,6 @@
 package it.chalmers.tendu.gamemodel;
 
-import it.chalmers.tendu.defaults.Defaults;
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 /*TODO This class shall select a random minigame with the selected difficulty
  *It shall also keep track of previously played games to avoid playing the
@@ -8,20 +8,21 @@ import it.chalmers.tendu.defaults.Defaults;
  */
 public class MiniGameFactory {
 
-	public MiniGame createMiniGame(int addTime, int difficulty) {
+	public MiniGame createMiniGame(int addTime, Difficulty difficulty) {
+		MiniGame miniGame = null;
 		switch (difficulty) {
-		case Defaults.DIFFICULTY_ONE:
-			return new NumberGame(addTime, Defaults.DIFFICULTY_ONE);
-		case Defaults.DIFFICULTY_TWO:
-			return new ShapesGame(addTime, Defaults.DIFFICULTY_ONE);
-		case Defaults.DIFFICULTY_THREE:
+		case ONE:
+			miniGame = new NumberGame(addTime, Difficulty.ONE);
+		case TWO:
+			miniGame = new ShapesGame(addTime, Difficulty.TWO);
+		case THREE:
 			break;
-		case Defaults.DIFFICULTY_FOUR:
+		case FOUR:
 			break;
-		case Defaults.DIFFICULTY_FIVE:
+		case FIVE:
 			break;
 		}
-		return null;
+		return miniGame;
 		
 	}
 }
