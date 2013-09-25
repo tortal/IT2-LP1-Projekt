@@ -6,9 +6,9 @@ import it.chalmers.tendu.settings.Player;
 
 public class GameRound {
 	
-	ISettings settings;
-	int level;
-	Player[] players;
+	private ISettings settings;
+	private int level;
+	private Player[] players;
 	
 
 	
