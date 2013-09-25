@@ -16,6 +16,8 @@ import android.util.Log;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler {
+	private boolean D = true; // Debug flag
+	private String TAG = "BluetoothHandler";
 	
 	public static final int REQUEST_ENABLE_BT = 666;
 	private static final String APP_NAME = "Tendu";
@@ -49,8 +51,12 @@ public class BluetoothHandler implements INetworkHandler {
 	@Override
 	public void joinGame() {
 		
-		BluetoothDevice bd = searchTeam().get(0);
-		bgs.connect(bd, true);
+		BluetoothDevice bd = findFirstAvailableDevice();
+		if (bd != null) { 
+			bgs.connect(bd, true);
+		} else { 
+			Log.d(TAG, "No device to connect to");
+		}
 	}
 
 
