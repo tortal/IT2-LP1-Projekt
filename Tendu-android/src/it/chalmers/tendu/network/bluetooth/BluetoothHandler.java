@@ -37,6 +37,8 @@ public class BluetoothHandler implements INetworkHandler {
 		bgs=new BluetoothGameService(context);
 		this.context=context;
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		addTenduToName();
 	}
 
 	@Override
@@ -75,5 +77,9 @@ public class BluetoothHandler implements INetworkHandler {
 		if (!name.contains(APP_NAME)) {
 			mBluetoothAdapter.setName(name + " - " + APP_NAME);
 		}
+	}
+	
+	private boolean isDeviceValid(BluetoothDevice device) {
+		return device.getName().contains(APP_NAME);
 	}
 }
