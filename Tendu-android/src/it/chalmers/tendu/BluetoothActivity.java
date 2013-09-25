@@ -9,12 +9,14 @@ import android.view.View;
 
 public class BluetoothActivity extends Activity {
 
-	INetworkHandler bluetoothHandler = new BluetoothHandler(this);
+	INetworkHandler bluetoothHandler;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bluetooth);
+		
+		 bluetoothHandler = new BluetoothHandler(this);
 		
 		
 	}
