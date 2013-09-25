@@ -70,11 +70,10 @@ public class BluetoothHandler implements INetworkHandler {
 		} 
 	}
 	
-
-
-		
-
-	private void renameSelf() {
-		
+	private void addTenduToName() {
+		String name = mBluetoothAdapter.getName();
+		if (!name.contains(APP_NAME)) {
+			mBluetoothAdapter.setName(name + " - " + APP_NAME);
+		}
 	}
 }
