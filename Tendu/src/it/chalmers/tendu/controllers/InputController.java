@@ -3,6 +3,10 @@ package it.chalmers.tendu.controllers;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputController implements InputProcessor {
+	
+	public void tick() {
+		
+	}
 
 	@Override
 	public boolean keyDown(int keycode) {
