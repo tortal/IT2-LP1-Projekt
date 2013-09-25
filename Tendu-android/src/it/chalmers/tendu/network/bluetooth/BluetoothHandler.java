@@ -42,14 +42,13 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void hostSession() {
-		//enableBluetooth();
 		bgs.start();
 		
 	}
 	
 	@Override
 	public void joinGame() {
-		//enableBluetooth();
+		
 		BluetoothDevice bd = searchTeam().get(0);
 		bgs.connect(bd, true);
 	}
@@ -113,5 +112,13 @@ public class BluetoothHandler implements INetworkHandler {
 			// Register the BroadcastReceiver
 			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 			context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+		}
+		
+		// Temporary test method
+		private BluetoothDevice findFirstAvailableDevice() {
+			List<BluetoothDevice> devices = searchTeam();
+			if (devices.isEmpty()) {
+				return null;
+			} else return devices.get(0);
 		}
 }
