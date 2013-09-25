@@ -17,8 +17,8 @@ public interface INetworkHandler {
 	 */
 	void joinGame(); 	//Should probably have a game or a player as argument.
 	
-	/**
-	 * Search for active teams. 
-	 */
-	List<Object> searchTeam();
+//	/**
+//	 * Search for active teams. 
+//	 */
+//	List<Object> searchTeam();
 }

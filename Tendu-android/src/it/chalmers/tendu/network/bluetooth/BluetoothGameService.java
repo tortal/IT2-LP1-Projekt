@@ -19,14 +19,20 @@ package it.chalmers.tendu.network.bluetooth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -35,6 +41,9 @@ import android.util.Log;
  * thread for performing data transmissions when connected.
  */
 public class BluetoothGameService {
+	
+	Context context;
+	
     // Debugging
     private static final String TAG = "BluetoothGameService";
     private static final boolean D = true;
@@ -56,6 +65,7 @@ public class BluetoothGameService {
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
+    private List<BluetoothDevice> devicesList;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -69,8 +79,12 @@ public class BluetoothGameService {
      * @param handler  A Handler to send messages back to the UI Activity
      */
     public BluetoothGameService(Context context) { 	
+    	this.context=context;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
+        devicesList=new ArrayList<BluetoothDevice>();
+        
+        registerBroadcastReceiver();
     }
 
     /**
@@ -80,9 +94,6 @@ public class BluetoothGameService {
     private synchronized void setState(int state) {
         if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
-
-        // Give the new state to the Handler so the UI Activity can update
-        //mHandler.obtainMessage(BluetoothGame.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -167,12 +178,6 @@ public class BluetoothGameService {
         mConnectedThread = new ConnectedThread(socket, socketType);
         mConnectedThread.start();
 
-        // Send the name of the connected device back to the UI Activity
-//        Message msg = mHandler.obtainMessage(BluetoothGame.MESSAGE_DEVICE_NAME);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(BluetoothGame.DEVICE_NAME, device.getName());
-//        msg.setData(bundle);
-//        mHandler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
     }
@@ -221,21 +226,46 @@ public class BluetoothGameService {
         // Perform the write unsynchronized
         r.write(out);
     }
+    
+	public void discover() {
+		mAdapter.startDiscovery();
+	}
 
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
     private void connectionFailed() {
-        // Send a failure message back to the Activity
-//        Message msg = mHandler.obtainMessage(BluetoothGame.MESSAGE_TOAST);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(BluetoothGame.TOAST, "Unable to connect device");
-//        msg.setData(bundle);
-//        mHandler.sendMessage(msg);
-
-        // Start the service over to restart listening mode
         BluetoothGameService.this.start();
     }
+    
+	// Create a BroadcastReceiver for ACTION_FOUND
+	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			// When discovery finds a device
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+				// Get the BluetoothDevice object from the Intent
+				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+				// Add the name and address to an array adapter to show in a ListView
+				Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
+				devicesList.add(device);			
+			}
+		}
+
+	};
+	
+	
+	
+	public List<BluetoothDevice> getDevicesList() {
+		return devicesList;
+	}
+
+
+	private void registerBroadcastReceiver() {
+		// Register the BroadcastReceiver
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+	}
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
@@ -251,6 +281,8 @@ public class BluetoothGameService {
         // Start the service over to restart listening mode
         BluetoothGameService.this.start();
     }
+    
+    
 
     /**
      * This thread runs while listening for incoming connections. It behaves

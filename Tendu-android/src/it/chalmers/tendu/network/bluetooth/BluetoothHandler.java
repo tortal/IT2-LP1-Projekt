@@ -1,32 +1,20 @@
 package it.chalmers.tendu.network.bluetooth;
 
-import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.Server;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler {
 	
 	public static final int REQUEST_ENABLE_BT = 666;
-	
-	// unique identifier, UUID, for app. Randomly generated on the web
-	private static final UUID UUID = java.util.UUID.fromString("a827d540-2042-11e3-8224-0800200c9a66");
 	private static final String APP_NAME = "Tendu";
 	
 	BluetoothGameService bgs;
@@ -51,17 +39,20 @@ public class BluetoothHandler implements INetworkHandler {
 	
 	@Override
 	public void joinGame() {
-		BluetoothDevice bd=(BluetoothDevice) searchTeam().get(0);
+		enableBluetooth();
+		BluetoothDevice bd = searchTeam().get(0);
 		bgs.connect(bd, true);
 	}
 
 
 
-	@Override
-	public List<Object> searchTeam() {
-		List<Object> list=new ArrayList<Object>();
-		
-		return null;
+	public List<BluetoothDevice> searchTeam() {
+		List<BluetoothDevice> list=new ArrayList<BluetoothDevice>();
+		for( BluetoothDevice d: bgs.getDevicesList()){
+			if(isDeviceValid(d))
+				list.add(d);		
+		}
+		return list;
 	}
 	
 	//----------------------- HELP METHODS ------------------------
