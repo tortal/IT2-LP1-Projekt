@@ -44,6 +44,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void hostSession() {
+		beDiscoverable();
 		bgs.start();
 		
 	}
@@ -126,5 +127,12 @@ public class BluetoothHandler implements INetworkHandler {
 			if (devices.isEmpty()) {
 				return null;
 			} else return devices.get(0);
+		}
+
+		private void beDiscoverable() {
+			Intent discoverableIntent = new
+					Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+			context.startActivity(discoverableIntent);
 		}
 }
