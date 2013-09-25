@@ -16,4 +16,7 @@ public class BluetoothHandler implements INetworkHandler {
 		
 	}
 
+	private void renameSelf() {
+		
+	}
 }
