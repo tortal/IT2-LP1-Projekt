@@ -30,9 +30,9 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+
 import android.util.Log;
-import android.widget.ArrayAdapter;
+
 
 /**
  * This class does all the work for setting up and managing Bluetooth
