@@ -7,8 +7,11 @@ import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
@@ -20,12 +23,16 @@ public class BluetoothHandler implements INetworkHandler {
 	BluetoothGameService bgs;
 	Context context;
 	private BluetoothAdapter mBluetoothAdapter;
+	private List<BluetoothDevice> devicesList;
 	
 
 	public BluetoothHandler(Context context){
 		bgs=new BluetoothGameService(context);
 		this.context=context;
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		devicesList = new ArrayList();
+		registerBroadcastReceiver();
 		
 		addTenduToName();
 	}
@@ -48,13 +55,14 @@ public class BluetoothHandler implements INetworkHandler {
 
 	public List<BluetoothDevice> searchTeam() {
 		List<BluetoothDevice> list=new ArrayList<BluetoothDevice>();
-		for( BluetoothDevice d: bgs.getDevicesList()){
-			if(isDeviceValid(d))
+		for( BluetoothDevice d: devicesList) { // bgs.getDevicesList()){
+			if(isDeviceValid(d)) {
 				list.add(d);		
+			}
 		}
 		return list;
 	}
-	
+
 	//----------------------- HELP METHODS ------------------------
 	
 	private void enableBluetooth() {
@@ -75,4 +83,32 @@ public class BluetoothHandler implements INetworkHandler {
 	private boolean isDeviceValid(BluetoothDevice device) {
 		return device.getName().contains(APP_NAME);
 	}
+	
+	// Create a BroadcastReceiver for ACTION_FOUND
+		private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+			public void onReceive(Context context, Intent intent) {
+				String action = intent.getAction();
+				// When discovery finds a device
+				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+					// Get the BluetoothDevice object from the Intent
+					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+					// Add the name and address to an array adapter to show in a ListView
+					Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
+					devicesList.add(device);			
+				}
+			}
+		};
+		
+		
+		
+		private List<BluetoothDevice> getDevicesList() {
+			return devicesList;
+		}
+
+
+		private void registerBroadcastReceiver() {
+			// Register the BroadcastReceiver
+			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+			context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+		}
 }

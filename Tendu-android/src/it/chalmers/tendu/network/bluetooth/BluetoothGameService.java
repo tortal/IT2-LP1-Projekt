@@ -84,7 +84,7 @@ public class BluetoothGameService {
         mState = STATE_NONE;
         devicesList=new ArrayList<BluetoothDevice>();
         
-        registerBroadcastReceiver();
+        //registerBroadcastReceiver();
     }
 
     /**
@@ -237,35 +237,6 @@ public class BluetoothGameService {
     private void connectionFailed() {
         BluetoothGameService.this.start();
     }
-    
-	// Create a BroadcastReceiver for ACTION_FOUND
-	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			// When discovery finds a device
-			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				// Get the BluetoothDevice object from the Intent
-				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				// Add the name and address to an array adapter to show in a ListView
-				Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
-				devicesList.add(device);			
-			}
-		}
-
-	};
-	
-	
-	
-	public List<BluetoothDevice> getDevicesList() {
-		return devicesList;
-	}
-
-
-	private void registerBroadcastReceiver() {
-		// Register the BroadcastReceiver
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-	}
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
