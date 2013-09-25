@@ -16,24 +16,25 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-		
+
 		Matrix4 projection = new Matrix4();
-		projection.setToOrtho(0, Constants.SCREEN_HEIGHT, Constants.SCREEN_WIDTH, 0, -1, 1);
+		projection.setToOrtho(0, Constants.SCREEN_HEIGHT,
+				Constants.SCREEN_WIDTH, 0, -1, 1);
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(projection);
 	}
-	
-	protected void setScreen (GameScreen screen) {
+
+	protected void setScreen(GameScreen screen) {
 		game.setScreen(screen);
 	}
-	
-	/**all rendering goes here**/
+
+	/** all rendering goes here **/
 	public abstract void render();
-	
-	/**All game logic goes here (within the model...)*/
+
+	/** All game logic goes here (within the model...) */
 	public abstract void tick(InputController input);
-	
-	public void removed () {
+
+	public void removed() {
 		spriteBatch.dispose();
 	}
 

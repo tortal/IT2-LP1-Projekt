@@ -8,14 +8,13 @@ import it.chalmers.tendu.defaults.GameIds;
 import com.badlogic.gdx.Gdx;
 
 public class NumberGame extends MiniGame {
-	
+
 	private ArrayList<Integer> numberCode;
 	private ArrayList<Integer> randomNumbers;
 	
 	
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameIds.NUMBER_GAME);
-		
 		numberCode = new ArrayList<Integer>(); 
 		randomNumbers = new ArrayList<Integer>();
 
@@ -27,10 +26,10 @@ public class NumberGame extends MiniGame {
 			this.addTime(20);
 			break;
 		default:
-			//TODO:
+			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
-		
+
 		//Fill numberCode with random numbers
 		for(int i = 0; i < 5; i++){
 			numberCode.add(checkRandomNumber(numberCode));

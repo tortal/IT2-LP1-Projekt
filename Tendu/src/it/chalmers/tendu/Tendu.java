@@ -3,27 +3,24 @@ package it.chalmers.tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
-import it.chalmers.tendu.gamemodel.GameRound;
 import it.chalmers.tendu.gamemodel.NumberGame;
-import it.chalmers.tendu.screens.*;
+import it.chalmers.tendu.screens.GameScreen;
+import it.chalmers.tendu.screens.NumberGameScreen;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
-
 
 public class Tendu implements ApplicationListener {
 	private GameScreen screen;
 	private float accum = 0;
 	private InputController input;
 
-	
 	@Override
-	public void create() {				
-	    setScreen(new NumberGameScreen(this, new NumberGame(0,Constants.Difficulty.ONE)));
-	    input = new InputController();
+	public void create() {
+		setScreen(new NumberGameScreen(this, new NumberGame(0,
+				Constants.Difficulty.ONE)));
+		input = new InputController();
 		Gdx.input.setInputProcessor(input);
 	}
 
@@ -54,16 +51,16 @@ public class Tendu implements ApplicationListener {
 	@Override
 	public void resume() {
 	}
-	
+
 	public void miniGameFinished(GameState state) {
-		if(state == GameState.WON) {
-			//vi vann, gör något
-		} else if (state == GameState.LOST){
-			//vi förlorade, gör något
+		if (state == GameState.WON) {
+			// vi vann, gör något
+		} else if (state == GameState.LOST) {
+			// vi förlorade, gör något
 		}
 	}
-	
-	public void setScreen (GameScreen newScreen) {
+
+	public void setScreen(GameScreen newScreen) {
 		if (screen != null) {
 			screen.removed();
 		}
