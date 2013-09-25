@@ -1,18 +1,14 @@
 package it.chalmers.tendu.settings;
 
 public class Player {
-	private final int id;
+	private final int uid;
 	
 	public Player(int id) {
-		this.id = id;
+		this.uid = id;
 	}
 
 	public int getId() {
-		return id;
+		return uid;
 	}
-
-//	public void setId(int id) {
-//		this.id = id;
-//	}
 	
 }

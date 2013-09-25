@@ -1,5 +1,5 @@
 package it.chalmers.tendu.settings;
 
-public interface ISettings {
+public interface GameRoundSettings {
 
 }
