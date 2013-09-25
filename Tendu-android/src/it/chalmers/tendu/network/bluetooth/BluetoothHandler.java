@@ -39,7 +39,7 @@ public class BluetoothHandler implements INetworkHandler {
 		devicesList = new ArrayList();
 		registerBroadcastReceiver();
 		
-		//addTenduToName();
+		addTenduToName();
 	}
 
 	@Override
