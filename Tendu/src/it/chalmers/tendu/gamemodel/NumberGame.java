@@ -30,9 +30,10 @@ public class NumberGame extends MiniGame {
 		for(int i = 0; i < 5; i++){
 			numberCode.add(checkRandomNumber(numberCode));
 		}	
-		//Fill randomNumbers with random numbers
+		//Fill randomNumbers with numberCode and random numbers
 		for(int i = 0; i < 5; i++){
 			randomNumbers.add(checkRandomNumber(numberCode));
+			randomNumbers.add(numberCode.get(i));
 		}
 		
 	}
