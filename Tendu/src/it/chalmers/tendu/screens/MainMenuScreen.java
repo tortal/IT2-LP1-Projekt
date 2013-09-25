@@ -13,7 +13,6 @@ public class MainMenuScreen extends GameScreen {
 
 	public void tick(InputController input) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

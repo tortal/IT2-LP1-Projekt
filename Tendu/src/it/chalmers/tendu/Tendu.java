@@ -2,7 +2,6 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.NumberGame;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.NumberGameScreen;
@@ -52,13 +51,14 @@ public class Tendu implements ApplicationListener {
 	public void resume() {
 	}
 
-	public void miniGameFinished(GameState state) {
-		if (state == GameState.WON) {
-			// vi vann, gör något
-		} else if (state == GameState.LOST) {
-			// vi förlorade, gör något
-		}
-	}
+	//Tror inte att vi behöver denna metod
+//	public void miniGameFinished(GameState state) {
+//		if (state == GameState.WON) {
+//			// vi vann, gör något
+//		} else if (state == GameState.LOST) {
+//			// vi förlorade, gör något
+//		}
+//	}
 
 	public void setScreen(GameScreen newScreen) {
 		if (screen != null) {
