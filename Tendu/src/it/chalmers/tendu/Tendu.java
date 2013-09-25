@@ -1,5 +1,7 @@
 package it.chalmers.tendu;
 
+import it.chalmers.tendu.network.INetworkHandler;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -16,6 +18,12 @@ public class Tendu extends Game {
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite;
+	
+	private INetworkHandler networkHandler;
+	
+	public Tendu(INetworkHandler netCom) {
+		networkHandler = netCom;
+	}
 	
 	@Override
 	public void create() {		
