@@ -19,14 +19,25 @@ public class BluetoothHandler implements INetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler";
 
+
+	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
 	private static final String APP_NAME = "Tendu";
 
 	BluetoothGameService bgs;
+	/** Context in which the handler was declared */
 	Context context;
 	private BluetoothAdapter mBluetoothAdapter;
+	/** All devices that has been discovered */
 	private List<BluetoothDevice> devicesList;
 
+	/**
+	 * Using the context provided by the class declaring 
+	 * this object, initiates all parameters needed to establish
+	 * both a connection to a running bluetooth server
+	 * and acting as a server itself.
+	 * @param <code>Context</code> in which the handler was declared
+	 */
 
 	public BluetoothHandler(Context context){
 		this.context=context;
@@ -61,7 +72,12 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 
-
+	/**
+	 * Goes through the list of discovered devices and checks if they are valid "Tendu" players.
+	 * Then adds these to a list of "team members".
+	 * @return list of team members
+	 * @see {@link devicesList}, {@link isDeviceValid}
+	 */
 	public List<BluetoothDevice> searchTeam() {
 		List<BluetoothDevice> list=new ArrayList<BluetoothDevice>();
 		for( BluetoothDevice d: devicesList) { // bgs.getDevicesList()){
@@ -74,6 +90,12 @@ public class BluetoothHandler implements INetworkHandler {
 
 	//----------------------- HELP METHODS ------------------------
 
+
+	/**
+	 * Checks if bluetooth is enabled.
+	 * If <code>true</code> does nothing.
+	 * If <code>false</code> prompts the user to enable bluetooth.
+	 */
 	private void enableBluetooth() {
 		Intent enableBtIntent; 
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -82,6 +104,11 @@ public class BluetoothHandler implements INetworkHandler {
 		} 
 	}
 
+
+	/**
+	 * Adds a the name "Tendu" as a suffix to this device name.
+	 * This is needed as identification
+	 */
 	private void addTenduToName() {
 		String name = mBluetoothAdapter.getName();
 		if (!name.contains(APP_NAME)) {
@@ -89,10 +116,17 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 	}
 
+	/**
+	 * Checks if the given device is using "Tendu", rather then just having Bluetooth enabled
+	 * @param remote {@link BluetoothDevice} to validate
+	 * @return <code>true</code> if valid
+	 * 			<code>false</code> if non-valid
+	 */
 	private boolean isDeviceValid(BluetoothDevice device) {
 		return device.getName().contains(APP_NAME);
 	}
-	
+
+
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -113,7 +147,12 @@ public class BluetoothHandler implements INetworkHandler {
 			}
 		}
 	};
-	
+
+
+	/**
+	 * Getter
+	 * @return {@link devicesList}
+	 */
 	private List<BluetoothDevice> getDevicesList() {
 		return devicesList;
 	}
