@@ -79,7 +79,7 @@ public class BluetoothGameService {
     }
 
     /**
-     * Set the current state of the chat connection
+     * Set the current state of the game connection
      * @param state  An integer defining the current connection state
      */
     private synchronized void setState(int state) {
@@ -97,7 +97,7 @@ public class BluetoothGameService {
     }
 
     /**
-     * Start the chat service. Specifically start AcceptThread to begin a
+     * Start the game service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
         if (D) Log.d(TAG, "start");
