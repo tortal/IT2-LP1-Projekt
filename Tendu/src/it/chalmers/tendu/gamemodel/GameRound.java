@@ -1,4 +1,4 @@
-/*-******THIS OUR MAIN MODEL*********/
+/*-******THIS IS OUR MAIN MODEL*********/
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.settings.ISettings;
