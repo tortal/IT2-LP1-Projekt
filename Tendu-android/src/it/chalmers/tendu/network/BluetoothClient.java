@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class BluetoothClient implements IClient {
+public class BluetoothClient implements Client {
 	
 	public static final int REQUEST_ENABLE_BT = 666;
 	
@@ -34,7 +34,7 @@ public class BluetoothClient implements IClient {
 	}
 
 	@Override
-	public List<IServer> searchTeam() {
+	public List<Server> searchTeam() {
 		// TODO Auto-generated method stub
 		return null;
 	}

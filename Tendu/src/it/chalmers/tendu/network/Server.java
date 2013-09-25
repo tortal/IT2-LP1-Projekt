@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network;
 
-public interface IServer {
+public interface Server {
 	
 	/**
 	 * Host game that other players can search

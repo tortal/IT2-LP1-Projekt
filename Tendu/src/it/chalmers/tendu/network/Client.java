@@ -4,7 +4,7 @@ import java.util.List;
 
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-public interface IClient {
+public interface Client {
 	
 	void sendObject(Object o);
 	
@@ -18,7 +18,7 @@ public interface IClient {
 	/**
 	 * Search for active teams. 
 	 */
-	List<IServer> searchTeam();
+	List<Server> searchTeam();
 
 
 }
