@@ -1,6 +1,7 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.GameRound;
 import it.chalmers.tendu.gamemodel.NumberGame;
@@ -21,7 +22,7 @@ public class Tendu implements ApplicationListener {
 	
 	@Override
 	public void create() {				
-	    setScreen(new NumberGameScreen(this, new NumberGame(0,1)));
+	    setScreen(new NumberGameScreen(this, new NumberGame(0,Constants.Difficulty.ONE)));
 	    input = new InputController();
 		Gdx.input.setInputProcessor(input);
 	}
