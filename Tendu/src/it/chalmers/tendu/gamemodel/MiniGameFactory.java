@@ -23,6 +23,6 @@ public class MiniGameFactory {
 			break;
 		}
 		return miniGame;
-		
+
 	}
 }

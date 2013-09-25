@@ -6,10 +6,9 @@ import it.chalmers.tendu.defaults.GameIds;
 import com.badlogic.gdx.Gdx;
 
 public class NumberGame extends MiniGame {
-	
+
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameIds.NUMBER_GAME);
-		
 
 		switch (difficulty) {
 		case ONE:
@@ -19,10 +18,10 @@ public class NumberGame extends MiniGame {
 			this.addTime(20);
 			break;
 		default:
-			//TODO:
+			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
-		
+
 	}
 
 }
