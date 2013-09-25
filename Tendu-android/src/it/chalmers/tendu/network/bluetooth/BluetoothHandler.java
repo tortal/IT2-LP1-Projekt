@@ -103,7 +103,8 @@ public class BluetoothHandler implements INetworkHandler {
 					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 					// Add the name and address to an array adapter to show in a ListView
 					Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
-					devicesList.add(device);			
+					devicesList.add(device);
+					Log.v("enheter",devicesList.isEmpty() +"");
 				}
 			}
 		};
