@@ -15,16 +15,6 @@
         android:text="@string/hello_world" />
 
     <Button
-        android:id="@+id/joinButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="18dp"
-        android:text="Join" 
-        android:onClick="onJoinButtonClicked" />
-
-    <Button
         android:id="@+id/hostButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,5 +23,15 @@
         android:layout_marginTop="14dp"
         android:text="Host" 
         android:onClick="onHostButtonClicked" />
+
+    <Button
+        android:id="@+id/joinButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hostButton"
+        android:layout_below="@+id/hostButton"
+        android:layout_marginTop="16dp"
+        android:onClick="onJoinButtonClicked"
+        android:text="Join" />
 
 </RelativeLayout>

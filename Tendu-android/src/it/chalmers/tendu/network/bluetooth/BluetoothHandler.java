@@ -27,26 +27,29 @@ public class BluetoothHandler implements INetworkHandler {
 	
 
 	public BluetoothHandler(Context context){
-		bgs=new BluetoothGameService(context);
 		this.context=context;
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (!mBluetoothAdapter.isEnabled()) {
+			enableBluetooth(); 
+		}
 		
+		bgs=new BluetoothGameService(context);
 		devicesList = new ArrayList();
 		registerBroadcastReceiver();
 		
-		addTenduToName();
+		//addTenduToName();
 	}
 
 	@Override
 	public void hostSession() {
-		enableBluetooth();
+		//enableBluetooth();
 		bgs.start();
 		
 	}
 	
 	@Override
 	public void joinGame() {
-		enableBluetooth();
+		//enableBluetooth();
 		BluetoothDevice bd = searchTeam().get(0);
 		bgs.connect(bd, true);
 	}
