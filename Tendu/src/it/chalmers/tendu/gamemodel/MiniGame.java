@@ -1,25 +1,26 @@
 package it.chalmers.tendu.gamemodel;
 
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.defaults.GameIds;
 import it.chalmers.tendu.defaults.GameState;
 
 public abstract class MiniGame {
-	private int difficulty;
+	private Difficulty difficulty;
 	private int timeLeft;
 	private GameState state;
 	private GameIds gameId;
 	
-	public MiniGame(int addTime, int difficulty, GameIds gameId) {
+	public MiniGame(int addTime, Difficulty difficulty, GameIds gameId) {
 		setTimeLeft(addTime);
-		this.difficulty=difficulty;
+		this.difficulty = difficulty;
 		this.setGameId(gameId);
 	}
 
-	public int getDifficulty() {
+	public Difficulty getDifficulty() {
 		return difficulty;
 	}
 
-	public void setDifficulty(int difficulty) {
+	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
 	}
 
