@@ -7,6 +7,7 @@ import it.chalmers.tendu.network.Server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,7 +57,8 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public List<Object> searchTeam() {
-		// TODO Auto-generated method stub
+		List<Object> list=new ArrayList<Object>();
+		
 		return null;
 	}
 	
