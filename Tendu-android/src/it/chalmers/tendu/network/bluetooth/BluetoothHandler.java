@@ -18,15 +18,15 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 public class BluetoothHandler implements INetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler";
-	
+
 	public static final int REQUEST_ENABLE_BT = 666;
 	private static final String APP_NAME = "Tendu";
-	
+
 	BluetoothGameService bgs;
 	Context context;
 	private BluetoothAdapter mBluetoothAdapter;
 	private List<BluetoothDevice> devicesList;
-	
+
 
 	public BluetoothHandler(Context context){
 		this.context=context;
@@ -34,11 +34,11 @@ public class BluetoothHandler implements INetworkHandler {
 		if (!mBluetoothAdapter.isEnabled()) {
 			enableBluetooth(); 
 		}
-		
+
 		bgs=new BluetoothGameService(context);
 		devicesList = new ArrayList();
 		registerBroadcastReceiver();
-		
+
 		addTenduToName();
 	}
 
@@ -46,12 +46,12 @@ public class BluetoothHandler implements INetworkHandler {
 	public void hostSession() {
 		beDiscoverable();
 		bgs.start();
-		
+
 	}
-	
+
 	@Override
 	public void joinGame() {
-		
+
 		BluetoothDevice bd = findFirstAvailableDevice();
 		if (bd != null) { 
 			bgs.connect(bd, true);
@@ -73,7 +73,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	//----------------------- HELP METHODS ------------------------
-	
+
 	private void enableBluetooth() {
 		Intent enableBtIntent; 
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -81,58 +81,55 @@ public class BluetoothHandler implements INetworkHandler {
 			((AndroidApplication) context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT); // context is wrong
 		} 
 	}
-	
+
 	private void addTenduToName() {
 		String name = mBluetoothAdapter.getName();
 		if (!name.contains(APP_NAME)) {
 			mBluetoothAdapter.setName(name + " - " + APP_NAME);
 		}
 	}
-	
+
 	private boolean isDeviceValid(BluetoothDevice device) {
 		return device.getName().contains(APP_NAME);
 	}
 	
+	private void registerBroadcastReceiver() {
+		// Register the BroadcastReceiver
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+	}
+
 	// Create a BroadcastReceiver for ACTION_FOUND
-		private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-			public void onReceive(Context context, Intent intent) {
-				String action = intent.getAction();
-				// When discovery finds a device
-				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-					// Get the BluetoothDevice object from the Intent
-					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					// Add the name and address to an array adapter to show in a ListView
-					Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
-					devicesList.add(device);			
-				}
+	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			// When discovery finds a device
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+				// Get the BluetoothDevice object from the Intent
+				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+				// Add the name and address to an array adapter to show in a ListView
+				Log.v("Bluetooth", "Device: " + device.getName() + "Adress: " + device.getAddress());
+				devicesList.add(device);			
 			}
-		};
-		
-		
-		
-		private List<BluetoothDevice> getDevicesList() {
-			return devicesList;
 		}
+	};
+	
+	private List<BluetoothDevice> getDevicesList() {
+		return devicesList;
+	}
 
+	// Temporary test method
+	private BluetoothDevice findFirstAvailableDevice() {
+		List<BluetoothDevice> devices = searchTeam();
+		if (devices.isEmpty()) {
+			return null;
+		} else return devices.get(0);
+	}
 
-		private void registerBroadcastReceiver() {
-			// Register the BroadcastReceiver
-			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-			context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-		}
-		
-		// Temporary test method
-		private BluetoothDevice findFirstAvailableDevice() {
-			List<BluetoothDevice> devices = searchTeam();
-			if (devices.isEmpty()) {
-				return null;
-			} else return devices.get(0);
-		}
-
-		private void beDiscoverable() {
-			Intent discoverableIntent = new
-					Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-			context.startActivity(discoverableIntent);
-		}
+	private void beDiscoverable() {
+		Intent discoverableIntent = new
+				Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		context.startActivity(discoverableIntent);
+	}
 }
