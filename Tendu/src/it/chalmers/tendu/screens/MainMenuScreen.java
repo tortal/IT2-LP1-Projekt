@@ -1,21 +1,18 @@
 package it.chalmers.tendu.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.MiniGame;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector3;
 
 public class MainMenuScreen extends GameScreen {
 	
 	private BitmapFont font;
 	private BitmapFont testFont;
     private Vector3 touchPos = new Vector3();
-    private Button testButton;
 
 
 	public MainMenuScreen(Tendu game, MiniGame model) {
