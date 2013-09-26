@@ -525,6 +525,7 @@ public class BluetoothGameService {
          */
         public void kryoWrite(Serializable o){
         	kryo.writeObject(out, o);
+        	out.flush();
         } 
         
         public void cancel() {
