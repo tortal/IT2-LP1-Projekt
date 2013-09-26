@@ -62,7 +62,7 @@ public class BluetoothHandler implements INetworkHandler {
 		devicesSet = new HashSet();
 		registerBroadcastReceiver();
 
-		addTenduToName();
+		addTenduToDeviceName();
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class BluetoothHandler implements INetworkHandler {
 	 * 
 	 * If the device has no name, it is set to "Tendu"
 	 */
-	private void addTenduToName() {
+	private void addTenduToDeviceName() {
 		if (mBluetoothAdapter.getName() == null)
 			mBluetoothAdapter.setName(APP_NAME + "");
 		else {
@@ -136,6 +136,13 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 	}
 
+	private void removeTenduFromDeviceName() {
+		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
+			String name = mBluetoothAdapter.getName();
+			name.replace(" - " + APP_NAME, "");
+		}
+	}
+	
 	/**
 	 * Checks if the given device is using "Tendu", rather then just having
 	 * Bluetooth enabled
@@ -233,7 +240,7 @@ public class BluetoothHandler implements INetworkHandler {
 	public void destroy() {
 		context.unregisterReceiver(mReceiver);
 		bgs.stop();
-		
+		removeTenduFromDeviceName();
 		
 	}
 
