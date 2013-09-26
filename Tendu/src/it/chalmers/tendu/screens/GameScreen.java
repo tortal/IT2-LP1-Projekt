@@ -2,10 +2,8 @@ package it.chalmers.tendu.screens;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class GameScreen {
@@ -27,7 +25,7 @@ public abstract class GameScreen {
 	/** all rendering goes here **/
 	public abstract void render();
 
-	/** All game logic goes here (within the model...) */
+	/** All game logic goes here */
 	public abstract void tick(InputController input);
 
 	public void removed() {

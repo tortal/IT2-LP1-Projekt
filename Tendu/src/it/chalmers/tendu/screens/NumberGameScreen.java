@@ -37,7 +37,6 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
