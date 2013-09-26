@@ -52,6 +52,10 @@ public abstract class MiniGame {
 		state = GameState.LOST;
 	}
 
+	protected void gameWon() {
+		state = GameState.WON;
+	}
+
 	public GameIds getGameId() {
 		return gameId;
 	}
