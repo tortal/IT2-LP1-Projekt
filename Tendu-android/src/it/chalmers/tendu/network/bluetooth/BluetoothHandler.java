@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
@@ -124,7 +125,8 @@ public class BluetoothHandler implements INetworkHandler {
 		else {
 			String name = mBluetoothAdapter.getName();
 			if (!name.contains(APP_NAME)) {
-				mBluetoothAdapter.setName(name + " - " + APP_NAME);
+				if(mBluetoothAdapter.setName(name + " - " + APP_NAME)) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 			}
 		}
 	}
