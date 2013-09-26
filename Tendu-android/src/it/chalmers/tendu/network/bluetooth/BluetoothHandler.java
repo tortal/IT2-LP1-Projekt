@@ -139,12 +139,13 @@ public class BluetoothHandler implements INetworkHandler {
 	private void removeTenduFromDeviceName() {
 		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
 			String name = mBluetoothAdapter.getName();
-			name.replace(" - " + APP_NAME + " ", "");
+			String newName = name.replace(" - " + APP_NAME + " ", "");
+			mBluetoothAdapter.setName(newName);
 		}
 	}
 	
 	/**
-	 * Checks if the given device is using "Tendu", rather then just having
+	 * Checks if the given device is using "Tendu", rather than just having
 	 * Bluetooth enabled
 	 * 
 	 * @param remote
