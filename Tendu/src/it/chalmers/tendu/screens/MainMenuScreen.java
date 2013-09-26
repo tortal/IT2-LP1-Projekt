@@ -46,6 +46,7 @@ public class MainMenuScreen extends GameScreen {
                 	}
                 } else if(touchPos.x > 600 && touchPos.y > 390) {
             			Gdx.app.log("Testing", "test test");
+            			game.getNetworkHandler().testStuff();
                 }
         }
     }

@@ -1,16 +1,14 @@
 package it.chalmers.tendu.network.bluetooth;
 
+import it.chalmers.tendu.TestObject;
 import it.chalmers.tendu.network.INetworkHandler;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -20,8 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler {
@@ -113,7 +109,7 @@ public class BluetoothHandler implements INetworkHandler {
 		if (!mBluetoothAdapter.isEnabled()) {
 			enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			((Activity) context).startActivityForResult(
+			((AndroidApplication) context).startActivityForResult(
 					enableBtIntent, REQUEST_ENABLE_BT); // context is wrong
 		}
 	}
@@ -237,12 +233,18 @@ public class BluetoothHandler implements INetworkHandler {
 		bgs.kryoWrite(o);
 
 	}
-
+	
+	@Override
 	public void destroy() {
 		context.unregisterReceiver(mReceiver);
 		bgs.stop();
 		removeTenduFromDeviceName();
 		
+	}
+
+	@Override
+	public void testStuff() {
+		sendObject(new TestObject());
 	}
 
 }

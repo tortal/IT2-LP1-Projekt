@@ -40,5 +40,13 @@ public interface INetworkHandler {
 	 * @param listener
 	 */
 	void removeListener(PropertyChangeListener listener);
+	
+	/** Test method */
+	void testStuff();
+	
+	/**
+	 * Method to be called when exiting app
+	 */
+	void destroy();
 	 
 }

@@ -1,12 +1,9 @@
 package it.chalmers.tendu;
 
-import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothActivity extends Activity {
 
