@@ -1,6 +1,8 @@
 package it.chalmers.tendu.network;
 
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface INetworkHandler {
@@ -37,4 +39,5 @@ public interface INetworkHandler {
 	 * @param listener
 	 */
 	void removeListener(PropertyChangeListener listener);
+	 
 }

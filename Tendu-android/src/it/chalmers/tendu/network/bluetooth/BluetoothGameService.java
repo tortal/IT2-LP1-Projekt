@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -46,6 +50,10 @@ public class BluetoothGameService {
     private static final String TAG = "BluetoothGameService";
     private static final boolean D = true;
 
+    //Kryo
+    Kryo kryo;
+    Object recievedItem;
+    
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothGameSecure";
     private static final String NAME_INSECURE = "BluetoothGameInsecure";
@@ -82,6 +90,7 @@ public class BluetoothGameService {
         mState = STATE_NONE;
         devicesList=new ArrayList<BluetoothDevice>();
         
+        kryo = new Kryo();
         //registerBroadcastReceiver();
     }
 
@@ -223,6 +232,22 @@ public class BluetoothGameService {
         }
         // Perform the write unsynchronized
         r.write(out);
+    }
+    
+    /**
+     * Write using kryo
+     * @param o
+     */
+    public void write(Object o){
+    	// Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+        // Perform the write unsynchronized
+        r.write(o);
     }
     
 	public void discover() {
@@ -463,6 +488,8 @@ public class BluetoothGameService {
             }
         }
 
+        
+        
         /**
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
@@ -477,7 +504,14 @@ public class BluetoothGameService {
                 Log.e(TAG, "Exception during write", e);
             }
         }
-
+        
+        /**
+         * Write with kryo
+         * 
+         */
+        public void write(Object o){
+        	kryo.writeObject(new Output(mmOutStream), o);
+        }        
         public void cancel() {
             try {
                 mmSocket.close();
