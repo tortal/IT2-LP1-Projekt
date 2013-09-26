@@ -6,7 +6,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -36,7 +39,7 @@ public class BluetoothHandler implements INetworkHandler {
 	Context context;
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
-	private List<BluetoothDevice> devicesList;
+	private Set<BluetoothDevice> devicesSet;
 
 	/**
 	 * Using the context provided by the class declaring this object, initiates
@@ -56,7 +59,7 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 
 		bgs = new BluetoothGameService(context);
-		devicesList = new ArrayList<BluetoothDevice>();
+		devicesSet = new HashSet();
 		registerBroadcastReceiver();
 
 		addTenduToName();
@@ -87,14 +90,23 @@ public class BluetoothHandler implements INetworkHandler {
 	 * @return list of team members
 	 * @see {@link devicesList}, {@link isDeviceValid}
 	 */
-	public List<BluetoothDevice> searchTeam() {
-		List<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
-		for (BluetoothDevice d : devicesList) { // bgs.getDevicesList()){
-			if (isDeviceValid(d)) {
-				list.add(d);
+	public Set<BluetoothDevice> searchTeam() {
+		
+		// Look first among paired devices
+		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+		for (BluetoothDevice device: devices) {
+			if (isDeviceValid(device)) {
+				//return device;
 			}
 		}
-		return list;
+		devices.clear();
+		
+		for (BluetoothDevice d : devicesSet) { // bgs.getDevicesList()){
+			if (isDeviceValid(d)) {
+				devices.add(d);
+			}
+		}
+		return devices;
 	}
 
 	// ----------------------- HELP METHODS ------------------------
@@ -168,7 +180,7 @@ public class BluetoothHandler implements INetworkHandler {
 					Log.v(TAG, "Device: " + device.getName() + "Adress: "
 							+ device.getAddress());
 				// Add the device to a list
-				devicesList.add(device);
+				devicesSet.add(device);
 
 			}
 		}
@@ -176,11 +188,13 @@ public class BluetoothHandler implements INetworkHandler {
 
 	// Temporary test method
 	private BluetoothDevice findFirstAvailableDevice() {
-		List<BluetoothDevice> devices = searchTeam();
-		if (devices.isEmpty()) {
+		// Return the first available device in the set
+		Iterator<BluetoothDevice> iter = devicesSet.iterator();
+		if (iter.hasNext()) {
+			return iter.next();
+		} else {
 			return null;
-		} else
-			return devices.get(0);
+		}
 	}
 
 	private void beDiscoverable() {
