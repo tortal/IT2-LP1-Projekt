@@ -77,6 +77,7 @@ public class BluetoothHandler implements INetworkHandler {
 		this.mBluetoothAdapter.startDiscovery();
 		BluetoothDevice bd = findFirstAvailableDevice();
 		if (bd != null) {
+			Log.d(TAG, "Will now try and connect to: " + bd.getName());
 			bgs.connect(bd, true);
 		} else {
 			Log.d(TAG, "No device to connect to");
@@ -92,15 +93,7 @@ public class BluetoothHandler implements INetworkHandler {
 	 */
 	public Set<BluetoothDevice> searchTeam() {
 		
-		// Look first among paired devices
-		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-		for (BluetoothDevice device: devices) {
-			if (isDeviceValid(device)) {
-				//return device;
-			}
-		}
-		devices.clear();
-		
+		Set<BluetoothDevice> devices = new HashSet();
 		for (BluetoothDevice d : devicesSet) { // bgs.getDevicesList()){
 			if (isDeviceValid(d)) {
 				devices.add(d);
@@ -188,6 +181,15 @@ public class BluetoothHandler implements INetworkHandler {
 
 	// Temporary test method
 	private BluetoothDevice findFirstAvailableDevice() {
+//		// First look among the paired devices
+//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+//		for (BluetoothDevice device: devices) {
+//			if (isDeviceValid(device)) {
+//				return device;
+//			}
+//		}
+//		// Then among the ones that have been discovered
+		
 		// Return the first available device in the set
 		Iterator<BluetoothDevice> iter = devicesSet.iterator();
 		if (iter.hasNext()) {

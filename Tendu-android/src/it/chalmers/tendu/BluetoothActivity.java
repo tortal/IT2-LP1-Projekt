@@ -43,6 +43,7 @@ public class BluetoothActivity extends Activity {
 	
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
 		bluetoothHandler.destroy();
 	}
 }
