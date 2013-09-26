@@ -131,6 +131,8 @@ public class BluetoothHandler implements INetworkHandler {
 	private boolean isDeviceValid(BluetoothDevice device) {
 		if(device==null)
 			return false;
+		if(device.getName() == null)
+			return false;
 		return device.getName().contains(APP_NAME);
 	}
 
