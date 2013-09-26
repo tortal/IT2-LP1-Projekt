@@ -202,7 +202,7 @@ public class BluetoothHandler implements INetworkHandler {
 				return device;
 			}
 		}
-		Log.v(TAG, "No eligible devices found");
+		Log.d(TAG, "No eligible devices found");
 		return null;
 	}
 
