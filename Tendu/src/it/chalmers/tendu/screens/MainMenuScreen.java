@@ -31,10 +31,12 @@ public class MainMenuScreen extends GameScreen {
                 if(touchPos.x > 35 && touchPos.x < 435) {
                 	if(touchPos.y >= 180 && touchPos.y < 250) {
                 		Gdx.app.log("Testing", "Host");
+                		game.getNetworkHandler().hostSession();
                 	}
                 	
                 	if(touchPos.y >= 80 && touchPos.y < 150) {
                 		Gdx.app.log("Testing", "Join");
+                		game.getNetworkHandler().joinGame();
                 	}
                 }
         }

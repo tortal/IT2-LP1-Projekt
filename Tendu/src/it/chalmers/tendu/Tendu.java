@@ -20,7 +20,7 @@ public class Tendu implements ApplicationListener {
 	private INetworkHandler networkHandler;
 	
 	public Tendu(INetworkHandler netCom) {
-		networkHandler = netCom;
+		setNetworkHandler(netCom);
 	}
 
 	@Override
@@ -83,5 +83,13 @@ public class Tendu implements ApplicationListener {
 
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+
+	public INetworkHandler getNetworkHandler() {
+		return networkHandler;
+	}
+
+	public void setNetworkHandler(INetworkHandler networkHandler) {
+		this.networkHandler = networkHandler;
 	}
 }
