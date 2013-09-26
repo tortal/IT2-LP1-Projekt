@@ -130,7 +130,7 @@ public class BluetoothHandler implements INetworkHandler {
 		else {
 			String name = mBluetoothAdapter.getName();
 			if (!name.contains(APP_NAME)) {
-				if(mBluetoothAdapter.setName(name + " - " + APP_NAME)) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+				if(mBluetoothAdapter.setName(name + " - " + APP_NAME + " ")) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
 				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 			}
 		}
@@ -139,7 +139,7 @@ public class BluetoothHandler implements INetworkHandler {
 	private void removeTenduFromDeviceName() {
 		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
 			String name = mBluetoothAdapter.getName();
-			name.replace(" - " + APP_NAME, "");
+			name.replace(" - " + APP_NAME + " ", "");
 		}
 	}
 	
