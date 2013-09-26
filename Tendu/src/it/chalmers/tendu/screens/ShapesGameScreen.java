@@ -1,11 +1,15 @@
 package it.chalmers.tendu.screens;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 public class ShapesGameScreen extends GameScreen {
-
+	
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		// TODO Auto-generated constructor stub
@@ -14,10 +18,10 @@ public class ShapesGameScreen extends GameScreen {
 	/** All graphics are drawn here */
 	@Override
 	public void render() {
+		spriteBatch.setProjectionMatrix(game.getCamera().combined);
 		spriteBatch.begin();
 
 		spriteBatch.end();
-
 	}
 
 	/** All game logic goes here (within the model...) */
