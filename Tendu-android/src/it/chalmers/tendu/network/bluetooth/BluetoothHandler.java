@@ -4,6 +4,7 @@ import it.chalmers.tendu.network.INetworkHandler;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -206,8 +207,8 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	@Override
-	public void sendObject(Object o) {
-		// TODO Auto-generated method stub
+	public void sendObject(Serializable o) {
+		bgs.kryoWrite(o);
 
 	}
 

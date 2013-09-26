@@ -3,6 +3,7 @@ package it.chalmers.tendu;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -23,7 +24,7 @@ public class BluetoothActivity extends Activity {
 	}
 
 
-
+	
 	public void onHostButtonClicked(View v) {
 		bluetoothHandler.hostSession();
 	}
@@ -35,5 +36,9 @@ public class BluetoothActivity extends Activity {
 	public void onPingButtonClicked(View v) {
 		bluetoothHandler.sendPing();
 	} 
+	
+	public void onObjectButtonClicked(View v) {
+		bluetoothHandler.sendObject(new TestObject());
+	}
 	
 }

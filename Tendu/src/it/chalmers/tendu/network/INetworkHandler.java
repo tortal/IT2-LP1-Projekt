@@ -3,6 +3,7 @@ package it.chalmers.tendu.network;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 public interface INetworkHandler {
@@ -11,7 +12,7 @@ public interface INetworkHandler {
 	 * Send object to remote device
 	 * @param o
 	 */
-	void sendObject(Object o);
+	void sendObject(Serializable o);
 	/**
 	 * Host game that other players can search
 	 * for. 
