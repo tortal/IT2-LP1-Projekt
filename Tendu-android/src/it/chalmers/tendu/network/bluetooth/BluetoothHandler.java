@@ -228,7 +228,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	public void sendPing() {
-		String testString = "Your ma asked for you last night after i spanked her";
+		String testString = "Super communication skills";
 		bgs.write(testString.getBytes());
 	}
 
