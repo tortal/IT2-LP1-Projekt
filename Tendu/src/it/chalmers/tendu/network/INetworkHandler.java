@@ -5,8 +5,11 @@ import java.util.List;
 
 public interface INetworkHandler {
 	
-	
-
+	/**
+	 * Send object to remote device
+	 * @param o
+	 */
+	void sendObject(Object o);
 	/**
 	 * Host game that other players can search
 	 * for. 

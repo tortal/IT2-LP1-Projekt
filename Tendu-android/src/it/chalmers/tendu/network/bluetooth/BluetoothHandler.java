@@ -195,5 +195,11 @@ public class BluetoothHandler implements INetworkHandler {
 		String testString = "Your ma asked for you last night after i spanked her";
 		bgs.write(testString.getBytes());
 	}
+
+	@Override
+	public void sendObject(Object o) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
