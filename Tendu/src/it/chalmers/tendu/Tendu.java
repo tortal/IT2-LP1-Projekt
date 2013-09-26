@@ -40,6 +40,7 @@ public class Tendu implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		networkHandler.destroy();
 	}
 
 	@Override
