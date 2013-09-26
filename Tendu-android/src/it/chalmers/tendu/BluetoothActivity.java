@@ -41,4 +41,8 @@ public class BluetoothActivity extends Activity {
 		bluetoothHandler.sendObject(new TestObject());
 	}
 	
+	@Override
+	public void onDestroy() {
+		bluetoothHandler.destroy();
+	}
 }

@@ -214,4 +214,11 @@ public class BluetoothHandler implements INetworkHandler {
 
 	}
 
+	public void destroy() {
+		context.unregisterReceiver(mReceiver);
+		bgs.stop();
+		
+		
+	}
+
 }
