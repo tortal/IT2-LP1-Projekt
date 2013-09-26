@@ -49,7 +49,7 @@ public class NumberGame extends MiniGame {
 	}
 
 	private ArrayList createAnswer(int length) {
-		ArrayList<Integer> answerList = new ArrayList<>();
+		ArrayList<Integer> answerList = new ArrayList<Integer>();
 		int i = 0;
 		while (i < length) {
 			int randomNbr = 1 + (int) (Math.random() * 100);
