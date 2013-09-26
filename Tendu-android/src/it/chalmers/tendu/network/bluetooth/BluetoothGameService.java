@@ -32,6 +32,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,6 +74,7 @@ public class BluetoothGameService {
     private ConnectedThread mConnectedThread;
     private int mState;
     private List<BluetoothDevice> devicesList;
+    
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -79,6 +82,9 @@ public class BluetoothGameService {
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
+    // Test message constant
+    public static final int MESSAGE = 1;
+    
     /**
      * Constructor. Prepares a new BluetoothGame session.
      * @param context  The UI Activity Context
@@ -88,10 +94,8 @@ public class BluetoothGameService {
     	this.context=context;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
-        devicesList=new ArrayList<BluetoothDevice>();
-        
+        devicesList=new ArrayList<BluetoothDevice>(); 
         kryo = new Kryo();
-        //registerBroadcastReceiver();
     }
 
     /**
@@ -473,11 +477,8 @@ public class BluetoothGameService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    // Test method printing to screen
-                    Toast.makeText(context, new String(buffer, 0, bytes), Toast.LENGTH_SHORT).show();
-                    // Send the obtained bytes to the UI Activity
-                    //mHandler.obtainMessage(BluetoothGame.MESSAGE_READ, bytes, -1, buffer)
-                      //      .sendToTarget();
+                    // Send the obtained bytes to the UI Activity (has to be changed for libgdxconnection)
+                    mHandler.obtainMessage(MESSAGE, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
@@ -486,6 +487,7 @@ public class BluetoothGameService {
                     break;
                 }
             }
+            
         }
 
         
@@ -520,4 +522,15 @@ public class BluetoothGameService {
             }
         }
     }
+
+    private final Handler mHandler = new Handler() {
+    	@Override
+    	public void handleMessage(Message msg) {
+    		// Test method printing to screen
+            byte[] readBuf = (byte[]) msg.obj;
+            // construct a string from the valid bytes in the buffer
+            String readMessage = new String(readBuf, 0, msg.arg1);
+            Toast.makeText(context, readMessage, Toast.LENGTH_SHORT).show();
+    	}
+    };
 }
