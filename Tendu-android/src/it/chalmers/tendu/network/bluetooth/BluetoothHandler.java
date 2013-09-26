@@ -1,6 +1,9 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.network.INetworkHandler;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +22,7 @@ public class BluetoothHandler implements INetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler";
 
+	private PropertyChangeSupport pcs;
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
@@ -41,6 +45,8 @@ public class BluetoothHandler implements INetworkHandler {
 
 	public BluetoothHandler(Context context){
 		this.context=context;
+		pcs = new PropertyChangeSupport(this);
+		
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mBluetoothAdapter.isEnabled()) {
 			enableBluetooth(); 
@@ -172,4 +178,22 @@ public class BluetoothHandler implements INetworkHandler {
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		context.startActivity(discoverableIntent);
 	}
+
+	@Override
+	public void addListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
+		
+	}
+
+	@Override
+	public void removeListener(PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(listener);
+		
+	}
+	
+	public void sendPing() {
+		String testString = "Your ma asked for you last night after i spanked her";
+		bgs.write(testString.getBytes());
+	}
+	
 }

@@ -9,7 +9,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothActivity extends Activity {
 
-	INetworkHandler bluetoothHandler;
+	
+	BluetoothHandler bluetoothHandler; // Should be INetworkHandler
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,4 +32,8 @@ public class BluetoothActivity extends Activity {
 		bluetoothHandler.joinGame();
 	}
 
+	public void onPingButtonClicked(View v) {
+		bluetoothHandler.sendPing();
+	} 
+	
 }

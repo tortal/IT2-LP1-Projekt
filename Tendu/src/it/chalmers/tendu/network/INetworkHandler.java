@@ -1,5 +1,6 @@
 package it.chalmers.tendu.network;
 
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 public interface INetworkHandler {
@@ -21,4 +22,16 @@ public interface INetworkHandler {
 //	 * Search for active teams. 
 //	 */
 //	List<Object> searchTeam();
+	
+	/**
+	 * Register a listener for network events
+	 * @param listener
+	 */
+	void addListener(PropertyChangeListener listener);
+	
+	/** 
+	 * Remove a listener
+	 * @param listener
+	 */
+	void removeListener(PropertyChangeListener listener);
 }

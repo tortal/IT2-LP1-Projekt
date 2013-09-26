@@ -29,6 +29,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 
 /**
@@ -447,7 +448,8 @@ public class BluetoothGameService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-
+                    // Test method printing to screen
+                    Toast.makeText(context, new String(buffer, 0, bytes), Toast.LENGTH_SHORT).show();
                     // Send the obtained bytes to the UI Activity
                     //mHandler.obtainMessage(BluetoothGame.MESSAGE_READ, bytes, -1, buffer)
                       //      .sendToTarget();
@@ -468,7 +470,6 @@ public class BluetoothGameService {
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
-
                 // Share the sent message back to the UI Activity
               //  mHandler.obtainMessage(BluetoothGame.MESSAGE_WRITE, -1, -1, buffer)
                 //        .sendToTarget();

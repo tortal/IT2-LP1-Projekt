@@ -15,16 +15,6 @@
         android:text="@string/hello_world" />
 
     <Button
-        android:id="@+id/hostButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="14dp"
-        android:text="Host" 
-        android:onClick="onHostButtonClicked" />
-
-    <Button
         android:id="@+id/joinButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,5 +23,23 @@
         android:layout_marginTop="16dp"
         android:onClick="onJoinButtonClicked"
         android:text="Join" />
+
+    <Button
+        android:id="@+id/hostButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:onClick="onHostButtonClicked"
+        android:text="Host" />
+
+    <Button
+        android:id="@+id/pingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/joinButton"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="Ping" 
+        android:onClick="onPingButtonClicked"/>
 
 </RelativeLayout>
