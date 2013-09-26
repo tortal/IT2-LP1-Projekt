@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -36,23 +37,23 @@ public class BluetoothHandler implements INetworkHandler {
 	private List<BluetoothDevice> devicesList;
 
 	/**
-	 * Using the context provided by the class declaring 
-	 * this object, initiates all parameters needed to establish
-	 * both a connection to a running bluetooth server
-	 * and acting as a server itself.
+	 * Using the context provided by the class declaring this object, initiates
+	 * all parameters needed to establish both a connection to a running
+	 * bluetooth server and acting as a server itself.
+	 * 
 	 * @param <code>Context</code> in which the handler was declared
 	 */
 
-	public BluetoothHandler(Context context){
-		this.context=context;
+	public BluetoothHandler(Context context) {
+		this.context = context;
 		pcs = new PropertyChangeSupport(this);
-		
+
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mBluetoothAdapter.isEnabled()) {
-			enableBluetooth(); 
+			enableBluetooth();
 		}
 
-		bgs=new BluetoothGameService(context);
+		bgs = new BluetoothGameService(context);
 		devicesList = new ArrayList<BluetoothDevice>();
 		registerBroadcastReceiver();
 
@@ -70,77 +71,85 @@ public class BluetoothHandler implements INetworkHandler {
 	public void joinGame() {
 		this.mBluetoothAdapter.startDiscovery();
 		BluetoothDevice bd = findFirstAvailableDevice();
-		if (bd != null) { 
+		if (bd != null) {
 			bgs.connect(bd, true);
-		} else { 
+		} else {
 			Log.d(TAG, "No device to connect to");
 		}
 	}
 
-
 	/**
-	 * Goes through the list of discovered devices and checks if they are valid "Tendu" players.
-	 * Then adds these to a list of "team members".
+	 * Goes through the list of discovered devices and checks if they are valid
+	 * "Tendu" players. Then adds these to a list of "team members".
+	 * 
 	 * @return list of team members
 	 * @see {@link devicesList}, {@link isDeviceValid}
 	 */
 	public List<BluetoothDevice> searchTeam() {
-		List<BluetoothDevice> list=new ArrayList<BluetoothDevice>();
-		for( BluetoothDevice d: devicesList) { // bgs.getDevicesList()){
-			if(isDeviceValid(d)) {
-				list.add(d);		
+		List<BluetoothDevice> list = new ArrayList<BluetoothDevice>();
+		for (BluetoothDevice d : devicesList) { // bgs.getDevicesList()){
+			if (isDeviceValid(d)) {
+				list.add(d);
 			}
 		}
 		return list;
 	}
 
-	//----------------------- HELP METHODS ------------------------
-
+	// ----------------------- HELP METHODS ------------------------
 
 	/**
-	 * Checks if bluetooth is enabled.
-	 * If <code>true</code> does nothing.
-	 * If <code>false</code> prompts the user to enable bluetooth.
+	 * Checks if bluetooth is enabled. If <code>true</code> does nothing. If
+	 * <code>false</code> prompts the user to enable bluetooth.
 	 */
 	private void enableBluetooth() {
-		Intent enableBtIntent; 
+		Intent enableBtIntent;
 		if (!mBluetoothAdapter.isEnabled()) {
-			enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			((AndroidApplication) context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT); // context is wrong
-		} 
-	}
-
-
-	/**
-	 * Adds a the name "Tendu" as a suffix to this device name.
-	 * This is needed as identification
-	 */
-	private void addTenduToName() {
-		String name = mBluetoothAdapter.getName();
-		if (!name.contains(APP_NAME)) {
-			mBluetoothAdapter.setName(name + " - " + APP_NAME);
+			enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			((Activity) context).startActivityForResult(
+					enableBtIntent, REQUEST_ENABLE_BT); // context is wrong
 		}
 	}
 
 	/**
-	 * Checks if the given device is using "Tendu", rather then just having Bluetooth enabled
-	 * @param remote {@link BluetoothDevice} to validate
-	 * @return <code>true</code> if valid
-	 * 			<code>false</code> if non-valid
+	 * Adds a the name "Tendu" as a suffix to this device name. This is needed
+	 * as identification
+	 * 
+	 * If the device has no name, it is set to "Tendu"
+	 */
+	private void addTenduToName() {
+		if (mBluetoothAdapter.getName() == null)
+			mBluetoothAdapter.setName(APP_NAME + "");
+		else {
+			String name = mBluetoothAdapter.getName();
+			if (!name.contains(APP_NAME)) {
+				mBluetoothAdapter.setName(name + " - " + APP_NAME);
+			}
+		}
+	}
+
+	/**
+	 * Checks if the given device is using "Tendu", rather then just having
+	 * Bluetooth enabled
+	 * 
+	 * @param remote
+	 *            {@link BluetoothDevice} to validate
+	 * @return <code>true</code> if valid <code>false</code> if non-valid
 	 */
 	private boolean isDeviceValid(BluetoothDevice device) {
-		if(device==null)
+		if (device == null)
 			return false;
-		if(device.getName() == null)
+		if (device.getName() == null)
 			return false;
 		return device.getName().contains(APP_NAME);
 	}
 
-
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+		context.registerReceiver(mReceiver, filter); // Don't forget to
+														// unregister during
+														// onDestroy
 	}
 
 	// Create a BroadcastReceiver for ACTION_FOUND
@@ -150,44 +159,47 @@ public class BluetoothHandler implements INetworkHandler {
 			// When discovery finds a device
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				// Get the BluetoothDevice object from the Intent
-				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				if (D) Log.v(TAG, "Device: " + device.getName() + "Adress: " + device.getAddress());
+				BluetoothDevice device = intent
+						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+				if (D)
+					Log.v(TAG, "Device: " + device.getName() + "Adress: "
+							+ device.getAddress());
 				// Add the device to a list
-				devicesList.add(device);			
+				devicesList.add(device);
 
 			}
 		}
 	};
-
-
 
 	// Temporary test method
 	private BluetoothDevice findFirstAvailableDevice() {
 		List<BluetoothDevice> devices = searchTeam();
 		if (devices.isEmpty()) {
 			return null;
-		} else return devices.get(0);
+		} else
+			return devices.get(0);
 	}
 
 	private void beDiscoverable() {
-		Intent discoverableIntent = new
-				Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		Intent discoverableIntent = new Intent(
+				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(
+				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		context.startActivity(discoverableIntent);
 	}
 
 	@Override
 	public void addListener(PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(listener);
-		
+
 	}
 
 	@Override
 	public void removeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener(listener);
-		
+
 	}
-	
+
 	public void sendPing() {
 		String testString = "Your ma asked for you last night after i spanked her";
 		bgs.write(testString.getBytes());
@@ -196,7 +208,7 @@ public class BluetoothHandler implements INetworkHandler {
 	@Override
 	public void sendObject(Object o) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }
