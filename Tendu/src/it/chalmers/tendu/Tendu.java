@@ -2,9 +2,11 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameScreen;
-import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.screens.ShapesGameScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -25,7 +27,8 @@ public class Tendu implements ApplicationListener {
 
 	@Override
 	public void create() {
-		setScreen(new MainMenuScreen(this, null));
+//		setScreen(new MainMenuScreen(this, null));
+		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		input = new InputController();
 		Gdx.input.setInputProcessor(input);
 
