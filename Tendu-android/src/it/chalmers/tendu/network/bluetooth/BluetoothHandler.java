@@ -53,7 +53,7 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 
 		bgs=new BluetoothGameService(context);
-		devicesList = new ArrayList();
+		devicesList = new ArrayList<BluetoothDevice>();
 		registerBroadcastReceiver();
 
 		addTenduToName();
@@ -68,7 +68,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void joinGame() {
-
+		this.mBluetoothAdapter.startDiscovery();
 		BluetoothDevice bd = findFirstAvailableDevice();
 		if (bd != null) { 
 			bgs.connect(bd, true);
@@ -129,6 +129,8 @@ public class BluetoothHandler implements INetworkHandler {
 	 * 			<code>false</code> if non-valid
 	 */
 	private boolean isDeviceValid(BluetoothDevice device) {
+		if(device==null)
+			return false;
 		return device.getName().contains(APP_NAME);
 	}
 
@@ -156,13 +158,6 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 
 
-	/**
-	 * Getter
-	 * @return {@link devicesList}
-	 */
-	private List<BluetoothDevice> getDevicesList() {
-		return devicesList;
-	}
 
 	// Temporary test method
 	private BluetoothDevice findFirstAvailableDevice() {
