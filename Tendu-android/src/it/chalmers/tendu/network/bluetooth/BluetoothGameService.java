@@ -249,7 +249,7 @@ public class BluetoothGameService {
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
-        r.write(o);
+        r.kryoWrite(o);
     }
     
 	public void discover() {
@@ -523,8 +523,8 @@ public class BluetoothGameService {
          * Write with kryo
          * 
          */
-        public void write(Serializable o){
-        	kryo.writeObject(new Output(mmOutStream), o);
+        public void kryoWrite(Serializable o){
+        	kryo.writeObject(out, o);
         } 
         
         public void cancel() {
