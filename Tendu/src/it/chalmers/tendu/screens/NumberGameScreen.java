@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.NumberGame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class NumberGameScreen extends GameScreen {
 	private ShapeRenderer shapeRenderer;
 	private BitmapFont numberFont;
+	private NumberGame model;
 
 	
 	private ArrayList<Color> colors;
@@ -34,14 +36,14 @@ public class NumberGameScreen extends GameScreen {
 		
 		numberFont.scale(-2); 
 
-		
-		selectionNumbers = new ArrayList<Integer>();
-		correctNumbers = new ArrayList<Integer>();
+		this.model = (NumberGame)model;
+		correctNumbers= this.model.getAnswerList();
+		selectionNumbers = this.model.getDummyList();
 
-		for(int i = 1; i <= 8; i++) {
-			selectionNumbers.add(i);
-			correctNumbers.add(i);
-		}
+//		for(int i = 1; i <= 8; i++) {
+//			selectionNumbers.add(i);
+//			correctNumbers.add(i);
+//		}
 		
 //		correctNumbers.add(1);
 //		correctNumbers.add(5);
@@ -61,7 +63,7 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		
 		Collections.shuffle(colors);
-		Collections.shuffle(selectionNumbers);
+//		Collections.shuffle(selectionNumbers);
 	}
 	
 	//called after shapeRender.begin
