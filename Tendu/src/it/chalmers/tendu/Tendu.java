@@ -1,64 +1,55 @@
 package it.chalmers.tendu;
 
+import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.screens.GameScreen;
+import it.chalmers.tendu.screens.MainMenuScreen;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Tendu extends Game {
+public class Tendu implements ApplicationListener {
+	private GameScreen screen;
+	private float accum = 0;
+	private InputController input;
 	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Texture texture;
-	private Sprite sprite;
 	
 	private INetworkHandler networkHandler;
 	
 	public Tendu(INetworkHandler netCom) {
 		networkHandler = netCom;
 	}
-	
+
 	@Override
-	public void create() {		
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-		
-		camera = new OrthographicCamera(1, h/w);
-		batch = new SpriteBatch();
-		
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
-		
-		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+	public void create() {
+		setScreen(new MainMenuScreen(this, null));
+		input = new InputController();
+		Gdx.input.setInputProcessor(input);
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
+				Constants.SCREEN_HEIGHT);
 	}
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		texture.dispose();
 	}
 
 	@Override
-	public void render() {		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+	public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
+		accum += Gdx.graphics.getDeltaTime();
+		while (accum > 1.0f / 60.0f) {
+			screen.tick(input);
+			input.tick();
+			accum -= 1.0f / 60.0f;
+		}
+
+		camera.update();
+		screen.render();
 	}
 
 	@Override
@@ -71,5 +62,26 @@ public class Tendu extends Game {
 
 	@Override
 	public void resume() {
+	}
+
+	// Tror inte att vi behöver denna metod
+	// public void miniGameFinished(GameState state) {
+	// if (state == GameState.WON) {
+	// // vi vann, gör något
+	// } else if (state == GameState.LOST) {
+	// // vi förlorade, gör något
+	// }
+	// }
+
+	public void setScreen(GameScreen newScreen) {
+		if (screen != null) {
+			screen.removed();
+		}
+		screen = newScreen;
+
+	}
+
+	public OrthographicCamera getCamera() {
+		return camera;
 	}
 }

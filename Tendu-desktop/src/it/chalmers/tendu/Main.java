@@ -9,9 +9,9 @@ public class Main {
 		cfg.title = "Tendu";
 		cfg.useGL20 = false;
 		cfg.width = 480;
-		cfg.height = 320;
-		
+		cfg.height = 320;		
 		
 		new LwjglApplication(new Tendu(null), cfg);
+
 	}
 }
