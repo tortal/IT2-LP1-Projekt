@@ -27,4 +27,9 @@ public class ShapesGameScreen extends GameScreen {
 
 	}
 
+	@Override
+	public void removed() {
+		super.removed();
+	}
+
 }
