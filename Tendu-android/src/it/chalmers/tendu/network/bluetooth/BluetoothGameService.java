@@ -16,12 +16,19 @@
 
 package it.chalmers.tendu.network.bluetooth;
 
+import it.chalmers.tendu.TestObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -47,7 +54,7 @@ public class BluetoothGameService {
     // Debugging
     private static final String TAG = "BluetoothGameService";
     private static final boolean D = true;
-
+    
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothGameSecure";
     private static final String NAME_INSECURE = "BluetoothGameInsecure";
@@ -86,10 +93,7 @@ public class BluetoothGameService {
     	this.context=context;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
-        devicesList=new ArrayList<BluetoothDevice>();
-       
-       
-        //registerBroadcastReceiver();
+        devicesList=new ArrayList<BluetoothDevice>(); 
     }
 
     /**
@@ -230,6 +234,22 @@ public class BluetoothGameService {
         }
         // Perform the write unsynchronized
         r.write(out);
+    }
+    
+    /**
+     * Write using kryo
+     * @param o
+     */
+    public void kryoWrite(Serializable o){
+    	// Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+        // Perform the write unsynchronized
+        r.kryoWrite(o);
     }
     
 	public void discover() {
@@ -427,11 +447,18 @@ public class BluetoothGameService {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
+        //Kryo
+        Kryo kryo;
+        TestObject receivedItem;
+        private final Output out;
+        private final Input in;
+        
         public ConnectedThread(BluetoothSocket socket, String socketType) {
             Log.d(TAG, "create ConnectedThread: " + socketType);
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
+            kryo = new Kryo();
 
             // Get the BluetoothSocket input and output streams
             try {
@@ -443,31 +470,40 @@ public class BluetoothGameService {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+            out = new Output(mmOutStream);
+            in = new Input(mmInStream);
         }
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
+            
+            
             byte[] buffer = new byte[1024];
             int bytes;
 
             // Keep listening to the InputStream while connected
             while (true) {
-                try {
+                //try {
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
+                    //bytes = mmInStream.read(buffer);
+                    // TODO Test only
+                    receivedItem = kryo.readObject(in, TestObject.class);
                     // Send the obtained bytes to the UI Activity (has to be changed for libgdxconnection)
-                    mHandler.obtainMessage(MESSAGE, bytes, -1, buffer).sendToTarget();
-                } catch (IOException e) {
+                    //mHandler.obtainMessage(MESSAGE, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(MESSAGE, receivedItem).sendToTarget();
+                /*} catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     // Start the service over to restart listening mode
                     BluetoothGameService.this.start();
                     break;
-                }
+                }*/
             }
             
         }
 
+        
+        
         /**
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
@@ -482,7 +518,16 @@ public class BluetoothGameService {
                 Log.e(TAG, "Exception during write", e);
             }
         }
-
+        
+        /**
+         * Write with kryo
+         * 
+         */
+        public void kryoWrite(Serializable o){
+        	kryo.writeObject(out, o);
+        	out.flush();
+        } 
+        
         public void cancel() {
             try {
                 mmSocket.close();
@@ -495,11 +540,18 @@ public class BluetoothGameService {
     private final Handler mHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
-    		// Test method printing to screen
-            byte[] readBuf = (byte[]) msg.obj;
-            // construct a string from the valid bytes in the buffer
-            String readMessage = new String(readBuf, 0, msg.arg1);
-            Toast.makeText(context, readMessage, Toast.LENGTH_SHORT).show();
+//    		// Test method printing to screen
+//            byte[] readBuf = (byte[]) msg.obj;
+//            // construct a string from the valid bytes in the buffer
+//            String readMessage = new String(readBuf, 0, msg.arg1);
+//            Toast.makeText(context, readMessage, Toast.LENGTH_SHORT).show();
+    		
+    		TestObject equalTest = new TestObject();
+    		String s;
+    		s = equalTest.equals(msg.obj)? "Success":"Failure";
+    		
+    		Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+    		
     	}
     };
 }
