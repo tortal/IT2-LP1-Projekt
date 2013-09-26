@@ -5,6 +5,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameScreen;
+import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.NumberGameScreen;
 import it.chalmers.tendu.screens.ShapesGameScreen;
 
@@ -27,8 +28,8 @@ public class Tendu implements ApplicationListener {
 
 	@Override
 	public void create() {
-//		setScreen(new MainMenuScreen(this, null));
-		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		setScreen(new MainMenuScreen(this, null));
+//		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		input = new InputController();
 		Gdx.input.setInputProcessor(input);
 
@@ -67,12 +68,12 @@ public class Tendu implements ApplicationListener {
 	public void resume() {
 	}
 
-	// Tror inte att vi behöver denna metod
+	// Tror inte att vi behver denna metod
 	// public void miniGameFinished(GameState state) {
 	// if (state == GameState.WON) {
-	// // vi vann, gör något
+	// // vi vann, gr ngot
 	// } else if (state == GameState.LOST) {
-	// // vi förlorade, gör något
+	// // vi frlorade, gr ngot
 	// }
 	// }
 
