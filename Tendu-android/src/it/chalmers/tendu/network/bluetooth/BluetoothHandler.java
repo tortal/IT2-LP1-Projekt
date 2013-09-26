@@ -193,14 +193,17 @@ public class BluetoothHandler implements INetworkHandler {
 //			}
 //		}
 //		// Then among the ones that have been discovered
-		
-		// Return the first available device in the set
+
+		// Return the first eligible device among the available devices set
 		Iterator<BluetoothDevice> iter = devicesSet.iterator();
-		if (iter.hasNext()) {
-			return iter.next();
-		} else {
-			return null;
+		while (iter.hasNext()) {
+			BluetoothDevice device = iter.next(); 
+			if (isDeviceValid(device)) {
+				return device;
+			}
 		}
+		Log.v(TAG, "No eligible devices found");
+		return null;
 	}
 
 	private void beDiscoverable() {
