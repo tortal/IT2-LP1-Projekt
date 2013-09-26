@@ -48,7 +48,7 @@ public class NumberGame extends MiniGame {
 		}
 	}
 
-	private ArrayList createAnswer(int length) {
+	private ArrayList<Integer> createAnswer(int length) {
 		ArrayList<Integer> answerList = new ArrayList<Integer>();
 		int i = 0;
 		while (i < length) {
@@ -63,8 +63,8 @@ public class NumberGame extends MiniGame {
 
 	// TODO divide answerlist between players and populate with dummy numbers.
 
-	private ArrayList divideAndConquer(ArrayList<Integer> list) {
-		ArrayList newList = new ArrayList();
+	private ArrayList<Integer> divideAndConquer(ArrayList<Integer> list) {
+		ArrayList<Integer> newList = new ArrayList();
 		for (int i = 0; i<list.size();i++){
 			newList.add(list.get(i));
 		}
@@ -81,11 +81,11 @@ public class NumberGame extends MiniGame {
 		return newList;
 	}
 
-	public ArrayList getAnswerList() {
+	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
 	
-	public ArrayList getDummyList(){
+	public ArrayList<Integer> getDummyList(){
 		return answerAndDummyList;
 	}
 }
