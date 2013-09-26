@@ -177,7 +177,7 @@ public class BluetoothHandler implements INetworkHandler {
 				BluetoothDevice device = intent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 				if (D)
-					Log.v(TAG, "Device: " + device.getName() + "Adress: "
+					Log.v(TAG, "Device found: " + device.getName() + "Adress: "
 							+ device.getAddress());
 				// Add the device to a list
 				devicesSet.add(device);
