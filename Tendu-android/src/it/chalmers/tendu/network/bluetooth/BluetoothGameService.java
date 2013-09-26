@@ -449,7 +449,7 @@ public class BluetoothGameService {
 
         //Kryo
         Kryo kryo;
-        Serializable receivedItem;
+        TestObject receivedItem;
         private final Output out;
         private final Input in;
         
@@ -487,7 +487,7 @@ public class BluetoothGameService {
                     // Read from the InputStream
                     //bytes = mmInStream.read(buffer);
                     // TODO Test only
-                    receivedItem = kryo.readObject(in, Serializable.class);
+                    receivedItem = kryo.readObject(in, TestObject.class);
                     // Send the obtained bytes to the UI Activity (has to be changed for libgdxconnection)
                     //mHandler.obtainMessage(MESSAGE, bytes, -1, buffer).sendToTarget();
                     mHandler.obtainMessage(MESSAGE, receivedItem).sendToTarget();
