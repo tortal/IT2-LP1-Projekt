@@ -78,7 +78,9 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void joinGame() {
+		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
+
 		// 
 		mHandler.postDelayed(new Runnable() {
 
@@ -95,6 +97,7 @@ public class BluetoothHandler implements INetworkHandler {
 			
 		}, 5000);
 	}
+	//git sucks fat balls
 
 	/**
 	 * Goes through the list of discovered devices and checks if they are valid
