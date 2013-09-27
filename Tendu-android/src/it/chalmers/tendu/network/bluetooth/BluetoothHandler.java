@@ -94,6 +94,7 @@ public class BluetoothHandler implements INetworkHandler {
 			Log.d(TAG, "No device to connect to");
 		}
 	}
+	//git sucks fat balls
 
 	/**
 	 * Goes through the list of discovered devices and checks if they are valid
