@@ -58,7 +58,7 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 
 		bgs = new BluetoothGameService(context, mHandler);
-		devicesSet = new HashSet();
+		devicesSet = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 		
 		addTenduToDeviceName();
@@ -102,7 +102,7 @@ public class BluetoothHandler implements INetworkHandler {
 	 */
 	public Set<BluetoothDevice> searchTeam() {
 		
-		Set<BluetoothDevice> devices = new HashSet();
+		Set<BluetoothDevice> devices = new HashSet<BluetoothDevice>();
 		for (BluetoothDevice d : devicesSet) { // bgs.getDevicesList()){
 			if (isDeviceValid(d)) {
 				devices.add(d);
