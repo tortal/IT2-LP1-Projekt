@@ -22,15 +22,17 @@ public class NumberGameTest {
 		//Hard game should have 8 answers, easy should have 4
 		assertTrue(nbrGameEasy.getAnswerList().size() == 4); 
 		assertTrue(nbrGameHard.getAnswerList().size() == 8); 
-
+		
 		List <Integer> answerList = nbrGameEasy.getAnswerList();
 		for(Integer i: answerList){
 			assertTrue(i<= 99 && i>=0);	
 		}
 	}
-
-
-	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==true);
-	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==false);
+	@Test
+	public void testCheckNbrInt(){
+		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(0)));
+		assertTrue(nbrGameEasy.checkNbr(-1));
+		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(1)));
+	}
 
 }
