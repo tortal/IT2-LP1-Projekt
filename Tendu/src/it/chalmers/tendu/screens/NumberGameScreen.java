@@ -1,8 +1,9 @@
 package it.chalmers.tendu.screens;
 
-//TODO needs refactoring
+//TODO needs major refactoring
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.NumberGame;
@@ -44,6 +45,8 @@ public class NumberGameScreen extends GameScreen {
     private Vector3 touchPos;
     
     private int time;
+    
+    private int numberAlignment;
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -84,25 +87,31 @@ public class NumberGameScreen extends GameScreen {
 		for(int i = 0; i < selectionNumbers.size(); i++) {
 			numberCircles.add(new NumberCircle(selectionNumbers.get(i), (90+95*i), 120, 35, colors.get(i)));
 		}
+		
+		if(model.getDifficulty() == Constants.Difficulty.ONE) {
+			numberAlignment = 240;
+		} else {
+			numberAlignment = 25;
+		}
 	}
 	
 	private void drawNumbers(boolean showAll) {
-		numberFont.scale(2);
+		numberFont.scale(1.6f);
 		
 		if(showAll) {
 			for(int i = 0; i < numbers.size(); i++) {
 				numberFont.setColor(colors.get(i));
-				numberFont.draw(spriteBatch, "" + numbers.get(i).number, 180+i*130, 300);
+				numberFont.draw(spriteBatch, "" + numbers.get(i).number, numberAlignment+i*105, 300);
 			}
 		} else {
 			for(int i = 0; i < numbers.size(); i++) {
 				if(numbers.get(i).show == true) {
 					numberFont.setColor(colors.get(i));
-					numberFont.draw(spriteBatch, "" + numbers.get(i).number, 180+i*130, 300);
+					numberFont.draw(spriteBatch, "" + numbers.get(i).number, numberAlignment+i*105, 300);
 				}
 			}
 		}
-		numberFont.scale(-2);
+		numberFont.scale(-1.6f);
 	}
 	private void drawNumberCircle(NumberCircle circle) {
 		shapeRenderer.setColor(circle.color);
@@ -123,24 +132,31 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.Circle);
 		
-		if(model.checkGameState() == GameState.IN_PROGRESS) {
-			if(time < 240) {
-				numberFont.setColor(Color.BLUE);
-				numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
-				drawNumbers(true);
-				
-			} else {
+
+		if(time < 240) {
+			numberFont.setColor(Color.BLUE);
+			numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
+			drawNumbers(true);
+			
+		} else {
+			if(model.checkGameState() == GameState.IN_PROGRESS) {
 				numberFont.setColor(Color.BLUE);
 				numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 60, 400);
-				
-				drawNumbers(false);
-	
-				numberFont.scale(-0.8f);
-				for(int i = 0; i < numberCircles.size(); i++) {
-					drawNumberCircle(numberCircles.get(i));
-				}
-				numberFont.scale(0.8f);
+			}	
+			drawNumbers(false);
+
+			numberFont.scale(-0.8f);
+			for(int i = 0; i < numberCircles.size(); i++) {
+				drawNumberCircle(numberCircles.get(i));
 			}
+			numberFont.scale(0.8f);
+		}
+		
+		if(model.checkGameState() == GameState.WON) {
+			numberFont.setColor(Color.GREEN);
+			numberFont.scale(2);
+			numberFont.draw(spriteBatch, "You won!", 300, 450);
+			numberFont.scale(-2);
 		}
 		
 		shapeRenderer.end();
@@ -189,6 +205,13 @@ public class NumberGameScreen extends GameScreen {
 		            	}
 		            }
 		        }
+			}
+		}
+		
+		if(model.checkGameState() != GameState.IN_PROGRESS) {
+			time++;
+			if (time>400) {
+				game.setScreen(new NumberGameScreen(game, new NumberGame(0, Constants.Difficulty.TWO)));
 			}
 		}
   
