@@ -79,7 +79,13 @@ public class BluetoothHandler implements INetworkHandler {
 	@Override
 	public void joinGame() {
 		this.mBluetoothAdapter.startDiscovery();
-		BluetoothDevice bd = findFirstAvailableDevice();
+		BluetoothDevice bd;
+		int i = 0;
+		
+		while((bd = findFirstAvailableDevice())==null){
+			if (D) Log.d(TAG,"Find available device loop: " + i);
+		}
+		
 		if (bd != null) {
 			Log.d(TAG, "Will now try and connect to: " + bd.getName());
 			bgs.connect(bd, true);
