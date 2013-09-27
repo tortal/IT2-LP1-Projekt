@@ -1,7 +1,6 @@
 package it.chalmers.tendu.screens;
 
 //TODO needs refactoring
-
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.MiniGame;
@@ -18,6 +17,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 
 
+class Number {
+	int number;
+	boolean show;
+	
+	Number(int number, boolean show) {
+		this.number = number;
+		this.show = show;
+	}
+}
+
 public class NumberGameScreen extends GameScreen {
 	private ShapeRenderer shapeRenderer;
 	private BitmapFont numberFont;
@@ -29,11 +38,11 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<Integer> selectionNumbers;
 	private ArrayList<Integer> correctNumbers;
 	private ArrayList<NumberCircle> numberCircles;
+	private ArrayList<Number> numbers;
 	
     private Vector3 touchPos;
     
     private int time;
-
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -50,10 +59,11 @@ public class NumberGameScreen extends GameScreen {
 	
 	private void setUpGame() {
 		time = 0;
-		correctNumbers = this.model.getAnswerList();
-		selectionNumbers = this.model.getDummyList();
+		correctNumbers = model.getAnswerList();
+		selectionNumbers = model.getDummyList();
 		
 		numberCircles = new ArrayList<NumberCircle>();
+		numbers = new ArrayList<Number>();
 		
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
@@ -66,12 +76,34 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 		
+		for(Integer number: correctNumbers) {
+			numbers.add(new Number(number.intValue(), false));
+		}
+		
 		for(int i = 0; i < selectionNumbers.size(); i++) {
 			numberCircles.add(new NumberCircle(selectionNumbers.get(i), (90+95*i), 120, 35, colors.get(i)));
 		}
 	}
 	
-	public void drawNumberCircle(NumberCircle circle) {
+	private void drawNumbers(boolean showAll) {
+		numberFont.scale(2);
+		
+		if(showAll) {
+			for(int i = 0; i < numbers.size(); i++) {
+				numberFont.setColor(colors.get(i));
+				numberFont.draw(spriteBatch, "" + numbers.get(i).number, 180+i*130, 300);
+			}
+		} else {
+			for(int i = 0; i < numbers.size(); i++) {
+				if(numbers.get(i).show == true) {
+					numberFont.setColor(colors.get(i));
+					numberFont.draw(spriteBatch, "" + numbers.get(i).number, 180+i*130, 300);
+				}
+			}
+		}
+		numberFont.scale(-2);
+	}
+	private void drawNumberCircle(NumberCircle circle) {
 		shapeRenderer.setColor(circle.color);
 		numberFont.setColor(circle.color);
 		
@@ -79,7 +111,7 @@ public class NumberGameScreen extends GameScreen {
 			shapeRenderer.circle(circle.getX(), circle.getY(), (circle.getRadius()-i)*circle.scale);
 		}		
 		numberFont.draw(spriteBatch, "" + circle.getNumber(), circle.getNumberX(), circle.getNumberY());
-}
+	}
 
 	/** Draw all graphics here */
 	@Override
@@ -93,23 +125,19 @@ public class NumberGameScreen extends GameScreen {
 		if(time < 240) {
 			numberFont.setColor(Color.BLUE);
 			numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
-			
-			numberFont.scale(2);
-			for(int i = 0; i < correctNumbers.size(); i++) {
-				numberFont.setColor(colors.get(i));
-				numberFont.draw(spriteBatch, "" + correctNumbers.get(i), 180+i*130, 300);
-			}
-			numberFont.scale(-2);
+			drawNumbers(true);
 			
 		} else {
 			numberFont.setColor(Color.BLUE);
 			numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 60, 400);
 			
-				numberFont.scale(-0.8f);
-				for(int i = 0; i < numberCircles.size(); i++) {
-					drawNumberCircle(numberCircles.get(i));
-				}
-				numberFont.scale(0.8f);
+			drawNumbers(false);
+
+			numberFont.scale(-0.8f);
+			for(int i = 0; i < numberCircles.size(); i++) {
+				drawNumberCircle(numberCircles.get(i));
+			}
+			numberFont.scale(0.8f);
 		}
 		
 		shapeRenderer.end();
@@ -131,6 +159,14 @@ public class NumberGameScreen extends GameScreen {
 	            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
 	                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
 	                    	Gdx.input.vibrate(25);
+	                    	if(model.checkNbr(circle.getNumber())) {
+	                    		Gdx.app.log("Correct number = ", "" + circle.getNumber());
+	                    		for(Number num: numbers) {
+	                    			if(num.number == circle.getNumber()) {
+	                    				num.show = true;
+	                    			}
+	                    		}
+	                    	}
 	                	}
 	            	}      	
 	            	circle.scale=1;
@@ -145,7 +181,6 @@ public class NumberGameScreen extends GameScreen {
 	            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
 	                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
 	                		circle.scale = 1.5f;
-	                    	Gdx.app.log("Number = ", "" + circle.getNumber());
 	                	}
 	            	}
 	            }
