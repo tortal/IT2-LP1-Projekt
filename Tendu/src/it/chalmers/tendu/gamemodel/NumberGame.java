@@ -57,7 +57,7 @@ public class NumberGame extends MiniGame {
 		ArrayList<Integer> answerList = new ArrayList<Integer>();
 		int i = 0;
 		while (i < length) {
-			int randomNbr = 1 + (int) (Math.random() * 100);
+			int randomNbr = 1 + (int) (Math.random() * 99);
 			if (!(answerList.contains(randomNbr))) {
 				answerList.add(randomNbr);
 				i++;
