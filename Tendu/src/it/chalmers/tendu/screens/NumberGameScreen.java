@@ -1,5 +1,7 @@
 package it.chalmers.tendu.screens;
 
+//TODO needs refactoring
+
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.MiniGame;
@@ -47,10 +49,6 @@ public class NumberGameScreen extends GameScreen {
 		
 		numberCircles = new ArrayList<NumberCircle>();
 		
-		for(int i = 0; i < selectionNumbers.size(); i++) {
-			numberCircles.add(new NumberCircle(selectionNumbers.get(i), (90+95*i), 120, 35));
-		}
-				
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -60,29 +58,19 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.WHITE);
 		colors.add(Color.PINK);
 		colors.add(Color.RED);
-		
 		Collections.shuffle(colors);
-//		Collections.shuffle(selectionNumbers);
+		
+		for(int i = 0; i < selectionNumbers.size(); i++) {
+			numberCircles.add(new NumberCircle(selectionNumbers.get(i), (90+95*i), 120, 35, colors.get(i)));
+		}
 	}
 	
-	//called after shapeRender.begin
-//	public void drawNumberCircle(int number, int x, int y, int radius, Color color) {
-//		shapeRenderer.setColor(color);
-//		numberFont.setColor(color);
-//
-//		for(int i = 0; i < 5; i++) {
-//			shapeRenderer.circle(x, y, radius-i);
-//		}
-//		
-//		numberFont.draw(spriteBatch, "" + number, x-12, y+20);
-//	}
-	
-	public void drawNumberCircle(NumberCircle circle, Color color) {
-		shapeRenderer.setColor(color);
-		numberFont.setColor(color);
+	public void drawNumberCircle(NumberCircle circle) {
+		shapeRenderer.setColor(circle.color);
+		numberFont.setColor(circle.color);
 		
 		for(int i = 0; i < 5; i++) {
-			shapeRenderer.circle(circle.getX(), circle.getY(), circle.getRadius()-i);
+			shapeRenderer.circle(circle.getX(), circle.getY(), (circle.getRadius()-i)*circle.scale);
 		}		
 		numberFont.draw(spriteBatch, "" + circle.getNumber(), circle.getNumberX(), circle.getNumberY());
 }
@@ -105,8 +93,7 @@ public class NumberGameScreen extends GameScreen {
 		
 		numberFont.scale(-0.8f);
 		for(int i = 0; i < numberCircles.size(); i++) {
-			//drawNumberCircle(selectionNumbers.get(i), 90+95*i, 120, 35, colors.get(i));
-			drawNumberCircle(numberCircles.get(i), colors.get(i));
+			drawNumberCircle(numberCircles.get(i));
 		}
 		numberFont.scale(0.8f);
 
@@ -119,13 +106,31 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-        if (Gdx.input.justTouched()) {
+        if (input.isTouchedUp()) {
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             game.getCamera().unproject(touchPos);
             
             for(NumberCircle circle: numberCircles) {            	
-            	if((touchPos.x > circle.leftX && touchPos.x < circle.rightX) && (touchPos.y > circle.bottomY && touchPos.y < circle.bottomY)) {
-                	Gdx.app.log("Number = ", "" + circle.getNumber());
+            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
+                    	Gdx.input.vibrate(25);
+                	}
+            	}
+            	
+            	circle.scale=1;
+            }
+        }
+        
+        if (Gdx.input.isTouched()) {
+			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            game.getCamera().unproject(touchPos);
+            
+            for(NumberCircle circle: numberCircles) {            	
+            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
+                		circle.scale = 1.5f;
+                    	Gdx.app.log("Number = ", "" + circle.getNumber());
+                	}
             	}
             }
         }
@@ -138,5 +143,4 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.dispose();
 		numberFont.dispose();
 	}
-
 }

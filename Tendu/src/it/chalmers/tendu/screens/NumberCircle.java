@@ -2,6 +2,8 @@ package it.chalmers.tendu.screens;
 
 import org.w3c.dom.css.Rect;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class NumberCircle {
 	private int xPos; //center of circle
 	private int yPos; //center of circle
@@ -9,11 +11,14 @@ public class NumberCircle {
 	private int number; 
 	private int numberXPos;
 	private int numberYPos;
+	Color color;
 	int leftX;
 	int rightX;
 	int topY;
 	int bottomY;
-	public NumberCircle(int number, int x, int y, int radius) {
+	float scale;
+	
+	public NumberCircle(int number, int x, int y, int radius, Color color) {
 		this.setNumber(number);
 		this.setX(x);
 		this.setY(y);
@@ -32,6 +37,8 @@ public class NumberCircle {
 		
 		topY = yPos+radius;
 		bottomY = yPos-radius;
+		this.color = color;
+		scale = 1;
 	}
 	public int getX() {
 		return xPos;
