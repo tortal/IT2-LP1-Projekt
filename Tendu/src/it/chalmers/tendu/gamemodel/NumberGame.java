@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.defaults.GameIds;
 
@@ -37,15 +38,19 @@ public class NumberGame extends MiniGame {
 	}
 
 	public boolean checkNbr(int num) {
-		if (answerList.get(nbrCorrectAnswer) == num) {
-			nbrCorrectAnswer++;
-			if(nbrCorrectAnswer == answerList.size()){
-				gameWon();
+		// TODO make sure it can't go out of bounds (make it prettier)
+		if (nbrCorrectAnswer < answerList.size()) {
+			if (answerList.get(nbrCorrectAnswer) == num) {
+				nbrCorrectAnswer++;
+				if (nbrCorrectAnswer == answerList.size()) {
+					gameWon();
+				}
+				return true;
+			} else {
+				return false;
 			}
-			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	private ArrayList<Integer> createAnswer(int length) {
@@ -65,11 +70,11 @@ public class NumberGame extends MiniGame {
 
 	private ArrayList<Integer> divideAndConquer(ArrayList<Integer> list) {
 		ArrayList<Integer> newList = new ArrayList();
-		for (int i = 0; i<list.size();i++){
+		for (int i = 0; i < list.size(); i++) {
 			newList.add(list.get(i));
 		}
 		int i = 0;
-		while (i < (8-list.size())) {
+		while (i < (8 - list.size())) {
 			int randomNbr = 1 + (int) (Math.random() * 99);
 			if (!(list.contains(randomNbr))) {
 				newList.add(randomNbr);
@@ -84,8 +89,8 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
-	
-	public ArrayList<Integer> getDummyList(){
+
+	public ArrayList<Integer> getDummyList() {
 		return answerAndDummyList;
 	}
 }
