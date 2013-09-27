@@ -30,21 +30,23 @@ public class BluetoothHandler implements INetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler";
 
-	private PropertyChangeSupport pcs;
-
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
 	private static final String APP_NAME = "Tendu";
 
 	BluetoothGameService bgs;
 	/** Context in which the handler was declared */
-	Context context;
+	private Context context;
+	/** Connection to android bluetooth hardware */
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
 	private Set<BluetoothDevice> devicesSet;
 
-	// Test object
-	private GameStateBundle gameState = new GameStateBundle(5, "MeegaTest");
+	// Game state on server
+	private GameStateBundle gameState; 
+	private GameStateBundle gameStateTest = new GameStateBundle(5, "MeegaTest");
+	
+	private NetworkState networkState;
 	
 	/**
 	 * Using the context provided by the class declaring this object, initiates
@@ -56,7 +58,6 @@ public class BluetoothHandler implements INetworkHandler {
 
 	public BluetoothHandler(Context context) {
 		this.context = context;
-		pcs = new PropertyChangeSupport(this);
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -67,6 +68,8 @@ public class BluetoothHandler implements INetworkHandler {
 		devicesSet = new HashSet();
 		registerBroadcastReceiver();
 
+		networkState = NetworkState.DISCONNECTED;
+		
 		addTenduToDeviceName();
 	}
 
@@ -82,7 +85,7 @@ public class BluetoothHandler implements INetworkHandler {
 		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
 
-		// 
+		// Wait awhile for the handset to discover units 
 		mHandler.postDelayed(new Runnable() {
 
 			@Override
@@ -98,7 +101,6 @@ public class BluetoothHandler implements INetworkHandler {
 			
 		}, 5000);
 	}
-	//git sucks fat balls
 
 	/**
 	 * Goes through the list of discovered devices and checks if they are valid
@@ -234,10 +236,10 @@ public class BluetoothHandler implements INetworkHandler {
 		context.startActivity(discoverableIntent);
 	}
 
-	public void sendPing() {
-		String testString = "Super communication skills";
-		bgs.write(testString.getBytes());
-	}
+//	public void sendPing() {
+//		String testString = "Super communication skills";
+//		bgs.write(testString.getBytes());
+//	}
 
 	@Override
 	public void sendObject(Serializable o) {
@@ -256,7 +258,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void testStuff() {
-		testSendGameState(gameState);
+		testSendGameState(gameStateTest);
 	}
 	
 	//@Override
@@ -269,11 +271,15 @@ public class BluetoothHandler implements INetworkHandler {
     	@Override
     	public void handleMessage(Message msg) {
     		if (msg.what == BluetoothGameService.MESSAGE_READ) {
-    			GameStateBundle newGameStateBundle = gameState;
-    			String s;
-    			s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
-    			
-    			Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+    			if (msg.obj instanceof GameStateBundle) {
+    				gameState = (GameStateBundle) msg.obj;
+    				
+    				// Ping Test
+    				GameStateBundle newGameStateBundle = gameStateTest;
+    				String s;
+    				s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
+    				Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+    			}
     		}
     		
     	}
@@ -281,13 +287,11 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public GameStateBundle pollGameState() {
-		// TODO Auto-generated method stub
-		return null;
+		return gameState;
 	}
 
 	@Override
 	public NetworkState pollNetworkState() {
-		// TODO Auto-generated method stub
-		return null;
+		return networkState;
 	}
 }
