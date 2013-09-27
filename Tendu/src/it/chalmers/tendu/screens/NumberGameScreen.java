@@ -103,7 +103,7 @@ public class NumberGameScreen extends GameScreen {
 			
 		} else {
 			numberFont.setColor(Color.BLUE);
-			numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 100, 400);
+			numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 60, 400);
 			
 				numberFont.scale(-0.8f);
 				for(int i = 0; i < numberCircles.size(); i++) {
