@@ -6,6 +6,7 @@ import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.NumberGame;
 
 import java.util.ArrayList;
@@ -210,8 +211,8 @@ public class NumberGameScreen extends GameScreen {
 		
 		if(model.checkGameState() != GameState.IN_PROGRESS) {
 			time++;
-			if (time>400) {
-				game.setScreen(new NumberGameScreen(game, new NumberGame(0, Constants.Difficulty.TWO)));
+			if (time>360) {
+				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game, MiniGameFactory.createMiniGame(0, Constants.Difficulty.TWO)));
 			}
 		}
   
