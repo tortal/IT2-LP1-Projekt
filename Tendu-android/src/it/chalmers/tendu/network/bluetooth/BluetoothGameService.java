@@ -275,9 +275,10 @@ public class BluetoothGameService {
 //        bundle.putString(BluetoothGame.TOAST, "Device connection was lost");
 //        msg.setData(bundle);
 //        mHandler.sendMessage(msg);
-
+    	
         // Start the service over to restart listening mode
         BluetoothGameService.this.start();
+        
     }
     
     

@@ -26,7 +26,7 @@ public interface INetworkHandler {
 	 * Returns the network state
 	 * @return
 	 */
-	NetworkState pollNetworkState();
+	int pollNetworkState();
 	
 	/**
 	 * Host game that other players can search

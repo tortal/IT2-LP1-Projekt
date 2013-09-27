@@ -2,7 +2,6 @@ package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.NetworkState;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -42,8 +41,6 @@ public class BluetoothHandler implements INetworkHandler {
 	private GameStateBundle gameState; 
 	private GameStateBundle gameStateTest = new GameStateBundle(5, "MeegaTest");
 	
-	private NetworkState networkState;
-	
 	/**
 	 * Using the context provided by the class declaring this object, initiates
 	 * all parameters needed to establish both a connection to a running
@@ -63,8 +60,6 @@ public class BluetoothHandler implements INetworkHandler {
 		bgs = new BluetoothGameService(context, mHandler);
 		devicesSet = new HashSet();
 		registerBroadcastReceiver();
-
-		networkState = NetworkState.DISCONNECTED;
 		
 		addTenduToDeviceName();
 	}
@@ -287,7 +282,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	@Override
-	public NetworkState pollNetworkState() {
-		return networkState;
+	public int pollNetworkState() {
+		return bgs.getState();
 	}
 }
