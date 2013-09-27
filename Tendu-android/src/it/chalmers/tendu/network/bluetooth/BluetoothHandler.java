@@ -3,6 +3,7 @@ package it.chalmers.tendu.network.bluetooth;
 import it.chalmers.tendu.TestObject;
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.NetworkState;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -233,18 +234,6 @@ public class BluetoothHandler implements INetworkHandler {
 		context.startActivity(discoverableIntent);
 	}
 
-	@Override
-	public void addListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(listener);
-
-	}
-
-	@Override
-	public void removeListener(PropertyChangeListener listener) {
-		pcs.removePropertyChangeListener(listener);
-
-	}
-
 	public void sendPing() {
 		String testString = "Super communication skills";
 		bgs.write(testString.getBytes());
@@ -289,4 +278,16 @@ public class BluetoothHandler implements INetworkHandler {
     		
     	}
     };
+
+	@Override
+	public GameStateBundle pollGameState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public NetworkState pollNetworkState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -15,6 +15,19 @@ public interface INetworkHandler {
 	 * @param o
 	 */
 	void sendObject(Serializable o);
+	
+	/**
+	 *  Returns the game state
+	 * @return
+	 */
+	GameStateBundle pollGameState();
+	
+	/**
+	 * Returns the network state
+	 * @return
+	 */
+	NetworkState pollNetworkState();
+	
 	/**
 	 * Host game that other players can search
 	 * for. 
@@ -26,32 +39,23 @@ public interface INetworkHandler {
 	 */
 	void joinGame(); 	//Should probably have a game or a player as argument.
 	
-//	/**
-//	 * Search for active teams. 
-//	 */
-//	List<Object> searchTeam();
-	
-	/**
-	 * Register a listener for network events
-	 * @param listener
-	 */
-	void addListener(PropertyChangeListener listener);
-	
-	/** 
-	 * Remove a listener
-	 * @param listener
-	 */
-	void removeListener(PropertyChangeListener listener);
 	
 	/**
 	 * Method to be called when exiting app
 	 */
 	void destroy();
 	
-	/** Test method */
+	///** Test method */
 	//void testSendGameState(GameStateBundle state);
 	
 	/** Test method */
 	void testStuff();
+
 	 
+
+//	/**
+//	 * Search for active teams. 
+//	 */
+//	List<Object> searchTeam();
+
 }
