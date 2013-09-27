@@ -9,6 +9,7 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.defaults.GameIds;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Timer;
 
 public class NumberGame extends MiniGame {
 
@@ -93,4 +94,5 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getDummyList() {
 		return answerAndDummyList;
 	}
+	
 }
