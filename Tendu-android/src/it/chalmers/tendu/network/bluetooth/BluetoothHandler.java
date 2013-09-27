@@ -1,6 +1,7 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.TestObject;
+import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
 
 import java.beans.PropertyChangeListener;
@@ -17,7 +18,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler {
@@ -37,6 +42,9 @@ public class BluetoothHandler implements INetworkHandler {
 	/** All devices that has been discovered */
 	private Set<BluetoothDevice> devicesSet;
 
+	// Test object
+	private GameStateBundle gameState = new GameStateBundle(5, "MeegaTest");
+	
 	/**
 	 * Using the context provided by the class declaring this object, initiates
 	 * all parameters needed to establish both a connection to a running
@@ -54,7 +62,7 @@ public class BluetoothHandler implements INetworkHandler {
 			enableBluetooth();
 		}
 
-		bgs = new BluetoothGameService(context);
+		bgs = new BluetoothGameService(context, mHandler);
 		devicesSet = new HashSet();
 		registerBroadcastReceiver();
 
@@ -248,7 +256,26 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void testStuff() {
-		sendObject(new TestObject());
+		testSendGameState(gameState);
+	}
+	
+	//@Override
+	public void testSendGameState(GameStateBundle state) {
+		sendObject(state);
 	}
 
+	// Message handler
+	private final Handler mHandler = new Handler() {
+    	@Override
+    	public void handleMessage(Message msg) {
+    		if (msg.what == BluetoothGameService.MESSAGE_READ) {
+    			GameStateBundle newGameStateBundle = gameState;
+    			String s;
+    			s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
+    			
+    			Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+    		}
+    		
+    	}
+    };
 }

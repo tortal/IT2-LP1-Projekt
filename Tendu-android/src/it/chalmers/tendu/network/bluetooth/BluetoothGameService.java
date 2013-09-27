@@ -16,7 +16,7 @@
 
 package it.chalmers.tendu.network.bluetooth;
 
-import it.chalmers.tendu.TestObject;
+import it.chalmers.tendu.gamemodel.GameStateBundle;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +73,7 @@ public class BluetoothGameService {
     private ConnectedThread mConnectedThread;
     private int mState;
     private List<BluetoothDevice> devicesList;
+    private final Handler mHandler; // Handler for posting messages back to the ui thread 
     
 
     // Constants that indicate the current connection state
@@ -81,19 +82,20 @@ public class BluetoothGameService {
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    // Test message constant
-    public static final int MESSAGE = 1;
+    // Message flag
+    public static final int MESSAGE_READ = 1;
     
     /**
      * Constructor. Prepares a new BluetoothGame session.
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothGameService(Context context) { 	
+    public BluetoothGameService(Context context, Handler handler) { 	
     	this.context=context;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         devicesList=new ArrayList<BluetoothDevice>(); 
+        mHandler = handler;
     }
 
     /**
@@ -449,7 +451,7 @@ public class BluetoothGameService {
 
         //Kryo
         Kryo kryo;
-        TestObject receivedItem;
+        GameStateBundle receivedItem;
         private final Output out;
         private final Input in;
         
@@ -458,7 +460,11 @@ public class BluetoothGameService {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
+            
+            // Kryo serialization managment
             kryo = new Kryo();
+            kryo.register(GameStateBundle.class);
+            
 
             // Get the BluetoothSocket input and output streams
             try {
@@ -487,10 +493,10 @@ public class BluetoothGameService {
                     // Read from the InputStream
                     //bytes = mmInStream.read(buffer);
                     // TODO Test only
-                    receivedItem = kryo.readObject(in, TestObject.class);
+                    receivedItem = kryo.readObject(in, GameStateBundle.class);
                     // Send the obtained bytes to the UI Activity (has to be changed for libgdxconnection)
                     //mHandler.obtainMessage(MESSAGE, bytes, -1, buffer).sendToTarget();
-                    mHandler.obtainMessage(MESSAGE, receivedItem).sendToTarget();
+                    mHandler.obtainMessage(MESSAGE_READ, receivedItem).sendToTarget();
                 /*} catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
@@ -537,21 +543,5 @@ public class BluetoothGameService {
         }
     }
 
-    private final Handler mHandler = new Handler() {
-    	@Override
-    	public void handleMessage(Message msg) {
-//    		// Test method printing to screen
-//            byte[] readBuf = (byte[]) msg.obj;
-//            // construct a string from the valid bytes in the buffer
-//            String readMessage = new String(readBuf, 0, msg.arg1);
-//            Toast.makeText(context, readMessage, Toast.LENGTH_SHORT).show();
-    		
-    		TestObject equalTest = new TestObject();
-    		String s;
-    		s = equalTest.equals(msg.obj)? "Success":"Failure";
-    		
-    		Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-    		
-    	}
-    };
+    
 }

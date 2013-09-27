@@ -1,5 +1,7 @@
 package it.chalmers.tendu.network;
 
+import it.chalmers.tendu.gamemodel.GameStateBundle;
+
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,12 +43,15 @@ public interface INetworkHandler {
 	 */
 	void removeListener(PropertyChangeListener listener);
 	
-	/** Test method */
-	void testStuff();
-	
 	/**
 	 * Method to be called when exiting app
 	 */
 	void destroy();
+	
+	/** Test method */
+	//void testSendGameState(GameStateBundle state);
+	
+	/** Test method */
+	void testStuff();
 	 
 }
