@@ -83,7 +83,7 @@ public class BluetoothHandler implements INetworkHandler {
 		int i = 0;
 		
 		while((bd = findFirstAvailableDevice())==null){
-			if (D) Log.d(TAG,"Find available device loop: " + i);
+			if (D) Log.d(TAG,"Find available device loop: " + i++);
 		}
 		
 		if (bd != null) {
