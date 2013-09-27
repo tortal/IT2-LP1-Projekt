@@ -7,10 +7,12 @@ public class NumberCircle {
 	private int yPos; //center of circle
 	private int radius; 
 	private int number; 
-	private int numberXpos;
-	private int numberYpos;
+	private int numberXPos;
+	private int numberYPos;
 	int leftX;
 	int rightX;
+	int topY;
+	int bottomY;
 	public NumberCircle(int number, int x, int y, int radius) {
 		this.setNumber(number);
 		this.setX(x);
@@ -18,15 +20,18 @@ public class NumberCircle {
 		this.setRadius(radius);
 		
 		if(number < 10) {
-			numberXpos = x - 9;
+			numberXPos = x - 9;
 		} else {
-			numberXpos = x - 16;
+			numberXPos = x - 16;
 		}
 		
-		numberYpos = y + 15;
+		numberYPos = y + 15;
 		
 		leftX = xPos-radius;
 		rightX = xPos+radius;
+		
+		topY = yPos+radius;
+		bottomY = yPos-radius;
 	}
 	public int getX() {
 		return xPos;
@@ -53,15 +58,15 @@ public class NumberCircle {
 		this.radius = radius;
 	}
 	public int getNumberX() {
-		return numberXpos;
+		return numberXPos;
 	}
 	public void setNumberX(int numberX) {
-		this.numberXpos = numberX;
+		this.numberXPos = numberX;
 	}
 	public int getNumberY() {
-		return numberYpos;
+		return numberYPos;
 	}
 	public void setNumberY(int numberY) {
-		this.numberYpos = numberY;
+		this.numberYPos = numberY;
 	}
 }

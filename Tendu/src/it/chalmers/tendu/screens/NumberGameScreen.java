@@ -124,7 +124,7 @@ public class NumberGameScreen extends GameScreen {
             game.getCamera().unproject(touchPos);
             
             for(NumberCircle circle: numberCircles) {            	
-            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+            	if((touchPos.x > circle.leftX && touchPos.x < circle.rightX) && (touchPos.y > circle.bottomY && touchPos.y < circle.bottomY)) {
                 	Gdx.app.log("Number = ", "" + circle.getNumber());
             	}
             }
@@ -135,7 +135,6 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-//		testTexture.dispose();
 		shapeRenderer.dispose();
 		numberFont.dispose();
 	}
