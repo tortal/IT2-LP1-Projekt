@@ -2,11 +2,7 @@ package it.chalmers.tendu.network;
 
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 
-import java.beans.PropertyChangeListener;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.List;
 
 public interface INetworkHandler {
 	
