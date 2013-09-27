@@ -13,8 +13,8 @@ public class NumberGameTest {
 
 	NumberGame nbrGameEasy;
 	NumberGame nbrGameHard;
-	
-	
+
+
 	@Test
 	public void testNumberGameIntDifficulty() {
 		nbrGameEasy = new NumberGame(0, Difficulty.ONE);
@@ -22,14 +22,14 @@ public class NumberGameTest {
 		//Hard game should have 8 answers, easy should have 4
 		assertTrue(nbrGameEasy.getAnswerList().size() == 4); 
 		assertTrue(nbrGameHard.getAnswerList().size() == 8); 
-		
+
 		List <Integer> answerList = nbrGameEasy.getAnswerList();
 		for(Integer i: answerList){
 			assertTrue(i<= 99 && i>=0);	
 		}
 	}
-	
-	
+
+
 	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==true);
 	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==false);
 
