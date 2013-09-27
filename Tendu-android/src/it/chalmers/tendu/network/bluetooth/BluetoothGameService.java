@@ -47,7 +47,7 @@ import com.esotericsoftware.kryo.io.Output;
  */
 public class BluetoothGameService {
 	
-	Context context;
+	private Context context;
 	
     // Debugging
     private static final String TAG = "BluetoothGameService";
