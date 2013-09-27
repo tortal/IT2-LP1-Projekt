@@ -78,6 +78,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void joinGame() {
+		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
 		BluetoothDevice bd;
 		int i = 0;
