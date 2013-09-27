@@ -23,6 +23,7 @@ public class MiniGameFactory {
 		case FIVE:
 			break;
 		}
+		
 		return miniGame;
 
 	}
