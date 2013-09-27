@@ -30,20 +30,26 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<Integer> correctNumbers;
 	private ArrayList<NumberCircle> numberCircles;
 	
-    private Vector3 touchPos = new Vector3();
+    private Vector3 touchPos;
+    
+    private int time;
 
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		
 		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setColor(Color.MAGENTA);
 		
 		numberFont = new BitmapFont();
 		numberFont.scale(2);
-
-
+	    touchPos = new Vector3();
 		this.model = (NumberGame)model;
+		
+		setUpGame();
+	}
+	
+	private void setUpGame() {
+		time = 0;
 		correctNumbers = this.model.getAnswerList();
 		selectionNumbers = this.model.getDummyList();
 		
@@ -84,20 +90,28 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.Circle);
 		
-		numberFont.scale(2);
-		for(int i = 0; i < correctNumbers.size(); i++) {
-			numberFont.setColor(colors.get(i));
-			numberFont.draw(spriteBatch, "" + correctNumbers.get(i), 100+i*85, 300);
+		if(time < 240) {
+			numberFont.setColor(Color.BLUE);
+			numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
+			
+			numberFont.scale(2);
+			for(int i = 0; i < correctNumbers.size(); i++) {
+				numberFont.setColor(colors.get(i));
+				numberFont.draw(spriteBatch, "" + correctNumbers.get(i), 180+i*130, 300);
+			}
+			numberFont.scale(-2);
+			
+		} else {
+			numberFont.setColor(Color.BLUE);
+			numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 100, 400);
+			
+				numberFont.scale(-0.8f);
+				for(int i = 0; i < numberCircles.size(); i++) {
+					drawNumberCircle(numberCircles.get(i));
+				}
+				numberFont.scale(0.8f);
 		}
-		numberFont.scale(-2);
 		
-		numberFont.scale(-0.8f);
-		for(int i = 0; i < numberCircles.size(); i++) {
-			drawNumberCircle(numberCircles.get(i));
-		}
-		numberFont.scale(0.8f);
-
-
 		shapeRenderer.end();
 		spriteBatch.end();
 		
@@ -106,34 +120,37 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-        if (input.isTouchedUp()) {
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.getCamera().unproject(touchPos);
-            
-            for(NumberCircle circle: numberCircles) {            	
-            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
-                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
-                    	Gdx.input.vibrate(25);
-                	}
-            	}
-            	
-            	circle.scale=1;
-            }
-        }
-        
-        if (Gdx.input.isTouched()) {
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.getCamera().unproject(touchPos);
-            
-            for(NumberCircle circle: numberCircles) {            	
-            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
-                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
-                		circle.scale = 1.5f;
-                    	Gdx.app.log("Number = ", "" + circle.getNumber());
-                	}
-            	}
-            }
-        }
+		if(time < 240) {
+			time++;
+		} else {
+	        if (input.isTouchedUp()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+	            game.getCamera().unproject(touchPos);
+	            
+	            for(NumberCircle circle: numberCircles) {            	
+	            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+	                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
+	                    	Gdx.input.vibrate(25);
+	                	}
+	            	}      	
+	            	circle.scale=1;
+	            }
+	        } 
+	        
+	        if (Gdx.input.isTouched()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+	            game.getCamera().unproject(touchPos);
+	            
+	            for(NumberCircle circle: numberCircles) {            	
+	            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+	                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
+	                		circle.scale = 1.5f;
+	                    	Gdx.app.log("Number = ", "" + circle.getNumber());
+	                	}
+	            	}
+	            }
+	        }
+		}
   
    	}
 
