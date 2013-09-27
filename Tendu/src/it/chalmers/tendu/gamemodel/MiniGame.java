@@ -14,6 +14,7 @@ public abstract class MiniGame {
 		setTimeLeft(addTime);
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
+		this.state = GameState.IN_PROGRESS;
 	}
 
 	public Difficulty getDifficulty() {
@@ -50,6 +51,10 @@ public abstract class MiniGame {
 
 	private void gameLost() {
 		state = GameState.LOST;
+	}
+
+	protected void gameWon() {
+		state = GameState.WON;
 	}
 
 	public GameIds getGameId() {

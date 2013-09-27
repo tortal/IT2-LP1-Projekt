@@ -1,9 +1,12 @@
 package it.chalmers.tendu.controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputController implements InputProcessor {
 
+	private boolean touchedUp = false;
+	
 	public void tick() {
 
 	}
@@ -35,6 +38,18 @@ public class InputController implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
+		Gdx.app.log("TouchUp", " up");
+		touchedUp = true;
+		
+		return false;
+	}
+	
+	public boolean isTouchedUp () {
+		if(touchedUp) {
+			touchedUp = false;
+			return true;
+		}
+		
 		return false;
 	}
 

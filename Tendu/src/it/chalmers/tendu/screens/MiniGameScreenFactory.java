@@ -5,7 +5,7 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 
 public class MiniGameScreenFactory {
 
-	public GameScreen createMiniGameScreen(Tendu game, MiniGame miniModel) {
+	public static GameScreen createMiniGameScreen(Tendu game, MiniGame miniModel) {
 		switch (miniModel.getGameId()) {
 		case NUMBER_GAME:
 			return new NumberGameScreen(game, miniModel);

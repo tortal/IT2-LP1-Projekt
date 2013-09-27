@@ -8,13 +8,14 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
  */
 public class MiniGameFactory {
 
-	public MiniGame createMiniGame(int addTime, Difficulty difficulty) {
+	public static MiniGame createMiniGame(int addTime, Difficulty difficulty) {
 		MiniGame miniGame = null;
 		switch (difficulty) {
 		case ONE:
 			miniGame = new NumberGame(addTime, Difficulty.ONE);
 		case TWO:
-			miniGame = new ShapesGame(addTime, Difficulty.TWO);
+//			miniGame = new ShapesGame(addTime, Difficulty.TWO);
+			miniGame = new NumberGame(addTime, Difficulty.TWO);
 		case THREE:
 			break;
 		case FOUR:
