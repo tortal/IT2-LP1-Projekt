@@ -70,7 +70,7 @@ public class NumberGame extends MiniGame {
 	// TODO divide answerlist between players and populate with dummy numbers.
 
 	private ArrayList<Integer> divideAndConquer(ArrayList<Integer> list) {
-		ArrayList<Integer> newList = new ArrayList();
+		ArrayList<Integer> newList = new ArrayList<Integer>();
 		for (int i = 0; i < list.size(); i++) {
 			newList.add(list.get(i));
 		}

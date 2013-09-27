@@ -51,6 +51,7 @@ public class Tendu implements ApplicationListener {
 		setScreenByNetworkState();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
+		
 		while (accum > 1.0f / 60.0f) {
 			screen.tick(input);
 			input.tick();
@@ -71,23 +72,14 @@ public class Tendu implements ApplicationListener {
 
 	@Override
 	public void resume() {
+	
 	}
-
-	// Tror inte att vi behver denna metod
-	// public void miniGameFinished(GameState state) {
-	// if (state == GameState.WON) {
-	// // vi vann, gr ngot
-	// } else if (state == GameState.LOST) {
-	// // vi frlorade, gr ngot
-	// }
-	// }
-
+		
 	public void setScreen(GameScreen newScreen) {
 		if (screen != null) {
 			screen.removed();
 		}
 		screen = newScreen;
-
 	}
 
 	public OrthographicCamera getCamera() {

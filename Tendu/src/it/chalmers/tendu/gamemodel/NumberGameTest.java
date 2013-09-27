@@ -29,8 +29,11 @@ public class NumberGameTest {
 		}
 	}
 
-
-	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==true);
-	//assertTrue(nbrGame.checkNbr(nbrGame.getAnswerList().get(0))==false);
+	@Test
+	public void testCheckNbrInt(){
+		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(0)));
+		assertTrue(nbrGameEasy.checkNbr(-1));
+		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(1)));
+	}
 
 }
