@@ -70,7 +70,7 @@ public class NumberGame extends MiniGame {
 		}
 		int i = 0;
 		while (i < (8-list.size())) {
-			int randomNbr = 1 + (int) (Math.random() * 100);
+			int randomNbr = 1 + (int) (Math.random() * 99);
 			if (!(list.contains(randomNbr))) {
 				newList.add(randomNbr);
 				i++;
