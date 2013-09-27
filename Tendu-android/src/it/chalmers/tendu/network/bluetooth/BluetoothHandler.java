@@ -79,13 +79,21 @@ public class BluetoothHandler implements INetworkHandler {
 	@Override
 	public void joinGame() {
 		this.mBluetoothAdapter.startDiscovery();
-		BluetoothDevice bd = findFirstAvailableDevice();
-		if (bd != null) {
-			Log.d(TAG, "Will now try and connect to: " + bd.getName());
-			bgs.connect(bd, true);
-		} else {
-			Log.d(TAG, "No device to connect to");
-		}
+		// 
+		mHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				BluetoothDevice bd = findFirstAvailableDevice();
+				if (bd != null) {
+					Log.d(TAG, "Will now try and connect to: " + bd.getName());
+					bgs.connect(bd, true);
+				} else {
+					Log.d(TAG, "No device to connect to");
+				}	
+			}
+			
+		}, 5000);
 	}
 
 	/**
