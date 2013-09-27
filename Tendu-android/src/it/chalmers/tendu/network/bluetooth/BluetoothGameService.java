@@ -17,6 +17,7 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.gamemodel.GameStateBundle;
+import it.chalmers.tendu.network.NetworkState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,12 +74,13 @@ public class BluetoothGameService {
     private List<BluetoothDevice> devicesList;
     private final Handler mHandler; // Handler for posting messages back to the ui thread 
     
-
+/* Moved to NetworkState
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+*/
 
     // Message flag
     public static final int MESSAGE_READ = 1;
@@ -91,7 +93,7 @@ public class BluetoothGameService {
     public BluetoothGameService(Context context, Handler handler) { 	
     	this.context=context;
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-        mState = STATE_NONE;
+        mState = NetworkState.STATE_NONE;
         devicesList=new ArrayList<BluetoothDevice>(); 
         mHandler = handler;
     }
@@ -123,7 +125,7 @@ public class BluetoothGameService {
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 
-        setState(STATE_LISTEN);
+        setState(NetworkState.STATE_LISTEN);
 
         // Start the thread to listen on a BluetoothServerSocket
         if (mSecureAcceptThread == null) {
@@ -145,7 +147,7 @@ public class BluetoothGameService {
         if (D) Log.d(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
-        if (mState == STATE_CONNECTING) {
+        if (mState == NetworkState.STATE_CONNECTING) {
             if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
         }
 
@@ -155,7 +157,7 @@ public class BluetoothGameService {
         // Start the thread to connect with the given device
         mConnectThread = new ConnectThread(device, secure);
         mConnectThread.start();
-        setState(STATE_CONNECTING);
+        setState(NetworkState.STATE_CONNECTING);
     }
 
     /**
@@ -188,7 +190,7 @@ public class BluetoothGameService {
         mConnectedThread.start();
 
 
-        setState(STATE_CONNECTED);
+        setState(NetworkState.STATE_CONNECTED);
     }
 
     /**
@@ -216,7 +218,7 @@ public class BluetoothGameService {
             mInsecureAcceptThread.cancel();
             mInsecureAcceptThread = null;
         }
-        setState(STATE_NONE);
+        setState(NetworkState.STATE_NONE);
     }
 
     /**
@@ -229,7 +231,7 @@ public class BluetoothGameService {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (mState != NetworkState.STATE_CONNECTED) return;
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -245,7 +247,7 @@ public class BluetoothGameService {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (mState != NetworkState.STATE_CONNECTED) return;
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -318,7 +320,7 @@ public class BluetoothGameService {
             BluetoothSocket socket = null;
 
             // Listen to the server socket if we're not connected
-            while (mState != STATE_CONNECTED) {
+            while (mState != NetworkState.STATE_CONNECTED) {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -332,14 +334,14 @@ public class BluetoothGameService {
                 if (socket != null) {
                     synchronized (BluetoothGameService.this) {
                         switch (mState) {
-                        case STATE_LISTEN:
-                        case STATE_CONNECTING:
+                        case NetworkState.STATE_LISTEN:
+                        case NetworkState.STATE_CONNECTING:
                             // Situation normal. Start the connected thread.
                             connected(socket, socket.getRemoteDevice(),
                                     mSocketType);
                             break;
-                        case STATE_NONE:
-                        case STATE_CONNECTED:
+                        case NetworkState.STATE_NONE:
+                        case NetworkState.STATE_CONNECTED:
                             // Either not ready or already connected. Terminate new socket.
                             try {
                                 socket.close();
