@@ -32,7 +32,7 @@ public class ShapesGame extends MiniGame {
 	}
 
 	public enum GeometricShape {
-		CIRCLE, SQUARE, RHOMBOID, TRIANGLE;
+		CIRCLE, SQUARE, RHOMBOID, TRIANGLE, OCTAGON;
 	}
 
 	/**
@@ -41,10 +41,10 @@ public class ShapesGame extends MiniGame {
 	 */
 	public static class Shape {
 
-		final Color color;
-		final GeometricShape geometricShape;
+		public final Color color;
+		public final GeometricShape geometricShape;
 
-		public Shape(Color color, GeometricShape geometricShape) {
+		private Shape(Color color, GeometricShape geometricShape) {
 			this.color = color;
 			this.geometricShape = geometricShape;
 		}
@@ -72,27 +72,31 @@ public class ShapesGame extends MiniGame {
 		}
 	}
 
-	public static class Slots {
+	/**
+	 * The puzzle to be solved. Every player has a lock which represents n
+	 * numbers of slots to be fitted with the given shapes. Every player should
+	 * have one of these.
+	 * 
+	 */
+	public static class Lock {
 
 		private final List<Shape> shapes;
 		private final Map<Shape, Boolean> slotLock;
 
 		/**
-		 * Create a Slot object. Every player has one and it should be populated
-		 * with different copies of the shapes available in-game
+		 * New lock.
 		 */
-		public Slots() {
+		public Lock() {
 			this.shapes = new ArrayList<Shape>(SLOTS_COUNT);
 			this.slotLock = new HashMap<Shape, Boolean>();
 		}
 
 		/**
-		 * As no-args constructor however lets you populate the object with a
-		 * ready List of Shape-objects.
+		 * Directly populates this lock with the given sequence
 		 * 
 		 * @param listOfShapes
 		 */
-		public Slots(List<Shape> listOfShapes) {
+		public Lock(List<Shape> listOfShapes) {
 			this.shapes = listOfShapes;
 			slotLock = new HashMap<Shape, Boolean>();
 			for (Shape s : listOfShapes) {
@@ -102,25 +106,34 @@ public class ShapesGame extends MiniGame {
 
 		/**
 		 * @param shape
-		 *            to add to the list of required shapes for a player to
-		 *            break the puzzle.
+		 *            to add to the lock sequence.
 		 */
 		public void addSlot(Shape shape) {
 			shapes.add(shape);
 			slotLock.put(shape, false);
 		}
 
-		public Map<Shape, Boolean> getSlotsState() {
-			Map<Shape, Boolean> slotState = new HashMap<ShapesGame.Shape, Boolean>(
+		/**
+		 * @return all of the lock sequence and their states
+		 */
+		public Map<Shape, Boolean> getLockState() {
+			Map<Shape, Boolean> slotState = new HashMap<Shape, Boolean>(
 					this.slotLock);
 			return slotState;
 		}
 
-		public List<Shape> getSlotCombination() {
+		/**
+		 * @return the lock sequence needed to crack this puzzle.
+		 */
+		public List<Shape> getLockSequence() {
 			List<Shape> slotCombo = new ArrayList<Shape>(shapes);
 			return slotCombo;
 		}
 
+		/**
+		 * @return true if player has matched all slots in the lock sequence.
+		 *         Hint: use this to check if player is GAME OVER.
+		 */
 		public boolean isAllSlotsFilled() {
 			for (Boolean slot : slotLock.values()) {
 				if (slot != true)
@@ -129,11 +142,21 @@ public class ShapesGame extends MiniGame {
 			return true;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Object#toString()
+		/**
+		 * @param shape
+		 *            to fill the lock with
+		 * @return true if the slot was empty and the shape fits.
 		 */
+		private boolean fillSlot(Shape shape) {
+			if (!this.shapes.contains(shape))
+				return false;
+			boolean curState = slotLock.get(shape);
+			if (curState == true)
+				return false; // TODO: Debugging
+			slotLock.put(shape, true);
+			return true;
+		}
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -147,9 +170,21 @@ public class ShapesGame extends MiniGame {
 
 	}
 
+	/**
+	 * All shapes for all players mapped by player number (Integer).
+	 */
 	private Map<Integer, List<Shape>> allInventory;
-	private Map<Integer, Slots> allSlots;
+	/**
+	 * Every players lock, mapped by player number (Integer)
+	 */
+	private Map<Integer, Lock> allLocks;
 
+	/**
+	 * This will create a ShapesGame. It creates a list of all possible
+	 * combinations of the enums {@link GeometricShape} and link {@link Color}
+	 * and then reduces this randomly to a subset that suffice for the game
+	 * settings (player count and lock seqeuence length)
+	 */
 	public ShapesGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameIds.SHAPES_GAME);
 
@@ -158,11 +193,10 @@ public class ShapesGame extends MiniGame {
 		Collections.shuffle(allShapes);
 
 		allInventory = new HashMap<Integer, List<Shape>>(PLAYER_COUNT);
-		allSlots = new HashMap<Integer, Slots>(PLAYER_COUNT);
+		allLocks = new HashMap<Integer, Lock>(PLAYER_COUNT);
 
 		// Every player only has an explicit number of slots to fill, so let's
-		// grab
-		// the need amount of shapes from our allShapes list
+		// grab the need amount of shapes from our allShapes list
 		List<Shape> gameShapes = new ArrayList<Shape>(SLOTS_COUNT
 				* PLAYER_COUNT);
 
@@ -180,23 +214,98 @@ public class ShapesGame extends MiniGame {
 		// Create inventory and slots lists for all players.
 		for (int p = 0; p < PLAYER_COUNT; p++) {
 			List<Shape> playerInventory = new ArrayList<Shape>();
-			Slots playerSlot = new Slots();
+			Lock playerLock = new Lock();
 
 			allInventory.put(p, playerInventory);
-			allSlots.put(p, playerSlot);
+			allLocks.put(p, playerLock);
 
 			for (int i = 0; i < SLOTS_COUNT; i++) {
 				playerInventory.add(gameShapes.remove(0));
-				playerSlot.addSlot(copyOfShapes.remove(0));
+				playerLock.addSlot(copyOfShapes.remove(0));
 			}
 
 		}
 
-		debug_printMembers();
-
 	}
 
-	private void debug_printMembers() {
+	/**
+	 * Will move a referenced shape to the inventory of another player.
+	 * 
+	 * @param shape
+	 *            to move
+	 * @param player
+	 *            to move the shape to
+	 * @return <code>-1</code> if that player already owned that shape.
+	 *         <code>0</code> on successful move.
+	 */
+	public int move(Shape shape, int player) {
+		int owner = getOwnerOf(shape);
+		if (owner == player)
+			return -1;
+		else {
+			List<Shape> oldLocation = allInventory.get(owner);
+			List<Shape> newLocation = allInventory.get(player);
+			if (!oldLocation.remove(shape)) // TODO: for debugging.
+				return -2;
+
+			newLocation.add(shape);
+			return 0;
+		}
+	}
+
+	/**
+	 * @param player
+	 *            that is inserting the shape
+	 * @param shape
+	 *            to be inserted into the players lock.
+	 * @return <code>true</code> if shape and slot fitted.
+	 */
+	public boolean insertShapeIntoSlot(int player, Shape shape) {
+		Lock lock = this.allLocks.get(player);
+		if (lock.fillSlot(shape))
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * @param shape
+	 *            to search for
+	 * @return the player that owns the searched shape. <code>-1</code> if the
+	 *         shape was not found.
+	 */
+	public int getOwnerOf(Shape shape) {
+		int owner = -1;
+		for (Map.Entry<Integer, List<Shape>> e : allInventory.entrySet()) {
+			for (Shape s : e.getValue()) {
+				if (shape.equals(s)) {
+					owner = e.getKey();
+					return owner;
+				}
+			}
+		}
+		return owner;
+	}
+
+	/**
+	 * @param lock
+	 *            to search owner of
+	 * @return the owner of the lock.
+	 */
+	public int getOwnerOf(Lock lock) {
+		int owner = -1;
+		for (Map.Entry<Integer, Lock> e : allLocks.entrySet()) {
+			if (lock.equals(e.getValue())) {
+				owner = e.getKey();
+			}
+		}
+		return owner;
+	}
+
+	/**
+	 * DEBUG METHOD
+	 */
+	void debug_printMembers() {
 		System.out.println("\t ALL INVENTORY \t");
 		for (Map.Entry<Integer, List<Shape>> e : allInventory.entrySet()) {
 			System.out.println("Player" + e.getKey());
@@ -205,21 +314,38 @@ public class ShapesGame extends MiniGame {
 			}
 		}
 		System.out.println("SLOTS TO FILL");
-		for (Map.Entry<Integer, Slots> e: allSlots.entrySet()) {
+		for (Map.Entry<Integer, Lock> e : allLocks.entrySet()) {
 			System.out.println("Player" + e.getKey());
-			
-			
-			for (Shape s : e.getValue().getSlotCombination()){
+
+			for (Shape s : e.getValue().getLockSequence()) {
 				System.out.println("\t" + s);
 			}
-	
+
+			for (Boolean b : e.getValue().getLockState().values()) {
+				System.out.println("\t " + b);
+			}
+
 		}
 
 	}
 
+	/**
+	 * TODO: DEBUG MAIN and testing.
+	 */
 	public static void main(String[] a) {
+		Lock s = new Lock();
+		List<Shape> allShapes = Shape.getAllShapes();
+		Collections.shuffle(allShapes);
+		s.addSlot(allShapes.remove(0));
+		s.addSlot(allShapes.remove(0));
+
+		System.out.println(s.slotLock);
+		System.out.println(s.shapes);
+
+		System.out.println("\n\n\n\n\n");
 		System.out.println("Creating Shapes Game...");
-		new ShapesGame(0, Difficulty.ONE);
+		ShapesGame g = new ShapesGame(0, Difficulty.ONE);
+		g.debug_printMembers();
 	}
 
 }
