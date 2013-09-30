@@ -37,10 +37,7 @@ public class InputController implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		Gdx.app.log("TouchUp", " up");
-		touchedUp = true;
-		
+		touchedUp = true;		
 		return false;
 	}
 	
