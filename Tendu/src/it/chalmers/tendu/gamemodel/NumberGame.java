@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
@@ -13,11 +14,10 @@ import com.badlogic.gdx.utils.Timer;
 
 public class NumberGame extends MiniGame {
 
+	private static int playerCount = 4;
 	private ArrayList<Integer> answerList;
-	private ArrayList<Integer> answerAndDummyList;
+	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
-
-	// private HashMap<Player, List<Integer>>
 
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameIds.NUMBER_GAME);
@@ -35,7 +35,7 @@ public class NumberGame extends MiniGame {
 			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
-		answerAndDummyList = divideAndConquer(answerList);
+		playerLists = divideAndConquer(answerList);
 	}
 
 	public boolean checkNbr(int num) {
@@ -67,32 +67,54 @@ public class NumberGame extends MiniGame {
 		return answerList;
 	}
 
-	// TODO divide answerlist between players and populate with dummy numbers.
+	/**
+	 * Give each player a part of the answer.
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private Map<Integer, ArrayList<Integer>> divideAndConquer(
+			ArrayList<Integer> list) {
+		Map<Integer, ArrayList<Integer>> newMap = new HashMap<Integer, ArrayList<Integer>>();
 
-	private ArrayList<Integer> divideAndConquer(ArrayList<Integer> list) {
-		ArrayList<Integer> newList = new ArrayList<Integer>();
-		for (int i = 0; i < list.size(); i++) {
-			newList.add(list.get(i));
+		if (list.size() == 4) {
+			for (int i = 0; i < playerCount; i++) {
+				ArrayList<Integer> newList = (ArrayList<Integer>) list.subList(
+						i, i);
+				popAndShuffleList(newList);
+				newMap.put(i, newList);
+			}
 		}
+		if (list.size() == 8) {
+			for (int i = 0; i < playerCount; i++) {
+				ArrayList<Integer> newList = (ArrayList<Integer>) list.subList(
+						i, list.size() - i);
+				popAndShuffleList(newList);
+				newMap.put(i, newList);
+			}
+		}
+		return newMap;
+
+	}
+
+	private void popAndShuffleList(ArrayList<Integer> list) {
 		int i = 0;
 		while (i < (8 - list.size())) {
 			int randomNbr = 1 + (int) (Math.random() * 99);
 			if (!(list.contains(randomNbr))) {
-				newList.add(randomNbr);
+				list.add(randomNbr);
 				i++;
 			}
 		}
-		// TODO populate list with original number and dummy numbers.
-		Collections.shuffle(newList);
-		return newList;
+		Collections.shuffle(list);
 	}
 
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
 
-	public ArrayList<Integer> getDummyList() {
-		return answerAndDummyList;
-	}
-	
+	// public ArrayList<Integer> getDummyList() {
+	// return answerAndDummyList;
+	// }
+
 }
