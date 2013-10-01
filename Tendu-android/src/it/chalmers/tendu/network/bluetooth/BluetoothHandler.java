@@ -15,22 +15,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-
-
 import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
