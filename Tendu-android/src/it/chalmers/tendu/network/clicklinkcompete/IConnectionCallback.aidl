@@ -23,8 +23,8 @@ package it.chalmers.tendu.network.clicklinkcompete;
 
 // Declare the interface.
 oneway interface IConnectionCallback {
-  void incomingConnection(String device);
+  void incomingConnection(inout BluetoothDevice device);
   void maxConnectionsReached();
-  void messageReceived(String device, String message);
-  void connectionLost(String device);
+  void messageReceived(inout BluetoothDevice device, String message);
+  void connectionLost(inout BluetoothDevice device);
 }
