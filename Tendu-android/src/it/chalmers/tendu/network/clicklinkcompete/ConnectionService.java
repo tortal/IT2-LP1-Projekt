@@ -198,10 +198,16 @@ public class ConnectionService extends Service {
             }
             mApp = srcApp;
             (new Thread(new ConnectionWaiter(srcApp, maxConnections))).start();
-            Intent i = new Intent();
-            i.setClass(mSelf, StartDiscoverableModeActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            
+            //            Intent i = new Intent();
+//            i.setClass(mSelf, StartDiscoverableModeActivity.class);
+//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(i);
+            
+        	Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+    		discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    		startActivity(discoverableIntent);
             return Connection.SUCCESS;
         }
 
