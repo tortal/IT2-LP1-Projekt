@@ -289,7 +289,7 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(APP_NAME + " " + "S");
+		return device.getName().contains(APP_NAME + "S");
 	}
 
 	private void registerBroadcastReceiver() {
