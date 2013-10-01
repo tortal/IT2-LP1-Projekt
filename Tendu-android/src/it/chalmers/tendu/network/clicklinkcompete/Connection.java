@@ -166,7 +166,7 @@ public class Connection {
             mIconnection.registerCallback(mPackageName, mIccb);
             return result;
         } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in startServer", e);
+            Log.e(TAG, "RemoteException in startServer", e); 
         }
         return Connection.FAILURE;
     }
