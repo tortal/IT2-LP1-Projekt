@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network.bluetooth;
 
-import it.chalmers.tendu.gamemodel.GameStateBundle;
+import it.chalmers.tendu.network.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
 
 import java.io.Serializable;
