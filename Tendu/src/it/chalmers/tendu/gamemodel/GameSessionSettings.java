@@ -1,6 +1,6 @@
 package it.chalmers.tendu.gamemodel;
 
-public class GameRoundSettings {
+public class GameSessionSettings {
 	
 	
 

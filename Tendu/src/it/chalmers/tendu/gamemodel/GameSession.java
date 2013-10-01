@@ -6,11 +6,11 @@ import java.util.List;
 
 public class GameSession {
 
-	private final GameRoundSettings gameSessionSettings;
+	private final GameSessionSettings gameSessionSettings;
 	private MiniGame currentMinigame;
 	private List<Player> players;
 
-	public GameSession(GameRoundSettings gameRoundSettings) {
+	public GameSession(GameSessionSettings gameRoundSettings) {
 		this.gameSessionSettings = gameRoundSettings;
 	}
 }
