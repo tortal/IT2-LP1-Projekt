@@ -189,7 +189,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 			@Override
 			public void run() {
-				BluetoothDevice bd = findFirstAvailableDevice();
+				BluetoothDevice bd = findAvailableServerDevice();
 				if (bd != null) {
 					Log.d(TAG, "Will now try and connect to: " + bd.getName());
 					connection.connect(bd.getAddress(), dataReceivedListener, disconnectedListener);
@@ -280,6 +280,14 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		return device.getName().contains(APP_NAME);
 	}
+	
+	private boolean isDeviceValidServer(BluetoothDevice device) {
+		if (device == null)
+			return false;
+		if (device.getName() == null)
+			return false;
+		return device.getName().contains(APP_NAME + " " + "S");
+	}
 
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
@@ -309,7 +317,7 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 
 	// Temporary test method
-	private BluetoothDevice findFirstAvailableDevice() {
+	private BluetoothDevice findAvailableServerDevice() {
 		//		// First look among the paired devices
 		//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
 		//		for (BluetoothDevice device: devices) {
@@ -323,11 +331,11 @@ public class BluetoothHandler implements INetworkHandler {
 		Iterator<BluetoothDevice> iter = devicesSet.iterator();
 		while (iter.hasNext()) {
 			BluetoothDevice device = iter.next(); 
-			if (isDeviceValid(device)) {
+			if (isDeviceValidServer(device)) {
 				return device;
 			}
 		}
-		Log.d(TAG, "No eligible devices found");
+		Log.d(TAG, "No eligible Servers found");
 		return null;
 	}
 	
