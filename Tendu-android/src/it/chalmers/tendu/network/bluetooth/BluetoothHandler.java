@@ -3,18 +3,19 @@ package it.chalmers.tendu.network.bluetooth;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.clicklinkcompete.Connection;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.clc.bt.Connection;
-import net.clc.bt.Connection.OnConnectionLostListener;
-import net.clc.bt.Connection.OnConnectionServiceReadyListener;
-import net.clc.bt.Connection.OnIncomingConnectionListener;
-import net.clc.bt.Connection.OnMaxConnectionsReachedListener;
-import net.clc.bt.Connection.OnMessageReceivedListener;
+
 
 import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
@@ -85,7 +86,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
-	        public void OnMessageReceived(String device, String message) {
+	        public void OnMessageReceived(BluetoothDevice device, String message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
 	        	
 	        	
@@ -108,10 +109,10 @@ public class BluetoothHandler implements INetworkHandler {
 	    };
 
 	    private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
-
-	        public void OnIncomingConnection(String device) {
-	        	Log.d(TAG,"Incoming connection: " + device);
-
+	        public void OnIncomingConnection(BluetoothDevice device) {
+	        	Log.d(TAG,"Incoming connection: " + device.getName());
+	        	
+	        	
 //	            rivalDevice = device;
 //	            WindowManager w = getWindowManager();
 //	            Display d = w.getDefaultDisplay();
@@ -123,7 +124,7 @@ public class BluetoothHandler implements INetworkHandler {
 	    };
 
 	    private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
-	        public void OnConnectionLost(String device) {
+	        public void OnConnectionLost(BluetoothDevice device) {
 	        	Log.d(TAG,"Connection lost: " + device);
 //	            class displayConnectionLostAlert implements Runnable {
 //	                public void run() {
@@ -196,7 +197,7 @@ public class BluetoothHandler implements INetworkHandler {
 				BluetoothDevice bd = findAvailableServerDevice();
 				if (bd != null) {
 					Log.d(TAG, "Will now try and connect to: " + bd.getName());
-					connection.connect(bd.getAddress(), dataReceivedListener, disconnectedListener);
+					connection.connect(bd, dataReceivedListener, disconnectedListener);
 					//bgs.connect(bd, true);
 				} else {
 					Log.d(TAG, "No device to connect to");
