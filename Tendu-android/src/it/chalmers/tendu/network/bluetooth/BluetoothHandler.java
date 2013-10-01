@@ -245,23 +245,25 @@ public class BluetoothHandler implements INetworkHandler {
 	 * If the device has no name, it is set to "Tendu"
 	 * @param server if this device is a server device or not
 	 */
-	private void addTenduToDeviceName(boolean server) {
+	private void addTenduToDeviceName(boolean isServer) {
 		if (mBluetoothAdapter.getName() == null)
 			mBluetoothAdapter.setName(APP_NAME + "");
 		else {
 			String name = mBluetoothAdapter.getName();
 			if (!name.contains(APP_NAME)) {
-				if(mBluetoothAdapter.setName(name + " - " + APP_NAME + " ")) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+				if(mBluetoothAdapter.setName(name + " - " + APP_NAME)) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
 				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 			}
 		}
-		if(server) mBluetoothAdapter.setName(mBluetoothAdapter.getName() + "S");
+		if(isServer && !mBluetoothAdapter.getName().contains(APP_NAME + "S")){
+			mBluetoothAdapter.setName(mBluetoothAdapter.getName() + "S");
+		}
 	}
 
 	private void removeTenduFromDeviceName() {
 		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
 			String name = mBluetoothAdapter.getName();
-			String newName = name.replace(" - " + APP_NAME + " ", "");
+			String newName = name.replace(" - " + APP_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
 	}
