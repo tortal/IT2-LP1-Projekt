@@ -79,7 +79,7 @@ public class BluetoothHandler implements INetworkHandler {
 		//bgs = new BluetoothGameService(context, mHandler);
 		devicesSet = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
-
+		
 		addTenduToDeviceName(false);
 	}
 
