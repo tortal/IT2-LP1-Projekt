@@ -1,5 +1,6 @@
 package it.chalmers.tendu.network.bluetooth;
 
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
@@ -41,7 +42,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final String APP_NAME = "Tendu";
+	//private static final String APP_NAME = "Tendu";
 	private static final int MAX_NUMBER_OF_PLAYERS = 3;
 	
 	//BluetoothGameService bgs;
@@ -248,23 +249,23 @@ public class BluetoothHandler implements INetworkHandler {
 	 */
 	private void addTenduToDeviceName(boolean isServer) {
 		if (mBluetoothAdapter.getName() == null)
-			mBluetoothAdapter.setName(APP_NAME + "");
+			mBluetoothAdapter.setName(Constants.APP_NAME + "");
 		else {
 			String name = mBluetoothAdapter.getName();
-			if (!name.contains(APP_NAME)) {
-				if(mBluetoothAdapter.setName(name + " - " + APP_NAME)) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+			if (!name.contains(Constants.APP_NAME)) {
+				if(mBluetoothAdapter.setName(name + " - " + Constants.APP_NAME)) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
 				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 			}
 		}
-		if(isServer && !mBluetoothAdapter.getName().contains(APP_NAME + "S")){
+		if(isServer && !mBluetoothAdapter.getName().contains(Constants.APP_NAME + "S")){
 			mBluetoothAdapter.setName(mBluetoothAdapter.getName() + "S");
 		}
 	}
 
 	private void removeTenduFromDeviceName() {
-		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
+		if (mBluetoothAdapter.getName().contains(Constants.APP_NAME)) {
 			String name = mBluetoothAdapter.getName();
-			String newName = name.replace(" - " + APP_NAME, "");
+			String newName = name.replace(" - " + Constants.APP_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
 	}
@@ -282,7 +283,7 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(APP_NAME);
+		return device.getName().contains(Constants.APP_NAME);
 	}
 	
 	private boolean isDeviceValidServer(BluetoothDevice device) {
@@ -290,7 +291,7 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(APP_NAME + "S");
+		return device.getName().contains(Constants.APP_NAME + "S");
 	}
 
 	private void registerBroadcastReceiver() {

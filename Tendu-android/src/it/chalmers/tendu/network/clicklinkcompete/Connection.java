@@ -16,6 +16,7 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
+import it.chalmers.tendu.defaults.Constants;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -74,7 +75,7 @@ public class Connection {
 
     private Context mContext;
 
-    private String mPackageName = "";
+    private String mPackageName = Constants.APP_NAME;
 
     private boolean mStarted = false;
 

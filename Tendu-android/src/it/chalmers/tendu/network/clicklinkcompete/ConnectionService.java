@@ -116,7 +116,9 @@ public class ConnectionService extends Service {
                         // the
                         // stop
                         // marker
+                        
                         mCallback.messageReceived(device, message);
+                        //mCallback.messageReceived(device, "Test");
                     }
                 }
             } catch (IOException e) {
