@@ -42,7 +42,7 @@ public class BluetoothHandler implements INetworkHandler {
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
 	private static final String APP_NAME = "Tendu";
-	private static final int MAX_NUMBER_OF_PLAYERS = 2;
+	private static final int MAX_NUMBER_OF_PLAYERS = 3;
 	
 	//BluetoothGameService bgs;
 
@@ -87,6 +87,7 @@ public class BluetoothHandler implements INetworkHandler {
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
 	        public void OnMessageReceived(BluetoothDevice device, String message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
+	        	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 //	            if (message.indexOf("SCORE") == 0) {
 //	                String[] scoreMessageSplit = message.split(":");
 //	                hostScore = Integer.parseInt(scoreMessageSplit[1]);
@@ -106,7 +107,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	    private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
 	        public void OnIncomingConnection(BluetoothDevice device) {
-	        	Log.d(TAG,"Incoming connection: " + device);
+	        	Log.d(TAG,"Incoming connection: " + device.getName());
 	        	
 	        	
 //	            rivalDevice = device;
@@ -342,7 +343,7 @@ public class BluetoothHandler implements INetworkHandler {
 		return null;
 	}
 	
-	private BluetoothDevice findFirstAvailableDevices() {
+	private BluetoothDevice findFirstAvailableDevice() {
 		//		// First look among the paired devices
 		//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
 		//		for (BluetoothDevice device: devices) {
@@ -394,7 +395,8 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void testStuff() {
-		testSendGameState(gameStateTest);
+		connection.broadcastMessage("Ping maddabing skibbelliwopwopshabaouWHOO!");
+		//testSendGameState(gameStateTest);
 	}
 
 	//@Override
