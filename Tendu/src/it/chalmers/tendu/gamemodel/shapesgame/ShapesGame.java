@@ -1,7 +1,8 @@
-package it.chalmers.tendu.gamemodel;
+package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.defaults.GameIds;
+import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,152 +27,6 @@ public class ShapesGame extends MiniGame {
 
 	private final static int PLAYER_COUNT = 4;
 	private final static int SLOTS_COUNT = 4;
-
-	public enum Color {
-		BLUE, GREEN, RED, YELLOW;
-	}
-
-	public enum GeometricShape {
-		CIRCLE, SQUARE, RHOMBOID, TRIANGLE, OCTAGON;
-	}
-
-	/**
-	 * An object of this Class represents a particular Geometric shape and a
-	 * Color.
-	 */
-	public static class Shape {
-
-		public final Color color;
-		public final GeometricShape geometricShape;
-
-		private Shape(Color color, GeometricShape geometricShape) {
-			this.color = color;
-			this.geometricShape = geometricShape;
-		}
-
-		/**
-		 * @return a list containing all combinations possible with the
-		 *         enumerators Color and GeometricShape.
-		 */
-		public static List<Shape> getAllShapes() {
-			List<Shape> allShapes = new ArrayList<Shape>();
-
-			for (GeometricShape g : GeometricShape.values()) {
-				for (Color c : Color.values()) {
-					Shape s = new Shape(c, g);
-					allShapes.add(s); // Add this unique combination to list
-				}
-			}
-			return allShapes;
-		}
-
-		@Override
-		public String toString() {
-			return "Shape [color=" + color + ", geometricShape="
-					+ geometricShape + "]";
-		}
-	}
-
-	/**
-	 * The puzzle to be solved. Every player has a lock which represents n
-	 * numbers of slots to be fitted with the given shapes. Every player should
-	 * have one of these.
-	 * 
-	 */
-	public static class Lock {
-
-		private final List<Shape> shapes;
-		private final Map<Shape, Boolean> slotLock;
-
-		/**
-		 * New lock.
-		 */
-		public Lock() {
-			this.shapes = new ArrayList<Shape>();
-			this.slotLock = new HashMap<Shape, Boolean>();
-		}
-
-		/**
-		 * Directly populates this lock with the given sequence
-		 * 
-		 * @param listOfShapes
-		 */
-		public Lock(List<Shape> listOfShapes) {
-			this.shapes = listOfShapes;
-			slotLock = new HashMap<Shape, Boolean>();
-			for (Shape s : listOfShapes) {
-				slotLock.put(s, false);
-			}
-		}
-
-		/**
-		 * @param shape
-		 *            to add to the lock sequence.
-		 */
-		public void addSlot(Shape shape) {
-			shapes.add(shape);
-			slotLock.put(shape, false);
-		}
-
-		/**
-		 * @return all of the lock sequence and their states
-		 */
-		public Map<Shape, Boolean> getLockState() {
-			Map<Shape, Boolean> slotState = new HashMap<Shape, Boolean>(
-					this.slotLock);
-			return slotState;
-		}
-
-		/**
-		 * @return the lock sequence needed to crack this puzzle.
-		 */
-		public List<Shape> getLockSequence() {
-			List<Shape> slotCombo = new ArrayList<Shape>(shapes);
-			return slotCombo;
-		}
-
-		/**
-		 * @return true if player has matched all slots in the lock sequence.
-		 *         Hint: use this to check if player is GAME OVER.
-		 */
-		public boolean isAllSlotsFilled() {
-			for (Boolean slot : slotLock.values()) {
-				if (slot != true)
-					return false;
-			}
-			return true;
-		}
-
-		/**
-		 * @param shape
-		 *            to fill the lock with
-		 * @return true if the slot was empty and the shape fits.
-		 */
-		private boolean fillSlot(Shape shape) {
-			if (!this.shapes.contains(shape))
-				return false;
-			boolean curState = slotLock.get(shape);
-			if (curState == true)
-				return false; // TODO: Debugging
-			slotLock.put(shape, true);
-			return true;
-		}
-
-		@Override
-		public String toString() {
-			StringBuffer s = new StringBuffer();
-			s.append("Lock: [");
-//			for (Shape shape : shapes){
-//				s.append("\n\t");
-//				s.append(s);
-//				s.append(". isFilled?: ");
-//				s.append(slotLock.get(shape));
-//			}
-			
-			return s.toString();
-		}
-
-	}
 
 	/**
 	 * All shapes for all players mapped by player number (Integer).
@@ -260,7 +115,7 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            to be inserted into the players lock.
+	 *            to be inserted into the players §.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape) {

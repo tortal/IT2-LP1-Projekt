@@ -1,4 +1,4 @@
-package it.chalmers.tendu.gamemodel.test;
+package it.chalmers.tendu.gamemodel.shapesgame.test;
 
 import static org.junit.Assert.*;
 
