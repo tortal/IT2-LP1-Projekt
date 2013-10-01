@@ -301,7 +301,7 @@ public class ConnectionService extends Service {
                     return Connection.SUCCESS;
                 }
             } catch (IOException e) {
-                Log.i(TAG, "IOException in sendMessage - Dest:" + destination + ", Msg:" + message,
+                Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message,
                         e);
             }
             return Connection.FAILURE;
