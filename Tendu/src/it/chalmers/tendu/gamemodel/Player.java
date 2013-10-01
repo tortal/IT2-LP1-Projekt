@@ -1,4 +1,4 @@
-package it.chalmers.tendu.settings;
+package it.chalmers.tendu.gamemodel;
 
 public class Player {
 	private final int uid;

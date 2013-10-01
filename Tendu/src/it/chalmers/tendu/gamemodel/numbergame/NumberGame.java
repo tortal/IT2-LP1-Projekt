@@ -7,7 +7,7 @@ import java.util.Map;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.defaults.GameIds;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.Gdx;
@@ -21,7 +21,7 @@ public class NumberGame extends MiniGame {
 	private int nbrCorrectAnswer;
 
 	public NumberGame(int addTime, Difficulty difficulty) {
-		super(addTime, difficulty, GameIds.NUMBER_GAME);
+		super(addTime, difficulty, GameId.NUMBER_GAME);
 		nbrCorrectAnswer = 0;
 		switch (difficulty) {
 		case ONE:
