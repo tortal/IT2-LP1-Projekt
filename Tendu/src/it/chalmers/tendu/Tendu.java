@@ -32,8 +32,8 @@ public class Tendu implements ApplicationListener {
 	public void create() {
 		//here we should load the start screen of the game
 		//setScreenByNetworkState();
-		setScreen(new MainMenuScreen(this, null));
-		//setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		//setScreen(new MainMenuScreen(this, null));
+		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
 		input = new InputController();
@@ -54,7 +54,7 @@ public class Tendu implements ApplicationListener {
 	//**The games main loop, everything but early setup happens here
 	@Override
 	public void render() {
-		setScreenByNetworkState(); //changes to some error screen if connections is lost?
+		//setScreenByNetworkState(); //changes to some error screen if connections is lost?
 		//clear the entire screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		

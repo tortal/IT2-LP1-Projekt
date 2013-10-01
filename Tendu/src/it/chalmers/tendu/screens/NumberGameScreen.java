@@ -191,7 +191,7 @@ public class NumberGameScreen extends GameScreen {
 		            }
 		        } 
 		        
-		        if (Gdx.input.isTouched()) {
+		        if (input.isTouchedDown()) {
 					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		            game.getCamera().unproject(touchPos);
 		            
