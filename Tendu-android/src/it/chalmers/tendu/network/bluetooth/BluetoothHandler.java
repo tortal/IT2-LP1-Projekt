@@ -86,11 +86,17 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
-	        public void OnMessageReceived(BluetoothDevice device, String message) {
+	        public void OnMessageReceived(BluetoothDevice device, final String message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
 	        	
+	        	((AndroidApplication)context).runOnUiThread(new Runnable() {
+	        	    public void run()
+	        	    {
+	        	    	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	        	    }
+	        	});
 	        	
-	        	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	        	
 //	            if (message.indexOf("SCORE") == 0) {
 //	                String[] scoreMessageSplit = message.split(":");
 //	                hostScore = Integer.parseInt(scoreMessageSplit[1]);

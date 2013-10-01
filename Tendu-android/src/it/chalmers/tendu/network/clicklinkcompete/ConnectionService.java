@@ -123,8 +123,8 @@ public class ConnectionService extends Service {
                         
                        //handler.post()
                         
-                        //mCallback.messageReceived(device, message);
-                        mCallback.messageReceived(device, "Test");
+                        mCallback.messageReceived(device, message);
+                        //mCallback.messageReceived(device, "Test");
                     }
                 }
             } catch (IOException e) {
