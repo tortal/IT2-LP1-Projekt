@@ -25,11 +25,11 @@ public class NumberGame extends MiniGame {
 		nbrCorrectAnswer = 0;
 		switch (difficulty) {
 		case ONE:
-			this.addTime(30);
+			this.setTime(30000);
 			answerList = createAnswer(4);
 			break;
 		case TWO:
-			this.addTime(30);
+			this.setTime(30000);
 			answerList = createAnswer(8);
 			break;
 		default:

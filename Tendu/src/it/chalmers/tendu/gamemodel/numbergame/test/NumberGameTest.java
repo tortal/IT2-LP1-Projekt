@@ -15,7 +15,7 @@ public class NumberGameTest {
 	NumberGame nbrGameEasy;
 	NumberGame nbrGameHard;
 
-
+	//TODO fix setup
 	@Test
 	public void testNumberGameIntDifficulty() {
 		nbrGameEasy = new NumberGame(0, Difficulty.ONE);
