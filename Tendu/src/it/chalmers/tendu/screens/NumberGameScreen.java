@@ -7,7 +7,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
-import it.chalmers.tendu.gamemodel.NumberGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,8 +81,9 @@ public class NumberGameScreen extends GameScreen {
 			numbers.add(new Number(number.intValue(), false));
 		}
 		
-		for(int i = 0; i < model.getDummyList().size(); i++) {
-			numberCircles.add(new NumberCircle(model.getDummyList().get(i), (90+95*i), 120, 35, colors.get(i)));
+		// TODO chooses a static player atm.
+		for(int i = 0; i < model.getPlayerList(0).size(); i++) {
+			numberCircles.add(new NumberCircle(model.getPlayerList(0).get(i), (90+95*i), 120, 35, colors.get(i)));
 		}
 		
 		if(model.getDifficulty() == Constants.Difficulty.ONE) {

@@ -1,4 +1,4 @@
-package it.chalmers.tendu.gamemodel;
+package it.chalmers.tendu.gamemodel.numbergame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,13 +8,14 @@ import java.util.Map;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.defaults.GameIds;
+import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
 
 public class NumberGame extends MiniGame {
 
-	private static int playerCount = 4;
+	private static int PLAYER_COUNT = 4;
 	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
@@ -38,6 +39,14 @@ public class NumberGame extends MiniGame {
 		playerLists = divideAndConquer(answerList);
 	}
 
+	/**
+	 * Check if the number chosen is the right one according to the answerList
+	 * and sets gamestate to gameWon if all the numbers in answerList have been
+	 * correctly guessed.
+	 * 
+	 * @param num
+	 * @return
+	 */
 	public boolean checkNbr(int num) {
 		// TODO make sure it can't go out of bounds (make it prettier)
 		if (nbrCorrectAnswer < answerList.size()) {
@@ -54,6 +63,13 @@ public class NumberGame extends MiniGame {
 		return false;
 	}
 
+	/**
+	 * Returns a list with random numbers from 1-99 that represents the correct
+	 * answer in the game.
+	 * 
+	 * @param length
+	 * @return
+	 */
 	private ArrayList<Integer> createAnswer(int length) {
 		ArrayList<Integer> answerList = new ArrayList<Integer>();
 		int i = 0;
@@ -75,28 +91,33 @@ public class NumberGame extends MiniGame {
 	 */
 	private Map<Integer, ArrayList<Integer>> divideAndConquer(
 			ArrayList<Integer> list) {
+
 		Map<Integer, ArrayList<Integer>> newMap = new HashMap<Integer, ArrayList<Integer>>();
 
-		if (list.size() == 4) {
-			for (int i = 0; i < playerCount; i++) {
-				ArrayList<Integer> newList = (ArrayList<Integer>) list.subList(
-						i, i);
-				popAndShuffleList(newList);
-				newMap.put(i, newList);
+		ArrayList<Integer> temp = new ArrayList<Integer>(answerList);
+
+		Collections.shuffle(temp);
+
+		for (int i = 0; i < PLAYER_COUNT; i++) {
+			ArrayList<Integer> newList = new ArrayList<Integer>();
+
+			for (int j = 0; j < answerList.size() / PLAYER_COUNT; j++) {
+				Integer r = temp.remove(0);
+				newList.add(r);
 			}
-		}
-		if (list.size() == 8) {
-			for (int i = 0; i < playerCount; i++) {
-				ArrayList<Integer> newList = (ArrayList<Integer>) list.subList(
-						i, list.size() - i);
-				popAndShuffleList(newList);
-				newMap.put(i, newList);
-			}
+			popAndShuffleList(newList);
+			newMap.put(i, newList);
 		}
 		return newMap;
 
 	}
 
+	/**
+	 * Fills up an array with random numbers until there are eight different
+	 * numbers in the array total and shuffles them.
+	 * 
+	 * @param list
+	 */
 	private void popAndShuffleList(ArrayList<Integer> list) {
 		int i = 0;
 		while (i < (8 - list.size())) {
@@ -112,9 +133,13 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
-
-	// public ArrayList<Integer> getDummyList() {
-	// return answerAndDummyList;
-	// }
-
+	
+	/**
+	 * Return the indicated players list of numbers.
+	 * @param player
+	 * @return
+	 */
+	public ArrayList<Integer> getPlayerList(int player){
+		return playerLists.get(player);
+	}
 }

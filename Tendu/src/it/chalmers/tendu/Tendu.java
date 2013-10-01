@@ -3,7 +3,7 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.NumberGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
