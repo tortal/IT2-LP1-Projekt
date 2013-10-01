@@ -26,7 +26,7 @@ import java.util.Map;
 public class ShapesGame extends MiniGame {
 
 	private final static int PLAYER_COUNT = 4;
-	private final static int SLOTS_COUNT = 4;
+	private final static int LOCK_SIZE = 4;
 
 	/**
 	 * All shapes for all players mapped by player number (Integer).
@@ -55,10 +55,10 @@ public class ShapesGame extends MiniGame {
 
 		// Every player only has an explicit number of slots to fill, so let's
 		// grab the need amount of shapes from our allShapes list
-		List<Shape> gameShapes = new ArrayList<Shape>(SLOTS_COUNT
+		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE
 				* PLAYER_COUNT);
 
-		for (int i = 0; i < SLOTS_COUNT * PLAYER_COUNT; i++) {
+		for (int i = 0; i < LOCK_SIZE * PLAYER_COUNT; i++) {
 			Shape randomShape = allShapes.remove(0);
 			gameShapes.add(randomShape);
 		}
@@ -77,7 +77,7 @@ public class ShapesGame extends MiniGame {
 			allInventory.put(p, playerInventory);
 			allLocks.put(p, playerLock);
 
-			for (int i = 0; i < SLOTS_COUNT; i++) {
+			for (int i = 0; i < LOCK_SIZE; i++) {
 				playerInventory.add(gameShapes.remove(0));
 				playerLock.addSlot(copyOfShapes.remove(0));
 			}
@@ -160,6 +160,10 @@ public class ShapesGame extends MiniGame {
 		return owner;
 	}
 	
+	/**
+	 * @param player who is the owner of the lock.
+	 * @return the lock a particular player has. null if there is no such player.
+	 */
 	public Lock getLock(int player) {
 		Lock lock = allLocks.get(player);
 		return lock;
@@ -196,12 +200,16 @@ public class ShapesGame extends MiniGame {
 	 * TODO: DEBUG MAIN and testing.
 	 */
 	public static void main(String[] a) {
-		Lock s = new Lock();
+		Lock lock = new Lock();
+		
 		List<Shape> allShapes = Shape.getAllShapes();
-		Collections.shuffle(allShapes);
-		s.addSlot(allShapes.remove(0));
-		s.addSlot(allShapes.remove(0));
-		System.out.println(s);
+		lock.addSlot(allShapes.remove(0));
+		lock.addSlot(allShapes.remove(0));
+		
+		Shape myShape = new Shape(Color.GREEN, GeometricShape.CIRCLE);
+		System.out.println(lock.fillSlot(myShape));
+		
+		System.out.println(lock);
 	}
 
 }

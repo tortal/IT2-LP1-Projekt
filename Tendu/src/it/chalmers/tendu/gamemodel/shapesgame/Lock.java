@@ -13,14 +13,14 @@ import java.util.Map;
  */
 public class Lock {
 
-	private final List<Shape> shapes;
+	private final List<Shape> lockSequence;
 	private final Map<Shape, Boolean> slotLock;
 
 	/**
 	 * New lock.
 	 */
 	public Lock() {
-		this.shapes = new ArrayList<Shape>();
+		this.lockSequence = new ArrayList<Shape>();
 		this.slotLock = new HashMap<Shape, Boolean>();
 	}
 
@@ -30,7 +30,7 @@ public class Lock {
 	 * @param listOfShapes
 	 */
 	public Lock(List<Shape> listOfShapes) {
-		this.shapes = listOfShapes;
+		this.lockSequence = listOfShapes;
 		slotLock = new HashMap<Shape, Boolean>();
 		for (Shape s : listOfShapes) {
 			slotLock.put(s, false);
@@ -42,7 +42,7 @@ public class Lock {
 	 *            to add to the lock sequence.
 	 */
 	public void addSlot(Shape shape) {
-		shapes.add(shape);
+		lockSequence.add(shape);
 		slotLock.put(shape, false);
 	}
 
@@ -59,7 +59,7 @@ public class Lock {
 	 * @return the lock sequence needed to crack this puzzle.
 	 */
 	public List<Shape> getLockSequence() {
-		List<Shape> slotCombo = new ArrayList<Shape>(shapes);
+		List<Shape> slotCombo = new ArrayList<Shape>(lockSequence);
 		return slotCombo;
 	}
 
@@ -81,7 +81,7 @@ public class Lock {
 	 * @return true if the slot was empty and the shape fits.
 	 */
 	boolean fillSlot(Shape shape) {
-		if (!this.shapes.contains(shape))
+		if (!this.lockSequence.contains(shape))
 			return false;
 		boolean curState = slotLock.get(shape);
 		if (curState == true)
@@ -93,12 +93,17 @@ public class Lock {
 	@Override
 	public String toString() {
 		StringBuffer s = new StringBuffer();
-		s.append("Lock: [");
-		for (Shape shape : shapes){
-			System.out.println(s);
+		s.append("Lock: [\n");
+		for (Shape shape : lockSequence){
+			s.append("\t");
+			s.append(shape);
+			s.append(" : ");
+			s.append(slotLock.get(shape));
+			s.append("\n");
 		}
+		s.append("\t]");
 		
-		return "";
+		return s.toString();
 	}
 
 }
