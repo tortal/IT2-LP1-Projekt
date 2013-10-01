@@ -88,6 +88,8 @@ public class BluetoothHandler implements INetworkHandler {
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
 	        public void OnMessageReceived(BluetoothDevice device, String message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
+	        	
+	        	
 	        	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 //	            if (message.indexOf("SCORE") == 0) {
 //	                String[] scoreMessageSplit = message.split(":");

@@ -27,7 +27,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -90,6 +92,8 @@ public class ConnectionService extends Service {
     private class BtStreamWatcher implements Runnable {
         private String address;
         private BluetoothDevice device;
+        
+        private Handler handler = new Handler(Looper.getMainLooper());
 
         public BtStreamWatcher(BluetoothDevice device) {
             this.device = device;
@@ -117,8 +121,10 @@ public class ConnectionService extends Service {
                         // stop
                         // marker
                         
-                        mCallback.messageReceived(device, message);
-                        //mCallback.messageReceived(device, "Test");
+                       //handler.post()
+                        
+                        //mCallback.messageReceived(device, message);
+                        mCallback.messageReceived(device, "Test");
                     }
                 }
             } catch (IOException e) {
