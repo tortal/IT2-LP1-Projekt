@@ -224,26 +224,35 @@ public class BluetoothHandler implements INetworkHandler {
 	 */
 	private void addTenduToDeviceName(boolean isServer) {
 		if (mBluetoothAdapter.getName() == null)
-			mBluetoothAdapter.setName(Constants.APP_NAME);
-		else {
-			String name = mBluetoothAdapter.getName();
-			if (!name.contains(Constants.APP_NAME)) {
-				boolean nameWasChanged = mBluetoothAdapter.setName(name + " - " + Constants.APP_NAME);
-				if(nameWasChanged) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
-				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
+			mBluetoothAdapter.setName("");
+		
+		String oldName = mBluetoothAdapter.getName();
+		String newName = oldName;
+		
+		if (isServer) {
+			if (!oldName.contains(Constants.SERVER_NAME)) {
+				newName = oldName + Constants.SERVER_NAME;
+			}
+		} else {
+			if (!oldName.contains(Constants.CLIENT_NAME)) {
+				newName = oldName + Constants.CLIENT_NAME;
 			}
 		}
-		if(isServer && !mBluetoothAdapter.getName().contains(Constants.APP_NAME + "S")){
-			mBluetoothAdapter.setName(mBluetoothAdapter.getName() + "S");
-		}
+		boolean nameWasChanged = mBluetoothAdapter.setName(newName);
+		if(nameWasChanged) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+		else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 	}
 
 	private void removeTenduFromDeviceName() {
-		if (mBluetoothAdapter.getName().contains(Constants.APP_NAME)) {
-			String name = mBluetoothAdapter.getName();
-			String newName = name.replace(" - " + Constants.APP_NAME, "");
+		String oldName = mBluetoothAdapter.getName(); 
+		if (oldName.contains(Constants.SERVER_NAME)) {
+			String newName = oldName.replace(Constants.SERVER_NAME, "");
+			mBluetoothAdapter.setName(newName);
+		} else if (oldName.contains(Constants.CLIENT_NAME)) {
+			String newName = oldName.replace(Constants.CLIENT_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
+			
 	}
 
 	/**
@@ -259,7 +268,7 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(Constants.APP_NAME);
+		return device.getName().contains(Constants.CLIENT_NAME);
 	}
 	
 	private boolean isDeviceValidServer(BluetoothDevice device) {
@@ -267,7 +276,7 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(Constants.APP_NAME + "S");
+		return device.getName().contains(Constants.SERVER_NAME);
 	}
 
 	private void registerBroadcastReceiver() {
