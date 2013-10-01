@@ -73,6 +73,8 @@ public class BluetoothGameService {
     private int mState;
     private List<BluetoothDevice> devicesList;
     private final Handler mHandler; // Handler for posting messages back to the ui thread 
+    private int noOfConnectedDevices; // The number of currently connected devices
+    private int targetNoOfConnectedDevices = 3; // The number of devices required to play the game
     
 /* Moved to NetworkState
     // Constants that indicate the current connection state
@@ -84,6 +86,7 @@ public class BluetoothGameService {
 
     // Message flag
     public static final int MESSAGE_READ = 1;
+    
     
     /**
      * Constructor. Prepares a new BluetoothGame session.
