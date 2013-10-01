@@ -16,9 +16,7 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-import net.clc.bt.IConnection;
-import net.clc.bt.IConnectionCallback;
-
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +45,7 @@ public class Connection {
     }
 
     public interface OnIncomingConnectionListener {
-        public void OnIncomingConnection(String device);
+        public void OnIncomingConnection(BluetoothDevice device);
     }
 
     public interface OnMaxConnectionsReachedListener {
@@ -55,11 +53,11 @@ public class Connection {
     }
 
     public interface OnMessageReceivedListener {
-        public void OnMessageReceived(String device, String message);
+        public void OnMessageReceived(BluetoothDevice device, String message);
     }
 
     public interface OnConnectionLostListener {
-        public void OnConnectionLost(String device);
+        public void OnConnectionLost(BluetoothDevice device);
     }
 
     private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
@@ -85,13 +83,13 @@ public class Connection {
     private IConnection mIconnection;
 
     private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
-        public void incomingConnection(String device) throws RemoteException {
+        public void incomingConnection(BluetoothDevice device) throws RemoteException {
             if (mOnIncomingConnectionListener != null) {
                 mOnIncomingConnectionListener.OnIncomingConnection(device);
             }
         }
 
-        public void connectionLost(String device) throws RemoteException {
+        public void connectionLost(BluetoothDevice device) throws RemoteException {
             if (mOnConnectionLostListener != null) {
                 mOnConnectionLostListener.OnConnectionLost(device);
             }
@@ -103,15 +101,13 @@ public class Connection {
             }
         }
 
-        public void messageReceived(String device, String message) throws RemoteException {
+        public void messageReceived(BluetoothDevice device, String message) throws RemoteException {
             if (mOnMessageReceivedListener != null) {
                 mOnMessageReceivedListener.OnMessageReceived(device, message);
             }
         }
     };
 
-    // TODO: Add a check to autodownload this service from Market if the user
-    // does not have it already.
     public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
         mOnConnectionServiceReadyListener = ocsrListener;
         mContext = ctx;
@@ -171,7 +167,7 @@ public class Connection {
         return Connection.FAILURE;
     }
 
-    public int connect(String device, OnMessageReceivedListener omrListener,
+    public int connect(BluetoothDevice device, OnMessageReceivedListener omrListener,
             OnConnectionLostListener oclListener) {
         if (!mStarted) {
             return Connection.FAILURE;
@@ -188,7 +184,7 @@ public class Connection {
         return Connection.FAILURE;
     }
 
-    public int sendMessage(String device, String message) {
+    public int sendMessage(BluetoothDevice device, String message) {
         if (!mStarted) {
             return Connection.FAILURE;
         }

@@ -33,8 +33,8 @@ interface IConnection {
   String getAddress();
   String getName();
   int startServer(in String srcApp, in int maxConnections);
-  int connect(in String srcApp, in String device);
-  int sendMessage(in String srcApp, in String device, in String message);
+  int connect(in String srcApp, in BluetoothDevice device);
+  int sendMessage(in String srcApp, in BluetoothDevice device, in String message);
   int broadcastMessage(in String srcApp, in String message);
   String getConnections(in String srcApp);
   int getVersion();
