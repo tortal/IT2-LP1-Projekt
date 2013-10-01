@@ -6,9 +6,12 @@ import com.badlogic.gdx.InputProcessor;
 public class InputController implements InputProcessor {
 
 	private boolean touchedUp = false;
+	private boolean touchedDown = false;
+
 	
 	public void tick() {
-
+		touchedUp = false;		
+		touchedDown = false;
 	}
 
 	@Override
@@ -31,31 +34,27 @@ public class InputController implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		touchedDown = true;
+		return true;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		Gdx.app.log("TouchUp", " up");
-		touchedUp = true;
-		
-		return false;
+		touchedUp = true;		
+		return true;
 	}
 	
 	public boolean isTouchedUp () {
-		if(touchedUp) {
-			touchedUp = false;
-			return true;
-		}
-		
-		return false;
+		return touchedUp;
+	}
+	
+	public boolean isTouchedDown () {
+		return touchedDown;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
+		//Gdx.app.log("TouchedDrag" , " x = " + screenX + " y = " + screenY);
 		return false;
 	}
 

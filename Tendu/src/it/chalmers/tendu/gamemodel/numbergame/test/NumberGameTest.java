@@ -1,10 +1,11 @@
-package it.chalmers.tendu.gamemodel;
+package it.chalmers.tendu.gamemodel.numbergame.test;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 
 import org.junit.Test;
 

@@ -1,6 +1,7 @@
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 
 /*TODO This class shall select a random minigame with the selected difficulty
  *It shall also keep track of previously played games to avoid playing the
