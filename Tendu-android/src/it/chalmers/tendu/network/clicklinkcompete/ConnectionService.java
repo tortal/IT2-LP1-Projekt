@@ -56,7 +56,7 @@ public class ConnectionService extends Service {
 
     private IConnectionCallback mCallback;
 
-    private ArrayList<BluetoothDevice> mBtDeviceAddresses;
+    private ArrayList<BluetoothDevice> mBtDevices;
 
     private HashMap<String, BluetoothSocket> mBtSockets;
 
@@ -69,7 +69,7 @@ public class ConnectionService extends Service {
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         mApp = "";
         mBtSockets = new HashMap<String, BluetoothSocket>();
-        mBtDeviceAddresses = new ArrayList<BluetoothDevice>();
+        mBtDevices = new ArrayList<BluetoothDevice>();
         mBtStreamWatcherThreads = new HashMap<String, Thread>();
         mUuid = new ArrayList<UUID>();
         // Allow up to 7 devices to connect to the server
@@ -126,7 +126,7 @@ public class ConnectionService extends Service {
             }
             // Getting out of the while loop means the connection is dead.
             try {
-                mBtDeviceAddresses.remove(address);
+                mBtDevices.remove(address);
                 mBtSockets.remove(address);
                 mBtStreamWatcherThreads.remove(address);
                 mCallback.connectionLost(device);
@@ -159,7 +159,7 @@ public class ConnectionService extends Service {
                     BluetoothDevice device = myBSock.getRemoteDevice();
                     
                     mBtSockets.put(address, myBSock);
-                    mBtDeviceAddresses.add(device);
+                    mBtDevices.add(device);
                     Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
                     mBtStreamWatcherThread.start();
                     mBtStreamWatcherThreads.put(address, mBtStreamWatcherThread);
@@ -236,7 +236,7 @@ public class ConnectionService extends Service {
             }
 
             mBtSockets.put(device.getAddress(), myBSock);
-            mBtDeviceAddresses.add(device);
+            mBtDevices.add(device);
             Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
             mBtStreamWatcherThread.start();
             mBtStreamWatcherThreads.put(device.getAddress(), mBtStreamWatcherThread);
@@ -247,8 +247,8 @@ public class ConnectionService extends Service {
             if (!mApp.equals(srcApp)) {
                 return Connection.FAILURE;
             }
-            for (int i = 0; i < mBtDeviceAddresses.size(); i++) {
-                sendMessage(srcApp, mBtDeviceAddresses.get(i), message);
+            for (int i = 0; i < mBtDevices.size(); i++) {
+                sendMessage(srcApp, mBtDevices.get(i), message);
             }
             return Connection.SUCCESS;
         }
@@ -258,8 +258,8 @@ public class ConnectionService extends Service {
                 return "";
             }
             String connections = "";
-            for (int i = 0; i < mBtDeviceAddresses.size(); i++) {
-                connections = connections + mBtDeviceAddresses.get(i) + ",";
+            for (int i = 0; i < mBtDevices.size(); i++) {
+                connections = connections + mBtDevices.get(i) + ",";
             }
             return connections;
         }
@@ -307,13 +307,13 @@ public class ConnectionService extends Service {
 
         public void shutdown(String srcApp) throws RemoteException {
             try {
-                for (int i = 0; i < mBtDeviceAddresses.size(); i++) {
-                    BluetoothSocket myBsock = mBtSockets.get(mBtDeviceAddresses.get(i));
+                for (int i = 0; i < mBtDevices.size(); i++) {
+                    BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
                     myBsock.close();
                 }
                 mBtSockets = new HashMap<String, BluetoothSocket>();
                 mBtStreamWatcherThreads = new HashMap<String, Thread>();
-                mBtDeviceAddresses = new ArrayList<BluetoothDevice>();
+                mBtDevices = new ArrayList<BluetoothDevice>();
                 mApp = "";
             } catch (IOException e) {
                 Log.i(TAG, "IOException in shutdown", e);
