@@ -87,7 +87,7 @@ public class ShapesGame extends MiniGame {
 		 * New lock.
 		 */
 		public Lock() {
-			this.shapes = new ArrayList<Shape>(SLOTS_COUNT);
+			this.shapes = new ArrayList<Shape>();
 			this.slotLock = new HashMap<Shape, Boolean>();
 		}
 
@@ -159,13 +159,16 @@ public class ShapesGame extends MiniGame {
 
 		@Override
 		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("Slots [shapes=");
-			builder.append(shapes);
-			builder.append(", slotLock=");
-			builder.append(slotLock);
-			builder.append("]");
-			return builder.toString();
+			StringBuffer s = new StringBuffer();
+			s.append("Lock: [");
+//			for (Shape shape : shapes){
+//				s.append("\n\t");
+//				s.append(s);
+//				s.append(". isFilled?: ");
+//				s.append(slotLock.get(shape));
+//			}
+			
+			return s.toString();
 		}
 
 	}
@@ -234,7 +237,7 @@ public class ShapesGame extends MiniGame {
 	 * @param shape
 	 *            to move
 	 * @param player
-	 *            to move the shape to
+	 *            that should receive the shape-
 	 * @return <code>-1</code> if that player already owned that shape.
 	 *         <code>0</code> on successful move.
 	 */
@@ -301,6 +304,11 @@ public class ShapesGame extends MiniGame {
 		}
 		return owner;
 	}
+	
+	public Lock getLock(int player) {
+		Lock lock = allLocks.get(player);
+		return lock;
+	}
 
 	/**
 	 * DEBUG METHOD
@@ -338,14 +346,7 @@ public class ShapesGame extends MiniGame {
 		Collections.shuffle(allShapes);
 		s.addSlot(allShapes.remove(0));
 		s.addSlot(allShapes.remove(0));
-
-		System.out.println(s.slotLock);
-		System.out.println(s.shapes);
-
-		System.out.println("\n\n\n\n\n");
-		System.out.println("Creating Shapes Game...");
-		ShapesGame g = new ShapesGame(0, Difficulty.ONE);
-		g.debug_printMembers();
+		System.out.println(s);
 	}
 
 }
