@@ -117,7 +117,9 @@ public class BluetoothHandler implements INetworkHandler {
 	    private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 	        public void OnConnectionLost(BluetoothDevice device) {
 	        	Log.d(TAG,"Connection lost: " + device);
-	            class displayConnectionLostAlert implements Runnable {
+	           
+	        	// Show a dialogue notifying user it got disconnected
+	        	class displayConnectionLostAlert implements Runnable {
 	                public void run() {
 	                    Builder connectionLostAlert = new Builder(context);
 
@@ -223,8 +225,11 @@ public class BluetoothHandler implements INetworkHandler {
 	 * @param server if this device is a server device or not
 	 */
 	private void addTenduToDeviceName(boolean isServer) {
-		if (mBluetoothAdapter.getName() == null)
+		if (mBluetoothAdapter.getName() == null) {
 			mBluetoothAdapter.setName("");
+		} else {
+			removeTenduFromDeviceName();
+		}
 		
 		String oldName = mBluetoothAdapter.getName();
 		String newName = oldName;
