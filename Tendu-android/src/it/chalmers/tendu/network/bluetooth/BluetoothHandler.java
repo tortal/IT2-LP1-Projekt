@@ -53,6 +53,8 @@ public class BluetoothHandler implements INetworkHandler {
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
 	private Set<BluetoothDevice> devicesSet;
+	/** Connected devices */
+	private Set<BluetoothDevice> connectedDevices;
 
 	// Game state on server
 	private GameStateBundle gameState; 
@@ -79,7 +81,7 @@ public class BluetoothHandler implements INetworkHandler {
 		devicesSet = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 
-		addTenduToDeviceName();
+		addTenduToDeviceName(false);
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
@@ -105,6 +107,8 @@ public class BluetoothHandler implements INetworkHandler {
 	    private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
 	        public void OnIncomingConnection(BluetoothDevice device) {
 	        	Log.d(TAG,"Incoming connection: " + device);
+	        	
+	        	
 //	            rivalDevice = device;
 //	            WindowManager w = getWindowManager();
 //	            Display d = w.getDefaultDisplay();
@@ -170,6 +174,7 @@ public class BluetoothHandler implements INetworkHandler {
 	@Override
 	public void hostSession() {
 		//beDiscoverable();
+		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener, maxConnectionsListener, dataReceivedListener, disconnectedListener);
 		//bgs.start();
 
@@ -185,7 +190,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 			@Override
 			public void run() {
-				BluetoothDevice bd = findFirstAvailableDevice();
+				BluetoothDevice bd = findAvailableServerDevice();
 				if (bd != null) {
 					Log.d(TAG, "Will now try and connect to: " + bd.getName());
 					connection.connect(bd, dataReceivedListener, disconnectedListener);
@@ -238,8 +243,9 @@ public class BluetoothHandler implements INetworkHandler {
 	 * as identification
 	 * 
 	 * If the device has no name, it is set to "Tendu"
+	 * @param server if this device is a server device or not
 	 */
-	private void addTenduToDeviceName() {
+	private void addTenduToDeviceName(boolean server) {
 		if (mBluetoothAdapter.getName() == null)
 			mBluetoothAdapter.setName(APP_NAME + "");
 		else {
@@ -249,6 +255,7 @@ public class BluetoothHandler implements INetworkHandler {
 				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 			}
 		}
+		if(server) mBluetoothAdapter.setName(mBluetoothAdapter.getName() + "S");
 	}
 
 	private void removeTenduFromDeviceName() {
@@ -273,6 +280,14 @@ public class BluetoothHandler implements INetworkHandler {
 		if (device.getName() == null)
 			return false;
 		return device.getName().contains(APP_NAME);
+	}
+	
+	private boolean isDeviceValidServer(BluetoothDevice device) {
+		if (device == null)
+			return false;
+		if (device.getName() == null)
+			return false;
+		return device.getName().contains(APP_NAME + " " + "S");
 	}
 
 	private void registerBroadcastReceiver() {
@@ -303,7 +318,29 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 
 	// Temporary test method
-	private BluetoothDevice findFirstAvailableDevice() {
+	private BluetoothDevice findAvailableServerDevice() {
+		//		// First look among the paired devices
+		//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+		//		for (BluetoothDevice device: devices) {
+		//			if (isDeviceValid(device)) {
+		//				return device;
+		//			}
+		//		}
+		//		// Then among the ones that have been discovered
+
+		// Return the first eligible device among the available devices set
+		Iterator<BluetoothDevice> iter = devicesSet.iterator();
+		while (iter.hasNext()) {
+			BluetoothDevice device = iter.next(); 
+			if (isDeviceValidServer(device)) {
+				return device;
+			}
+		}
+		Log.d(TAG, "No eligible Servers found");
+		return null;
+	}
+	
+	private BluetoothDevice findFirstAvailableDevices() {
 		//		// First look among the paired devices
 		//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
 		//		for (BluetoothDevice device: devices) {
@@ -349,7 +386,7 @@ public class BluetoothHandler implements INetworkHandler {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
 		context.unregisterReceiver(mReceiver);
-		//bgs.stop();
+		//bgs.stop();	
 
 	}
 
@@ -391,5 +428,19 @@ public class BluetoothHandler implements INetworkHandler {
 	public int pollNetworkState() {
 		return -1;
 		//return bgs.getState();
+	}
+
+	/**
+	 * @return the connectedDevices
+	 */
+	public Set<BluetoothDevice> getConnectedDevices() {
+		return connectedDevices;
+	}
+
+	/**
+	 * @param connectedDevices the connectedDevices to set
+	 */
+	public void setConnectedDevices(Set<BluetoothDevice> connectedDevices) {
+		this.connectedDevices = connectedDevices;
 	}
 }

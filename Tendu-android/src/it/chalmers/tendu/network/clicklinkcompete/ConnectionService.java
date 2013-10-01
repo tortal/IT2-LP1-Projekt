@@ -120,9 +120,7 @@ public class ConnectionService extends Service {
                     }
                 }
             } catch (IOException e) {
-                Log.i(TAG,
-                        "IOException in BtStreamWatcher - probably caused by normal disconnection",
-                        e);
+                Log.i(TAG,"IOException in BtStreamWatcher - probably caused by normal disconnection",e);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException in BtStreamWatcher while reading data", e);
             }
