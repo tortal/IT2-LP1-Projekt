@@ -140,6 +140,7 @@ public class BluetoothHandler implements INetworkHandler {
 	                    }
 	                }
 	            }
+	        	// Display on UI-thread
 	            ((AndroidApplication) context).runOnUiThread(new displayConnectionLostAlert());
 	        }
 	    };
@@ -149,8 +150,7 @@ public class BluetoothHandler implements INetworkHandler {
 			Log.d(TAG,"Connection service ready");
 		}
 	};
-
-
+	
 	@Override
 	public void hostSession() {
 		addTenduToDeviceName(true);
