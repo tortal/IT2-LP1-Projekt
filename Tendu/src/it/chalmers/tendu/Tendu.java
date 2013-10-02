@@ -72,6 +72,14 @@ public class Tendu implements ApplicationListener, Listener {
 			input.tick(); //updates input
 			accum -= 1.0f / 60.0f;
 		}
+//		if (model.checkGameState() != GameState.RUNNING) {
+//			time++;
+//			if (time > 360) {
+//				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
+//						MiniGameFactory.createMiniGame(0,
+//								Constants.Difficulty.TWO)));
+//			}
+//		}
 		
 		camera.update();
 		spriteBatch.setProjectionMatrix(camera.combined);
