@@ -16,7 +16,7 @@ public abstract class MiniGame {
 		setTimeLeft(addTime);
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.DEFAULT;
+		this.state = GameState.RUNNING;
 	}
 
 	public Difficulty getDifficulty() {

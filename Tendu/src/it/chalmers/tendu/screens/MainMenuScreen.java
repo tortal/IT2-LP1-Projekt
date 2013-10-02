@@ -53,17 +53,14 @@ public class MainMenuScreen extends GameScreen {
 
 	@Override
 	public void render() {
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
 
-		font.draw(spriteBatch, "Host game", 35, 250);
-        font.draw(spriteBatch, "Join game", 47, 150);
+
+		font.draw(game.spriteBatch, "Host game", 35, 250);
+        font.draw(game.spriteBatch, "Join game", 47, 150);
         
-        testFont.draw(spriteBatch, "test stuff", 600, 450);
+        testFont.draw(game.spriteBatch, "test stuff", 600, 450);
 
-       
-		spriteBatch.end();
-	}
+   	}
 	
 	@Override
 	public void removed() {

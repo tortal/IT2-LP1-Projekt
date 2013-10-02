@@ -101,14 +101,14 @@ public class NumberGameScreen extends GameScreen {
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
 				numberFont.setColor(colors.get(i));
-				numberFont.draw(spriteBatch, "" + numbers.get(i).number,
+				numberFont.draw(game.spriteBatch, "" + numbers.get(i).number,
 						numberAlignment + i * 105, 300);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (numbers.get(i).show == true) {
 					numberFont.setColor(colors.get(i));
-					numberFont.draw(spriteBatch, "" + numbers.get(i).number,
+					numberFont.draw(game.spriteBatch, "" + numbers.get(i).number,
 							numberAlignment + i * 105, 300);
 				}
 			}
@@ -124,28 +124,25 @@ public class NumberGameScreen extends GameScreen {
 			shapeRenderer.circle(circle.getX(), circle.getY(),
 					(circle.getRadius() - i) * circle.scale);
 		}
-		numberFont.draw(spriteBatch, "" + circle.getNumber(),
+		numberFont.draw(game.spriteBatch, "" + circle.getNumber(),
 				circle.getNumberX(), circle.getNumberY());
 	}
 
 	/** Draw all graphics here */
 	@Override
 	public void render() {
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
-
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.Circle);
 
 		if (time < 240) {
 			numberFont.setColor(Color.BLUE);
-			numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
+			numberFont.draw(game.spriteBatch, "Memorize the numbers", 200, 400);
 			drawNumbers(true);
 
 		} else {
 			if (model.checkGameState() == GameState.RUNNING) {
 				numberFont.setColor(Color.BLUE);
-				numberFont.draw(spriteBatch,
+				numberFont.draw(game.spriteBatch,
 						"Enter the numbers in the correct order", 60, 400);
 			}
 			drawNumbers(false);
@@ -160,13 +157,11 @@ public class NumberGameScreen extends GameScreen {
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
 			numberFont.scale(2);
-			numberFont.draw(spriteBatch, "You won!", 300, 450);
+			numberFont.draw(game.spriteBatch, "You won!", 300, 450);
 			numberFont.scale(-2);
 		}
 
 		shapeRenderer.end();
-		spriteBatch.end();
-
 	}
 
 	/** All game logic goes here */
