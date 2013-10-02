@@ -125,6 +125,7 @@ public class ConnectionService {
 			BluetoothSocket bSock = mBtSockets.get(address);
 			try {
 				InputStream instream = bSock.getInputStream();
+				
 				int bytesRead = -1;
 				String message = "";
 				while (true) {
