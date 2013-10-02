@@ -299,7 +299,7 @@ public class ConnectionService {
 		}
 		
 		try {
-			out = new Output(mBtSockets.get(destination).getOutputStream());
+			out = new Output(mBtSockets.get(destination.getAddress()).getOutputStream());
 		} catch (IOException e1) {
 			Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message, e1);
 			return Connection.FAILURE;
