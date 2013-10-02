@@ -85,6 +85,8 @@ public class ConnectionService {
 		mBtSockets = new HashMap<String, BluetoothSocket>();
 		mBtDevices = new ArrayList<BluetoothDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
+
+		// TODO Might be enough with One UUID
 		mUuid = new ArrayList<UUID>();
 		// Allow up to 7 devices to connect to the server
 		mUuid.add(UUID.fromString("a60f35f0-b93a-11de-8a39-08002009c666"));
