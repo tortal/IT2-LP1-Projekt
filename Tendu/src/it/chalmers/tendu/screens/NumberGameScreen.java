@@ -43,6 +43,8 @@ public class NumberGameScreen extends GameScreen {
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
 	private int time; // used to time certain "events" during the game.
+	private int count; // used to count renders for events that should be
+						// displayed a short time.
 
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
@@ -131,6 +133,7 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics here */
 	@Override
 	public void render() {
+		model.checkGame();
 		spriteBatch.setProjectionMatrix(game.getCamera().combined);
 		spriteBatch.begin();
 
@@ -147,6 +150,7 @@ public class NumberGameScreen extends GameScreen {
 				numberFont.setColor(Color.BLUE);
 				numberFont.draw(spriteBatch,
 						"Enter the numbers in the correct order", 60, 400);
+				
 			}
 			drawNumbers(false);
 
@@ -163,23 +167,35 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.draw(spriteBatch, "You won!", 300, 450);
 			numberFont.scale(-2);
 		}
+
+		//Render line that is the timer.
+		shapeRenderer.end();
+		shapeRenderer.begin(ShapeType.FilledRectangle);
+		if (count == 0) {
+			shapeRenderer.setColor(Color.YELLOW);
+		}else{
+			shapeRenderer.setColor(Color.RED);
+			count --;
+		}
+//		shapeRenderer.line(50, 50, calculateTimerEndPos(), 50);
+		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 3);
 		shapeRenderer.end();
 		
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.YELLOW);
-		shapeRenderer.line(50, 50, calculateTimerEndPos(),50);
-		shapeRenderer.end();
-		
+		//Head for the timer.
+//		shapeRenderer.begin(ShapeType.FilledCircle);
+//		shapeRenderer.filledCircle(calculateTimerWidth(), 50, 3);
+//		shapeRenderer.end();
+
 		spriteBatch.end();
 
 	}
 
-	private int calculateTimerEndPos() {
-		double quota=(double)model.getTimeLeft()/(double)model.getGameTime();
-		double endPos=quota*754+50;
+	private int calculateTimerWidth() {
+		double quota = (double) model.getTimeLeft()
+				/ (double) model.getGameTime();
+		double endPos = Math.abs(quota * 754);
 		return (int) endPos;
-		
-		
+
 	}
 
 	/** All game logic goes here */
@@ -207,7 +223,9 @@ public class NumberGameScreen extends GameScreen {
 											num.show = true;
 										}
 									}
-								}
+								} else
+									model.changeTimeWith(-2000);
+									count=60;
 							}
 						}
 						circle.scale = 1;
@@ -215,27 +233,30 @@ public class NumberGameScreen extends GameScreen {
 				}
 
 				if (Gdx.input.isTouched()) {
-		            game.getCamera().unproject(touchPos);
-		            
-		            for(NumberCircle circle: numberCircles) {            	
-		            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
-		                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
-		                    	Gdx.input.vibrate(25);
-		                    	if(model.checkNbr(circle.getNumber())) {
-		                    		Gdx.app.log("Correct number = ", "" + circle.getNumber());
-		                    		for(Number num: numbers) {
-		                    			if(num.number == circle.getNumber()) {
-		                    				num.show = true;
-		                    			}
-		                    		}
-		                    	}
-		                	}
-		            	}      	
-		            	circle.scale=1;
-		            }
-		        } 
-		        
-		        if (input.isTouchedDown()) {
+					game.getCamera().unproject(touchPos);
+
+					for (NumberCircle circle : numberCircles) {
+						if (touchPos.x > circle.leftX
+								&& touchPos.x < circle.rightX) {
+							if (touchPos.y < circle.topY
+									&& touchPos.y > circle.bottomY) {
+								Gdx.input.vibrate(25);
+								if (model.checkNbr(circle.getNumber())) {
+									Gdx.app.log("Correct number = ", ""
+											+ circle.getNumber());
+									for (Number num : numbers) {
+										if (num.number == circle.getNumber()) {
+											num.show = true;
+										}
+									}
+								}
+							}
+						}
+						circle.scale = 1;
+					}
+				}
+
+				if (input.isTouchedDown()) {
 					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 					game.getCamera().unproject(touchPos);
 
@@ -253,12 +274,12 @@ public class NumberGameScreen extends GameScreen {
 		}
 
 		if (model.checkGameState() != GameState.RUNNING) {
-			time++;
-			if (time > 360) {
-				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-						MiniGameFactory.createMiniGame(30000,
-								Constants.Difficulty.TWO)));
-			}
+			// time++;
+			// if (time > 360) {
+			game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
+					MiniGameFactory.createMiniGame(30000,
+							Constants.Difficulty.TWO)));
+			// }
 		}
 
 	}

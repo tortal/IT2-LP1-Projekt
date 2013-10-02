@@ -29,7 +29,7 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.RUNNING;
+		this.state = GameState.DEFAULT;
 		setTime(time);
 		gameTime= time;
 	}
@@ -59,6 +59,8 @@ public abstract class MiniGame {
 	 * @return the time in milliseconds.
 	 */
 	public long getTimeLeft() {
+		if(endTime - System.currentTimeMillis() < 0)
+			gameLost();
 		return (endTime - System.currentTimeMillis());
 	}
 
@@ -124,6 +126,7 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		endTime= System.currentTimeMillis() + gameTime;
+		state=GameState.RUNNING;
 	}
 
 	/**
@@ -141,10 +144,11 @@ public abstract class MiniGame {
 	}
 	
 	/**
-	 * @return true if the game is over. 
+	 * Checks if the game is over. 
 	 */
-	public boolean isGameOver() {
-		return getTimeLeft() < 0;
+	public void checkGame() {
+		if(getTimeLeft() < 0)
+			state=GameState.LOST;
 	}
 	
 	public long getGameTime() {

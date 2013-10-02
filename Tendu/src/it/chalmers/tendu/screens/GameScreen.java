@@ -21,6 +21,7 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
+		model.startGame();
 
 		spriteBatch = new SpriteBatch();
 	}
