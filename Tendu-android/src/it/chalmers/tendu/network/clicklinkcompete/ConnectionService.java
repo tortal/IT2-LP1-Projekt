@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.esotericsoftware.kryo.Kryo;
 
 /**
  * Service for simplifying the process of establishing Bluetooth connections and
@@ -71,6 +72,8 @@ public class ConnectionService {
 	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
 	private BluetoothAdapter mBtAdapter;
+	
+	private Kryo mKryo;
 
 	//private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
@@ -101,12 +104,9 @@ public class ConnectionService {
 		mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
 		mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
 		this.context = context;
+		initializeKryoSerializer();
 	}
 
-	//    @Override
-	//    public IBinder onBind(Intent arg0) {
-	//        return mBinder;
-	//    }
 
 	private void initializeKryoSerializer() {
     	mKryo = new Kryo();
@@ -161,19 +161,10 @@ public class ConnectionService {
 			} catch (IOException e) {
 				Log.i(TAG,"IOException in BtStreamWatcher - probably caused by normal disconnection",e);
 			} 
-			//catch (RemoteException e) {
-			//				Log.e(TAG, "RemoteException in BtStreamWatcher while reading data", e);
-			//			}
-			// Getting out of the while loop means the connection is dead.
-			//try {
 			mBtDevices.remove(address);
 			mBtSockets.remove(address);
 			mBtStreamWatcherThreads.remove(address);
 			mOnConnectionLostListener.OnConnectionLost(device);
-			//			} catch (RemoteException e) {
-			//				Log.e(TAG, "RemoteException in BtStreamWatcher while disconnecting", e);
-			//			}
-			//}
 		}
 	}
 
@@ -214,9 +205,6 @@ public class ConnectionService {
 				}
 			} catch (IOException e) {
 				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter", e);
-				//			} catch (RemoteException e) {
-				//				Log.e(TAG, "RemoteException in ConnectionService:ConnectionWaiter", e);
-				//			}
 			}
 		}
 	}
@@ -232,8 +220,6 @@ public class ConnectionService {
 		}
 		return null;
 	}
-
-	//private final IConnection.Stub mBinder = new IConnection.Stub() {
 	public int startServer(String srcApp, int maxConnections, OnIncomingConnectionListener oicListener, 
 			OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener, 
 			OnConnectionLostListener oclListener) throws RemoteException {
@@ -314,25 +300,6 @@ public class ConnectionService {
 		return connections;
 	}
 
-	public int getVersion() throws RemoteException {
-		//		try {
-		//			PackageManager pm = mSelf.getPackageManager();
-		//			PackageInfo pInfo = pm.getPackageInfo(mSelf.getPackageName(), 0);
-		//			return pInfo.versionCode;
-		//		} catch (NameNotFoundException e) {
-		//			Log.e(TAG, "NameNotFoundException in getVersion", e);
-		//		}
-		return 0;
-	}
-
-	//	public int registerCallback(String srcApp, IConnectionCallback cb) throws RemoteException {
-	//		if (!mApp.equals(srcApp)) {
-	//			return Connection.FAILURE;
-	//		}
-	//		mCallback = cb;
-	//		return Connection.SUCCESS;
-	//	}
-
 	public int sendMessage(String srcApp, BluetoothDevice destination, String message)
 			throws RemoteException {
 		if (!mApp.equals(srcApp)) {
@@ -370,14 +337,6 @@ public class ConnectionService {
 		}
 	}
 
-	//	public int unregisterCallback(String srcApp) throws RemoteException {
-	//		if (!mApp.equals(srcApp)) {
-	//			return Connection.FAILURE;
-	//		}
-	//		mCallback = null;
-	//		return Connection.SUCCESS;
-	//	}
-
 	public String getAddress() throws RemoteException {
 		return mBtAdapter.getAddress();
 	}
@@ -385,6 +344,5 @@ public class ConnectionService {
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
-	//  };
 
 }
