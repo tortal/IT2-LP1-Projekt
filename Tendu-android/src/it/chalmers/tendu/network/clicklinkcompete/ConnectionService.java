@@ -16,9 +16,6 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-
-
-import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -45,7 +42,7 @@ import java.util.UUID;
  * sending data in a way that is geared towards multi-player games.
  */
 
-public class ConnectionService extends Service {
+public class ConnectionService {
     public static final String TAG = "net.clc.bt.ConnectionService";
 
     private ArrayList<UUID> mUuid;
@@ -56,7 +53,7 @@ public class ConnectionService extends Service {
 
     // change this later
 
-    private IConnectionCallback mCallback;
+    //private IConnectionCallback mCallback;
 
     private ArrayList<BluetoothDevice> mBtDevices;
 
@@ -84,10 +81,10 @@ public class ConnectionService extends Service {
         mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
     }
 
-    @Override
-    public IBinder onBind(Intent arg0) {
-        return mBinder;
-    }
+//    @Override
+//    public IBinder onBind(Intent arg0) {
+//        return mBinder;
+//    }
 
     private class BtStreamWatcher implements Runnable {
         private String address;
