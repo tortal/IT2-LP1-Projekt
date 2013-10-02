@@ -138,7 +138,7 @@ public class Connection {
 	}
 
 	public int sendMessage(BluetoothDevice device, NetworkMessage message) {
-		
+
 		try {
 			return connectionService.sendMessage(mPackageName, device, message);
 		} catch (RemoteException e) {
@@ -148,7 +148,7 @@ public class Connection {
 	}
 
 	public int broadcastMessage(NetworkMessage message) {
-		
+
 		try {
 			return connectionService.broadcastMessage(mPackageName, message);
 		} catch (RemoteException e) {
@@ -158,7 +158,7 @@ public class Connection {
 	}
 
 	public String getAddress() {
-		
+
 		try {
 			return connectionService.getAddress();
 		} catch (RemoteException e) {
@@ -168,7 +168,7 @@ public class Connection {
 	}
 
 	public String getName() {
-		
+
 		try {
 			return connectionService.getName();
 		} catch (RemoteException e) {

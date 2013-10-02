@@ -68,8 +68,8 @@ public class ConnectionService {
 	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
 	private BluetoothAdapter mBtAdapter;
-	
-	
+
+
 
 	//private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
@@ -82,10 +82,10 @@ public class ConnectionService {
 	private OnConnectionLostListener mOnConnectionLostListener;
 
 	private Context context;
-	
+
 	/** Kryo Variables*/
 	private Kryo mKryo;
-	
+
 	private Output out;
 
 
@@ -111,18 +111,18 @@ public class ConnectionService {
 
 
 	private void initializeKryoSerializer() {
-    	mKryo = new Kryo();
-    	
-    	// Register the classes we want to send over the network
-    	mKryo.register(NetworkMessage.class);
-    }
-	
-	
+		mKryo = new Kryo();
+
+		// Register the classes we want to send over the network
+		mKryo.register(NetworkMessage.class);
+	}
+
+
 	private class BtStreamWatcher implements Runnable {
 		private String address;
 		private BluetoothDevice device;	
 		private Input in;
-		
+
 
 		//private Handler handler = new Handler(Looper.getMainLooper());
 
@@ -130,65 +130,60 @@ public class ConnectionService {
 			this.device = device;
 			address = device.getAddress();
 			mBtSockets.get(address);
-			
+
 			try {
 				in = new Input(mBtSockets.get(address).getInputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 
 		public void run() {
 			int bufferSize = 1024;
 			byte[] buffer = new byte[bufferSize];
 			BluetoothSocket bSock = mBtSockets.get(address);
-			
+
 			Object receivedObject;
-			try {
+
+			int bytesRead = -1;
+			String message = "";
+			while (true) {
+				message = "";
+				bytesRead = instream.read(buffer);
+				if (bytesRead != -1) {
+					while ((bytesRead == bufferSize) && (buffer[bufferSize - 1] != 0)) {
+						message = message + new String(buffer, 0, bytesRead);
+						bytesRead = instream.read(buffer);
+					}
+					message = message + new String(buffer, 0, bytesRead - 1); // Remove
+					// the
+					// stop
+					// marker
+
+					//handler.post()
+
+					//mCallback.messageReceived(device, message);
+					//mCallback.messageReceived(device, "Test");
+
+
+				}
+
 				InputStream instream = bSock.getInputStream();
-				
+
 				receivedObject = mKryo.readClassAndObject(in);
 				if(receivedObject instanceof NetworkMessage){
-					
+
 					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
 				}
-				
-				int bytesRead = -1;
-				String message = "";
-				while (true) {
-					message = "";
-					bytesRead = instream.read(buffer);
-					if (bytesRead != -1) {
-						while ((bytesRead == bufferSize) && (buffer[bufferSize - 1] != 0)) {
-							message = message + new String(buffer, 0, bytesRead);
-							bytesRead = instream.read(buffer);
-						}
-						message = message + new String(buffer, 0, bytesRead - 1); // Remove
-						// the
-						// stop
-						// marker
-
-						//handler.post()
-
-						//mCallback.messageReceived(device, message);
-						//mCallback.messageReceived(device, "Test");
-						
-						mOnMessageReceivedListener.OnMessageReceived(device, message);
-						
-					}
-				}
-			} catch (IOException e) {
-				Log.i(TAG,"IOException in BtStreamWatcher - probably caused by normal disconnection",e);
-			} 
-			mBtDevices.remove(address);
-			mBtSockets.remove(address);
-			mBtStreamWatcherThreads.remove(address);
-			mOnConnectionLostListener.OnConnectionLost(device);
+				mBtDevices.remove(address);
+				mBtSockets.remove(address);
+				mBtStreamWatcherThreads.remove(address);
+				mOnConnectionLostListener.OnConnectionLost(device);
+			}
 		}
 	}
-
 	private class ConnectionWaiter implements Runnable {
 		private String srcApp;
 
@@ -264,14 +259,14 @@ public class ConnectionService {
 	}
 
 	public int connect(String srcApp, BluetoothDevice device, OnMessageReceivedListener omrListener,
-            OnConnectionLostListener oclListener) throws RemoteException {
+			OnConnectionLostListener oclListener) throws RemoteException {
 		if (mApp.length() > 0) {
 			return Connection.FAILURE;
 		}
-		
+
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
-		
+
 		mApp = srcApp;
 		BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device.getAddress());
 		BluetoothSocket myBSock = null;
@@ -365,7 +360,8 @@ public class ConnectionService {
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
-	
-	
+
+
 
 }
+
