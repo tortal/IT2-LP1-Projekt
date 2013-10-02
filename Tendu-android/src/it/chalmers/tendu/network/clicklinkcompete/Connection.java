@@ -127,7 +127,7 @@ public class Connection {
 	}
 
 	public int broadcastMessage(NetworkMessage message) {
-
+		Log.d(TAG, "broadcastMessage: " + message.toString());
 		try {
 			return connectionService.broadcastMessage(message);
 		} catch (RemoteException e) {
