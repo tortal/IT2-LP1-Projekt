@@ -308,7 +308,7 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 		
-		mKryo.writeObject(out, message);
+		mKryo.writeClassAndObject(out, message);
 		
 		return Connection.SUCCESS;
 	}
