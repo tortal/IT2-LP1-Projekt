@@ -17,5 +17,14 @@ public enum GameId {
 
 	}
 	
+	public static List<GameId> getAllGameIDFor(int level){
+		List<GameId> validGames = new ArrayList<GameId>();
+		for (GameId g : values()){
+			if (g.acceptedLevels.contains(level))
+				validGames.add(g);
+		}
+		return validGames;
+	}
+	
 	
 }
