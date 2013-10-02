@@ -10,6 +10,7 @@ import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.Message;
 
@@ -35,6 +36,7 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void create() {
+		EventBus.INSTANCE.addListener(this); //register with event bus
 		//here we should load the start screen of the game
 		//setScreenByNetworkState();
 		//setScreen(new MainMenuScreen(this, null));
@@ -146,6 +148,6 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(Message message) {
 		// TODO Auto-generated method stub
-		
+		Gdx.app.log(message.tag, message.msg);
 	}
 }

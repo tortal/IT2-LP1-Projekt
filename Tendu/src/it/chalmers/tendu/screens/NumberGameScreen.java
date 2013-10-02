@@ -8,6 +8,8 @@ import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.Message;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -174,7 +176,7 @@ public class NumberGameScreen extends GameScreen {
 				if (input.isTouchedUp()) {
 					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 					game.getCamera().unproject(touchPos);
-
+					EventBus.INSTANCE.broadcast(new Message("Message test", "touchUp", null));
 					for (NumberCircle circle : numberCircles) {
 						if (touchPos.x > circle.leftX
 								&& touchPos.x < circle.rightX) {
