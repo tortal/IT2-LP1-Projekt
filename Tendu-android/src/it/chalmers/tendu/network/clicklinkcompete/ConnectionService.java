@@ -147,6 +147,9 @@ public class ConnectionService {
 			//TODO: Break loop when someone disconnects
 			while (true) {
 				receivedObject = mKryo.readClassAndObject(in);
+				if(receivedObject != null){
+					Log.d(TAG, "You recevied an item from: " + address);
+				}
 				
 				if(receivedObject instanceof NetworkMessage){
 					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
