@@ -3,20 +3,18 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.NumberGameScreen;
-import it.chalmers.tendu.screens.ShapesGameScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Tendu implements ApplicationListener {
 	private GameScreen screen; //contains whats shown on device screen in any given moment. Changes depending current minigame or if in a menu etc
@@ -25,7 +23,8 @@ public class Tendu implements ApplicationListener {
 	private OrthographicCamera camera; //The use of a camera helps us to work on one screen size no matter the actual screen sizes of different devices
 	
 	private INetworkHandler networkHandler; //handle to all network related stuff (Android specific, at least for now)
-	
+	public SpriteBatch spriteBatch; //used for drawing of graphics
+
 	public Tendu(INetworkHandler netCom) {
 		setNetworkHandler(netCom);
 	}
@@ -35,10 +34,7 @@ public class Tendu implements ApplicationListener {
 		//here we should load the start screen of the game
 		//setScreenByNetworkState();
 		//setScreen(new MainMenuScreen(this, null));
-		NumberGame game = new NumberGame(0, Difficulty.ONE);
-		GameScreen screen = new NumberGameScreen(this, game);
-		setScreen(screen);
-		game.setGameState(GameState.RUNNING);
+		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
 		input = new InputController();
@@ -48,6 +44,8 @@ public class Tendu implements ApplicationListener {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
+		
+		spriteBatch = new SpriteBatch();
 	}
 
 	//clean up
@@ -72,7 +70,10 @@ public class Tendu implements ApplicationListener {
 		}
 		
 		camera.update();
+		spriteBatch.setProjectionMatrix(camera.combined);
+		spriteBatch.begin();
 		screen.render(); //draw all graphic for the current frame
+		spriteBatch.end();
 	}
 
 	@Override

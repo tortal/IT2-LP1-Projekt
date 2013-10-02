@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class GameScreen {
 	public Tendu game; //reference to the main Tendu object
 	public MiniGame model; //model of current minigame
-	public SpriteBatch spriteBatch; //used for drawing of graphics
 
 	/**
 	 * @param game Tendu object that creates the screen
@@ -21,8 +20,6 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-
-		spriteBatch = new SpriteBatch();
 	}
 
 	/**
@@ -43,6 +40,5 @@ public abstract class GameScreen {
 	 * 	make sure to call super() if overriden
 	 */
 	public void removed() {
-		spriteBatch.dispose();
 	}
 }

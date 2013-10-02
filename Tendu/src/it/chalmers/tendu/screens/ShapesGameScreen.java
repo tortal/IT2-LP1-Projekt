@@ -18,10 +18,6 @@ public class ShapesGameScreen extends GameScreen {
 	/** All graphics are drawn here */
 	@Override
 	public void render() {
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
-
-		spriteBatch.end();
 	}
 
 	/** All game logic goes here (within the model...) */
