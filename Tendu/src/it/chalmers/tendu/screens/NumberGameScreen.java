@@ -7,7 +7,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
-import it.chalmers.tendu.gamemodel.NumberGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,24 +30,22 @@ class Number {
 	}
 }
 
+/**GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
-	private ShapeRenderer shapeRenderer;
-	private BitmapFont numberFont;
-	private NumberGame model;
+	private ShapeRenderer shapeRenderer; //used to render vector graphics
+	private BitmapFont numberFont; //for rendering fonts
+	private NumberGame model; //Model for current minigame (number)
 
-	
 	private ArrayList<Color> colors;
 	
-	private ArrayList<Integer> selectionNumbers;
-	private ArrayList<Integer> correctNumbers;
 	private ArrayList<NumberCircle> numberCircles;
 	private ArrayList<Number> numbers;
 	
-    private Vector3 touchPos;
+    private Vector3 touchPos; //used to store coordinates for on screen touches
     
-    private int time;
+    private int time; //used to time certain "events" during the game.
     
-    private int numberAlignment;
+    private int numberAlignment; //start position of first number to the left on the screen
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -55,7 +53,6 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer = new ShapeRenderer();
 		
 		numberFont = new BitmapFont();
-		numberFont.scale(2);
 	    touchPos = new Vector3();
 		this.model = (NumberGame)model;
 		
@@ -64,8 +61,7 @@ public class NumberGameScreen extends GameScreen {
 	
 	private void setUpGame() {
 		time = 0;
-		correctNumbers = model.getAnswerList();
-		selectionNumbers = model.getDummyList();
+		numberFont.scale(2); //scale up font relative to the previous scale, -2 scales it back
 		
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Number>();
@@ -81,12 +77,13 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 		
-		for(Integer number: correctNumbers) {
+		for(Integer number: model.getAnswerList()) {
 			numbers.add(new Number(number.intValue(), false));
 		}
 		
-		for(int i = 0; i < selectionNumbers.size(); i++) {
-			numberCircles.add(new NumberCircle(selectionNumbers.get(i), (90+95*i), 120, 35, colors.get(i)));
+		// TODO chooses a static player atm.
+		for(int i = 0; i < model.getPlayerList(0).size(); i++) {
+			numberCircles.add(new NumberCircle(model.getPlayerList(0).get(i), (90+95*i), 120, 35, colors.get(i)));
 		}
 		
 		if(model.getDifficulty() == Constants.Difficulty.ONE) {
@@ -194,7 +191,7 @@ public class NumberGameScreen extends GameScreen {
 		            }
 		        } 
 		        
-		        if (Gdx.input.isTouched()) {
+		        if (input.isTouchedDown()) {
 					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		            game.getCamera().unproject(touchPos);
 		            
