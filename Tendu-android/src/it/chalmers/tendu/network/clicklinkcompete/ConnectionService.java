@@ -141,7 +141,7 @@ public class ConnectionService {
 		}
 
 		public void run() {
-			
+			Log.d(TAG, "Started thread, waiting for input");
 			Object receivedObject;
 
 			//TODO: Break loop when someone disconnects
@@ -297,6 +297,7 @@ public class ConnectionService {
 
 	public int sendMessage(String srcApp, BluetoothDevice destination, NetworkMessage message)
 			throws RemoteException {
+		Log.d(TAG, "sendMessage: " + message.toString() + " to " + destination.getAddress());
 		if (!mApp.equals(srcApp)) {
 			return Connection.FAILURE;
 		}
