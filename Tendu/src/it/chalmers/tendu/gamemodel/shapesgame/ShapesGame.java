@@ -1,7 +1,7 @@
 package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.defaults.GameIds;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class ShapesGame extends MiniGame {
 	 * settings (player count and lock seqeuence length)
 	 */
 	public ShapesGame(int addTime, Difficulty difficulty) {
-		super(addTime, difficulty, GameIds.SHAPES_GAME);
+		super(addTime, difficulty, GameId.SHAPES_GAME);
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();

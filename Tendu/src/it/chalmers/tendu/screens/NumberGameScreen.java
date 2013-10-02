@@ -4,7 +4,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.GameState;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
@@ -137,7 +137,7 @@ public class NumberGameScreen extends GameScreen {
 			drawNumbers(true);
 			
 		} else {
-			if(model.checkGameState() == GameState.IN_PROGRESS) {
+			if(model.checkGameState() == GameState.RUNNING) {
 				numberFont.setColor(Color.BLUE);
 				numberFont.draw(spriteBatch, "Enter the numbers in the correct order", 60, 400);
 			}	
@@ -165,7 +165,7 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		if(model.checkGameState() == GameState.IN_PROGRESS) {
+		if(model.checkGameState() == GameState.RUNNING) {
 			if(time < 240) {
 				time++;
 			} else {
@@ -206,7 +206,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 		
-		if(model.checkGameState() != GameState.IN_PROGRESS) {
+		if(model.checkGameState() != GameState.RUNNING) {
 			time++;
 			if (time>360) {
 				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game, MiniGameFactory.createMiniGame(0, Constants.Difficulty.TWO)));

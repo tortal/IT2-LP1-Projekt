@@ -1,20 +1,22 @@
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.defaults.GameIds;
-import it.chalmers.tendu.defaults.GameState;
+
+import java.util.List;
 
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private int timeLeft;
 	private GameState state;
-	private GameIds gameId;
+	private GameId gameId;
+	
+	private List<Player> players;
 
-	public MiniGame(int addTime, Difficulty difficulty, GameIds gameId) {
+	public MiniGame(int addTime, Difficulty difficulty, GameId gameId) {
 		setTimeLeft(addTime);
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.IN_PROGRESS;
+		this.state = GameState.DEFAULT;
 	}
 
 	public Difficulty getDifficulty() {
@@ -57,11 +59,11 @@ public abstract class MiniGame {
 		state = GameState.WON;
 	}
 
-	public GameIds getGameId() {
+	public GameId getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(GameIds gameId) {
+	public void setGameId(GameId gameId) {
 		this.gameId = gameId;
 	}
 }
