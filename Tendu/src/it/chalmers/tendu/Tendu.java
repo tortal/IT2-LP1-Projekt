@@ -5,11 +5,13 @@ import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameState;
+import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.NumberGameScreen;
 import it.chalmers.tendu.screens.ShapesGameScreen;
 
@@ -69,6 +71,14 @@ public class Tendu implements ApplicationListener {
 			screen.tick(input); //runs tick in the current screen witch should handle all input and game logic for that specific minigame/menu
 			input.tick(); //updates input
 			accum -= 1.0f / 60.0f;
+		}
+		if (model.checkGameState() != GameState.RUNNING) {
+			time++;
+			if (time > 360) {
+				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
+						MiniGameFactory.createMiniGame(0,
+								Constants.Difficulty.TWO)));
+			}
 		}
 		
 		camera.update();

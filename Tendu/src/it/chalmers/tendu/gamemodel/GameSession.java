@@ -2,18 +2,33 @@
 package it.chalmers.tendu.gamemodel;
 
 
+import it.chalmers.tendu.defaults.Constants.Difficulty;
+
 import java.util.List;
 import java.util.Map;
 
 public class GameSession {
 
-	private final GameRoundSettings gameSessionSettings;
 	private MiniGame currentMinigame;
+	private int currentLvl;
+	private Difficulty difficulty;
 	private List<Player> players;
 	private Map<Player, Integer> playerNbr;
+	private Map<Integer, Difficulty> dif;
 	
 
-	public GameSession(GameRoundSettings gameRoundSettings) {
-		this.gameSessionSettings = gameRoundSettings;
+	public GameSession() {
 	}
+	
+	public MiniGame getNextGame(){
+		int bonusTime = currentMinigame.getTimeLeft();
+		if (currentLvl < 5){
+			difficulty = Difficulty.ONE;
+		}else if (currentLvl <10){
+			
+		}
+		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, difficulty);
+		return currentMinigame;
+	}
+		
 }

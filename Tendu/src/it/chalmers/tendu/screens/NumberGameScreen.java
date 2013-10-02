@@ -218,14 +218,14 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
-		if (model.checkGameState() != GameState.RUNNING) {
-			time++;
-			if (time > 360) {
-				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-						MiniGameFactory.createMiniGame(0,
-								Constants.Difficulty.TWO)));
-			}
-		}
+//		if (model.checkGameState() != GameState.RUNNING) {
+//			time++;
+//			if (time > 360) {
+//				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
+//						MiniGameFactory.createMiniGame(0,
+//								Constants.Difficulty.TWO)));
+//			}
+//		}
 
 	}
 
