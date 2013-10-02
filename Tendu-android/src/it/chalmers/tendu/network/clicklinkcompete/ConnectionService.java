@@ -297,21 +297,17 @@ public class ConnectionService {
 		if (!mApp.equals(srcApp)) {
 			return Connection.FAILURE;
 		}
+		
 		try {
-			BluetoothSocket myBsock = mBtSockets.get(destination.getAddress());
-			if (myBsock != null) {
-				OutputStream outStream = myBsock.getOutputStream();
-				byte[] stringAsBytes = (message + " ").getBytes();
-				stringAsBytes[stringAsBytes.length - 1] = 0; // Add a stop
-				// marker
-				outStream.write(stringAsBytes);
-				return Connection.SUCCESS;
-			}
-		} catch (IOException e) {
-			Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message,
-					e);
+			out = new Output(mBtSockets.get(destination).getOutputStream());
+		} catch (IOException e1) {
+			Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message, e1);
+			return Connection.FAILURE;
 		}
-		return Connection.FAILURE;
+		
+		mKryo.writeObject(out, message);
+		
+		return Connection.SUCCESS;
 	}
 
 	public void shutdown(String srcApp) throws RemoteException {
