@@ -20,6 +20,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -42,6 +43,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
 
 /**
  * Service for simplifying the process of establishing Bluetooth connections and
@@ -68,18 +71,20 @@ public class ConnectionService {
 	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
 	private BluetoothAdapter mBtAdapter;
-	
-	private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
-    private OnIncomingConnectionListener mOnIncomingConnectionListener;
+	//private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
-    private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
+	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 
-    private OnMessageReceivedListener mOnMessageReceivedListener;
+	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
 
-    private OnConnectionLostListener mOnConnectionLostListener;
+	private OnMessageReceivedListener mOnMessageReceivedListener;
 
-	public ConnectionService() {
+	private OnConnectionLostListener mOnConnectionLostListener;
+
+	private Context context;
+
+	public ConnectionService(Context context) {
 		mSelf = this;
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		mApp = "";
@@ -95,6 +100,7 @@ public class ConnectionService {
 		mUuid.add(UUID.fromString("503c7433-bc23-11de-8a39-0800200c9a66"));
 		mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
 		mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
+		this.context = context;
 	}
 
 	//    @Override
@@ -106,7 +112,7 @@ public class ConnectionService {
 		private String address;
 		private BluetoothDevice device;
 
-		private Handler handler = new Handler(Looper.getMainLooper());
+		//private Handler handler = new Handler(Looper.getMainLooper());
 
 		public BtStreamWatcher(BluetoothDevice device) {
 			this.device = device;
@@ -138,22 +144,27 @@ public class ConnectionService {
 
 						//mCallback.messageReceived(device, message);
 						//mCallback.messageReceived(device, "Test");
+						
+						mOnMessageReceivedListener.OnMessageReceived(device, message);
+						
 					}
 				}
 			} catch (IOException e) {
 				Log.i(TAG,"IOException in BtStreamWatcher - probably caused by normal disconnection",e);
-			} catch (RemoteException e) {
-				Log.e(TAG, "RemoteException in BtStreamWatcher while reading data", e);
-			}
+			} 
+			//catch (RemoteException e) {
+			//				Log.e(TAG, "RemoteException in BtStreamWatcher while reading data", e);
+			//			}
 			// Getting out of the while loop means the connection is dead.
-			try {
-				mBtDevices.remove(address);
-				mBtSockets.remove(address);
-				mBtStreamWatcherThreads.remove(address);
-				mCallback.connectionLost(device);
-			} catch (RemoteException e) {
-				Log.e(TAG, "RemoteException in BtStreamWatcher while disconnecting", e);
-			}
+			//try {
+			mBtDevices.remove(address);
+			mBtSockets.remove(address);
+			mBtStreamWatcherThreads.remove(address);
+			mOnConnectionLostListener.OnConnectionLost(device);
+			//			} catch (RemoteException e) {
+			//				Log.e(TAG, "RemoteException in BtStreamWatcher while disconnecting", e);
+			//			}
+			//}
 		}
 	}
 
@@ -185,17 +196,18 @@ public class ConnectionService {
 					mBtStreamWatcherThread.start();
 					mBtStreamWatcherThreads.put(address, mBtStreamWatcherThread);
 					maxConnections = maxConnections - 1;
-					if (mCallback != null) {
-						mCallback.incomingConnection(device);
+					if (mOnIncomingConnectionListener != null) {
+						mOnIncomingConnectionListener.OnIncomingConnection(device);
 					}
 				}
-				if (mCallback != null) {
-					mCallback.maxConnectionsReached();
+				if (mOnMaxConnectionsReachedListener != null) {
+					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
 				}
 			} catch (IOException e) {
 				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter", e);
-			} catch (RemoteException e) {
-				Log.e(TAG, "RemoteException in ConnectionService:ConnectionWaiter", e);
+				//			} catch (RemoteException e) {
+				//				Log.e(TAG, "RemoteException in ConnectionService:ConnectionWaiter", e);
+				//			}
 			}
 		}
 	}
@@ -213,29 +225,37 @@ public class ConnectionService {
 	}
 
 	//private final IConnection.Stub mBinder = new IConnection.Stub() {
-	public int startServer(String srcApp, int maxConnections) throws RemoteException {
+	public int startServer(String srcApp, int maxConnections, OnIncomingConnectionListener oicListener, 
+			OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener, 
+			OnConnectionLostListener oclListener) throws RemoteException {
 		if (mApp.length() > 0) {
 			return Connection.FAILURE;
 		}
+
+		mOnIncomingConnectionListener = oicListener;
+		mOnMaxConnectionsReachedListener = omcrListener;
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+
 		mApp = srcApp;
 		(new Thread(new ConnectionWaiter(srcApp, maxConnections))).start();
-
-		//            Intent i = new Intent();
-		//            i.setClass(mSelf, StartDiscoverableModeActivity.class);
-		//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		//            startActivity(i);
 
 		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 		discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(discoverableIntent);
+		((AndroidApplication)context).startActivity(discoverableIntent);
 		return Connection.SUCCESS;
 	}
 
-	public int connect(String srcApp, BluetoothDevice device) throws RemoteException {
+	public int connect(String srcApp, BluetoothDevice device, OnMessageReceivedListener omrListener,
+            OnConnectionLostListener oclListener) throws RemoteException {
 		if (mApp.length() > 0) {
 			return Connection.FAILURE;
 		}
+		
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+		
 		mApp = srcApp;
 		BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device.getAddress());
 		BluetoothSocket myBSock = null;
@@ -286,23 +306,23 @@ public class ConnectionService {
 	}
 
 	public int getVersion() throws RemoteException {
-		try {
-			PackageManager pm = mSelf.getPackageManager();
-			PackageInfo pInfo = pm.getPackageInfo(mSelf.getPackageName(), 0);
-			return pInfo.versionCode;
-		} catch (NameNotFoundException e) {
-			Log.e(TAG, "NameNotFoundException in getVersion", e);
-		}
+		//		try {
+		//			PackageManager pm = mSelf.getPackageManager();
+		//			PackageInfo pInfo = pm.getPackageInfo(mSelf.getPackageName(), 0);
+		//			return pInfo.versionCode;
+		//		} catch (NameNotFoundException e) {
+		//			Log.e(TAG, "NameNotFoundException in getVersion", e);
+		//		}
 		return 0;
 	}
 
-	public int registerCallback(String srcApp, IConnectionCallback cb) throws RemoteException {
-		if (!mApp.equals(srcApp)) {
-			return Connection.FAILURE;
-		}
-		mCallback = cb;
-		return Connection.SUCCESS;
-	}
+	//	public int registerCallback(String srcApp, IConnectionCallback cb) throws RemoteException {
+	//		if (!mApp.equals(srcApp)) {
+	//			return Connection.FAILURE;
+	//		}
+	//		mCallback = cb;
+	//		return Connection.SUCCESS;
+	//	}
 
 	public int sendMessage(String srcApp, BluetoothDevice destination, String message)
 			throws RemoteException {
@@ -341,13 +361,13 @@ public class ConnectionService {
 		}
 	}
 
-	public int unregisterCallback(String srcApp) throws RemoteException {
-		if (!mApp.equals(srcApp)) {
-			return Connection.FAILURE;
-		}
-		mCallback = null;
-		return Connection.SUCCESS;
-	}
+	//	public int unregisterCallback(String srcApp) throws RemoteException {
+	//		if (!mApp.equals(srcApp)) {
+	//			return Connection.FAILURE;
+	//		}
+	//		mCallback = null;
+	//		return Connection.SUCCESS;
+	//	}
 
 	public String getAddress() throws RemoteException {
 		return mBtAdapter.getAddress();

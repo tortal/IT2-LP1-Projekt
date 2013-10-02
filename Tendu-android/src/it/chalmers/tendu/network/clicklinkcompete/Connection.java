@@ -119,7 +119,7 @@ public class Connection {
         mContext = ctx;
         mPackageName = ctx.getPackageName();
         
-        connectionService = new ConnectionService();
+        connectionService = new ConnectionService(ctx);
 //        mServiceConnection = new ServiceConnection() {
 //            public void onServiceConnected(ComponentName name, IBinder service) {
 //                synchronized (mStartLock) {
@@ -166,7 +166,7 @@ public class Connection {
         mOnMessageReceivedListener = omrListener;
         mOnConnectionLostListener = oclListener;
         try {
-            int result = connectionService.startServer(mPackageName, maxConnections);
+            int result = connectionService.startServer(mPackageName, maxConnections, oicListener, omcrListener, omrListener, oclListener);
             //mIconnection.registerCallback(mPackageName, mIccb);
             return result;
         } catch (RemoteException e) {
@@ -183,7 +183,7 @@ public class Connection {
         mOnMessageReceivedListener = omrListener;
         mOnConnectionLostListener = oclListener;
         try {
-            int result = connectionService.connect(mPackageName, device);
+            int result = connectionService.connect(mPackageName, device, omrListener, oclListener);
             //mIconnection.registerCallback(mPackageName, mIccb);
             return result;
         } catch (RemoteException e) {
