@@ -121,7 +121,8 @@ public class NumberGame extends MiniGame {
 	 */
 	private void popAndShuffleList(ArrayList<Integer> list) {
 		int i = 0;
-		while (i < (8 - list.size())) {
+		int length = list.size();
+		while (i < (8 - length)) {
 			int randomNbr = 1 + (int) (Math.random() * 99);
 			if (!(list.contains(randomNbr))) {
 				list.add(randomNbr);

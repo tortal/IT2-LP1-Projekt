@@ -1,22 +1,34 @@
 package it.chalmers.tendu.network.bluetooth;
 
-import it.chalmers.tendu.gamemodel.GameStateBundle;
+import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.network.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.clicklinkcompete.Connection;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.unused.BluetoothGameService;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -27,20 +39,25 @@ public class BluetoothHandler implements INetworkHandler {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final String APP_NAME = "Tendu";
+	private static final int MAX_NUMBER_OF_PLAYERS = 3;
+	private static final int CONNECTION_DELAY = 5000;
 
-	BluetoothGameService bgs;
+	// Handles the bluetooth connections
+	private Connection connection;
 	/** Context in which the handler was declared */
 	private Context context;
 	/** Connection to android bluetooth hardware */
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
-	private Set<BluetoothDevice> devicesSet;
+	private Set<BluetoothDevice> availableDevices;
+	/** Connected devices */
+	private Set<BluetoothDevice> connectedDevices;
 
 	// Game state on server
 	private GameStateBundle gameState; 
+	// For testing
 	private GameStateBundle gameStateTest = new GameStateBundle(5, "MeegaTest");
-	
+
 	/**
 	 * Using the context provided by the class declaring this object, initiates
 	 * all parameters needed to establish both a connection to a running
@@ -57,18 +74,88 @@ public class BluetoothHandler implements INetworkHandler {
 			enableBluetooth();
 		}
 
-		bgs = new BluetoothGameService(context, mHandler);
-		devicesSet = new HashSet<BluetoothDevice>();
+		connection = new Connection(this.context, serviceReadyListener);
+		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 		
-		addTenduToDeviceName();
+		addTenduToDeviceName(false); // Needed?
 	}
 
+	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
+	        public void OnMessageReceived(BluetoothDevice device, final String message) {
+	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
+	        	
+	        	// For testing
+	        	// OnMessageReceived is called from a network thread. 
+	        	// Has to be added to the UI-threads message queue in order to be displayed.
+	        	((AndroidApplication)context).runOnUiThread(new Runnable() {
+	        	    public void run()
+	        	    {
+	        	    	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	        	    }
+	        	});
+	        }
+	    };
+
+	    private OnMaxConnectionsReachedListener maxConnectionsListener = new OnMaxConnectionsReachedListener() {
+	        public void OnMaxConnectionsReached() {
+	        	Log.d(TAG, "Max connections reached");
+	        	// TODO Let libgdx class know it can start the game
+	        }
+	    };
+
+	    private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
+	        public void OnIncomingConnection(BluetoothDevice device) {
+	        	Log.d(TAG,"Incoming connection: " + device.getName());
+	        	// TODO Send on message to libgdx about who has connected so it can be displayed
+	        }
+	    };
+
+	    private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
+	        public void OnConnectionLost(BluetoothDevice device) {
+	        	Log.d(TAG,"Connection lost: " + device);
+	           
+	        	// Show a dialogue notifying user it got disconnected
+	        	class displayConnectionLostAlert implements Runnable {
+	                public void run() {
+	                    Builder connectionLostAlert = new Builder(context);
+
+	                    connectionLostAlert.setTitle("Connection lost");
+	                    connectionLostAlert
+	                            .setMessage("Your connection with the other players has been lost.");
+
+	                    connectionLostAlert.setPositiveButton("Ok", new OnClickListener() {
+	                        public void onClick(DialogInterface dialog, int which) {
+	                            // TODO Let app terminate itself?
+	                        	//finish();
+	                        }
+	                    });
+	                    connectionLostAlert.setCancelable(false);
+	                    try {
+	                    connectionLostAlert.show();
+	                    } catch (BadTokenException e){
+	                        // Something really bad happened here; 
+	                        // seems like the Activity itself went away before
+	                        // the runnable finished.
+	                        // Bail out gracefully here and do nothing.
+	                    }
+	                }
+	            }
+	        	// Display on UI-thread
+	            ((AndroidApplication) context).runOnUiThread(new displayConnectionLostAlert());
+	        }
+	    };
+	
+	private OnConnectionServiceReadyListener serviceReadyListener = new OnConnectionServiceReadyListener() {
+		public void OnConnectionServiceReady() {
+			Log.d(TAG,"Connection service ready");
+		}
+	};
+	
 	@Override
 	public void hostSession() {
-		beDiscoverable();
-		bgs.start();
-
+		addTenduToDeviceName(true);
+		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener, maxConnectionsListener, dataReceivedListener, disconnectedListener);
 	}
 
 	@Override
@@ -77,20 +164,20 @@ public class BluetoothHandler implements INetworkHandler {
 		this.mBluetoothAdapter.startDiscovery();
 
 		// Wait awhile for the handset to discover units 
+		// TODO Refactor so it connects to units as they are discovered
 		mHandler.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				BluetoothDevice bd = findFirstAvailableDevice();
+				BluetoothDevice bd = findAvailableServerDevice();
 				if (bd != null) {
 					Log.d(TAG, "Will now try and connect to: " + bd.getName());
-					bgs.connect(bd, true);
+					connection.connect(bd, dataReceivedListener, disconnectedListener);
 				} else {
 					Log.d(TAG, "No device to connect to");
 				}	
 			}
-			
-		}, 5000);
+		}, CONNECTION_DELAY);
 	}
 
 	/**
@@ -101,9 +188,9 @@ public class BluetoothHandler implements INetworkHandler {
 	 * @see {@link devicesList}, {@link isDeviceValid}
 	 */
 	public Set<BluetoothDevice> searchTeam() {
-		
+
 		Set<BluetoothDevice> devices = new HashSet<BluetoothDevice>();
-		for (BluetoothDevice d : devicesSet) { // bgs.getDevicesList()){
+		for (BluetoothDevice d : availableDevices) { 
 			if (isDeviceValid(d)) {
 				devices.add(d);
 			}
@@ -111,7 +198,7 @@ public class BluetoothHandler implements INetworkHandler {
 		return devices;
 	}
 
-	// ----------------------- HELP METHODS ------------------------
+	// ----------------------- HELPER METHODS ------------------------
 
 	/**
 	 * Checks if bluetooth is enabled. If <code>true</code> does nothing. If
@@ -123,7 +210,7 @@ public class BluetoothHandler implements INetworkHandler {
 			enableBtIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			((AndroidApplication) context).startActivityForResult(
-					enableBtIntent, REQUEST_ENABLE_BT); // context is wrong
+					enableBtIntent, REQUEST_ENABLE_BT); // context is wrong?
 		}
 	}
 
@@ -132,27 +219,44 @@ public class BluetoothHandler implements INetworkHandler {
 	 * as identification
 	 * 
 	 * If the device has no name, it is set to "Tendu"
+	 * @param server if this device is a server device or not
 	 */
-	private void addTenduToDeviceName() {
-		if (mBluetoothAdapter.getName() == null)
-			mBluetoothAdapter.setName(APP_NAME + "");
-		else {
-			String name = mBluetoothAdapter.getName();
-			if (!name.contains(APP_NAME)) {
-				if(mBluetoothAdapter.setName(name + " - " + APP_NAME + " ")) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
-				else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
+	private void addTenduToDeviceName(boolean isServer) {
+		if (mBluetoothAdapter.getName() == null) {
+			mBluetoothAdapter.setName("");
+		} else {
+			removeTenduFromDeviceName();
+		}
+		
+		String oldName = mBluetoothAdapter.getName();
+		String newName = oldName;
+		
+		if (isServer) {
+			if (!oldName.contains(Constants.SERVER_NAME)) {
+				newName = oldName + Constants.SERVER_NAME;
+			}
+		} else {
+			if (!oldName.contains(Constants.CLIENT_NAME)) {
+				newName = oldName + Constants.CLIENT_NAME;
 			}
 		}
+		boolean nameWasChanged = mBluetoothAdapter.setName(newName);
+		if(nameWasChanged) Log.d(TAG, "Device name changed succesfully to: " + mBluetoothAdapter.getName());
+		else Log.d(TAG, "Device namechange failed: " + mBluetoothAdapter.getName());
 	}
 
 	private void removeTenduFromDeviceName() {
-		if (mBluetoothAdapter.getName().contains(APP_NAME)) {
-			String name = mBluetoothAdapter.getName();
-			String newName = name.replace(" - " + APP_NAME + " ", "");
+		String oldName = mBluetoothAdapter.getName(); 
+		if (oldName.contains(Constants.SERVER_NAME)) {
+			String newName = oldName.replace(Constants.SERVER_NAME, "");
+			mBluetoothAdapter.setName(newName);
+		} else if (oldName.contains(Constants.CLIENT_NAME)) {
+			String newName = oldName.replace(Constants.CLIENT_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
+			
 	}
-	
+
 	/**
 	 * Checks if the given device is using "Tendu", rather than just having
 	 * Bluetooth enabled
@@ -166,15 +270,23 @@ public class BluetoothHandler implements INetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(APP_NAME);
+		return device.getName().contains(Constants.CLIENT_NAME);
+	}
+	
+	private boolean isDeviceValidServer(BluetoothDevice device) {
+		if (device == null)
+			return false;
+		if (device.getName() == null)
+			return false;
+		return device.getName().contains(Constants.SERVER_NAME);
 	}
 
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		context.registerReceiver(mReceiver, filter); // Don't forget to
-														// unregister during
-														// onDestroy
+		// unregister during
+		// onDestroy
 	}
 
 	// Create a BroadcastReceiver for ACTION_FOUND
@@ -190,25 +302,29 @@ public class BluetoothHandler implements INetworkHandler {
 					Log.v(TAG, "Device found: " + device.getName() + "Adress: "
 							+ device.getAddress());
 				// Add the device to a list
-				devicesSet.add(device);
+				availableDevices.add(device);
 
 			}
 		}
 	};
 
 	// Temporary test method
-	private BluetoothDevice findFirstAvailableDevice() {
-//		// First look among the paired devices
-//		Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-//		for (BluetoothDevice device: devices) {
-//			if (isDeviceValid(device)) {
-//				return device;
-//			}
-//		}
-//		// Then among the ones that have been discovered
-
+	private BluetoothDevice findAvailableServerDevice() {
 		// Return the first eligible device among the available devices set
-		Iterator<BluetoothDevice> iter = devicesSet.iterator();
+		Iterator<BluetoothDevice> iter = availableDevices.iterator();
+		while (iter.hasNext()) {
+			BluetoothDevice device = iter.next(); 
+			if (isDeviceValidServer(device)) {
+				return device;
+			}
+		}
+		Log.d(TAG, "No eligible Servers found");
+		return null;
+	}
+	
+	private BluetoothDevice findFirstAvailableDevice() {
+		// Return the first eligible device among the available devices set
+		Iterator<BluetoothDevice> iter = availableDevices.iterator();
 		while (iter.hasNext()) {
 			BluetoothDevice device = iter.next(); 
 			if (isDeviceValid(device)) {
@@ -227,31 +343,26 @@ public class BluetoothHandler implements INetworkHandler {
 		context.startActivity(discoverableIntent);
 	}
 
-//	public void sendPing() {
-//		String testString = "Super communication skills";
-//		bgs.write(testString.getBytes());
-//	}
-
 	@Override
 	public void sendObject(Serializable o) {
-		bgs.kryoWrite(o);
+		//bgs.kryoWrite(o);
 
 	}
-	
+
 	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
 		context.unregisterReceiver(mReceiver);
-		bgs.stop();
-		
+		connection.shutdown();
 	}
 
 	@Override
 	public void testStuff() {
-		testSendGameState(gameStateTest);
+		connection.broadcastMessage("Ping maddabing skibbelliwopwopshabaouWHOO!");
+		//testSendGameState(gameStateTest);
 	}
-	
+
 	//@Override
 	public void testSendGameState(GameStateBundle state) {
 		sendObject(state);
@@ -259,22 +370,22 @@ public class BluetoothHandler implements INetworkHandler {
 
 	// Message handler
 	private final Handler mHandler = new Handler() {
-    	@Override
-    	public void handleMessage(Message msg) {
-    		if (msg.what == BluetoothGameService.MESSAGE_READ) {
-    			if (msg.obj instanceof GameStateBundle) {
-    				gameState = (GameStateBundle) msg.obj;
-    				
-    				// Ping Test
-    				GameStateBundle newGameStateBundle = gameStateTest;
-    				String s;
-    				s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
-    				Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-    			}
-    		}
-    		
-    	}
-    };
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == BluetoothGameService.MESSAGE_READ) {
+				if (msg.obj instanceof GameStateBundle) {
+					gameState = (GameStateBundle) msg.obj;
+
+					// Ping Test
+					GameStateBundle newGameStateBundle = gameStateTest;
+					String s;
+					s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
+					Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+				}
+			}
+
+		}
+	};
 
 	@Override
 	public GameStateBundle pollGameState() {
@@ -283,6 +394,21 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public int pollNetworkState() {
-		return bgs.getState();
+		return -1;
+		//return bgs.getState();
+	}
+
+	/**
+	 * @return the connectedDevices
+	 */
+	public Set<BluetoothDevice> getConnectedDevices() {
+		return connectedDevices;
+	}
+
+	/**
+	 * @param connectedDevices the connectedDevices to set
+	 */
+	public void setConnectedDevices(Set<BluetoothDevice> connectedDevices) {
+		this.connectedDevices = connectedDevices;
 	}
 }

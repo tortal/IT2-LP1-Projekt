@@ -215,6 +215,27 @@ public class NumberGameScreen extends GameScreen {
 				}
 
 				if (Gdx.input.isTouched()) {
+		            game.getCamera().unproject(touchPos);
+		            
+		            for(NumberCircle circle: numberCircles) {            	
+		            	if(touchPos.x > circle.leftX && touchPos.x < circle.rightX) {
+		                	if (touchPos.y < circle.topY && touchPos.y > circle.bottomY) {
+		                    	Gdx.input.vibrate(25);
+		                    	if(model.checkNbr(circle.getNumber())) {
+		                    		Gdx.app.log("Correct number = ", "" + circle.getNumber());
+		                    		for(Number num: numbers) {
+		                    			if(num.number == circle.getNumber()) {
+		                    				num.show = true;
+		                    			}
+		                    		}
+		                    	}
+		                	}
+		            	}      	
+		            	circle.scale=1;
+		            }
+		        } 
+		        
+		        if (input.isTouchedDown()) {
 					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 					game.getCamera().unproject(touchPos);
 

@@ -10,4 +10,8 @@ public class Constants {
 
 	}
 
+	public static final String APP_NAME = "Tendu";
+	public static final String SERVER_NAME = " - " + APP_NAME + 'S';
+	public static final String CLIENT_NAME = " - " + APP_NAME + 'C';
+
 }

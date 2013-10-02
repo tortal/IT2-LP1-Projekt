@@ -1,6 +1,5 @@
 package it.chalmers.tendu.network;
 
-import it.chalmers.tendu.gamemodel.GameStateBundle;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package it.chalmers.tendu.gamemodel;
+package it.chalmers.tendu.network;
 
 import java.io.Serializable;
 
