@@ -295,14 +295,24 @@ public class ConnectionService {
 		return connections;
 	}
 
+	/** 
+	 * Sends a message to a specific bluetoothdevice
+	 * @param srcApp
+	 * @param destination The destination device
+	 * @param message The message to send
+	 * @return Connection.FAILURE or Connection.SUCCESS
+	 * @throws RemoteException
+	 */
 	public int sendMessage(String srcApp, BluetoothDevice destination, NetworkMessage message)
 			throws RemoteException {
 		if (!mApp.equals(srcApp)) {
 			return Connection.FAILURE;
 		}
 		
+		String address = destination.getAddress();
+		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
-			out = new Output(mBtSockets.get(destination.getAddress()).getOutputStream());
+			out = new Output(btSocket.getOutputStream());
 		} catch (IOException e1) {
 			Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message, e1);
 			return Connection.FAILURE;
