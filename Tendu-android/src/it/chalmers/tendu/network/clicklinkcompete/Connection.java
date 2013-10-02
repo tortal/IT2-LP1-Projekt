@@ -154,9 +154,9 @@ public class Connection {
     public int startServer(final int maxConnections, OnIncomingConnectionListener oicListener,
             OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener,
             OnConnectionLostListener oclListener) {
-        if (!mStarted) {
-            return Connection.FAILURE;
-        }
+//        if (!mStarted) {
+//            return Connection.FAILURE;
+//        }
         if (maxConnections > MAX_SUPPORTED) {
             Log.e(TAG, "The maximum number of allowed connections is " + MAX_SUPPORTED);
             return Connection.FAILURE;
@@ -177,9 +177,9 @@ public class Connection {
 
     public int connect(BluetoothDevice device, OnMessageReceivedListener omrListener,
             OnConnectionLostListener oclListener) {
-        if (!mStarted) {
-            return Connection.FAILURE;
-        }
+//        if (!mStarted) {
+//            return Connection.FAILURE;
+//        }
         mOnMessageReceivedListener = omrListener;
         mOnConnectionLostListener = oclListener;
         try {
@@ -193,9 +193,9 @@ public class Connection {
     }
 
     public int sendMessage(BluetoothDevice device, String message) {
-        if (!mStarted) {
-            return Connection.FAILURE;
-        }
+//        if (!mStarted) {
+//            return Connection.FAILURE;
+//        }
         try {
             return connectionService.sendMessage(mPackageName, device, message);
         } catch (RemoteException e) {
@@ -205,9 +205,9 @@ public class Connection {
     }
 
     public int broadcastMessage(String message) {
-        if (!mStarted) {
-            return Connection.FAILURE;
-        }
+//        if (!mStarted) {
+//            return Connection.FAILURE;
+//        }
         try {
             return connectionService.broadcastMessage(mPackageName, message);
         } catch (RemoteException e) {
@@ -217,9 +217,9 @@ public class Connection {
     }
 
     public String getConnections() {
-        if (!mStarted) {
-            return "";
-        }
+//        if (!mStarted) {
+//            return "";
+//        }
         try {
             return connectionService.getConnections(mPackageName);
         } catch (RemoteException e) {
@@ -229,9 +229,9 @@ public class Connection {
     }
 
     public int getVersion() {
-        if (!mStarted) {
-            return Connection.FAILURE;
-        }
+//        if (!mStarted) {
+//            return Connection.FAILURE;
+//        }
         try {
             return connectionService.getVersion();
         } catch (RemoteException e) {
@@ -241,9 +241,9 @@ public class Connection {
     }
 
     public String getAddress() {
-        if (!mStarted) {
-            return "";
-        }
+//        if (!mStarted) {
+//            return "";
+//        }
         try {
             return connectionService.getAddress();
         } catch (RemoteException e) {
@@ -253,9 +253,9 @@ public class Connection {
     }
     
     public String getName() {
-        if (!mStarted) {
-            return "";
-        }
+//        if (!mStarted) {
+//            return "";
+//        }
         try {
             return connectionService.getName();
         } catch (RemoteException e) {

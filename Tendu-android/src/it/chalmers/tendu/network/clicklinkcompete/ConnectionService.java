@@ -242,7 +242,7 @@ public class ConnectionService {
 
 		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-		discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		//discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		((AndroidApplication)context).startActivity(discoverableIntent);
 		return Connection.SUCCESS;
 	}
