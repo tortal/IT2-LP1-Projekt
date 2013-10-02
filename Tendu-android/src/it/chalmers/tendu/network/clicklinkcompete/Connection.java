@@ -17,6 +17,7 @@
 package it.chalmers.tendu.network.clicklinkcompete;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.network.NetworkMessage;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -136,7 +137,7 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
-	public int sendMessage(BluetoothDevice device, String message) {
+	public int sendMessage(BluetoothDevice device, NetworkMessage message) {
 		
 		try {
 			return connectionService.sendMessage(mPackageName, device, message);
@@ -146,32 +147,12 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
-	public int broadcastMessage(String message) {
+	public int broadcastMessage(NetworkMessage message) {
 		
 		try {
 			return connectionService.broadcastMessage(mPackageName, message);
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in broadcastMessage", e);
-		}
-		return Connection.FAILURE;
-	}
-
-	public String getConnections() {
-
-		try {
-			return connectionService.getConnections(mPackageName);
-		} catch (RemoteException e) {
-			Log.e(TAG, "RemoteException in getConnections", e);
-		}
-		return "";
-	}
-
-	public int getVersion() {
-		
-		try {
-			return connectionService.getVersion();
-		} catch (RemoteException e) {
-			Log.e(TAG, "RemoteException in getVersion", e);
 		}
 		return Connection.FAILURE;
 	}
@@ -207,5 +188,4 @@ public class Connection {
 			Log.e(TAG, "RemoteException in shutdown", e);
 		}
 	}
-
 }

@@ -280,7 +280,7 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public int broadcastMessage(String srcApp, String message) throws RemoteException {
+	public int broadcastMessage(String srcApp, NetworkMessage message) throws RemoteException {
 		if (!mApp.equals(srcApp)) {
 			return Connection.FAILURE;
 		}
@@ -301,7 +301,7 @@ public class ConnectionService {
 		return connections;
 	}
 
-	public int sendMessage(String srcApp, BluetoothDevice destination, String message)
+	public int sendMessage(String srcApp, BluetoothDevice destination, NetworkMessage message)
 			throws RemoteException {
 		if (!mApp.equals(srcApp)) {
 			return Connection.FAILURE;

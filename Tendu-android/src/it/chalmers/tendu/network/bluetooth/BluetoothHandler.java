@@ -3,6 +3,7 @@ package it.chalmers.tendu.network.bluetooth;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
@@ -359,7 +360,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 	@Override
 	public void testStuff() {
-		connection.broadcastMessage("Ping maddabing skibbelliwopwopshabaouWHOO!");
+		connection.broadcastMessage(new NetworkMessage());
 		//testSendGameState(gameStateTest);
 	}
 
