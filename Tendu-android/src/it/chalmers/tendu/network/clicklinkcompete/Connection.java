@@ -22,7 +22,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -79,68 +81,73 @@ public class Connection {
 
     private boolean mStarted = false;
 
-    private final Object mStartLock = new Object();
+    //private final Object mStartLock = new Object();
 
-    private IConnection mIconnection;
-
-    private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
-        public void incomingConnection(BluetoothDevice device) throws RemoteException {
-            if (mOnIncomingConnectionListener != null) {
-                mOnIncomingConnectionListener.OnIncomingConnection(device);
-            }
-        }
-
-        public void connectionLost(BluetoothDevice device) throws RemoteException {
-            if (mOnConnectionLostListener != null) {
-                mOnConnectionLostListener.OnConnectionLost(device);
-            }
-        }
-
-        public void maxConnectionsReached() throws RemoteException {
-            if (mOnMaxConnectionsReachedListener != null) {
-                mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
-            }
-        }
-
-        public void messageReceived(BluetoothDevice device, String message) throws RemoteException {
-            if (mOnMessageReceivedListener != null) {
-                mOnMessageReceivedListener.OnMessageReceived(device, message);
-            }
-        }
-    };
+    //private IConnection mIconnection;
+    
+    private ConnectionService connectionService;
+    
+    
+//    private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
+//        public void incomingConnection(BluetoothDevice device) throws RemoteException {
+//            if (mOnIncomingConnectionListener != null) {
+//                mOnIncomingConnectionListener.OnIncomingConnection(device);
+//            }
+//        }
+//
+//        public void connectionLost(BluetoothDevice device) throws RemoteException {
+//            if (mOnConnectionLostListener != null) {
+//                mOnConnectionLostListener.OnConnectionLost(device);
+//            }
+//        }
+//
+//        public void maxConnectionsReached() throws RemoteException {
+//            if (mOnMaxConnectionsReachedListener != null) {
+//                mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+//            }
+//        }
+//
+//        public void messageReceived(BluetoothDevice device, String message) throws RemoteException {
+//            if (mOnMessageReceivedListener != null) {
+//                mOnMessageReceivedListener.OnMessageReceived(device, message);
+//            }
+//        }
+//    };
 
     public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
         mOnConnectionServiceReadyListener = ocsrListener;
         mContext = ctx;
         mPackageName = ctx.getPackageName();
-        mServiceConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                synchronized (mStartLock) {
-                    mIconnection = IConnection.Stub.asInterface(service);
-                    mStarted = true;
-                    if (mOnConnectionServiceReadyListener != null) {
-                        mOnConnectionServiceReadyListener.OnConnectionServiceReady();
-                    }
-                }
-            }
-
-            public void onServiceDisconnected(ComponentName name) {
-                synchronized (mStartLock) {
-                    try {
-                        mStarted = false;
-                        mIconnection.unregisterCallback(mPackageName);
-                        mIconnection.shutdown(mPackageName);
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "RemoteException in onServiceDisconnected", e);
-                    }
-                    mIconnection = null;
-                }
-            }
-        };
-
-        Intent intent = new Intent("com.google.intent.action.BT_ClickLinkCompete_SERVICE");
-        intent.addCategory("com.google.intent.category.BT_ClickLinkCompete");
-        mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        
+        connectionService = new ConnectionService();
+//        mServiceConnection = new ServiceConnection() {
+//            public void onServiceConnected(ComponentName name, IBinder service) {
+//                synchronized (mStartLock) {
+//                    mIconnection = IConnection.Stub.asInterface(service);
+//                    mStarted = true;
+//                    if (mOnConnectionServiceReadyListener != null) {
+//                        mOnConnectionServiceReadyListener.OnConnectionServiceReady();
+//                    }
+//                }
+//            }
+//
+//            public void onServiceDisconnected(ComponentName name) {
+//                synchronized (mStartLock) {
+//                    try {
+//                        mStarted = false;
+//                        mIconnection.unregisterCallback(mPackageName);
+//                        mIconnection.shutdown(mPackageName);
+//                    } catch (RemoteException e) {
+//                        Log.e(TAG, "RemoteException in onServiceDisconnected", e);
+//                    }
+//                    mIconnection = null;
+//                }
+//            }
+//        };
+//
+//        Intent intent = new Intent("com.google.intent.action.BT_ClickLinkCompete_SERVICE");
+//        intent.addCategory("com.google.intent.category.BT_ClickLinkCompete");
+//        mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -159,8 +166,8 @@ public class Connection {
         mOnMessageReceivedListener = omrListener;
         mOnConnectionLostListener = oclListener;
         try {
-            int result = mIconnection.startServer(mPackageName, maxConnections);
-            mIconnection.registerCallback(mPackageName, mIccb);
+            int result = connectionService.startServer(mPackageName, maxConnections);
+            //mIconnection.registerCallback(mPackageName, mIccb);
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in startServer", e);  
@@ -176,8 +183,8 @@ public class Connection {
         mOnMessageReceivedListener = omrListener;
         mOnConnectionLostListener = oclListener;
         try {
-            int result = mIconnection.connect(mPackageName, device);
-            mIconnection.registerCallback(mPackageName, mIccb);
+            int result = connectionService.connect(mPackageName, device);
+            //mIconnection.registerCallback(mPackageName, mIccb);
             return result;
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in connect", e);
@@ -190,7 +197,7 @@ public class Connection {
             return Connection.FAILURE;
         }
         try {
-            return mIconnection.sendMessage(mPackageName, device, message);
+            return connectionService.sendMessage(mPackageName, device, message);
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in sendMessage", e);
         }
@@ -202,7 +209,7 @@ public class Connection {
             return Connection.FAILURE;
         }
         try {
-            return mIconnection.broadcastMessage(mPackageName, message);
+            return connectionService.broadcastMessage(mPackageName, message);
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in broadcastMessage", e);
         }
@@ -214,7 +221,7 @@ public class Connection {
             return "";
         }
         try {
-            return mIconnection.getConnections(mPackageName);
+            return connectionService.getConnections(mPackageName);
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getConnections", e);
         }
@@ -226,7 +233,7 @@ public class Connection {
             return Connection.FAILURE;
         }
         try {
-            return mIconnection.getVersion();
+            return connectionService.getVersion();
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getVersion", e);
         }
@@ -238,7 +245,7 @@ public class Connection {
             return "";
         }
         try {
-            return mIconnection.getAddress();
+            return connectionService.getAddress();
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getAddress", e);
         }
@@ -250,7 +257,7 @@ public class Connection {
             return "";
         }
         try {
-            return mIconnection.getName();
+            return connectionService.getName();
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getVersion", e);
         }
@@ -260,8 +267,8 @@ public class Connection {
     public void shutdown() {
         try {
             mStarted = false;
-            if (mIconnection != null) {
-                mIconnection.shutdown(mPackageName);
+            if (connectionService != null) {
+            	connectionService.shutdown(mPackageName);
             }
             mContext.unbindService(mServiceConnection);
         } catch (RemoteException e) {
