@@ -4,6 +4,8 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.List;
 
+
+
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
@@ -142,6 +144,10 @@ public abstract class MiniGame {
 	 * @return true if the game is over. 
 	 */
 	public boolean isGameOver() {
-		return (endTime - System.currentTimeMillis()) < 0;
+		return getTimeLeft() < 0;
+	}
+	
+	public long getGameTime() {
+		return gameTime;
 	}
 }

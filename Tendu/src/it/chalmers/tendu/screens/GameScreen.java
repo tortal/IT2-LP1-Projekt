@@ -45,4 +45,5 @@ public abstract class GameScreen {
 	public void removed() {
 		spriteBatch.dispose();
 	}
+	
 }
