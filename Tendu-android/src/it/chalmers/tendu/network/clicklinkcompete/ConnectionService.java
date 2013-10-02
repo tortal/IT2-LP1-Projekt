@@ -16,24 +16,8 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.RemoteException;
-import android.util.Log;
-
 import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
@@ -45,8 +29,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.Intent;
+import android.os.RemoteException;
+import android.util.Log;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
 /**
  * Service for simplifying the process of establishing Bluetooth connections and
@@ -74,7 +69,7 @@ public class ConnectionService {
 
 	private BluetoothAdapter mBtAdapter;
 	
-	private Kryo mKryo;
+	
 
 	//private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
@@ -87,6 +82,12 @@ public class ConnectionService {
 	private OnConnectionLostListener mOnConnectionLostListener;
 
 	private Context context;
+	
+	/** Kryo Variables*/
+	private Kryo mKryo;
+	
+	private Output out;
+
 
 	public ConnectionService(Context context) {
 		mSelf = this;
@@ -119,21 +120,40 @@ public class ConnectionService {
 	
 	private class BtStreamWatcher implements Runnable {
 		private String address;
-		private BluetoothDevice device;
+		private BluetoothDevice device;	
+		private Input in;
+		
 
 		//private Handler handler = new Handler(Looper.getMainLooper());
 
 		public BtStreamWatcher(BluetoothDevice device) {
 			this.device = device;
 			address = device.getAddress();
+			mBtSockets.get(address);
+			
+			try {
+				in = new Input(mBtSockets.get(address).getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
 		public void run() {
 			int bufferSize = 1024;
 			byte[] buffer = new byte[bufferSize];
 			BluetoothSocket bSock = mBtSockets.get(address);
+			
+			Object receivedObject;
 			try {
 				InputStream instream = bSock.getInputStream();
+				
+				receivedObject = mKryo.readClassAndObject(in);
+				if(receivedObject instanceof NetworkMessage){
+					
+					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
+				}
 				
 				int bytesRead = -1;
 				String message = "";
@@ -345,5 +365,7 @@ public class ConnectionService {
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
+	
+	
 
 }
