@@ -1,6 +1,8 @@
-package it.chalmers.tendu.network;
+package it.chalmers.tendu.unused;
 
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.network.Client;
+import it.chalmers.tendu.network.Server;
 
 import java.util.List;
 
