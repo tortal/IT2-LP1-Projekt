@@ -37,6 +37,7 @@ public class NumberGame extends MiniGame {
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
 		playerLists = divideAndConquer(answerList);
+		
 	}
 
 	/**

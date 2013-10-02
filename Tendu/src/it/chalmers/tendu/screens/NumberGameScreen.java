@@ -235,7 +235,7 @@ public class NumberGameScreen extends GameScreen {
 			time++;
 			if (time > 360) {
 				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-						MiniGameFactory.createMiniGame(0,
+						MiniGameFactory.createMiniGame(30000,
 								Constants.Difficulty.TWO)));
 			}
 		}

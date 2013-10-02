@@ -29,7 +29,7 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.DEFAULT;
+		this.state = GameState.RUNNING;
 		setTime(time);
 		gameTime= time;
 	}
