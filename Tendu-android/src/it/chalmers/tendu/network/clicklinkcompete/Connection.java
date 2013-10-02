@@ -16,16 +16,9 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.NetworkMessage;
 import android.bluetooth.BluetoothDevice;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -33,10 +26,12 @@ import android.util.Log;
  * API for the Bluetooth Click, Link, Compete library. This library simplifies
  * the process of establishing Bluetooth connections and sending data in a way
  * that is geared towards multi-player games.
+ * 
+ * Tailored to size by the Tendu crew
  */
 
 public class Connection {
-	public static final String TAG = "net.clc.bt.Connection";
+	public static final String TAG = "Connection";
 
 	public static final int SUCCESS = 0;
 
@@ -65,13 +60,9 @@ public class Connection {
 	}
 
 	private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
-
 	private OnIncomingConnectionListener mOnIncomingConnectionListener;
-
 	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
-
 	private OnMessageReceivedListener mOnMessageReceivedListener;
-
 	private OnConnectionLostListener mOnConnectionLostListener;
 
 	private Context mContext;
