@@ -141,47 +141,23 @@ public class ConnectionService {
 		}
 
 		public void run() {
-			int bufferSize = 1024;
-			byte[] buffer = new byte[bufferSize];
-			BluetoothSocket bSock = mBtSockets.get(address);
-
+			
 			Object receivedObject;
 
-			int bytesRead = -1;
-			String message = "";
+			//TODO: Break loop when someone disconnects
 			while (true) {
-				message = "";
-				bytesRead = instream.read(buffer);
-				if (bytesRead != -1) {
-					while ((bytesRead == bufferSize) && (buffer[bufferSize - 1] != 0)) {
-						message = message + new String(buffer, 0, bytesRead);
-						bytesRead = instream.read(buffer);
-					}
-					message = message + new String(buffer, 0, bytesRead - 1); // Remove
-					// the
-					// stop
-					// marker
-
-					//handler.post()
-
-					//mCallback.messageReceived(device, message);
-					//mCallback.messageReceived(device, "Test");
-
-
-				}
-
-				InputStream instream = bSock.getInputStream();
-
 				receivedObject = mKryo.readClassAndObject(in);
+				
 				if(receivedObject instanceof NetworkMessage){
-
 					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
 				}
-				mBtDevices.remove(address);
-				mBtSockets.remove(address);
-				mBtStreamWatcherThreads.remove(address);
-				mOnConnectionLostListener.OnConnectionLost(device);
 			}
+			
+//			mBtDevices.remove(address);
+//			mBtSockets.remove(address);
+//			mBtStreamWatcherThreads.remove(address);
+//			mOnConnectionLostListener.OnConnectionLost(device);
+			
 		}
 	}
 	private class ConnectionWaiter implements Runnable {
