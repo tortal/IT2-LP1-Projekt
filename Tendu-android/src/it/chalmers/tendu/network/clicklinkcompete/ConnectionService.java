@@ -108,6 +108,14 @@ public class ConnectionService {
 	//        return mBinder;
 	//    }
 
+	private void initializeKryoSerializer() {
+    	mKryo = new Kryo();
+    	
+    	// Register the classes we want to send over the network
+    	mKryo.register(NetworkMessage.class);
+    }
+	
+	
 	private class BtStreamWatcher implements Runnable {
 		private String address;
 		private BluetoothDevice device;
