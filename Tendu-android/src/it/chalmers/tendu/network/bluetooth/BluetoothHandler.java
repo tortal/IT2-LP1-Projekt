@@ -9,6 +9,7 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionService
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.unused.BluetoothGameService;
 
 import java.io.Serializable;
 import java.util.HashSet;

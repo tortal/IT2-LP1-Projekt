@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.chalmers.tendu.network.clicklinkcompete;
+package it.chalmers.tendu.unused;
 
 import it.chalmers.tendu.R;
 import android.app.Activity;

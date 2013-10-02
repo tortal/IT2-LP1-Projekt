@@ -9,14 +9,14 @@ import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
  */
 public class MiniGameFactory {
 
-	public static MiniGame createMiniGame(int addTime, Difficulty difficulty) {
+	public static MiniGame createMiniGame(int bonusTime, Difficulty difficulty) {
 		MiniGame miniGame = null;
 		switch (difficulty) {
 		case ONE:
-			miniGame = new NumberGame(addTime, Difficulty.ONE);
+			miniGame = new NumberGame(bonusTime, Difficulty.ONE);
 		case TWO:
 //			miniGame = new ShapesGame(addTime, Difficulty.TWO);
-			miniGame = new NumberGame(addTime, Difficulty.TWO);
+			miniGame = new NumberGame(bonusTime, Difficulty.TWO);
 		case THREE:
 			break;
 		case FOUR:
