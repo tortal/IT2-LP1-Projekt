@@ -55,12 +55,6 @@ public class ConnectionService {
 
 	private ConnectionService mSelf;
 
-	private String mApp; // Assume only one app can use this at a time; may
-
-	// change this later
-
-	//private IConnectionCallback mCallback;
-
 	private ArrayList<BluetoothDevice> mBtDevices;
 
 	private HashMap<String, BluetoothSocket> mBtSockets;
@@ -92,7 +86,6 @@ public class ConnectionService {
 	public ConnectionService(Context context) {
 		mSelf = this;
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-		mApp = "";
 		mBtSockets = new HashMap<String, BluetoothSocket>();
 		mBtDevices = new ArrayList<BluetoothDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
@@ -168,8 +161,7 @@ public class ConnectionService {
 
 		private int maxConnections;
 
-		public ConnectionWaiter(String theApp, int connections) {
-			srcApp = theApp;
+		public ConnectionWaiter(int connections) {
 			maxConnections = connections;
 		}
 
@@ -218,17 +210,13 @@ public class ConnectionService {
 	public int startServer(String srcApp, int maxConnections, OnIncomingConnectionListener oicListener, 
 			OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener, 
 			OnConnectionLostListener oclListener) throws RemoteException {
-		if (mApp.length() > 0) {
-			return Connection.FAILURE;
-		}
 
 		mOnIncomingConnectionListener = oicListener;
 		mOnMaxConnectionsReachedListener = omcrListener;
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		mApp = srcApp;
-		(new Thread(new ConnectionWaiter(srcApp, maxConnections))).start();
+		(new Thread(new ConnectionWaiter(maxConnections))).start();
 
 		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
@@ -237,16 +225,12 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public int connect(String srcApp, BluetoothDevice device, OnMessageReceivedListener omrListener,
+	public int connect(BluetoothDevice device, OnMessageReceivedListener omrListener,
 			OnConnectionLostListener oclListener) throws RemoteException {
-		if (mApp.length() > 0) {
-			return Connection.FAILURE;
-		}
 
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		mApp = srcApp;
 		BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device.getAddress());
 		BluetoothSocket myBSock = null;
 
@@ -274,20 +258,14 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public int broadcastMessage(String srcApp, NetworkMessage message) throws RemoteException {
-		if (!mApp.equals(srcApp)) {
-			return Connection.FAILURE;
-		}
+	public int broadcastMessage(NetworkMessage message) throws RemoteException {
 		for (int i = 0; i < mBtDevices.size(); i++) {
-			sendMessage(srcApp, mBtDevices.get(i), message);
+			sendMessage(mBtDevices.get(i), message);
 		}
 		return Connection.SUCCESS;
 	}
 
-	public String getConnections(String srcApp) throws RemoteException {
-		if (!mApp.equals(srcApp)) {
-			return "";
-		}
+	public String getConnections() throws RemoteException {
 		String connections = "";
 		for (int i = 0; i < mBtDevices.size(); i++) {
 			connections = connections + mBtDevices.get(i) + ",";
@@ -303,11 +281,8 @@ public class ConnectionService {
 	 * @return Connection.FAILURE or Connection.SUCCESS
 	 * @throws RemoteException
 	 */
-	public int sendMessage(String srcApp, BluetoothDevice destination, NetworkMessage message)
+	public int sendMessage(BluetoothDevice destination, NetworkMessage message)
 			throws RemoteException {
-		if (!mApp.equals(srcApp)) {
-			return Connection.FAILURE;
-		}
 		
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
@@ -323,7 +298,7 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public void shutdown(String srcApp) throws RemoteException {
+	public void shutdown() throws RemoteException {
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
 				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
@@ -332,7 +307,6 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
-			mApp = "";
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in shutdown", e);
 		}
@@ -345,8 +319,4 @@ public class ConnectionService {
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
-
-
-
 }
-

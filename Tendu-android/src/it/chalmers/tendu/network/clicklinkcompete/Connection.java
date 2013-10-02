@@ -127,9 +127,7 @@ public class Connection {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 		try {
-			int result = connectionService.connect(mPackageName, device,
-					omrListener, oclListener);
-			// mIconnection.registerCallback(mPackageName, mIccb);
+			int result = connectionService.connect(device, omrListener, oclListener);
 			return result;
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in connect", e);
@@ -140,7 +138,7 @@ public class Connection {
 	public int sendMessage(BluetoothDevice device, NetworkMessage message) {
 
 		try {
-			return connectionService.sendMessage(mPackageName, device, message);
+			return connectionService.sendMessage(device, message);
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in sendMessage", e);
 		}
@@ -150,7 +148,7 @@ public class Connection {
 	public int broadcastMessage(NetworkMessage message) {
 
 		try {
-			return connectionService.broadcastMessage(mPackageName, message);
+			return connectionService.broadcastMessage(message);
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in broadcastMessage", e);
 		}
@@ -181,7 +179,7 @@ public class Connection {
 		try {
 			mStarted = false;
 			if (connectionService != null) {
-				connectionService.shutdown(mPackageName);
+				connectionService.shutdown();
 			}
 			mContext.unbindService(mServiceConnection);
 		} catch (RemoteException e) {
