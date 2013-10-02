@@ -83,7 +83,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
-	        public void OnMessageReceived(BluetoothDevice device, final String message) {
+	        public void OnMessageReceived(BluetoothDevice device, final NetworkMessage message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
 	        	
 	        	// For testing
@@ -92,7 +92,7 @@ public class BluetoothHandler implements INetworkHandler {
 	        	((AndroidApplication)context).runOnUiThread(new Runnable() {
 	        	    public void run()
 	        	    {
-	        	    	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	        	    	Toast.makeText(context, message.toString(), Toast.LENGTH_LONG).show();
 	        	    }
 	        	});
 	        }

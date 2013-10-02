@@ -57,7 +57,7 @@ public class Connection {
 	}
 
 	public interface OnMessageReceivedListener {
-		public void OnMessageReceived(BluetoothDevice device, String message);
+		public void OnMessageReceived(BluetoothDevice device, NetworkMessage message);
 	}
 
 	public interface OnConnectionLostListener {
