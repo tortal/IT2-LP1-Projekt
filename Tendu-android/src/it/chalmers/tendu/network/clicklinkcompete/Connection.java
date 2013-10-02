@@ -81,40 +81,7 @@ public class Connection {
 
 	private boolean mStarted = false;
 
-	// private final Object mStartLock = new Object();
-
-	// private IConnection mIconnection;
-
 	private ConnectionService connectionService;
-
-	// private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
-	// public void incomingConnection(BluetoothDevice device) throws
-	// RemoteException {
-	// if (mOnIncomingConnectionListener != null) {
-	// mOnIncomingConnectionListener.OnIncomingConnection(device);
-	// }
-	// }
-	//
-	// public void connectionLost(BluetoothDevice device) throws RemoteException
-	// {
-	// if (mOnConnectionLostListener != null) {
-	// mOnConnectionLostListener.OnConnectionLost(device);
-	// }
-	// }
-	//
-	// public void maxConnectionsReached() throws RemoteException {
-	// if (mOnMaxConnectionsReachedListener != null) {
-	// mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
-	// }
-	// }
-	//
-	// public void messageReceived(BluetoothDevice device, String message)
-	// throws RemoteException {
-	// if (mOnMessageReceivedListener != null) {
-	// mOnMessageReceivedListener.OnMessageReceived(device, message);
-	// }
-	// }
-	// };
 
 	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
 		mOnConnectionServiceReadyListener = ocsrListener;
@@ -122,36 +89,6 @@ public class Connection {
 		mPackageName = ctx.getPackageName();
 
 		connectionService = new ConnectionService(ctx);
-		// mServiceConnection = new ServiceConnection() {
-		// public void onServiceConnected(ComponentName name, IBinder service) {
-		// synchronized (mStartLock) {
-		// mIconnection = IConnection.Stub.asInterface(service);
-		// mStarted = true;
-		// if (mOnConnectionServiceReadyListener != null) {
-		// mOnConnectionServiceReadyListener.OnConnectionServiceReady();
-		// }
-		// }
-		// }
-		//
-		// public void onServiceDisconnected(ComponentName name) {
-		// synchronized (mStartLock) {
-		// try {
-		// mStarted = false;
-		// mIconnection.unregisterCallback(mPackageName);
-		// mIconnection.shutdown(mPackageName);
-		// } catch (RemoteException e) {
-		// Log.e(TAG, "RemoteException in onServiceDisconnected", e);
-		// }
-		// mIconnection = null;
-		// }
-		// }
-		// };
-		//
-		// Intent intent = new
-		// Intent("com.google.intent.action.BT_ClickLinkCompete_SERVICE");
-		// intent.addCategory("com.google.intent.category.BT_ClickLinkCompete");
-		// mContext.bindService(intent, mServiceConnection,
-		// Context.BIND_AUTO_CREATE);
 
 	}
 
