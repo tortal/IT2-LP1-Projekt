@@ -31,6 +31,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
 
+import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
