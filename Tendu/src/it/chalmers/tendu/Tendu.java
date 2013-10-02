@@ -3,12 +3,15 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.Message;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -16,7 +19,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Tendu implements ApplicationListener {
+public class Tendu implements ApplicationListener, Listener {
 	private GameScreen screen; //contains whats shown on device screen in any given moment. Changes depending current minigame or if in a menu etc
 	private float accum = 0; //used to help lock frame rate in 60 frames per second
 	private InputController input; //used for handling input (obviously)
@@ -24,7 +27,8 @@ public class Tendu implements ApplicationListener {
 	
 	private INetworkHandler networkHandler; //handle to all network related stuff (Android specific, at least for now)
 	public SpriteBatch spriteBatch; //used for drawing of graphics
-
+	private GameSession gameSession;
+	
 	public Tendu(INetworkHandler netCom) {
 		setNetworkHandler(netCom);
 	}
@@ -129,5 +133,11 @@ public class Tendu implements ApplicationListener {
 		}
 		
 					
+	}
+
+	@Override
+	public void onBroadcast(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }
