@@ -35,245 +35,240 @@ import android.util.Log;
  */
 
 public class Connection {
-    public static final String TAG = "net.clc.bt.Connection";
+	public static final String TAG = "net.clc.bt.Connection";
 
-    public static final int SUCCESS = 0;
+	public static final int SUCCESS = 0;
 
-    public static final int FAILURE = 1;
+	public static final int FAILURE = 1;
 
-    public static final int MAX_SUPPORTED = 7;
+	public static final int MAX_SUPPORTED = 7;
 
-    public interface OnConnectionServiceReadyListener {
-        public void OnConnectionServiceReady();
-    }
+	public interface OnConnectionServiceReadyListener {
+		public void OnConnectionServiceReady();
+	}
 
-    public interface OnIncomingConnectionListener {
-        public void OnIncomingConnection(BluetoothDevice device);
-    }
+	public interface OnIncomingConnectionListener {
+		public void OnIncomingConnection(BluetoothDevice device);
+	}
 
-    public interface OnMaxConnectionsReachedListener {
-        public void OnMaxConnectionsReached();
-    }
+	public interface OnMaxConnectionsReachedListener {
+		public void OnMaxConnectionsReached();
+	}
 
-    public interface OnMessageReceivedListener {
-        public void OnMessageReceived(BluetoothDevice device, String message);
-    }
+	public interface OnMessageReceivedListener {
+		public void OnMessageReceived(BluetoothDevice device, String message);
+	}
 
-    public interface OnConnectionLostListener {
-        public void OnConnectionLost(BluetoothDevice device);
-    }
+	public interface OnConnectionLostListener {
+		public void OnConnectionLost(BluetoothDevice device);
+	}
 
-    private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
+	private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 
-    private OnIncomingConnectionListener mOnIncomingConnectionListener;
+	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 
-    private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
+	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
 
-    private OnMessageReceivedListener mOnMessageReceivedListener;
+	private OnMessageReceivedListener mOnMessageReceivedListener;
 
-    private OnConnectionLostListener mOnConnectionLostListener;
+	private OnConnectionLostListener mOnConnectionLostListener;
 
-    private ServiceConnection mServiceConnection;
+	private ServiceConnection mServiceConnection;
 
-    private Context mContext;
+	private Context mContext;
 
-    private String mPackageName = Constants.APP_NAME;
+	private String mPackageName = Constants.APP_NAME;
 
-    private boolean mStarted = false;
+	private boolean mStarted = false;
 
-    //private final Object mStartLock = new Object();
+	// private final Object mStartLock = new Object();
 
-    //private IConnection mIconnection;
-    
-    private ConnectionService connectionService;
-    
-    
-//    private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
-//        public void incomingConnection(BluetoothDevice device) throws RemoteException {
-//            if (mOnIncomingConnectionListener != null) {
-//                mOnIncomingConnectionListener.OnIncomingConnection(device);
-//            }
-//        }
-//
-//        public void connectionLost(BluetoothDevice device) throws RemoteException {
-//            if (mOnConnectionLostListener != null) {
-//                mOnConnectionLostListener.OnConnectionLost(device);
-//            }
-//        }
-//
-//        public void maxConnectionsReached() throws RemoteException {
-//            if (mOnMaxConnectionsReachedListener != null) {
-//                mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
-//            }
-//        }
-//
-//        public void messageReceived(BluetoothDevice device, String message) throws RemoteException {
-//            if (mOnMessageReceivedListener != null) {
-//                mOnMessageReceivedListener.OnMessageReceived(device, message);
-//            }
-//        }
-//    };
+	// private IConnection mIconnection;
 
-    public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
-        mOnConnectionServiceReadyListener = ocsrListener;
-        mContext = ctx;
-        mPackageName = ctx.getPackageName();
-        
-        connectionService = new ConnectionService(ctx);
-//        mServiceConnection = new ServiceConnection() {
-//            public void onServiceConnected(ComponentName name, IBinder service) {
-//                synchronized (mStartLock) {
-//                    mIconnection = IConnection.Stub.asInterface(service);
-//                    mStarted = true;
-//                    if (mOnConnectionServiceReadyListener != null) {
-//                        mOnConnectionServiceReadyListener.OnConnectionServiceReady();
-//                    }
-//                }
-//            }
-//
-//            public void onServiceDisconnected(ComponentName name) {
-//                synchronized (mStartLock) {
-//                    try {
-//                        mStarted = false;
-//                        mIconnection.unregisterCallback(mPackageName);
-//                        mIconnection.shutdown(mPackageName);
-//                    } catch (RemoteException e) {
-//                        Log.e(TAG, "RemoteException in onServiceDisconnected", e);
-//                    }
-//                    mIconnection = null;
-//                }
-//            }
-//        };
-//
-//        Intent intent = new Intent("com.google.intent.action.BT_ClickLinkCompete_SERVICE");
-//        intent.addCategory("com.google.intent.category.BT_ClickLinkCompete");
-//        mContext.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+	private ConnectionService connectionService;
 
-    }
+	// private IConnectionCallback mIccb = new IConnectionCallback.Stub() {
+	// public void incomingConnection(BluetoothDevice device) throws
+	// RemoteException {
+	// if (mOnIncomingConnectionListener != null) {
+	// mOnIncomingConnectionListener.OnIncomingConnection(device);
+	// }
+	// }
+	//
+	// public void connectionLost(BluetoothDevice device) throws RemoteException
+	// {
+	// if (mOnConnectionLostListener != null) {
+	// mOnConnectionLostListener.OnConnectionLost(device);
+	// }
+	// }
+	//
+	// public void maxConnectionsReached() throws RemoteException {
+	// if (mOnMaxConnectionsReachedListener != null) {
+	// mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+	// }
+	// }
+	//
+	// public void messageReceived(BluetoothDevice device, String message)
+	// throws RemoteException {
+	// if (mOnMessageReceivedListener != null) {
+	// mOnMessageReceivedListener.OnMessageReceived(device, message);
+	// }
+	// }
+	// };
 
-    public int startServer(final int maxConnections, OnIncomingConnectionListener oicListener,
-            OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener,
-            OnConnectionLostListener oclListener) {
-//        if (!mStarted) {
-//            return Connection.FAILURE;
-//        }
-        if (maxConnections > MAX_SUPPORTED) {
-            Log.e(TAG, "The maximum number of allowed connections is " + MAX_SUPPORTED);
-            return Connection.FAILURE;
-        }
-        mOnIncomingConnectionListener = oicListener;
-        mOnMaxConnectionsReachedListener = omcrListener;
-        mOnMessageReceivedListener = omrListener;
-        mOnConnectionLostListener = oclListener;
-        try {
-            int result = connectionService.startServer(mPackageName, maxConnections, oicListener, omcrListener, omrListener, oclListener);
-            //mIconnection.registerCallback(mPackageName, mIccb);
-            return result;
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in startServer", e);  
-        }
-        return Connection.FAILURE;
-    }
+	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
+		mOnConnectionServiceReadyListener = ocsrListener;
+		mContext = ctx;
+		mPackageName = ctx.getPackageName();
 
-    public int connect(BluetoothDevice device, OnMessageReceivedListener omrListener,
-            OnConnectionLostListener oclListener) {
-//        if (!mStarted) {
-//            return Connection.FAILURE;
-//        }
-        mOnMessageReceivedListener = omrListener;
-        mOnConnectionLostListener = oclListener;
-        try {
-            int result = connectionService.connect(mPackageName, device, omrListener, oclListener);
-            //mIconnection.registerCallback(mPackageName, mIccb);
-            return result;
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in connect", e);
-        }
-        return Connection.FAILURE;
-    }
+		connectionService = new ConnectionService(ctx);
+		// mServiceConnection = new ServiceConnection() {
+		// public void onServiceConnected(ComponentName name, IBinder service) {
+		// synchronized (mStartLock) {
+		// mIconnection = IConnection.Stub.asInterface(service);
+		// mStarted = true;
+		// if (mOnConnectionServiceReadyListener != null) {
+		// mOnConnectionServiceReadyListener.OnConnectionServiceReady();
+		// }
+		// }
+		// }
+		//
+		// public void onServiceDisconnected(ComponentName name) {
+		// synchronized (mStartLock) {
+		// try {
+		// mStarted = false;
+		// mIconnection.unregisterCallback(mPackageName);
+		// mIconnection.shutdown(mPackageName);
+		// } catch (RemoteException e) {
+		// Log.e(TAG, "RemoteException in onServiceDisconnected", e);
+		// }
+		// mIconnection = null;
+		// }
+		// }
+		// };
+		//
+		// Intent intent = new
+		// Intent("com.google.intent.action.BT_ClickLinkCompete_SERVICE");
+		// intent.addCategory("com.google.intent.category.BT_ClickLinkCompete");
+		// mContext.bindService(intent, mServiceConnection,
+		// Context.BIND_AUTO_CREATE);
 
-    public int sendMessage(BluetoothDevice device, String message) {
-//        if (!mStarted) {
-//            return Connection.FAILURE;
-//        }
-        try {
-            return connectionService.sendMessage(mPackageName, device, message);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in sendMessage", e);
-        }
-        return Connection.FAILURE;
-    }
+	}
 
-    public int broadcastMessage(String message) {
-//        if (!mStarted) {
-//            return Connection.FAILURE;
-//        }
-        try {
-            return connectionService.broadcastMessage(mPackageName, message);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in broadcastMessage", e);
-        }
-        return Connection.FAILURE;
-    }
+	public int startServer(final int maxConnections,
+			OnIncomingConnectionListener oicListener,
+			OnMaxConnectionsReachedListener omcrListener,
+			OnMessageReceivedListener omrListener,
+			OnConnectionLostListener oclListener) {
 
-    public String getConnections() {
-//        if (!mStarted) {
-//            return "";
-//        }
-        try {
-            return connectionService.getConnections(mPackageName);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in getConnections", e);
-        }
-        return "";
-    }
+		if (maxConnections > MAX_SUPPORTED) {
+			Log.e(TAG, "The maximum number of allowed connections is "
+					+ MAX_SUPPORTED);
+			return Connection.FAILURE;
+		}
+		mOnIncomingConnectionListener = oicListener;
+		mOnMaxConnectionsReachedListener = omcrListener;
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+		try {
+			int result = connectionService.startServer(mPackageName,
+					maxConnections, oicListener, omcrListener, omrListener,
+					oclListener);
+			// mIconnection.registerCallback(mPackageName, mIccb);
+			return result;
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in startServer", e);
+		}
+		return Connection.FAILURE;
+	}
 
-    public int getVersion() {
-//        if (!mStarted) {
-//            return Connection.FAILURE;
-//        }
-        try {
-            return connectionService.getVersion();
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in getVersion", e);
-        }
-        return Connection.FAILURE;
-    }
+	public int connect(BluetoothDevice device,
+			OnMessageReceivedListener omrListener,
+			OnConnectionLostListener oclListener) {
 
-    public String getAddress() {
-//        if (!mStarted) {
-//            return "";
-//        }
-        try {
-            return connectionService.getAddress();
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in getAddress", e);
-        }
-        return "";
-    }
-    
-    public String getName() {
-//        if (!mStarted) {
-//            return "";
-//        }
-        try {
-            return connectionService.getName();
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in getVersion", e);
-        }
-        return "";
-    }
-    
-    public void shutdown() {
-        try {
-            mStarted = false;
-            if (connectionService != null) {
-            	connectionService.shutdown(mPackageName);
-            }
-            mContext.unbindService(mServiceConnection);
-        } catch (RemoteException e) {
-            Log.e(TAG, "RemoteException in shutdown", e);
-        }
-    }
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+		try {
+			int result = connectionService.connect(mPackageName, device,
+					omrListener, oclListener);
+			// mIconnection.registerCallback(mPackageName, mIccb);
+			return result;
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in connect", e);
+		}
+		return Connection.FAILURE;
+	}
+
+	public int sendMessage(BluetoothDevice device, String message) {
+		
+		try {
+			return connectionService.sendMessage(mPackageName, device, message);
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in sendMessage", e);
+		}
+		return Connection.FAILURE;
+	}
+
+	public int broadcastMessage(String message) {
+		
+		try {
+			return connectionService.broadcastMessage(mPackageName, message);
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in broadcastMessage", e);
+		}
+		return Connection.FAILURE;
+	}
+
+	public String getConnections() {
+
+		try {
+			return connectionService.getConnections(mPackageName);
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in getConnections", e);
+		}
+		return "";
+	}
+
+	public int getVersion() {
+		
+		try {
+			return connectionService.getVersion();
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in getVersion", e);
+		}
+		return Connection.FAILURE;
+	}
+
+	public String getAddress() {
+		
+		try {
+			return connectionService.getAddress();
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in getAddress", e);
+		}
+		return "";
+	}
+
+	public String getName() {
+		
+		try {
+			return connectionService.getName();
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in getVersion", e);
+		}
+		return "";
+	}
+
+	public void shutdown() {
+		try {
+			mStarted = false;
+			if (connectionService != null) {
+				connectionService.shutdown(mPackageName);
+			}
+			mContext.unbindService(mServiceConnection);
+		} catch (RemoteException e) {
+			Log.e(TAG, "RemoteException in shutdown", e);
+		}
+	}
 
 }
