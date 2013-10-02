@@ -3,6 +3,8 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
@@ -33,7 +35,10 @@ public class Tendu implements ApplicationListener {
 		//here we should load the start screen of the game
 		//setScreenByNetworkState();
 		//setScreen(new MainMenuScreen(this, null));
-		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		NumberGame game = new NumberGame(0, Difficulty.ONE);
+		GameScreen screen = new NumberGameScreen(this, game);
+		setScreen(screen);
+		game.setGameState(GameState.RUNNING);
 		
 		//create an inputController and register it with Gdx
 		input = new InputController();
