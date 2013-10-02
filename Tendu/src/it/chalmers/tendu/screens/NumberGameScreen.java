@@ -43,9 +43,7 @@ public class NumberGameScreen extends GameScreen {
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
 	private int time; // used to time certain "events" during the game.
-	private int count; // used to count renders for events that should be
-						// displayed a short time.
-
+	
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 
@@ -133,7 +131,7 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics here */
 	@Override
 	public void render() {
-		model.checkGame();
+		super.render();
 		spriteBatch.setProjectionMatrix(game.getCamera().combined);
 		spriteBatch.begin();
 
@@ -168,35 +166,12 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.scale(-2);
 		}
 
-		//Render line that is the timer.
 		shapeRenderer.end();
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		if (count == 0) {
-			shapeRenderer.setColor(Color.YELLOW);
-		}else{
-			shapeRenderer.setColor(Color.RED);
-			count --;
-		}
-//		shapeRenderer.line(50, 50, calculateTimerEndPos(), 50);
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 3);
-		shapeRenderer.end();
-		
-		//Head for the timer.
-//		shapeRenderer.begin(ShapeType.FilledCircle);
-//		shapeRenderer.filledCircle(calculateTimerWidth(), 50, 3);
-//		shapeRenderer.end();
 
 		spriteBatch.end();
 
 	}
 
-	private int calculateTimerWidth() {
-		double quota = (double) model.getTimeLeft()
-				/ (double) model.getGameTime();
-		double endPos = Math.abs(quota * 754);
-		return (int) endPos;
-
-	}
 
 	/** All game logic goes here */
 	@Override
@@ -224,8 +199,7 @@ public class NumberGameScreen extends GameScreen {
 										}
 									}
 								} else
-									model.changeTimeWith(-2000);
-									count=60;
+									super.loseTime(2000);
 							}
 						}
 						circle.scale = 1;
