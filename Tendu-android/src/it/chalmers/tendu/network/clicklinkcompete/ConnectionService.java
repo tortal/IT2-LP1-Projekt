@@ -254,7 +254,6 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		// mApp = srcApp;
 		(new Thread(new ConnectionWaiter(maxConnections))).start();
 
 		Intent discoverableIntent = new Intent(
@@ -273,7 +272,6 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		// mApp = srcApp;
 		BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device
 				.getAddress());
 		BluetoothSocket myBSock = null;
