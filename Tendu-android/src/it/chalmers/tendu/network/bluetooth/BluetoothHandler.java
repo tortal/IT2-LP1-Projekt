@@ -163,12 +163,6 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 
 	public void hostSession() {
-		((AndroidApplication)context).runOnUiThread(new Runnable() {
-			public void run()
-			{
-				Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
-			}
-		});
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener,
 				maxConnectionsListener, dataReceivedListener,
