@@ -3,7 +3,7 @@ package it.chalmers.tendu.tbd;
 public class C {
 
 	public enum Tag  {
-		COMMAND, REQUEST;
+		COMMAND, REQUEST, DEFAULT;
 	}
 	
 	public enum Msg  {

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class GameSession {
 
-	private GameId currentMinigame;
+	private MiniGame currentMinigame;
 	private int currentLvl;
 	private Difficulty difficulty;
 	// private List<Player> players;
@@ -20,16 +20,19 @@ public class GameSession {
 	}
 
 	public GameId getNextGame() {
-		int bonusTime = currentMinigame.getTimeLeft();
 		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
 		} else if (currentLvl < 10) {
 			difficulty = Difficulty.TWO;
 		}
-		currentMinigame = MiniGameFactory.createMiniGameId(bonusTime, difficulty);
+		return MiniGameFactory.createGameId(difficulty);
+	}
+
+	public MiniGame getGame(GameId gameId) {
+		int bonusTime = currentMinigame.getTimeLeft();
+		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, gameId,
+				difficulty);
 		return currentMinigame;
 	}
-	
-	
 
 }

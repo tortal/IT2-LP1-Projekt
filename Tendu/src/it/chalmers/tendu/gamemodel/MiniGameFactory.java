@@ -12,23 +12,25 @@ import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
  *same game (on the specified difficulty) more than once;
  */
 public class MiniGameFactory {
-	
-	public static GameId createId
 
-	public static MiniGame createMiniGame(int bonusTime, Difficulty difficulty) {
-		
-		MiniGame miniGame = null;
+	public static GameId createGameId(Difficulty difficulty) {
 		List<GameId> games = GameId.getGameIdsFor(difficulty);
 		Collections.shuffle(games);
 		GameId game = games.get(0);
-		
-		switch (game) {
+		return game;
+	}
+
+	public static MiniGame createMiniGame(int bonusTime, GameId gameId,
+			Difficulty difficulty) {
+
+		MiniGame miniGame = null;
+
+		switch (gameId) {
 		case NUMBER_GAME:
 			miniGame = new NumberGame(bonusTime, difficulty);
 		case SHAPES_GAME:
 			miniGame = new ShapesGame(bonusTime, difficulty);
 		}
 		return miniGame;
-
 	}
 }
