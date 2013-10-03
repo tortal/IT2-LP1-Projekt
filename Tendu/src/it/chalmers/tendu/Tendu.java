@@ -3,6 +3,7 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
@@ -28,6 +29,8 @@ public class Tendu implements ApplicationListener, Listener {
 	
 	private INetworkHandler networkHandler; //handle to all network related stuff (Android specific, at least for now)
 	public SpriteBatch spriteBatch; //used for drawing of graphics
+	
+	private GameLobby gameLobby;
 	private GameSession gameSession;
 	
 	public Tendu(INetworkHandler netCom) {

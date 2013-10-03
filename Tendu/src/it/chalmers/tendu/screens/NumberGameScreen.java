@@ -111,8 +111,9 @@ public class NumberGameScreen extends GameScreen {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (numbers.get(i).show == true) {
 					numberFont.setColor(colors.get(i));
-					numberFont.draw(game.spriteBatch, "" + numbers.get(i).number,
-							numberAlignment + i * 105, 300);
+					numberFont.draw(game.spriteBatch, ""
+							+ numbers.get(i).number, numberAlignment + i * 105,
+							300);
 				}
 			}
 		}
@@ -130,7 +131,7 @@ public class NumberGameScreen extends GameScreen {
 		numberFont.draw(game.spriteBatch, "" + circle.getNumber(),
 				circle.getNumberX(), circle.getNumberY());
 	}
-	
+
 	private void drawNumberCircles() {
 		numberFont.scale(-0.8f);
 		for (int i = 0; i < numberCircles.size(); i++) {
@@ -138,7 +139,6 @@ public class NumberGameScreen extends GameScreen {
 		}
 		numberFont.scale(0.8f);
 	}
-
 
 	/** Draw all graphics here */
 	@Override
@@ -175,54 +175,46 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		if (model.checkGameState() == GameState.RUNNING) {
-			if (time < 240) {
-				time++;
-			} else {
-				if (input.isTouchedUp()) {
-					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-					game.getCamera().unproject(touchPos);
-					EventBus.INSTANCE.broadcast(new Message("Message test", "touchUp", null));
-					for (NumberCircle circle : numberCircles) {
-						if (circle.collided(touchPos)) {
-								Gdx.input.vibrate(25);
-								if (model.checkNbr(circle.getNumber())) {
-									Gdx.app.log("Correct number = ", ""
-											+ circle.getNumber());
-									for (Number num : numbers) {
-										if (num.number == circle.getNumber()) {
-											num.show = true;
-										}
-									}
-								
+		if (model.checkGameState() != GameState.RUNNING)
+			return;
+		
+		if (time < 240) {
+			time++;
+		} else {
+			if (input.isTouchedUp()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+				game.getCamera().unproject(touchPos);
+				EventBus.INSTANCE.broadcast(new Message("Message test",
+						"touchUp", null));
+				for (NumberCircle circle : numberCircles) {
+					if (circle.collided(touchPos)) {
+						Gdx.input.vibrate(25);
+						if (model.checkNbr(circle.getNumber())) {
+							Gdx.app.log("Correct number = ",
+									"" + circle.getNumber());
+							for (Number num : numbers) {
+								if (num.number == circle.getNumber()) {
+									num.show = true;
+								}
 							}
+
 						}
-						circle.scale = 1;
 					}
+					circle.scale = 1;
 				}
+			}
 
-				if (input.isTouchedDown()) {
-					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-					game.getCamera().unproject(touchPos);
+			if (input.isTouchedDown()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+				game.getCamera().unproject(touchPos);
 
-					for (NumberCircle circle : numberCircles) {
-						if (circle.collided(touchPos)) {
-								circle.scale = 1.5f;
-						}			
+				for (NumberCircle circle : numberCircles) {
+					if (circle.collided(touchPos)) {
+						circle.scale = 1.5f;
 					}
 				}
 			}
 		}
-
-//		if (model.checkGameState() != GameState.RUNNING) {
-//			time++;
-//			if (time > 360) {
-//				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-//						MiniGameFactory.createMiniGame(0,
-//								Constants.Difficulty.TWO)));
-//			}
-//		}
-
 	}
 
 	@Override
