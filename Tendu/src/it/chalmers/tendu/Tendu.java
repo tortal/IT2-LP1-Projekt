@@ -19,7 +19,7 @@ import it.chalmers.tendu.screens.NumberGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
-import it.chalmers.tendu.tbd.Message;
+import it.chalmers.tendu.tbd.EventMessage;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -152,14 +152,14 @@ public class Tendu implements ApplicationListener, Listener {
 	}
 
 	@Override
-	public void onBroadcast(Message message) {
+	public void onBroadcast(EventMessage message) {
 		// TODO Auto-generated method stub
 		switch (message.msg) {
 		case LOBBY_READY:
 			gameSession = gameLobby.getGameSession();
 			if (host) {
 				GameId gameId = gameSession.getNextGame();
-				EventBus.INSTANCE.broadcast(new Message(C.Tag.DEFAULT,
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.DEFAULT,
 						C.Msg.LOAD_THIS_GAME, gameId));
 			}
 			break;

@@ -8,7 +8,7 @@ import java.util.Map;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
-import it.chalmers.tendu.tbd.Message;
+import it.chalmers.tendu.tbd.EventMessage;
 
 public class GameLobby implements Listener {
 
@@ -26,13 +26,13 @@ public class GameLobby implements Listener {
 	}
 
 	@Override
-	public void onBroadcast(Message message) {
+	public void onBroadcast(EventMessage message) {
 		// TODO Auto-generated method stub
 		if (message.msg.equals(C.Msg.PLAYERS_CONNECTED)) {
 			// get mac addresses for each player.
 			List<String> list = (List) message.content;
 			addPlayers(list);
-			EventBus.INSTANCE.broadcast(new Message(C.Tag.COMMAND, C.Msg.LOBBY_READY));
+			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND, C.Msg.LOBBY_READY));
 		}
 	}
 }

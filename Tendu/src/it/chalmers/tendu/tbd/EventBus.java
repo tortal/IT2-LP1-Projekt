@@ -11,7 +11,7 @@ public enum EventBus {
 	
 	private List<Listener> listeners = new ArrayList<Listener>();
 
-	public void broadcast(Message message){
+	public void broadcast(EventMessage message){
 		Gdx.app.log("EventBus", "broadcasting" + message);
 		for (Listener l : listeners){
 			l.onBroadcast(message);

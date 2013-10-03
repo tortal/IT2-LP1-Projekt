@@ -9,10 +9,16 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionService
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.unused.BluetoothGameService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import android.app.AlertDialog.Builder;
@@ -32,7 +38,7 @@ import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class BluetoothHandler implements INetworkHandler {
+public class BluetoothHandler implements INetworkHandler, Listener {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler";
 
@@ -71,6 +77,9 @@ public class BluetoothHandler implements INetworkHandler {
 		connection = new Connection(this.context, serviceReadyListener);
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
+		
+		// Register as listener on the eventbus
+		EventBus.INSTANCE.addListener(this);
 
 	}
 
@@ -97,6 +106,13 @@ public class BluetoothHandler implements INetworkHandler {
 		public void OnMaxConnectionsReached() {
 			Log.d(TAG, "Max connections reached");
 			// TODO Let libgdx class know it can start the game
+			
+			// Send on a list of all connected devices mac addresses
+			List<String> addresses = new ArrayList<String>();
+			for (BluetoothDevice device: connectedDevices ) {
+				addresses.add(device.getAddress());
+			}
+			broadcastPlayersReadyMessage(addresses);
 		}
 	};
 	private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
@@ -111,6 +127,7 @@ public class BluetoothHandler implements INetworkHandler {
 							Toast.LENGTH_SHORT).show();
 				}
 			});
+			connectedDevices.add(device);
 		}
 	};
 
@@ -118,7 +135,6 @@ public class BluetoothHandler implements INetworkHandler {
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
-
 			// Show a dialogue notifying user it got disconnected
 			class displayConnectionLostAlert implements Runnable {
 				public void run() {
@@ -147,6 +163,8 @@ public class BluetoothHandler implements INetworkHandler {
 					}
 				}
 			}
+			connectedDevices.remove(device);
+			
 			// Display on UI-thread
 			((AndroidApplication) context)
 			.runOnUiThread(new displayConnectionLostAlert());
@@ -404,5 +422,17 @@ public class BluetoothHandler implements INetworkHandler {
 	 */
 	public Set<BluetoothDevice> getConnectedDevices() {
 		return connectedDevices;
+	}
+
+	@Override
+	public void onBroadcast(it.chalmers.tendu.tbd.EventMessage message) {
+		// TODO React on eventbus events
+		
+	}
+	
+	/** Send the mac-addresses of all connected units to the main controller */
+	private void broadcastPlayersReadyMessage(List<String> addresses) {
+		EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
+		EventBus.INSTANCE.broadcast(message);
 	}
 }
