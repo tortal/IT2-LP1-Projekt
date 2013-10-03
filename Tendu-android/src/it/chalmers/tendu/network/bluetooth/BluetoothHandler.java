@@ -36,6 +36,8 @@ import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler, Listener {
@@ -432,7 +434,13 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(List<String> addresses) {
-		EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
-		EventBus.INSTANCE.broadcast(message);
+		final EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
+		Gdx.app.postRunnable(new Runnable() {
+
+			@Override
+			public void run() {
+				EventBus.INSTANCE.broadcast(message);
+			}
+		});
 	}
 }
