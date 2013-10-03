@@ -5,12 +5,15 @@ import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.Message;
@@ -41,9 +44,9 @@ public class Tendu implements ApplicationListener, Listener {
 	public void create() {
 		EventBus.INSTANCE.addListener(this); //register with event bus
 		//here we should load the start screen of the game
-		//setScreenByNetworkState();
-		//setScreen(new MainMenuScreen(this, null));
-		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		setScreenByNetworkState();
+		setScreen(new MainMenuScreen(this, null));
+//		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
 		input = new InputController();
@@ -80,14 +83,7 @@ public class Tendu implements ApplicationListener, Listener {
 			input.tick(); //updates input
 			accum -= 1.0f / 60.0f;
 		}
-//		if (model.checkGameState() != GameState.RUNNING) {
-//			time++;
-//			if (time > 360) {
-//				game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-//						MiniGameFactory.createMiniGame(0,
-//								Constants.Difficulty.TWO)));
-//			}
-//		}
+
 		
 		camera.update();
 		spriteBatch.setProjectionMatrix(camera.combined);
@@ -154,6 +150,19 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(Message message) {
 		// TODO Auto-generated method stub
-		Gdx.app.log(message.tag, message.msg);
+		switch (message.msg) {
+		case LOBBY_READY:
+			gameSession = gameLobby.getGameSession();
+			
+			if(host)
+				random game, broadCast(LOAD_THIS_GAME);
+			//setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getNextGame()));
+			break;
+		case LOAD_THIS_GAME:
+			//setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame) message.content));
+			break;
+		default:
+			break;
+		}
 	}
 }

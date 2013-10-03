@@ -12,6 +12,8 @@ import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
  *same game (on the specified difficulty) more than once;
  */
 public class MiniGameFactory {
+	
+	public static GameId createId
 
 	public static MiniGame createMiniGame(int bonusTime, Difficulty difficulty) {
 		
