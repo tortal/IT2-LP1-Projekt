@@ -266,41 +266,58 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		} else {
 			removeTenduFromDeviceName();
 		}
-
-		String oldName = mBluetoothAdapter.getName();
-		String newName = new String(oldName);
-
-		if (isServer) {
-			if (!oldName.contains(Constants.SERVER_NAME)) {
-				newName = oldName + Constants.SERVER_NAME;
-			} 
-		} else {
-			if (!oldName.contains(Constants.CLIENT_NAME)) {
-				newName = oldName + Constants.CLIENT_NAME;
-			} 
-		}
 		
-		boolean nameWasChanged = mBluetoothAdapter.setName(newName);
-		if (nameWasChanged)
-			Log.d(TAG, "Device name changed succesfully to: "
-					+ mBluetoothAdapter.getName());
-		else
-			Log.d(TAG,
-					"Device namechange failed: " + mBluetoothAdapter.getName());
+		String oldName = mBluetoothAdapter.getName();
+		String newName = oldName;
+		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
+			newName = oldName + Constants.SERVER_NAME;
+			mBluetoothAdapter.setName(newName);
+		}
+		Log.d(TAG, "Add name: " + oldName + " -> " + newName);
+//			
+		
+//		String oldName = mBluetoothAdapter.getName();
+//		String newName = new String(oldName);
+//
+//		if (isServer) {
+//			if (!oldName.contains(Constants.SERVER_NAME)) {
+//				newName = oldName + Constants.SERVER_NAME;
+//			} 
+//		} else {
+//			if (!oldName.contains(Constants.CLIENT_NAME)) {
+//				newName = oldName + Constants.CLIENT_NAME;
+//			} 
+//		}
+//		
+//		boolean nameWasChanged = mBluetoothAdapter.setName(newName);
+//		if (nameWasChanged)
+//			Log.d(TAG, "Device name changed succesfully to: "
+//					+ mBluetoothAdapter.getName());
+//		else
+//			Log.d(TAG,
+//					"Device namechange failed: " + mBluetoothAdapter.getName());
 	}
 
 	private void removeTenduFromDeviceName() {
 		String oldName = mBluetoothAdapter.getName();
+		String newName = oldName;
+
 		if (oldName.contains(Constants.SERVER_NAME)) {
-			String newName = oldName.replace(Constants.SERVER_NAME, "");
-			mBluetoothAdapter.setName(newName);
-			oldName = newName;
-		} 
-		  
-		if (oldName.contains(Constants.CLIENT_NAME)) {
-			String newName = oldName.replace(Constants.CLIENT_NAME, "");
+			newName = oldName.replace(Constants.SERVER_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
+		Log.v(TAG, "Remove: " + oldName + " -> " + newName);
+		
+//		if (oldName.contains(Constants.SERVER_NAME)) {
+//			String newName = oldName.replace(Constants.SERVER_NAME, "");
+//			mBluetoothAdapter.setName(newName);
+//			oldName = newName;
+//		} 
+//		  
+//		if (oldName.contains(Constants.CLIENT_NAME)) {
+//			String newName = oldName.replace(Constants.CLIENT_NAME, "");
+//			mBluetoothAdapter.setName(newName);
+//		}
 	}
 
 	/**
