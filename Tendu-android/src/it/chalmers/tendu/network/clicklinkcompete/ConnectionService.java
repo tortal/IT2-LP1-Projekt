@@ -122,24 +122,37 @@ public class ConnectionService {
 
 
 	private class BtStreamWatcher implements Runnable {
-		private String address;
-		private BluetoothDevice device;	
-		private Input in;
+		private final String address;
+		private final BluetoothDevice device;	
+		private final Input in;
 
+		private final InputStream mmInStream;
 
 		//private Handler handler = new Handler(Looper.getMainLooper());
 
 		public BtStreamWatcher(BluetoothDevice device) {
-			this.device = device;
-			address = device.getAddress();
-			mBtSockets.get(address);
+	            InputStream tmpIn = null;
 
-			try {
-				in = new Input(mBtSockets.get(address).getInputStream());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	            this.device = device;
+				address = device.getAddress();
+				BluetoothSocket btSocket = mBtSockets.get(address);
+	            
+	            // Get the BluetoothSocket inputstream
+	            try {
+	                tmpIn = btSocket.getInputStream();
+	            } catch (IOException e) {
+	                Log.e(TAG, "temp sockets not created", e);
+	            }
+
+	            mmInStream = tmpIn;
+	            in = new Input(mmInStream);
+			
+//			try {
+//				in = new Input(mBtSockets.get(address).getInputStream());
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
 		}
 
