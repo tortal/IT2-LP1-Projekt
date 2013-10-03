@@ -29,8 +29,7 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.DEFAULT;
-		setTime(time);
+		setEndTime(time);
 		gameTime= time;
 		this.state = GameState.RUNNING;
 	}
@@ -71,7 +70,7 @@ public abstract class MiniGame {
 	 * @param timeLeft
 	 *            The wanted time in milliseconds.
 	 */
-	public void setTime(long time) {
+	public void setEndTime(long time) {
 		endTime = System.currentTimeMillis() + time;
 	}
 
@@ -81,7 +80,7 @@ public abstract class MiniGame {
 	 * of milliseconds. Could be positive or negative number. 
 	 */
 	public void changeTimeWith(int time) {
-		setTime(getTimeLeft() + time);
+		setEndTime(getTimeLeft() + time);
 		if (getTimeLeft() <= 0) {
 			gameLost();
 		}
@@ -145,7 +144,7 @@ public abstract class MiniGame {
 	 * Resume the game
 	 */
 	public void resumeGame(){
-		setTime(pausedTimeLeft);
+		setEndTime(pausedTimeLeft);
 	}
 	
 	/**

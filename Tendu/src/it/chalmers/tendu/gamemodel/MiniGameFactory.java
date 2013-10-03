@@ -28,8 +28,10 @@ public class MiniGameFactory {
 		switch (gameId) {
 		case NUMBER_GAME:
 			miniGame = new NumberGame(bonusTime, difficulty);
+			break;
 		case SHAPES_GAME:
 			miniGame = new ShapesGame(bonusTime, difficulty);
+			break;
 		}
 		return miniGame;
 	}

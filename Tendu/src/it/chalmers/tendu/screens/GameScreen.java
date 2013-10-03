@@ -28,7 +28,9 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-		model.startGame();
+		if(model != null) {
+			model.startGame();
+		}
 		shapeRenderer = new ShapeRenderer();
 	}
 
