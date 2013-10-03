@@ -37,7 +37,7 @@ public class NumberGame extends MiniGame {
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
 		playerLists = divideAndConquer(answerList);
-		
+
 	}
 
 	/**
@@ -135,15 +135,23 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
-	
+
 	/**
 	 * Return the indicated players list of numbers.
+	 * 
 	 * @param player
 	 * @return
 	 */
-	public ArrayList<Integer> getPlayerList(int player){
+	public ArrayList<Integer> getPlayerList(int player) {
 		return playerLists.get(player);
 	}
 
+	public ArrayList<Integer> getAnsweredNbrs() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < nbrCorrectAnswer; i++) {
+			list.add(answerList.get(i));
+		}
+		return list;
+	}
 
 }
