@@ -149,13 +149,23 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 	
 	public void hostSession() {
-		Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
+		((AndroidApplication)context).runOnUiThread(new Runnable() {
+    	    public void run()
+    	    {
+    	    	Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
+    	    }
+		});
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener, maxConnectionsListener, dataReceivedListener, disconnectedListener);
 	}
 
 	public void joinGame() {
-		Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT).show();
+		((AndroidApplication)context).runOnUiThread(new Runnable() {
+    	    public void run()
+    	    { 
+    	    	Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT).show();
+    	    }
+		});
 		addTenduToDeviceName(false); // TODO Needed?
 		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
