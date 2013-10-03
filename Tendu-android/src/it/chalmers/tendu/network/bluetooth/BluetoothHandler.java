@@ -98,8 +98,14 @@ public class BluetoothHandler implements INetworkHandler {
 	    };
 
 	    private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
-	        public void OnIncomingConnection(BluetoothDevice device) {
+	        public void OnIncomingConnection(final BluetoothDevice device) {
 	        	Log.d(TAG,"Incoming connection: " + device.getName());
+	        	((AndroidApplication)context).runOnUiThread(new Runnable() {
+	        	    public void run()
+	        	    {
+	        	    	Toast.makeText(context, " Connected to: "+ device.getName(), Toast.LENGTH_SHORT).show();
+	        	    }
+	        	});
 	        	// TODO Send on message to libgdx about who has connected so it can be displayed
 	        }
 	    };
