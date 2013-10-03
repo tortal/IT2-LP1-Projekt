@@ -71,6 +71,7 @@ public class BluetoothHandler implements INetworkHandler {
 		connection = new Connection(this.context, serviceReadyListener);
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
+		this.mBluetoothAdapter.startDiscovery();
 		
 	}
 
@@ -156,7 +157,6 @@ public class BluetoothHandler implements INetworkHandler {
 	public void joinGame() {
 		addTenduToDeviceName(false); // TODO Needed?
 		if (D) Log.d(TAG, "joinGame() called");
-		this.mBluetoothAdapter.startDiscovery();
 
 		// Wait awhile for the handset to discover units 
 		// TODO Refactor so it connects to units as they are discovered
