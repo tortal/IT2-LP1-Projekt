@@ -72,7 +72,6 @@ public class BluetoothHandler implements INetworkHandler {
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 
-		this.mBluetoothAdapter.startDiscovery();
 	}
 
 	private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
