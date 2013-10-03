@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class GameSession {
 
-	private MiniGame currentMinigame;
+	public MiniGame currentMinigame;
 	private int currentLvl;
 	private Difficulty difficulty;
 	// private List<Player> players;
@@ -35,4 +35,5 @@ public class GameSession {
 		return currentMinigame;
 	}
 
+	
 }

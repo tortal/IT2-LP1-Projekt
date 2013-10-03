@@ -2,6 +2,7 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
@@ -44,6 +45,7 @@ public class Tendu implements ApplicationListener, Listener {
 	private GameLobby gameLobby;
 	private GameSession gameSession;
 	private boolean host = false;
+	private ModelController modelController;
 
 	public Tendu(INetworkHandler netCom) {
 		setNetworkHandler(netCom);
@@ -167,6 +169,7 @@ public class Tendu implements ApplicationListener, Listener {
 		switch (message.msg) {
 		case LOBBY_READY:
 			gameSession = gameLobby.getGameSession();
+			modelController = new ModelController(this, gameSession);
 			if (host) {
 				GameId gameId = gameSession.getNextGame();
 				EventBus.INSTANCE.broadcast(new Message(C.Tag.DEFAULT,
