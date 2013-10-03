@@ -2,13 +2,9 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
-import it.chalmers.tendu.screens.NumberGameScreen;
-import it.chalmers.tendu.screens.ShapesGameScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -23,13 +19,12 @@ public class Tendu implements ApplicationListener {
 	
 	private INetworkHandler networkHandler;
 	
-	public Tendu(INetworkHandler netCom) {
-		setNetworkHandler(netCom);
+	public Tendu(INetworkHandler networkHandler) {
+		this.networkHandler = networkHandler;
 	}
 
 	@Override
 	public void create() {
-		//setScreenByNetworkState();
 		setScreen(new MainMenuScreen(this, null));
 //		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 		input = new InputController();
@@ -48,7 +43,6 @@ public class Tendu implements ApplicationListener {
 	
 	@Override
 	public void render() {
-		setScreenByNetworkState();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
 		
@@ -89,27 +83,8 @@ public class Tendu implements ApplicationListener {
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
-
-	public void setNetworkHandler(INetworkHandler networkHandler) {
-		this.networkHandler = networkHandler;
-	}
 	
-	private void setScreenByNetworkState() {
-		int state = networkHandler.pollNetworkState();
-		// Change screen depending on network state (Maybe not the proper place for this)
-		switch (state) {
-		case NetworkState.STATE_NONE: 
-			if (screen instanceof NumberGameScreen) {
-				setScreen(new MainMenuScreen(this, null));
-			}
-			break;
-		case NetworkState.STATE_CONNECTED: 
-			if (screen instanceof MainMenuScreen) {
-				setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
-		}
-			break;
-		}
-		
-					
+	public void setNetworkHandler(INetworkHandler netWHandler) {
+		networkHandler = netWHandler;
 	}
 }

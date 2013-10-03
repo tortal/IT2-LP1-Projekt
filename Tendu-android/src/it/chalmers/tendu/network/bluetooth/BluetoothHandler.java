@@ -153,13 +153,11 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 	};
 	
-	@Override
 	public void hostSession() {
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener, maxConnectionsListener, dataReceivedListener, disconnectedListener);
 	}
 
-	@Override
 	public void joinGame() {
 		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
@@ -255,7 +253,6 @@ public class BluetoothHandler implements INetworkHandler {
 			String newName = oldName.replace(Constants.CLIENT_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
-			
 	}
 
 	/**
@@ -304,7 +301,6 @@ public class BluetoothHandler implements INetworkHandler {
 							+ device.getAddress());
 				// Add the device to a list
 				availableDevices.add(device);
-
 			}
 		}
 	};
@@ -344,13 +340,11 @@ public class BluetoothHandler implements INetworkHandler {
 		context.startActivity(discoverableIntent);
 	}
 
-	@Override
-	public void sendObject(Serializable o) {
-		//bgs.kryoWrite(o);
+	public void sendMessage(NetworkMessage message) {
+		connection.broadcastMessage(message);
 
 	}
 
-	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
@@ -358,15 +352,9 @@ public class BluetoothHandler implements INetworkHandler {
 		connection.shutdown();
 	}
 
-	@Override
+	// Test Method
 	public void testStuff() {
 		connection.broadcastMessage(new NetworkMessage());
-		//testSendGameState(gameStateTest);
-	}
-
-	//@Override
-	public void testSendGameState(GameStateBundle state) {
-		sendObject(state);
 	}
 
 	// Message handler
@@ -384,32 +372,13 @@ public class BluetoothHandler implements INetworkHandler {
 					Toast.makeText(context, s, Toast.LENGTH_LONG).show();
 				}
 			}
-
 		}
 	};
-
-	@Override
-	public GameStateBundle pollGameState() {
-		return gameState;
-	}
-
-	@Override
-	public int pollNetworkState() {
-		return -1;
-		//return bgs.getState();
-	}
 
 	/**
 	 * @return the connectedDevices
 	 */
 	public Set<BluetoothDevice> getConnectedDevices() {
 		return connectedDevices;
-	}
-
-	/**
-	 * @param connectedDevices the connectedDevices to set
-	 */
-	public void setConnectedDevices(Set<BluetoothDevice> connectedDevices) {
-		this.connectedDevices = connectedDevices;
 	}
 }
