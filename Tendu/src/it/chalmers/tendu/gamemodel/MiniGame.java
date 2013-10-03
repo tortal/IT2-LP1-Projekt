@@ -32,6 +32,7 @@ public abstract class MiniGame {
 		this.state = GameState.DEFAULT;
 		setTime(time);
 		gameTime= time;
+		this.state = GameState.RUNNING;
 	}
 
 	/**
@@ -101,6 +102,10 @@ public abstract class MiniGame {
 
 	protected void gameWon() {
 		state = GameState.WON;
+	}
+	
+	public void setGameState(GameState g){
+		state = g;
 	}
 
 

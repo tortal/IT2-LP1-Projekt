@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public abstract class GameScreen {
 	public Tendu game; //reference to the main Tendu object
 	public MiniGame model; //model of current minigame
-	public SpriteBatch spriteBatch; //used for drawing of graphics
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	// displayed a short time.
@@ -31,8 +30,6 @@ public abstract class GameScreen {
 		this.model = model;
 		model.startGame();
 		shapeRenderer = new ShapeRenderer();
-
-		spriteBatch = new SpriteBatch();
 	}
 
 	/**
@@ -46,8 +43,6 @@ public abstract class GameScreen {
 	/** all rendering goes here **/
 	public void render(){
 		model.checkGame();
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
 		
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -60,7 +55,6 @@ public abstract class GameScreen {
 		Gdx.app.log("Quota", calculateTimerWidth() + "");
 		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
-		spriteBatch.end();
 	}
 
 	/** All game logic goes here */
@@ -70,7 +64,6 @@ public abstract class GameScreen {
 	 * 	make sure to call super() if overriden
 	 */
 	public void removed() {
-		spriteBatch.dispose();
 	}
 	
 	private int calculateTimerWidth() {
