@@ -80,7 +80,6 @@ public class BluetoothHandler implements INetworkHandler {
 				final NetworkMessage message) {
 			Log.d(TAG, "Received Message: " + message + " From device: "
 					+ device);
-
 			// For testing
 			// OnMessageReceived is called from a network thread.
 			// Has to be added to the UI-threads message queue in order to be
@@ -88,11 +87,12 @@ public class BluetoothHandler implements INetworkHandler {
 			((AndroidApplication) context).runOnUiThread(new Runnable() {
 				public void run() {
 					Toast.makeText(context, message.toString(),
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 				}
 			});
 		}
 	};
+
 
 	private OnMaxConnectionsReachedListener maxConnectionsListener = new OnMaxConnectionsReachedListener() {
 		public void OnMaxConnectionsReached() {
@@ -100,14 +100,21 @@ public class BluetoothHandler implements INetworkHandler {
 			// TODO Let libgdx class know it can start the game
 		}
 	};
-
 	private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
-		public void OnIncomingConnection(BluetoothDevice device) {
+		public void OnIncomingConnection(final BluetoothDevice device) {
 			Log.d(TAG, "Incoming connection: " + device.getName());
 			// TODO Send on message to libgdx about who has connected so it can
 			// be displayed
+
+			((AndroidApplication) context).runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(context, "Connected to: " + device.getName(),
+							Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 	};
+
 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
@@ -120,16 +127,16 @@ public class BluetoothHandler implements INetworkHandler {
 
 					connectionLostAlert.setTitle("Connection lost");
 					connectionLostAlert
-							.setMessage("Your connection with the other players has been lost.");
+					.setMessage("Your connection with the other players has been lost.");
 
 					connectionLostAlert.setPositiveButton("Ok",
 							new OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Let app terminate itself?
-									// finish();
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int which) {
+							// TODO Let app terminate itself?
+							// finish();
+						}
+					});
 					connectionLostAlert.setCancelable(false);
 					try {
 						connectionLostAlert.show();
@@ -143,7 +150,7 @@ public class BluetoothHandler implements INetworkHandler {
 			}
 			// Display on UI-thread
 			((AndroidApplication) context)
-					.runOnUiThread(new displayConnectionLostAlert());
+			.runOnUiThread(new displayConnectionLostAlert());
 
 			// shutdown EVERYTHING!
 			destroy();
@@ -158,10 +165,10 @@ public class BluetoothHandler implements INetworkHandler {
 
 	public void hostSession() {
 		((AndroidApplication)context).runOnUiThread(new Runnable() {
-    	    public void run()
-    	    {
-    	    	Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
-    	    }
+			public void run()
+			{
+				Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
+			}
 		});
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener,
@@ -171,10 +178,10 @@ public class BluetoothHandler implements INetworkHandler {
 
 	public void joinGame() {
 		((AndroidApplication)context).runOnUiThread(new Runnable() {
-    	    public void run()
-    	    { 
-    	    	Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT).show();
-    	    }
+			public void run()
+			{ 
+				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT).show();
+			}
 		});
 		addTenduToDeviceName(false); // TODO Needed?
 		if (D) Log.d(TAG, "joinGame() called");
