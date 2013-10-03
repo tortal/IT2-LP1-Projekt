@@ -129,6 +129,15 @@ public class NumberGameScreen extends GameScreen {
 		numberFont.draw(game.spriteBatch, "" + circle.getNumber(),
 				circle.getNumberX(), circle.getNumberY());
 	}
+	
+	private void drawNumberCircles() {
+		numberFont.scale(-0.8f);
+		for (int i = 0; i < numberCircles.size(); i++) {
+			drawNumberCircle(numberCircles.get(i));
+		}
+		numberFont.scale(0.8f);
+	}
+
 
 	/** Draw all graphics here */
 	@Override
@@ -148,12 +157,8 @@ public class NumberGameScreen extends GameScreen {
 						"Enter the numbers in the correct order", 60, 400);
 			}
 			drawNumbers(false);
+			drawNumberCircles();
 
-			numberFont.scale(-0.8f);
-			for (int i = 0; i < numberCircles.size(); i++) {
-				drawNumberCircle(numberCircles.get(i));
-			}
-			numberFont.scale(0.8f);
 		}
 
 		if (model.checkGameState() == GameState.WON) {
@@ -178,10 +183,7 @@ public class NumberGameScreen extends GameScreen {
 					game.getCamera().unproject(touchPos);
 					EventBus.INSTANCE.broadcast(new Message("Message test", "touchUp", null));
 					for (NumberCircle circle : numberCircles) {
-						if (touchPos.x > circle.leftX
-								&& touchPos.x < circle.rightX) {
-							if (touchPos.y < circle.topY
-									&& touchPos.y > circle.bottomY) {
+						if (circle.collided(touchPos)) {
 								Gdx.input.vibrate(25);
 								if (model.checkNbr(circle.getNumber())) {
 									Gdx.app.log("Correct number = ", ""
@@ -191,7 +193,7 @@ public class NumberGameScreen extends GameScreen {
 											num.show = true;
 										}
 									}
-								}
+								
 							}
 						}
 						circle.scale = 1;
@@ -203,13 +205,9 @@ public class NumberGameScreen extends GameScreen {
 					game.getCamera().unproject(touchPos);
 
 					for (NumberCircle circle : numberCircles) {
-						if (touchPos.x > circle.leftX
-								&& touchPos.x < circle.rightX) {
-							if (touchPos.y < circle.topY
-									&& touchPos.y > circle.bottomY) {
+						if (circle.collided(touchPos)) {
 								circle.scale = 1.5f;
-							}
-						}
+						}			
 					}
 				}
 			}

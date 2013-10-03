@@ -116,7 +116,7 @@ public class Tendu implements ApplicationListener, Listener {
 		return camera;
 	}
 
-	//screens need access to the network
+	// TODO (maybe not), screens need access to the network
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
