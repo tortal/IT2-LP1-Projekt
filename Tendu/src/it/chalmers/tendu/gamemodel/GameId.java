@@ -7,7 +7,7 @@ import java.util.List;
 
 public enum GameId {
 	
-	NUMBER_GAME(Difficulty.ONE), SHAPES_GAME(Difficulty.TWO);
+	NUMBER_GAME(Difficulty.ONE, Difficulty.TWO), SHAPES_GAME(Difficulty.TWO);
 
 	/**
 	 * Levels that 
@@ -26,7 +26,7 @@ public enum GameId {
 	 * @param level
 	 * @return a list of GameIds that accepts the given level value
 	 */
-	public static List<GameId> getAllGameIDFor(Difficulty difficulty){
+	public static List<GameId> getGameIdsFor(Difficulty difficulty){
 		List<GameId> validGames = new ArrayList<GameId>();
 		for (GameId g : values()){
 			if (g.acceptedDifficulties.contains(difficulty))

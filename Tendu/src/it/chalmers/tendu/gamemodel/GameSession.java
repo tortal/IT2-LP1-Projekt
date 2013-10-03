@@ -13,9 +13,7 @@ public class GameSession {
 	private int currentLvl;
 	private Difficulty difficulty;
 	private List<Player> players;
-	private Map<Player, Integer> playerNbr;
-	private Map<Integer, Difficulty> dif;
-	
+	private Map<Player, Integer> playerNbr;	
 
 	public GameSession() {
 	}
@@ -25,7 +23,7 @@ public class GameSession {
 		if (currentLvl < 5){
 			difficulty = Difficulty.ONE;
 		}else if (currentLvl <10){
-			
+			difficulty = Difficulty.TWO;
 		}
 		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, difficulty);
 		return currentMinigame;
