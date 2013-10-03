@@ -65,11 +65,11 @@ public class Connection {
 	private OnMessageReceivedListener mOnMessageReceivedListener;
 	private OnConnectionLostListener mOnConnectionLostListener;
 
-	private ServiceConnection mServiceConnection;
+	//private ServiceConnection mServiceConnection;
 
 	private Context mContext;
 
-	private String mPackageName = Constants.APP_NAME;
+	//private String mPackageName = Constants.APP_NAME;
 
 	private boolean mStarted = false;
 
@@ -78,7 +78,7 @@ public class Connection {
 	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
 		mOnConnectionServiceReadyListener = ocsrListener;
 		mContext = ctx;
-		mPackageName = ctx.getPackageName();
+		//mPackageName = ctx.getPackageName();
 
 		connectionService = new ConnectionService(ctx);
 
@@ -100,7 +100,7 @@ public class Connection {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 		try {
-			int result = connectionService.startServer(mPackageName,
+			int result = connectionService.startServer(
 					maxConnections, oicListener, omcrListener, omrListener,
 					oclListener);
 			// mIconnection.registerCallback(mPackageName, mIccb);
@@ -118,7 +118,9 @@ public class Connection {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 		try {
-			int result = connectionService.connect(device, omrListener, oclListener);
+			int result = connectionService.connect(device,
+					omrListener, oclListener);
+			// mIconnection.registerCallback(mPackageName, mIccb);
 			return result;
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in connect", e);
@@ -167,14 +169,14 @@ public class Connection {
 	}
 
 	public void shutdown() {
-		try {
-			mStarted = false;
-			if (connectionService != null) {
-				connectionService.shutdown();
-			}
-			mContext.unbindService(mServiceConnection);
-		} catch (RemoteException e) {
-			Log.e(TAG, "RemoteException in shutdown", e);
-		}
+//		try {
+//			mStarted = false;
+////			if (connectionService != null) {
+////				connectionService.shutdown(mPackageName);
+////			}
+////			mContext.unbindService(mServiceConnection);
+//		} catch (RemoteException e) {
+//			Log.e(TAG, "RemoteException in shutdown", e);
+//		}
 	}
 }
