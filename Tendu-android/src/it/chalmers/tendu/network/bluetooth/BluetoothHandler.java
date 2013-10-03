@@ -1,7 +1,6 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
@@ -12,7 +11,6 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsRea
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.unused.BluetoothGameService;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -53,12 +51,7 @@ public class BluetoothHandler implements INetworkHandler {
 	private Set<BluetoothDevice> availableDevices;
 	/** Connected devices */
 	private Set<BluetoothDevice> connectedDevices;
-
-	// Game state on server
-	private GameStateBundle gameState; 
-	// For testing
-	private GameStateBundle gameStateTest = new GameStateBundle(5, "MeegaTest");
-
+	
 	/**
 	 * Using the context provided by the class declaring this object, initiates
 	 * all parameters needed to establish both a connection to a running
@@ -368,15 +361,7 @@ public class BluetoothHandler implements INetworkHandler {
 		@Override
 		public void handleMessage(Message msg) {
 			if (msg.what == BluetoothGameService.MESSAGE_READ) {
-				if (msg.obj instanceof GameStateBundle) {
-					gameState = (GameStateBundle) msg.obj;
-
-					// Ping Test
-					GameStateBundle newGameStateBundle = gameStateTest;
-					String s;
-					s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
-					Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-				}
+				// Do nothing for now
 			}
 		}
 	};
