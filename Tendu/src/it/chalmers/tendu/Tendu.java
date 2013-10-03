@@ -188,5 +188,5 @@ public class Tendu implements ApplicationListener, Listener {
 	
 	public boolean getHost() {
 		return host;
-	}
+	}	 
 }
