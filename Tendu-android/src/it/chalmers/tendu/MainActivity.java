@@ -16,7 +16,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        INetworkHandler bluetoothHandler = new BluetoothHandler(this);
-        initialize(new Tendu(bluetoothHandler), cfg);
+        INetworkHandler netHandler = new BluetoothHandler(this);
+        initialize(new Tendu(netHandler), cfg);
     }
 }
