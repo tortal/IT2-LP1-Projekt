@@ -63,6 +63,10 @@ public class ConnectionService {
 
 	private BluetoothAdapter mBtAdapter;
 
+
+
+	//private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
+
 	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 
 	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
@@ -104,7 +108,7 @@ public class ConnectionService {
 	private void initializeKryoSerializer() {
 		mKryo = new Kryo();
 
-		// Register the classes we want to send over the network here
+		// Register the classes we want to send over the network
 		mKryo.register(NetworkMessage.class);
 	}
 
@@ -113,6 +117,9 @@ public class ConnectionService {
 		private String address;
 		private BluetoothDevice device;	
 		private Input in;
+
+
+		//private Handler handler = new Handler(Looper.getMainLooper());
 
 		public BtStreamWatcher(BluetoothDevice device) {
 			this.device = device;
@@ -203,7 +210,7 @@ public class ConnectionService {
 		}
 		return null;
 	}
-	public int startServer(int maxConnections, OnIncomingConnectionListener oicListener, 
+	public int startServer(String srcApp, int maxConnections, OnIncomingConnectionListener oicListener, 
 			OnMaxConnectionsReachedListener omcrListener, OnMessageReceivedListener omrListener, 
 			OnConnectionLostListener oclListener) throws RemoteException {
 

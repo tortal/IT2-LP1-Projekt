@@ -65,15 +65,23 @@ public class Connection {
 	private OnMessageReceivedListener mOnMessageReceivedListener;
 	private OnConnectionLostListener mOnConnectionLostListener;
 
+	private ServiceConnection mServiceConnection;
+
 	private Context mContext;
+
+	private String mPackageName = Constants.APP_NAME;
+
+	private boolean mStarted = false;
 
 	private ConnectionService connectionService;
 
-	public Connection(Context context, OnConnectionServiceReadyListener ocsrListener) {
+	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
 		mOnConnectionServiceReadyListener = ocsrListener;
-		mContext = context;
+		mContext = ctx;
+		mPackageName = ctx.getPackageName();
 
-		connectionService = new ConnectionService(mContext);
+		connectionService = new ConnectionService(ctx);
+
 	}
 
 	public int startServer(final int maxConnections,
@@ -92,8 +100,10 @@ public class Connection {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 		try {
-			int result = connectionService.startServer(maxConnections, oicListener, omcrListener, omrListener,
+			int result = connectionService.startServer(mPackageName,
+					maxConnections, oicListener, omcrListener, omrListener,
 					oclListener);
+			// mIconnection.registerCallback(mPackageName, mIccb);
 			return result;
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in startServer", e);
@@ -158,9 +168,11 @@ public class Connection {
 
 	public void shutdown() {
 		try {
+			mStarted = false;
 			if (connectionService != null) {
 				connectionService.shutdown();
 			}
+			mContext.unbindService(mServiceConnection);
 		} catch (RemoteException e) {
 			Log.e(TAG, "RemoteException in shutdown", e);
 		}
