@@ -71,8 +71,8 @@ public class BluetoothHandler implements INetworkHandler {
 		connection = new Connection(this.context, serviceReadyListener);
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
-		this.mBluetoothAdapter.startDiscovery();
 
+		this.mBluetoothAdapter.startDiscovery();
 	}
 
 	private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
@@ -157,6 +157,12 @@ public class BluetoothHandler implements INetworkHandler {
 	};
 
 	public void hostSession() {
+		((AndroidApplication)context).runOnUiThread(new Runnable() {
+    	    public void run()
+    	    {
+    	    	Toast.makeText(context, "Hosting Game", Toast.LENGTH_SHORT).show();
+    	    }
+		});
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener,
 				maxConnectionsListener, dataReceivedListener,
@@ -164,9 +170,15 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	public void joinGame() {
+		((AndroidApplication)context).runOnUiThread(new Runnable() {
+    	    public void run()
+    	    { 
+    	    	Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT).show();
+    	    }
+		});
 		addTenduToDeviceName(false); // TODO Needed?
-		if (D)
-			Log.d(TAG, "joinGame() called");
+		if (D) Log.d(TAG, "joinGame() called");
+		this.mBluetoothAdapter.startDiscovery();
 
 		// Wait awhile for the handset to discover units
 		mHandler.postDelayed(new Runnable() {
