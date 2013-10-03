@@ -198,7 +198,7 @@ public class NumberGameScreen extends GameScreen {
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
-							EventBus.INSTANCE.broadcast(new Message(C.Tag.SERVER, C.Msg.NUMBER_GUESS, circle.getNumber()));
+						EventBus.INSTANCE.broadcast(new Message(C.Tag.SERVER, C.Msg.NUMBER_GUESS, circle.getNumber()));
 						
 					}
 					circle.scale = 1;
