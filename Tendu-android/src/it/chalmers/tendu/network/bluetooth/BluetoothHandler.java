@@ -36,7 +36,6 @@ import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
@@ -46,7 +45,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final int MAX_NUMBER_OF_PLAYERS = 2;
+	private static final int MAX_NUMBER_OF_PLAYERS = 1;
 	private static final int CONNECTION_DELAY = 5000;
 
 	// Handles the bluetooth connections
@@ -78,6 +77,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 		connection = new Connection(this.context, serviceReadyListener);
 		availableDevices = new HashSet<BluetoothDevice>();
+		connectedDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 		
 		// Register as listener on the eventbus
