@@ -4,12 +4,14 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.Message;
 
 import java.util.ArrayList;
@@ -192,6 +194,7 @@ public class NumberGameScreen extends GameScreen {
 						if (model.checkNbr(circle.getNumber())) {
 							Gdx.app.log("Correct number = ",
 									"" + circle.getNumber());
+							EventBus.INSTANCE.broadcast(new Message(C.Tag.SERVER, C.Msg.CORRECT_NUMBER_GUESS, circle.getNumber()));
 							for (Number num : numbers) {
 								if (num.number == circle.getNumber()) {
 									num.show = true;
