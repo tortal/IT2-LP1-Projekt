@@ -2,6 +2,7 @@ package it.chalmers.tendu.screens;
 
 //TODO refactor
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 
 public class NumberCircle {
 	private int xPos; //center of circle
@@ -11,10 +12,10 @@ public class NumberCircle {
 	private int numberXPos;
 	private int numberYPos;
 	Color color;
-	int leftX;
-	int rightX;
-	int topY;
-	int bottomY;
+	private int leftX;
+	private int rightX;
+	private int topY;
+	private int bottomY;
 	float scale;
 	
 	public NumberCircle(int number, int x, int y, int radius, Color color) {
@@ -74,5 +75,17 @@ public class NumberCircle {
 	}
 	public void setNumberY(int numberY) {
 		this.numberYPos = numberY;
+	}
+	
+	public boolean collided(Vector3 touchPos) {
+		if (touchPos.x > leftX
+				&& touchPos.x < rightX) {
+			if (touchPos.y < topY
+					&& touchPos.y > bottomY) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
