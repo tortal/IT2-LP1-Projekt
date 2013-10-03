@@ -185,18 +185,15 @@ public class BluetoothHandler implements INetworkHandler {
 
 			@Override
 			public void run() {
-				while (true) {
 					BluetoothDevice bd = findAvailableServerDevice();
 					if (bd != null) {
 						Log.d(TAG,
 								"Will now try and connect to: " + bd.getName());
 						connection.connect(bd, dataReceivedListener,
 								disconnectedListener);
-						break;
 					} else {
 						Log.d(TAG, "No device to connect to");
 					}
-				}
 			}
 		}, CONNECTION_DELAY);
 	}
