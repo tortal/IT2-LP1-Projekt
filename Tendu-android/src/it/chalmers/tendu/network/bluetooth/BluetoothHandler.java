@@ -381,7 +381,9 @@ public class BluetoothHandler implements INetworkHandler {
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
-		context.unregisterReceiver(mReceiver);
+		if (mReceiver != null) {
+			context.unregisterReceiver(mReceiver);
+		}
 		connection.shutdown();
 	}
 

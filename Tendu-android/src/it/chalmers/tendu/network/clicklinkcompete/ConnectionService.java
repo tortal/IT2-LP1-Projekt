@@ -341,7 +341,9 @@ public class ConnectionService {
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
 				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
-				myBsock.close();
+				if (myBsock != null) {
+					myBsock.close();
+				}
 			}
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
