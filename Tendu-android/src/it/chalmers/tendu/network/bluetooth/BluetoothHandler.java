@@ -215,7 +215,7 @@ public class BluetoothHandler implements INetworkHandler {
 
 		Set<BluetoothDevice> devices = new HashSet<BluetoothDevice>();
 		for (BluetoothDevice d : availableDevices) {
-			if (isDeviceValid(d)) {
+			if (isDeviceValidClient(d)) {
 				devices.add(d);
 			}
 		}
@@ -280,7 +280,8 @@ public class BluetoothHandler implements INetworkHandler {
 		if (oldName.contains(Constants.SERVER_NAME)) {
 			String newName = oldName.replace(Constants.SERVER_NAME, "");
 			mBluetoothAdapter.setName(newName);
-		} else if (oldName.contains(Constants.CLIENT_NAME)) {
+		} 
+		if (oldName.contains(Constants.CLIENT_NAME)) {
 			String newName = oldName.replace(Constants.CLIENT_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
@@ -294,7 +295,7 @@ public class BluetoothHandler implements INetworkHandler {
 	 *            {@link BluetoothDevice} to validate
 	 * @return <code>true</code> if valid <code>false</code> if non-valid
 	 */
-	private boolean isDeviceValid(BluetoothDevice device) {
+	private boolean isDeviceValidClient(BluetoothDevice device) {
 		if (device == null)
 			return false;
 		if (device.getName() == null)
@@ -356,7 +357,7 @@ public class BluetoothHandler implements INetworkHandler {
 		Iterator<BluetoothDevice> iter = availableDevices.iterator();
 		while (iter.hasNext()) {
 			BluetoothDevice device = iter.next();
-			if (isDeviceValid(device)) {
+			if (isDeviceValidClient(device)) {
 				return device;
 			}
 		}
