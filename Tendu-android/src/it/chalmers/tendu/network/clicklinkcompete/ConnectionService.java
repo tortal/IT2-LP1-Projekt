@@ -135,6 +135,7 @@ public class ConnectionService {
 			mBtSockets.get(address);
 
 			try {
+				Log.d(TAG, "Establishing Input() for this address: " + mBtSockets.get(address).getRemoteDevice().getAddress());
 				in = new Input(mBtSockets.get(address).getInputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -305,6 +306,7 @@ public class ConnectionService {
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
+			Log.d(TAG, "Establishing Output() for this address: " + btSocket.getRemoteDevice().getAddress());
 			out = new Output(btSocket.getOutputStream());
 		} catch (IOException e1) {
 			Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message, e1);
