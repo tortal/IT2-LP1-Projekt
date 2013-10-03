@@ -29,7 +29,7 @@ public class GameSession {
 	}
 
 	public MiniGame getGame(GameId gameId) {
-		int bonusTime = currentMinigame.getTimeLeft();
+		int bonusTime = (int) currentMinigame.getTimeLeft();
 		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, gameId,
 				difficulty);
 		return currentMinigame;

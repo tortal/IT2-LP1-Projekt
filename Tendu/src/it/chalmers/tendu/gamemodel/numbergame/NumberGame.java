@@ -25,11 +25,11 @@ public class NumberGame extends MiniGame {
 		nbrCorrectAnswer = 0;
 		switch (difficulty) {
 		case ONE:
-			this.addTime(30);
+			this.setTime(30000);
 			answerList = createAnswer(4);
 			break;
 		case TWO:
-			this.addTime(30);
+			this.setTime(30000);
 			answerList = createAnswer(8);
 			break;
 		default:
@@ -37,6 +37,7 @@ public class NumberGame extends MiniGame {
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
 		playerLists = divideAndConquer(answerList);
+
 	}
 
 	/**
@@ -134,13 +135,23 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
-	
+
 	/**
 	 * Return the indicated players list of numbers.
+	 * 
 	 * @param player
 	 * @return
 	 */
-	public ArrayList<Integer> getPlayerList(int player){
+	public ArrayList<Integer> getPlayerList(int player) {
 		return playerLists.get(player);
 	}
+
+	public ArrayList<Integer> getAnsweredNbrs() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < nbrCorrectAnswer; i++) {
+			list.add(answerList.get(i));
+		}
+		return list;
+	}
+
 }

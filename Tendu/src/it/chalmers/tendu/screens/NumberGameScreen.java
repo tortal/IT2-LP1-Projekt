@@ -41,14 +41,13 @@ public class NumberGameScreen extends GameScreen {
 	private NumberGame model; // Model for current minigame (number)
 
 	private ArrayList<Color> colors;
-	
+
 	private ArrayList<NumberCircle> numberCircles;
 	private ArrayList<Number> numbers;
 
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
 	private int time; // used to time certain "events" during the game.
-
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 
@@ -145,6 +144,7 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics here */
 	@Override
 	public void render() {
+		super.render();
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.Circle);
 
@@ -173,6 +173,7 @@ public class NumberGameScreen extends GameScreen {
 
 		shapeRenderer.end();
 	}
+
 
 	/** All game logic goes here */
 	@Override

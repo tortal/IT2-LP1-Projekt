@@ -15,7 +15,7 @@ public class NumberGameTest {
 	NumberGame nbrGameEasy;
 	NumberGame nbrGameHard;
 
-
+	//TODO fix setup
 	@Test
 	public void testNumberGameIntDifficulty() {
 		nbrGameEasy = new NumberGame(0, Difficulty.ONE);
@@ -32,8 +32,9 @@ public class NumberGameTest {
 
 	@Test
 	public void testCheckNbrInt(){
+		nbrGameEasy = new NumberGame(0, Difficulty.ONE);
 		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(0)));
-		assertTrue(nbrGameEasy.checkNbr(-1));
+//		assertTrue(nbrGameEasy.checkNbr(-1));
 		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(1)));
 	}
 

@@ -1,8 +1,8 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.network.GameStateBundle;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
@@ -11,7 +11,6 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsRea
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.unused.BluetoothGameService;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -52,12 +51,7 @@ public class BluetoothHandler implements INetworkHandler {
 	private Set<BluetoothDevice> availableDevices;
 	/** Connected devices */
 	private Set<BluetoothDevice> connectedDevices;
-
-	// Game state on server
-	private GameStateBundle gameState; 
-	// For testing
-	private GameStateBundle gameStateTest = new GameStateBundle(5, "MeegaTest");
-
+	
 	/**
 	 * Using the context provided by the class declaring this object, initiates
 	 * all parameters needed to establish both a connection to a running
@@ -78,11 +72,10 @@ public class BluetoothHandler implements INetworkHandler {
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 		
-		addTenduToDeviceName(false); // Needed?
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
-	        public void OnMessageReceived(BluetoothDevice device, final String message) {
+	        public void OnMessageReceived(BluetoothDevice device, final NetworkMessage message) {
 	        	Log.d(TAG, "Received Message: " + message + " From device: " + device);
 	        	
 	        	// For testing
@@ -91,7 +84,7 @@ public class BluetoothHandler implements INetworkHandler {
 	        	((AndroidApplication)context).runOnUiThread(new Runnable() {
 	        	    public void run()
 	        	    {
-	        	    	Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	        	    	Toast.makeText(context, message.toString(), Toast.LENGTH_LONG).show();
 	        	    }
 	        	});
 	        }
@@ -143,6 +136,9 @@ public class BluetoothHandler implements INetworkHandler {
 	            }
 	        	// Display on UI-thread
 	            ((AndroidApplication) context).runOnUiThread(new displayConnectionLostAlert());
+	            
+	            // shutdown  EVERYTHING!
+	            destroy();
 	        }
 	    };
 	
@@ -152,14 +148,13 @@ public class BluetoothHandler implements INetworkHandler {
 		}
 	};
 	
-	@Override
 	public void hostSession() {
 		addTenduToDeviceName(true);
 		connection.startServer(MAX_NUMBER_OF_PLAYERS, connectedListener, maxConnectionsListener, dataReceivedListener, disconnectedListener);
 	}
 
-	@Override
 	public void joinGame() {
+		addTenduToDeviceName(false); // TODO Needed?
 		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
 
@@ -254,7 +249,6 @@ public class BluetoothHandler implements INetworkHandler {
 			String newName = oldName.replace(Constants.CLIENT_NAME, "");
 			mBluetoothAdapter.setName(newName);
 		}
-			
 	}
 
 	/**
@@ -303,7 +297,6 @@ public class BluetoothHandler implements INetworkHandler {
 							+ device.getAddress());
 				// Add the device to a list
 				availableDevices.add(device);
-
 			}
 		}
 	};
@@ -322,6 +315,7 @@ public class BluetoothHandler implements INetworkHandler {
 		return null;
 	}
 	
+	// TODO Needed?
 	private BluetoothDevice findFirstAvailableDevice() {
 		// Return the first eligible device among the available devices set
 		Iterator<BluetoothDevice> iter = availableDevices.iterator();
@@ -335,6 +329,8 @@ public class BluetoothHandler implements INetworkHandler {
 		return null;
 	}
 
+	
+	// TODO Needed?
 	private void beDiscoverable() {
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -343,13 +339,11 @@ public class BluetoothHandler implements INetworkHandler {
 		context.startActivity(discoverableIntent);
 	}
 
-	@Override
-	public void sendObject(Serializable o) {
-		//bgs.kryoWrite(o);
+	public void sendMessage(NetworkMessage message) {
+		connection.broadcastMessage(message);
 
 	}
 
-	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
@@ -357,15 +351,9 @@ public class BluetoothHandler implements INetworkHandler {
 		connection.shutdown();
 	}
 
-	@Override
+	// Test Method
 	public void testStuff() {
-		connection.broadcastMessage("Ping maddabing skibbelliwopwopshabaouWHOO!");
-		//testSendGameState(gameStateTest);
-	}
-
-	//@Override
-	public void testSendGameState(GameStateBundle state) {
-		sendObject(state);
+		connection.broadcastMessage(new NetworkMessage());
 	}
 
 	// Message handler
@@ -373,42 +361,15 @@ public class BluetoothHandler implements INetworkHandler {
 		@Override
 		public void handleMessage(Message msg) {
 			if (msg.what == BluetoothGameService.MESSAGE_READ) {
-				if (msg.obj instanceof GameStateBundle) {
-					gameState = (GameStateBundle) msg.obj;
-
-					// Ping Test
-					GameStateBundle newGameStateBundle = gameStateTest;
-					String s;
-					s = newGameStateBundle.equals(msg.obj)? "Success":"Failure";
-					Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-				}
+				// Do nothing for now
 			}
-
 		}
 	};
-
-	@Override
-	public GameStateBundle pollGameState() {
-		return gameState;
-	}
-
-	@Override
-	public int pollNetworkState() {
-		return -1;
-		//return bgs.getState();
-	}
 
 	/**
 	 * @return the connectedDevices
 	 */
 	public Set<BluetoothDevice> getConnectedDevices() {
 		return connectedDevices;
-	}
-
-	/**
-	 * @param connectedDevices the connectedDevices to set
-	 */
-	public void setConnectedDevices(Set<BluetoothDevice> connectedDevices) {
-		this.connectedDevices = connectedDevices;
 	}
 }

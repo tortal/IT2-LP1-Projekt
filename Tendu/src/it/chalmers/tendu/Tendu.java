@@ -4,12 +4,15 @@ package it.chalmers.tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
+
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.NetworkState;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
@@ -18,7 +21,6 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.Message;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -53,9 +55,15 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void create() {
+
+		//here we should load the start screen of the game
+		//setScreen(new MainMenuScreen(this, null));
+//		setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
+		//setScreen(new ShapesGameScreen(this, new ShapesGame(30000, Constants.Difficulty.ONE)));
+		
+		//create an inputController and register it with Gdx
 		EventBus.INSTANCE.addListener(this); // register with event bus
 		// here we should load the start screen of the game
-		setScreenByNetworkState();
 		setScreen(new MainMenuScreen(this, null));
 		// setScreen(new NumberGameScreen(this, new NumberGame(0,
 		// Constants.Difficulty.ONE)));
@@ -78,12 +86,15 @@ public class Tendu implements ApplicationListener, Listener {
 	// clean up
 	@Override
 	public void dispose() {
+		spriteBatch.dispose();
 		networkHandler.destroy();
 	}
 
 	// **The games main loop, everything but early setup happens here
 	@Override
 	public void render() {
+
+		//clear the entire screen
 		// setScreenByNetworkState(); //changes to some error screen if
 		// connections is lost?
 		// clear the entire screen
@@ -137,30 +148,8 @@ public class Tendu implements ApplicationListener, Listener {
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
-
 	private void setNetworkHandler(INetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
-	}
-
-	// TODO unsure sure about this
-	private void setScreenByNetworkState() {
-		int state = networkHandler.pollNetworkState();
-		// Change screen depending on network state (Maybe not the proper place
-		// for this)
-		switch (state) {
-		case NetworkState.STATE_NONE:
-			if (screen instanceof NumberGameScreen) {
-				setScreen(new MainMenuScreen(this, null));
-			}
-			break;
-		case NetworkState.STATE_CONNECTED:
-			if (screen instanceof MainMenuScreen) {
-				setScreen(new NumberGameScreen(this, new NumberGame(0,
-						Constants.Difficulty.ONE)));
-			}
-			break;
-		}
-
 	}
 
 	@Override
