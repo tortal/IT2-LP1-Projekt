@@ -162,14 +162,15 @@ public class ConnectionService {
 
 			//TODO: Break loop when someone disconnects
 			while (true) {
-				receivedObject = mKryo.readClassAndObject(in);
+				receivedObject = mKryo.readObject(in, NetworkMessage.class);
 				if(receivedObject != null){
 					Log.d(TAG, "You recevied an item from: " + address);
 				}
+				mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
 				
-				if(receivedObject instanceof NetworkMessage){
-					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
-				}
+//				if(receivedObject instanceof NetworkMessage){
+//					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage)receivedObject);
+//				}
 			}
 			
 //			mBtDevices.remove(address);
@@ -325,7 +326,7 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 		
-		mKryo.writeClassAndObject(out, message);
+		mKryo.writeObject(out, message);
 		out.flush();
 		
 		return Connection.SUCCESS;
