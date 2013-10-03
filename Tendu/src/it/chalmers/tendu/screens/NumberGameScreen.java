@@ -8,6 +8,7 @@ import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Message;
 
@@ -38,7 +39,7 @@ public class NumberGameScreen extends GameScreen {
 	private NumberGame model; // Model for current minigame (number)
 
 	private ArrayList<Color> colors;
-
+	
 	private ArrayList<NumberCircle> numberCircles;
 	private ArrayList<Number> numbers;
 
