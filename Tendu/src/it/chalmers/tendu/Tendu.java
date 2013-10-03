@@ -151,6 +151,6 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(Message message) {
 		// TODO Auto-generated method stub
-		Gdx.app.log(message.tag, message.msg);
+		//Gdx.app.log(message.tag, message.msg);
 	}
 }
