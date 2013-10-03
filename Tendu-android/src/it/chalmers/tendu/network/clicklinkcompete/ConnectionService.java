@@ -16,6 +16,7 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
@@ -166,12 +167,11 @@ public class ConnectionService {
 		}
 	}
 	private class ConnectionWaiter implements Runnable {
-		private String srcApp;
+		private String srcApp = Constants.APP_NAME;
 
 		private int maxConnections;
 
 		public ConnectionWaiter(int connections) {
-			//srcApp = theApp;
 			maxConnections = connections;
 		}
 
