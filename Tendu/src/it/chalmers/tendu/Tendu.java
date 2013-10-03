@@ -54,6 +54,9 @@ public class Tendu implements ApplicationListener, Listener {
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
 		
+		//create a gamelobby
+		gameLobby = new GameLobby();
+		
 		spriteBatch = new SpriteBatch();
 	}
 
