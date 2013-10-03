@@ -172,6 +172,7 @@ public class ConnectionService {
 
 				} catch (KryoException k) {
 					Log.e(TAG, "The connection has most probably been lost");
+					mOnConnectionLostListener.OnConnectionLost(device);
 				}
 
 				
