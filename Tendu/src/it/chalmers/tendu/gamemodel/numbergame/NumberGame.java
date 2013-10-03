@@ -146,6 +146,10 @@ public class NumberGame extends MiniGame {
 		return playerLists.get(player);
 	}
 
+	/**
+	 * Returns the numbers that have been answered correctly.
+	 * @return
+	 */
 	public ArrayList<Integer> getAnsweredNbrs() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < nbrCorrectAnswer; i++) {
