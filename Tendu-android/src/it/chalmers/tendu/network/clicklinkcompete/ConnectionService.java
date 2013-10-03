@@ -57,12 +57,6 @@ public class ConnectionService {
 
 	private ConnectionService mSelf;
 
-	//private String mApp; // Assume only one app can use this at a time; may
-
-	// change this later
-
-	// private IConnectionCallback mCallback;
-
 	private ArrayList<BluetoothDevice> mBtDevices;
 
 	private HashMap<String, BluetoothSocket> mBtSockets;
@@ -70,9 +64,6 @@ public class ConnectionService {
 	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
 	private BluetoothAdapter mBtAdapter;
-
-	// private OnConnectionServiceReadyListener
-	// mOnConnectionServiceReadyListener;
 
 	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 
@@ -125,8 +116,6 @@ public class ConnectionService {
 
 		private final InputStream mmInStream;
 
-		// private Handler handler = new Handler(Looper.getMainLooper());
-
 		public BtStreamWatcher(BluetoothDevice device) {
 			InputStream tmpIn = null;
 
@@ -145,13 +134,6 @@ public class ConnectionService {
 			Log.d(TAG, "Establishing Input() for this address: "
 					+ mBtSockets.get(address).getRemoteDevice().getAddress());
 			in = new Input(mmInStream);
-
-			// try {
-			// in = new Input(mBtSockets.get(address).getInputStream());
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
 		}
 
 		public void run() {
