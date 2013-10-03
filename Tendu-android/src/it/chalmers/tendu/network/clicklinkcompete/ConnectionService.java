@@ -291,6 +291,7 @@ public class ConnectionService {
 
 	public int broadcastMessage(NetworkMessage message) throws RemoteException {
 		for (int i = 0; i < mBtDevices.size(); i++) {
+			Log.d(TAG, "sendMessage(): " + mBtDevices.get(i).getAddress() + " Message: " + message);
 			sendMessage(mBtDevices.get(i), message);
 		}
 		return Connection.SUCCESS;
