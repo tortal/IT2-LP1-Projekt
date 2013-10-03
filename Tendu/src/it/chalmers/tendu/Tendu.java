@@ -47,6 +47,8 @@ public class Tendu implements ApplicationListener, Listener {
 	private GameSession gameSession;
 	private boolean host = false;
 
+	private String TAG = "Tendu"; // Tag for logging
+	
 	public Tendu(INetworkHandler netCom) {
 		setNetworkHandler(netCom);
 	}
@@ -155,7 +157,10 @@ public class Tendu implements ApplicationListener, Listener {
 	public void onBroadcast(EventMessage message) {
 		// TODO Auto-generated method stub
 		switch (message.msg) {
+		case PLAYERS_CONNECTED: 
+			Gdx.app.log(TAG, "PLAYERS_CONNECTED");
 		case LOBBY_READY:
+			Gdx.app.log(TAG, "LOBBY_READY");
 			gameSession = gameLobby.getGameSession();
 			if (host) {
 				GameId gameId = gameSession.getNextGame();
