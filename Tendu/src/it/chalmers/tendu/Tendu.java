@@ -6,7 +6,6 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
-import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.NetworkState;
