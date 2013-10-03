@@ -109,15 +109,16 @@ public class ConnectionService {
 		mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
 		mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
 		this.context = context;
-		initializeKryoSerializer();
+		mKryo = kryoFactory();
 	}
 
 
-	private void initializeKryoSerializer() {
-		mKryo = new Kryo();
+	private Kryo kryoFactory() {
+		Kryo kryo = new Kryo();
 
 		// Register the classes we want to send over the network
-		mKryo.register(NetworkMessage.class);
+		kryo.register(NetworkMessage.class);
+		return kryo;
 	}
 
 
@@ -316,7 +317,9 @@ public class ConnectionService {
 	public int sendMessage(BluetoothDevice destination, NetworkMessage message)
 			throws RemoteException {
 		Log.d(TAG, "sendMessage: " + message.toString() + " to " + destination.getAddress());
-
+		Kryo tempKryo = kryoFactory();
+		
+		
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
@@ -327,7 +330,7 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 		
-		mKryo.writeObject(out, message);
+		tempKryo.writeObject(out, message);
 		out.flush();
 		
 		return Connection.SUCCESS;
