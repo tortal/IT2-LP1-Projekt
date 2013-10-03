@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.chalmers.tendu.unused;
+package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.network.GameStateBundle;
 import it.chalmers.tendu.network.NetworkState;
