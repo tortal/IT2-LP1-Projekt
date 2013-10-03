@@ -1,7 +1,6 @@
 /*-******THIS IS OUR MAIN MODEL*********/
 package it.chalmers.tendu.gamemodel;
 
-
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.List;
@@ -12,21 +11,28 @@ public class GameSession {
 	private MiniGame currentMinigame;
 	private int currentLvl;
 	private Difficulty difficulty;
-	private List<Player> players;
-	private Map<Player, Integer> playerNbr;	
+	// private List<Player> players;
+	// private Map<Player, Integer> playerNbr;
+	private Map<Integer, String> players;
 
-	public GameSession() {
+	public GameSession(Map players) {
+		this.players = players;
 	}
-	
-	public MiniGame getNextGame(){
-		int bonusTime = currentMinigame.getTimeLeft();
-		if (currentLvl < 5){
+
+	public GameId getNextGame() {
+		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
-		}else if (currentLvl <10){
+		} else if (currentLvl < 10) {
 			difficulty = Difficulty.TWO;
 		}
-		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, difficulty);
+		return MiniGameFactory.createGameId(difficulty);
+	}
+
+	public MiniGame getGame(GameId gameId) {
+		int bonusTime = currentMinigame.getTimeLeft();
+		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, gameId,
+				difficulty);
 		return currentMinigame;
 	}
-		
+
 }
