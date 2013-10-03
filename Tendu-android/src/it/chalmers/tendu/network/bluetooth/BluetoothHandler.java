@@ -79,7 +79,6 @@ public class BluetoothHandler implements INetworkHandler {
 		availableDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
 		
-		addTenduToDeviceName(false); // Needed?
 	}
 
 	 private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
@@ -144,6 +143,9 @@ public class BluetoothHandler implements INetworkHandler {
 	            }
 	        	// Display on UI-thread
 	            ((AndroidApplication) context).runOnUiThread(new displayConnectionLostAlert());
+	            
+	            // shutdown  EVERYTHING!
+	            destroy();
 	        }
 	    };
 	
@@ -159,6 +161,7 @@ public class BluetoothHandler implements INetworkHandler {
 	}
 
 	public void joinGame() {
+		addTenduToDeviceName(false); // TODO Needed?
 		if (D) Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
 
@@ -319,6 +322,7 @@ public class BluetoothHandler implements INetworkHandler {
 		return null;
 	}
 	
+	// TODO Needed?
 	private BluetoothDevice findFirstAvailableDevice() {
 		// Return the first eligible device among the available devices set
 		Iterator<BluetoothDevice> iter = availableDevices.iterator();
@@ -332,6 +336,8 @@ public class BluetoothHandler implements INetworkHandler {
 		return null;
 	}
 
+	
+	// TODO Needed?
 	private void beDiscoverable() {
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
