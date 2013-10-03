@@ -390,6 +390,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		context.startActivity(discoverableIntent);
 	}
 
+	/** Broadcast a message over the network */
 	public void sendMessage(NetworkMessage message) {
 		connection.broadcastMessage(message);
 
