@@ -171,21 +171,14 @@ public class ConnectionService {
 
 				} catch (KryoException k) {
 					Log.e(TAG, "The connection has most probably been lost");
-					mOnConnectionLostListener.OnConnectionLost(device);
+					break;
 				}
-
-				
-
-				// if(receivedObject instanceof NetworkMessage){
-				// mOnMessageReceivedListener.OnMessageReceived(device,
-				// (NetworkMessage)receivedObject);
-				// }
 			}
-
-			// mBtDevices.remove(address);
-			// mBtSockets.remove(address);
-			// mBtStreamWatcherThreads.remove(address);
-			// mOnConnectionLostListener.OnConnectionLost(device);
+			// If we end up outside the loop we have lost connection
+			 mBtDevices.remove(address);
+			 mBtSockets.remove(address);
+			 mBtStreamWatcherThreads.remove(address);
+			 mOnConnectionLostListener.OnConnectionLost(device);
 
 		}
 	}
