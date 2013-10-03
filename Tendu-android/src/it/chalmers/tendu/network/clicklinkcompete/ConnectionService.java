@@ -193,6 +193,7 @@ public class ConnectionService {
 		BluetoothSocket myBSock;
 		try {
 			myBSock = myBtServer.createRfcommSocketToServiceRecord(uuidToTry);
+			Log.d(TAG, "atempting connection to: " + myBSock + " Socket");
 			myBSock.connect();
 			return myBSock;
 		} catch (IOException e) {
