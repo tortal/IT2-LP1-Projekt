@@ -57,7 +57,7 @@ public class ConnectionService {
 
 	private ConnectionService mSelf;
 
-	private String mApp; // Assume only one app can use this at a time; may
+	//private String mApp; // Assume only one app can use this at a time; may
 
 	// change this later
 
@@ -92,7 +92,6 @@ public class ConnectionService {
 	public ConnectionService(Context context) {
 		mSelf = this;
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-		mApp = "";
 		mBtSockets = new HashMap<String, BluetoothSocket>();
 		mBtDevices = new ArrayList<BluetoothDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
@@ -256,9 +255,6 @@ public class ConnectionService {
 			OnMaxConnectionsReachedListener omcrListener,
 			OnMessageReceivedListener omrListener,
 			OnConnectionLostListener oclListener) throws RemoteException {
-		if (mApp.length() > 0) {
-			return Connection.FAILURE;
-		}
 
 		mOnIncomingConnectionListener = oicListener;
 		mOnMaxConnectionsReachedListener = omcrListener;
@@ -368,7 +364,7 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public void shutdown(String srcApp) throws RemoteException {
+	public void shutdown() throws RemoteException {
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
 				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
@@ -377,7 +373,6 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
-			mApp = "";
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in shutdown", e);
 		}
