@@ -184,8 +184,7 @@ public class NumberGameScreen extends GameScreen {
 			if (input.isTouchedUp()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				game.getCamera().unproject(touchPos);
-				EventBus.INSTANCE.broadcast(new Message("Message test",
-						"touchUp", null));
+
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
