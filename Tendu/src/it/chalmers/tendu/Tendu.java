@@ -34,8 +34,8 @@ public class Tendu implements ApplicationListener {
 	public void create() {
 
 		//here we should load the start screen of the game
-		//setScreen(new MainMenuScreen(this, null));
-		setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
+		setScreen(new MainMenuScreen(this, null));
+		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
 		//setScreen(new ShapesGameScreen(this, new ShapesGame(30000, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
