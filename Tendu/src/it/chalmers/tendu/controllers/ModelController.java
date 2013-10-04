@@ -44,6 +44,7 @@ public class ModelController implements Listener {
 				NumberGame game = (NumberGame) this.session.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
 					game.checkNbr((Integer) message.content);
+					session.setCurrentMiniGame(game);
 					message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, session.currentMiniGame);
 					EventBus.INSTANCE.broadcast(message);						
 				}
