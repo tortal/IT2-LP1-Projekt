@@ -58,9 +58,12 @@ public class Tendu implements ApplicationListener, Listener {
 	public void create() {
 
 		//here we should load the start screen of the game
+		//setScreenByNetworkState();
+		//setScreen(new MainMenuScreen(this, null));
+		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 
-		setScreen(new MainMenuScreen(this, null));
 		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
+
 		//setScreen(new ShapesGameScreen(this, new ShapesGame(30000, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
@@ -85,9 +88,9 @@ public class Tendu implements ApplicationListener, Listener {
 		spriteBatch = new SpriteBatch();
 		
 		//temp code
-		gameSession = new GameSession();
-		modelController = new ModelController(this, gameSession);
-		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
+//		gameSession = new GameSession();
+//		modelController = new ModelController(this, gameSession);
+//		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
 		//end temp
 		
 		
@@ -175,7 +178,7 @@ public class Tendu implements ApplicationListener, Listener {
 			if (host) {
 				GameId gameId = gameSession.getNextGameId();
 				MiniGame game = gameSession.getMiniGame(gameId);
-				EventMessage evMsg = new EventMessage(C.Tag.DEFAULT, C.Msg.LOAD_THIS_GAME, game);
+				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
 				EventBus.INSTANCE.broadcast(evMsg);
 			}
 			break;

@@ -53,9 +53,8 @@ public class GameLobby implements Listener {
 			List<String> list = (List<String>) message.content;
 			addPlayers(list);
 			EventBus.INSTANCE.broadcast(new EventMessage(null, C.Msg.LOBBY_READY));
+			//EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
 
-//			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND,
-//					C.Msg.LOBBY_READY));
 		}
 	}
 }

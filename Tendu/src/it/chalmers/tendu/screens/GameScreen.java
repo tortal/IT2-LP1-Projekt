@@ -45,7 +45,7 @@ public abstract class GameScreen {
 
 	/** all rendering goes here **/
 	public void render(){
-		//model.checkGame();
+		model.checkGame();
 		
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -56,7 +56,7 @@ public abstract class GameScreen {
 			count --;
 		}
 		//Gdx.app.log("Quota", calculateTimerWidth() + "");
-		//shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
 	}
 

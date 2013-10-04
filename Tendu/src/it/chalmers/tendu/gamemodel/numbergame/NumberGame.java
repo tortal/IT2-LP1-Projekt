@@ -20,6 +20,11 @@ public class NumberGame extends MiniGame {
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
 
+	/** No args constructor for reflection use */
+	protected NumberGame() {
+		super();
+	};
+	
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameId.NUMBER_GAME);
 		nbrCorrectAnswer = 0;

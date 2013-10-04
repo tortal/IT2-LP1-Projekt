@@ -39,6 +39,11 @@ public class ShapesGame extends MiniGame {
 	 */
 	private Map<Integer, Lock> allLocks;
 
+	/** No args constructor for reflection use */
+	protected ShapesGame() {
+		super();
+	};
+	
 	/**
 	 * This will create a ShapesGame. It creates a list of all possible
 	 * combinations of the enums {@link GeometricShape} and link {@link Color}
@@ -119,7 +124,7 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            to be inserted into the players �.
+	 *            to be inserted into the players slot.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape) {
