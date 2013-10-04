@@ -421,7 +421,11 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			break;
 		case LOBBY_READY:
 			break;
-		case PLAYERS_CONNECTED:
+		case PLAYERS_CONNECTED: // TODO temporary 
+			if (message.tag == C.Tag.COMMAND_AS_HOST) {
+				message.setTag(C.Tag.HOST_COMMANDED); 
+				broadcastMessageOverNetwork(message);
+			}
 			break;
 		case UPDATE_MODEL:
 			if(message.tag == C.Tag.COMMAND_AS_HOST) {
@@ -434,6 +438,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				message.setTag(C.Tag.CLIENT_REQUESTED);
 				broadcastMessageOverNetwork(message);
 			}
+			break;
 			
 		default:
 			break;
@@ -456,7 +461,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
+		final EventMessage message = new EventMessage(C.Tag.HOST_COMMANDED, C.Msg.PLAYERS_CONNECTED, addresses);
 		sendToEventBus(message);
 	}
 
