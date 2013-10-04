@@ -70,7 +70,6 @@ public abstract class GameScreen {
 	}
 	
 	private int calculateTimerWidth() {
-		Gdx.app.log("timeleft", model.getTimeLeft()+ "");
 		double quota = (double) model.getTimeLeft()
 				/ (double) model.getGameTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH-100));
