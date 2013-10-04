@@ -55,7 +55,7 @@ public abstract class GameScreen {
 			count --;
 		}
 		//Gdx.app.log("Quota", calculateTimerWidth() + "");
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		//shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
 	}
 

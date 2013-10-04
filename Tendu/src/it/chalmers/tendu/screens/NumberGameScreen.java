@@ -185,7 +185,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 		
-		Gdx.app.log("frame = ", "" + model.checkGameState());
+		//Gdx.app.log("frame = ", "" + model.checkGameState());
 				
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
@@ -200,8 +200,7 @@ public class NumberGameScreen extends GameScreen {
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
-						EventBus.INSTANCE.broadcast(new Message(C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, circle.getNumber()));
-						
+						EventBus.INSTANCE.broadcast(new Message(C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, circle.getNumber()));			
 					}
 					circle.scale = 1;
 				}
