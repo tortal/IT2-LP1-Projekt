@@ -461,7 +461,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.HOST_COMMANDED, C.Msg.PLAYERS_CONNECTED, addresses);
+		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.PLAYERS_CONNECTED, addresses);
 		sendToEventBus(message);
 	}
 
