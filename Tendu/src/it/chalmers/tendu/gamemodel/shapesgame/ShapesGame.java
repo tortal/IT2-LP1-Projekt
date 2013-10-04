@@ -32,6 +32,8 @@ public class ShapesGame extends MiniGame {
 	 * All shapes for all players mapped by player number (Integer).
 	 */
 	private Map<Integer, List<Shape>> allInventory;
+
+
 	/**
 	 * @return the allInventory
 	 */
@@ -218,6 +220,13 @@ public class ShapesGame extends MiniGame {
 		System.out.println(lock.fillSlot(myShape));
 		
 		System.out.println(lock);
+	}
+	/**
+	 * Gets all the players shapes. 
+	 * @return All the players 
+	 */
+	public Map<Integer, List<Shape>> getAllInventory() {
+		return allInventory;
 	}
 
 }
