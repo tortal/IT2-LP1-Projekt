@@ -175,13 +175,4 @@ public class Tendu implements ApplicationListener {
 	// default:
 	// break;
 	// }
-	// }
-	//
-	// public void setHost(boolean isHost) {
-	// this.host = isHost;
-	// }
-	//
-	// public boolean isHost() {
-	// return host;
-	// }
 }

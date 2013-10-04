@@ -24,7 +24,7 @@ public class LobbyController implements Listener {
 				// get mac addresses for each player.
 				List<String> list = (List<String>) message.content;
 				model.addPlayers(list);
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND,
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
 						C.Msg.LOBBY_READY));
 			}
 		} else {
