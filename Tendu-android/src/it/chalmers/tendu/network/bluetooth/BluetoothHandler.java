@@ -2,7 +2,6 @@ package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
@@ -87,7 +86,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
 		public void OnMessageReceived(BluetoothDevice device,
-				final NetworkMessage message) {
+				final EventMessage message) {
 			Log.d(TAG, "Received Message: " + message + " From device: "
 					+ device);
 			// For testing
@@ -132,7 +131,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			connectedDevices.add(device);
 		}
 	};
-
 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
@@ -235,7 +233,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		return devices;
 	}
 
-	// ----------------------- HELPER METHODS ------------------------
+	// **************************** HELPER METHODS *************************
 
 	/**
 	 * Checks if bluetooth is enabled. If <code>true</code> does nothing. If
@@ -407,11 +405,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		context.startActivity(discoverableIntent);
 	}
 
-	/** Broadcast a message over the network */
-	public void sendMessage(NetworkMessage message) {
-		connection.broadcastMessage(message);
-
-	}
 
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
@@ -424,7 +417,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	// Test Method
 	public void testStuff() {
-		connection.broadcastMessage(new NetworkMessage());
+		connection.broadcastMessage(new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED));
 	}
 
 	// Message handler
@@ -445,26 +438,39 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 
 	@Override
-	public void onBroadcast(it.chalmers.tendu.tbd.EventMessage message) {
-		// TODO React on eventbus events
-		
+	public void onBroadcast(final EventMessage message) {
+		switch (message.msg) {
+		case LOAD_THIS_GAME: sendToEventBus(message);
+			break;
+		case LOBBY_READY:
+			break;
+		case PLAYERS_CONNECTED:
+			break;
+		default:
+			break;
+		}
 	}
 	
 	/** Broadcast a message on the event bus */
-	private void broadcastMessage(final EventMessage message) {
+	private void sendToEventBus(final EventMessage message) {
 		Gdx.app.postRunnable(new Runnable() {
 			
 			@Override
 			public void run() {
 				EventBus.INSTANCE.broadcast(message);
 			}
-		});
-		
+		});	
 	}
 	
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
 		final EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
-		broadcastMessage(message);
+		sendToEventBus(message);
+	}
+
+	/** Broadcast a message over the network. If you're a client it goes to the server, if you're a server it goes out to all clients */
+	@Override
+	public void broadcastMessageOverNetwork(EventMessage message) {
+		connection.broadcastMessage(message);
 	}
 }

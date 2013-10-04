@@ -16,7 +16,7 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-import it.chalmers.tendu.network.NetworkMessage;
+import it.chalmers.tendu.tbd.EventMessage;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.RemoteException;
@@ -53,7 +53,7 @@ public class Connection {
 
 	public interface OnMessageReceivedListener {
 		public void OnMessageReceived(BluetoothDevice device,
-				NetworkMessage message);
+				EventMessage receivedObject);
 	}
 
 	public interface OnConnectionLostListener {
@@ -119,7 +119,7 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
-	public int sendMessage(BluetoothDevice device, NetworkMessage message) {
+	public int sendMessage(BluetoothDevice device, EventMessage message) {
 
 		try {
 			return connectionService.sendMessage(device, message);
@@ -129,7 +129,7 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
-	public int broadcastMessage(NetworkMessage message) {
+	public int broadcastMessage(EventMessage message) {
 		Log.d(TAG, "broadcastMessage: " + message.toString());
 		try {
 			return connectionService.broadcastMessage(message);

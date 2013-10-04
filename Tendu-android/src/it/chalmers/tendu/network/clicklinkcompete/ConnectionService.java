@@ -17,11 +17,11 @@
 package it.chalmers.tendu.network.clicklinkcompete;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.network.NetworkMessage;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +105,7 @@ public class ConnectionService {
 		Kryo kryo = new Kryo();
 
 		// Register the classes we want to send over the network
-		kryo.register(NetworkMessage.class);
+		kryo.register(EventMessage.class);
 		return kryo;
 	}
 
@@ -143,13 +143,13 @@ public class ConnectionService {
 			// TODO: Break loop when someone disconnects
 			while (true) {
 				try {
-					receivedObject = mKryo.readObject(in, NetworkMessage.class);
+					receivedObject = mKryo.readObject(in, EventMessage.class);
 
 					if (receivedObject != null) {
 						Log.d(TAG, "You recevied an item from: " + address);
 					}
 					
-					mOnMessageReceivedListener.OnMessageReceived(device, (NetworkMessage) receivedObject);
+					mOnMessageReceivedListener.OnMessageReceived(device, (EventMessage) receivedObject);
 
 				} catch (KryoException k) {
 					Log.e(TAG, "The connection has most probably been lost");
@@ -283,7 +283,7 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public int broadcastMessage(NetworkMessage message) throws RemoteException {
+	public int broadcastMessage(EventMessage message) throws RemoteException {
 		for (int i = 0; i < mBtDevices.size(); i++) {
 			Log.d(TAG, "sendMessage(): " + mBtDevices.get(i).getAddress()
 					+ " Message: " + message);
@@ -311,7 +311,7 @@ public class ConnectionService {
 	 * @return Connection.FAILURE or Connection.SUCCESS
 	 * @throws RemoteException
 	 */
-	public int sendMessage(BluetoothDevice destination, NetworkMessage message)
+	public int sendMessage(BluetoothDevice destination, EventMessage message)
 			throws RemoteException {
 		Log.d(TAG,
 				"sendMessage: " + message.toString() + " to "

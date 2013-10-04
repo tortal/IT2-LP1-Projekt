@@ -8,6 +8,7 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 
@@ -164,13 +165,13 @@ public class Tendu implements ApplicationListener, Listener {
 			gameSession = gameLobby.getGameSession();
 			if (host) {
 				GameId gameId = gameSession.getNextGame();
+				MiniGame game = gameSession.getGame(gameId);
 				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.DEFAULT,
-						C.Msg.LOAD_THIS_GAME, gameId));
+						C.Msg.LOAD_THIS_GAME, game));
 			}
 			break;
 		case LOAD_THIS_GAME:
-			setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
-					gameSession.getGame((GameId) message.content)));
+			setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame)message.content));
 			break;
 		default:
 			break;

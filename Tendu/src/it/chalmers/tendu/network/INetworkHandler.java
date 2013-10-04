@@ -1,5 +1,7 @@
 package it.chalmers.tendu.network;
 
+import it.chalmers.tendu.tbd.EventMessage;
+
 
 
 public interface INetworkHandler {
@@ -18,7 +20,7 @@ public interface INetworkHandler {
 	 * Send object to remote device
 	 * @param o
 	 */
-	void sendMessage(NetworkMessage message);
+	void broadcastMessageOverNetwork(EventMessage message);
 	
 	/**
 	 * Method to be called when exiting app
