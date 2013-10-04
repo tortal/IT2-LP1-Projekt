@@ -35,7 +35,7 @@ public class ModelController implements Listener {
 	}
 
 	private void handleAsHost(EventMessage message) {
-		if (message.tag == C.Tag.REQUEST) {
+		if (message.tag == C.Tag.REQUEST_AS_CLIENT) {
 
 		}
 	}
@@ -50,7 +50,7 @@ public class ModelController implements Listener {
 			}
 		}
 
-		if (msg.tag == Tag.COMMAND) {
+		if (msg.tag == Tag.COMMAND_AS_HOST) {
 		}
 	}
 

@@ -442,7 +442,11 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void onBroadcast(final EventMessage message) {
 		switch (message.msg) {
-		case LOAD_THIS_GAME: broadcastMessageOverNetwork(message);
+		case LOAD_THIS_GAME: 
+			if (message.tag == C.Tag.COMMAND_AS_HOST) {
+				message.setTag(C.Tag.HOST_COMMANDED); // Set new tag to prevent feedback loop
+				broadcastMessageOverNetwork(message);
+			}
 			break;
 		case LOBBY_READY:
 			break;

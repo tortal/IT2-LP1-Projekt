@@ -32,6 +32,10 @@ public class EventMessage {
 		this(tag, msg, null, null);
 	}
 	
+	public void setTag(C.Tag tag) {
+		this.tag = tag;
+	}
+	
 	@Override
 	public String toString() {
 		return tag.toString() + " - " + msg.toString();
