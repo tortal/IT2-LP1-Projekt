@@ -1,11 +1,9 @@
 package it.chalmers.tendu.controllers;
 
-import com.badlogic.gdx.Gdx;
-
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameSession;
-import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
-import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.Message;
@@ -28,21 +26,22 @@ public class ModelController implements Listener {
 	public void onBroadcast(Message message) {
 		if(game.getHost()) {
 			handleMessageAsHost(message);
-		} else {
-			handleMessageAsClient(message);
-		}
+		} 
+		
+		handleMessageAsClient(message);
 	}
 	
 	private void handleMessageAsHost(Message message) {
-		
+		if(message.tag == C.Tag.REQUEST)  {
+			
+		}
 	}
 	
 	private void handleMessageAsClient(Message message) {
-		//*********NUMBER GAME HANDLING***********
-		if(message.msg == Msg.NUMBER_GUESS) {
-			NumberGame numberGame = (NumberGame) session.currentMinigame;
-			Gdx.app.log("KUUUK", " " + (Integer)message.content);
-			//numberGame.checkNbr();
+		if(message.tag == C.Tag.TO_SELF)  {
+		}
+		
+		if(message.tag == Tag.COMMAND) {
 		}
 	}
 
