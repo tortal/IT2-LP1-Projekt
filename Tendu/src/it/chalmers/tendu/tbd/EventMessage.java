@@ -15,4 +15,9 @@ public class EventMessage {
 		this(tag, msg, null);
 	}
 	
+	@Override
+	public String toString() {
+		return tag.toString() + " - " + msg.toString();
+	}
+	
 }
