@@ -30,8 +30,8 @@ public abstract class MiniGame {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.DEFAULT;
-		setTime(time);
-		gameTime= time;
+		setTime(30000+time);
+		gameTime= 30000+time;
 	}
 
 	/**
