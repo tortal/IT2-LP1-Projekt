@@ -59,8 +59,8 @@ public class Tendu implements ApplicationListener, Listener {
 
 		//here we should load the start screen of the game
 		//setScreenByNetworkState();
-		//setScreen(new MainMenuScreen(this, null));
-		setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		setScreen(new MainMenuScreen(this, null));
+		//setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
 
 		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
 
