@@ -17,7 +17,7 @@ public class GameSession {
 	// private Map<Player, Integer> playerNbr;
 	private Map<Integer, String> players;
 
-	public GameSession(Map players) {
+	public GameSession(Map<Integer, String> players) {
 		this.players = players;
 	}
 

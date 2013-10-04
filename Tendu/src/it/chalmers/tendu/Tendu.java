@@ -173,7 +173,6 @@ public class Tendu implements ApplicationListener, Listener {
 			gameSession = gameLobby.getGameSession();
 			modelController = new ModelController(this, gameSession);
 			if (host) {
-
 				GameId gameId = gameSession.getNextGameId();
 				MiniGame game = gameSession.getMiniGame(gameId);
 				EventMessage evMsg = new EventMessage(C.Tag.DEFAULT, C.Msg.LOAD_THIS_GAME, game);
