@@ -143,9 +143,14 @@ public class NumberGame extends MiniGame {
 	 * @return
 	 */
 	public ArrayList<Integer> getPlayerList(int player) {
-		return playerLists.get(player);
+//		return playerLists.get(player);
+		return answerList;
 	}
 
+	/**
+	 * Returns the numbers that have been answered correctly.
+	 * @return
+	 */
 	public ArrayList<Integer> getAnsweredNbrs() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < nbrCorrectAnswer; i++) {
