@@ -29,8 +29,8 @@ public class GameLobby implements Listener {
 	public void onBroadcast(Message message) {
 		// TODO Auto-generated method stub
 		if (message.msg.equals(C.Msg.PLAYERS_CONNECTED)) {
-			// get mac addresses for each player.
-			List<String> list = (List) message.content;
+			//get mac addresses for each player.
+			List<String> list = (List)message.content;
 			addPlayers(list);
 			EventBus.INSTANCE.broadcast(new Message(C.Tag.COMMAND, C.Msg.LOBBY_READY));
 		}

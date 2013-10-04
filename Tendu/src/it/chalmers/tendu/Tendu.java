@@ -166,13 +166,13 @@ public class Tendu implements ApplicationListener, Listener {
 			modelController = new ModelController(this, gameSession);
 			if (host) {
 				GameId gameId = gameSession.getNextGameId();
+				MiniGame game = gameSession.getMiniGame(gameId);
 				EventBus.INSTANCE.broadcast(new Message(C.Tag.DEFAULT,
-						C.Msg.LOAD_THIS_GAME, gameId));
+						C.Msg.LOAD_THIS_GAME, game));
 			}
 			break;
 		case LOAD_THIS_GAME:
-			setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
-					gameSession.getMiniGame((GameId) message.content)));
+			setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame)message.content));
 			break;
 		default:
 			break;
