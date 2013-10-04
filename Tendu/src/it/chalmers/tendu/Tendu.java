@@ -186,6 +186,8 @@ public class Tendu implements ApplicationListener, Listener {
 			break;
 		case LOAD_THIS_GAME:
 			if(!host) {
+				gameSession = gameLobby.getGameSession();
+				modelController = new ModelController(this, gameSession);
 				Gdx.app.log(TAG, "LOAD_THIS_GAME");
 				gameSession.setCurrentMiniGame((MiniGame)message.content);
 				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame)message.content));
