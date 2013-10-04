@@ -450,15 +450,21 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		
 	}
 	
-	/** Send the mac-addresses of all connected units to the main controller */
-	private void broadcastPlayersReadyMessage(List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
+	/** Broadcast a message on the event bus */
+	private void broadcastMessage(final EventMessage message) {
 		Gdx.app.postRunnable(new Runnable() {
-
+			
 			@Override
 			public void run() {
 				EventBus.INSTANCE.broadcast(message);
 			}
 		});
+		
+	}
+	
+	/** Send the mac-addresses of all connected units to the main controller */
+	private void broadcastPlayersReadyMessage(final List<String> addresses) {
+		final EventMessage message = new EventMessage(C.Tag.DEFAULT, C.Msg.PLAYERS_CONNECTED, addresses);
+		broadcastMessage(message);
 	}
 }
