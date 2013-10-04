@@ -57,7 +57,7 @@ public abstract class GameScreen {
 			shapeRenderer.setColor(Color.RED);
 			count --;
 		}
-		Gdx.app.log("Quota", calculateTimerWidth() + "");
+		//Gdx.app.log("Quota", calculateTimerWidth() + "");
 		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
 		spriteBatch.end();
