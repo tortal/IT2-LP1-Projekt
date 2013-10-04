@@ -1,5 +1,7 @@
 package it.chalmers.tendu.controllers;
 
+import com.badlogic.gdx.Gdx;
+
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
@@ -36,16 +38,20 @@ public class ModelController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.REQUEST) {
-
+			
 		}
 	}
 
 	private void handleAsClient(EventMessage msg) {
 		if (msg.tag == C.Tag.ACCESS_MODEL) {
+			//*********NUMBER GAME***********
 			if (msg.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) this.session.currentMiniGame;
 				if (msg.msg == C.Msg.NUMBER_GUESS) {
 					game.checkNbr((Integer) msg.content);
+					//EventBus.INSTANCE.broadcast();		
+
+					
 				}
 			}
 		}
