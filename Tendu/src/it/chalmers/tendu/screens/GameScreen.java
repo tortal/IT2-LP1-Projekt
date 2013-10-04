@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public abstract class GameScreen {
 	public Tendu game; //reference to the main Tendu object
 	public MiniGame model; //model of current minigame
-	public SpriteBatch spriteBatch; //used for drawing of graphics
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	// displayed a short time.
@@ -29,12 +28,11 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-		if (model != null) {
+
+		if(model != null) {
 			model.startGame();
 		}
 		shapeRenderer = new ShapeRenderer();
-
-		spriteBatch = new SpriteBatch();
 	}
 
 	/**
@@ -47,9 +45,7 @@ public abstract class GameScreen {
 
 	/** all rendering goes here **/
 	public void render(){
-		model.checkGame();
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
+		//model.checkGame();
 		
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -59,10 +55,9 @@ public abstract class GameScreen {
 			shapeRenderer.setColor(Color.RED);
 			count --;
 		}
-		Gdx.app.log("Quota", calculateTimerWidth() + "");
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		//Gdx.app.log("Quota", calculateTimerWidth() + "");
+		//shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
-		spriteBatch.end();
 	}
 
 	/** All game logic goes here */
@@ -72,7 +67,6 @@ public abstract class GameScreen {
 	 * 	make sure to call super() if overriden
 	 */
 	public void removed() {
-		spriteBatch.dispose();
 	}
 	
 	private int calculateTimerWidth() {
@@ -83,6 +77,7 @@ public abstract class GameScreen {
 
 	}
 	
+	//TODO maybe the model could remove time without involving the screen?
 	/**
 	 * Removes time for the user and shows this 
 	 * buy changing color on the timer.

@@ -4,10 +4,15 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.Message;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +48,6 @@ public class NumberGameScreen extends GameScreen {
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
 	private int time; // used to time certain "events" during the game.
-	
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 
@@ -101,15 +105,16 @@ public class NumberGameScreen extends GameScreen {
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
 				numberFont.setColor(colors.get(i));
-				numberFont.draw(spriteBatch, "" + numbers.get(i).number,
+				numberFont.draw(game.spriteBatch, "" + numbers.get(i).number,
 						numberAlignment + i * 105, 300);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (numbers.get(i).show == true) {
 					numberFont.setColor(colors.get(i));
-					numberFont.draw(spriteBatch, "" + numbers.get(i).number,
-							numberAlignment + i * 105, 300);
+					numberFont.draw(game.spriteBatch, ""
+							+ numbers.get(i).number, numberAlignment + i * 105,
+							300);
 				}
 			}
 		}
@@ -124,138 +129,94 @@ public class NumberGameScreen extends GameScreen {
 			shapeRenderer.circle(circle.getX(), circle.getY(),
 					(circle.getRadius() - i) * circle.scale);
 		}
-		numberFont.draw(spriteBatch, "" + circle.getNumber(),
+		numberFont.draw(game.spriteBatch, "" + circle.getNumber(),
 				circle.getNumberX(), circle.getNumberY());
+	}
+
+	private void drawNumberCircles() {
+		numberFont.scale(-0.8f);
+		for (int i = 0; i < numberCircles.size(); i++) {
+			drawNumberCircle(numberCircles.get(i));
+		}
+		numberFont.scale(0.8f);
 	}
 
 	/** Draw all graphics here */
 	@Override
 	public void render() {
 		super.render();
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
-
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.Circle);
 
 		if (time < 240) {
 			numberFont.setColor(Color.BLUE);
-			numberFont.draw(spriteBatch, "Memorize the numbers", 200, 400);
+			numberFont.draw(game.spriteBatch, "Memorize the numbers", 200, 400);
 			drawNumbers(true);
 
 		} else {
 			if (model.checkGameState() == GameState.RUNNING) {
 				numberFont.setColor(Color.BLUE);
-				numberFont.draw(spriteBatch,
+				numberFont.draw(game.spriteBatch,
 						"Enter the numbers in the correct order", 60, 400);
-				
 			}
 			drawNumbers(false);
+			drawNumberCircles();
 
-			numberFont.scale(-0.8f);
-			for (int i = 0; i < numberCircles.size(); i++) {
-				drawNumberCircle(numberCircles.get(i));
-			}
-			numberFont.scale(0.8f);
 		}
 
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
 			numberFont.scale(2);
-			numberFont.draw(spriteBatch, "You won!", 300, 450);
+			numberFont.draw(game.spriteBatch, "You won!", 300, 450);
 			numberFont.scale(-2);
 		}
 
 		shapeRenderer.end();
-
-		spriteBatch.end();
-
 	}
 
 
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		if (model.checkGameState() == GameState.RUNNING) {
-			if (time < 240) {
-				time++;
-			} else {
-				if (input.isTouchedUp()) {
-					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-					game.getCamera().unproject(touchPos);
+		//TODO, move this...   make number visible if correctly chosen
+		for (Number num : numbers) {
+			if (model.getAnsweredNbrs().contains(num.number)) {
+				num.show = true;
+			}
+		}
+		
+		//Gdx.app.log("frame = ", "" + model.checkGameState());
+				
+		if (model.checkGameState() != GameState.RUNNING)
+			return;
+		
+		if (time < 240) {
+			time++;
+		} else {
+			if (input.isTouchedUp()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+				game.getCamera().unproject(touchPos);
 
-					for (NumberCircle circle : numberCircles) {
-						if (touchPos.x > circle.leftX
-								&& touchPos.x < circle.rightX) {
-							if (touchPos.y < circle.topY
-									&& touchPos.y > circle.bottomY) {
-								Gdx.input.vibrate(25);
-								if (model.checkNbr(circle.getNumber())) {
-									Gdx.app.log("Correct number = ", ""
-											+ circle.getNumber());
-									for (Number num : numbers) {
-										if (num.number == circle.getNumber()) {
-											num.show = true;
-										}
-									}
-								} else
-									super.loseTime(2000);
-							}
-						}
-						circle.scale = 1;
+				for (NumberCircle circle : numberCircles) {
+					if (circle.collided(touchPos)) {
+						Gdx.input.vibrate(25);
+						EventBus.INSTANCE.broadcast(new Message(C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, circle.getNumber()));			
 					}
+					circle.scale = 1;
 				}
+			}
 
-				if (Gdx.input.isTouched()) {
-					game.getCamera().unproject(touchPos);
+			if (input.isTouchedDown()) {
+				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+				game.getCamera().unproject(touchPos);
 
-					for (NumberCircle circle : numberCircles) {
-						if (touchPos.x > circle.leftX
-								&& touchPos.x < circle.rightX) {
-							if (touchPos.y < circle.topY
-									&& touchPos.y > circle.bottomY) {
-								Gdx.input.vibrate(25);
-								if (model.checkNbr(circle.getNumber())) {
-									Gdx.app.log("Correct number = ", ""
-											+ circle.getNumber());
-									for (Number num : numbers) {
-										if (num.number == circle.getNumber()) {
-											num.show = true;
-										}
-									}
-								}
-							}
-						}
-						circle.scale = 1;
-					}
-				}
-
-				if (input.isTouchedDown()) {
-					touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-					game.getCamera().unproject(touchPos);
-
-					for (NumberCircle circle : numberCircles) {
-						if (touchPos.x > circle.leftX
-								&& touchPos.x < circle.rightX) {
-							if (touchPos.y < circle.topY
-									&& touchPos.y > circle.bottomY) {
-								circle.scale = 1.5f;
-							}
-						}
+				for (NumberCircle circle : numberCircles) {
+					if (circle.collided(touchPos)) {
+						circle.scale = 1.5f;
 					}
 				}
 			}
 		}
-
-		if (model.checkGameState() != GameState.RUNNING) {
-			// time++;
-			// if (time > 360) {
-			game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game,
-					MiniGameFactory.createMiniGame(30000,
-							Constants.Difficulty.TWO)));
-			// }
-		}
-
 	}
 
 	@Override
