@@ -440,7 +440,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void onBroadcast(final EventMessage message) {
 		switch (message.msg) {
-		case LOAD_THIS_GAME: sendToEventBus(message);
+		case LOAD_THIS_GAME: broadcastMessageOverNetwork(message);
 			break;
 		case LOBBY_READY:
 			break;
