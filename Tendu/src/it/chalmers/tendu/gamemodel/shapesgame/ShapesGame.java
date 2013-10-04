@@ -33,9 +33,17 @@ public class ShapesGame extends MiniGame {
 	 */
 	private Map<Integer, List<Shape>> allInventory;
 	/**
+	 * @return the allInventory
+	 */
+	public Map<Integer, List<Shape>> getAllInventory() {
+		return allInventory;
+	}
+
+	/**
 	 * Every players lock, mapped by player number (Integer)
 	 */
 	private Map<Integer, Lock> allLocks;
+	
 
 	/**
 	 * This will create a ShapesGame. It creates a list of all possible
@@ -115,7 +123,7 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            to be inserted into the players §.
+	 *            to be inserted into the players ï¿½.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape) {
