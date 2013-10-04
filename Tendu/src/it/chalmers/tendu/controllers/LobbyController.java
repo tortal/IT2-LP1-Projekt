@@ -20,14 +20,21 @@ public class LobbyController implements Listener {
 	public void onBroadcast(EventMessage message) {
 		if (model.isHost()) {
 			// IM HOSTING
-			if (message.msg.equals(C.Msg.PLAYERS_CONNECTED)) {
+			switch (message.msg) {
+			case PLAYERS_CONNECTED:
 				// get mac addresses for each player.
 				List<String> list = (List<String>) message.content;
 				model.addPlayers(list);
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
-						C.Msg.LOBBY_READY));
+				EventBus.INSTANCE.broadcast(new EventMessage(
+						C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
+				break;
 			}
 		} else {
+			switch (message.msg) {
+
+			default:
+				break;
+			}
 			// NOT HOST
 		}
 	}
