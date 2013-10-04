@@ -5,7 +5,6 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import java.util.List;
 
 
-
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
@@ -16,6 +15,8 @@ public abstract class MiniGame {
 	private long pausedTimeLeft; 
 
 
+	/** No args constructor for reflection use */
+	protected MiniGame() {};
 
 	/**
 	 * Creates a new minigame.

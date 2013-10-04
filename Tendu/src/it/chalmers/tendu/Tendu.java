@@ -85,9 +85,9 @@ public class Tendu implements ApplicationListener, Listener {
 		spriteBatch = new SpriteBatch();
 		
 		//temp code
-		gameSession = new GameSession();
-		modelController = new ModelController(this, gameSession);
-		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
+//		gameSession = new GameSession();
+//		modelController = new ModelController(this, gameSession);
+//		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
 		//end temp
 		
 		
