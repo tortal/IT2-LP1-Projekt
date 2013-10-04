@@ -99,6 +99,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 							Toast.LENGTH_SHORT).show();
 				}
 			});
+			
+			sendToEventBus(message);
 		}
 	};
 
