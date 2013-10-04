@@ -7,7 +7,7 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 
 public class MiniGameScreenFactory {
 
-	public static GameScreen createMiniGameScreen(Tendu game, MiniGame miniModel) {
+	public static Screen createMiniGameScreen(Tendu game, MiniGame miniModel) {
 		Gdx.app.log("MiniGameScreenFactory", "gameId = " + miniModel.getGameId());
 		switch (miniModel.getGameId()) {
 		case NUMBER_GAME:

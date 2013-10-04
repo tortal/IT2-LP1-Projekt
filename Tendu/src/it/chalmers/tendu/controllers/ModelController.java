@@ -27,11 +27,12 @@ public class ModelController implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if (applicationListener.isHost()) {
-			handleAsHost(message);
-		}
-
-		handleAsClient(message);
+		//TODO: FIX
+//		if (applicationListener.isHost()) {
+//			handleAsHost(message);
+//		}
+//
+//		handleAsClient(message);
 	}
 
 	private void handleAsHost(EventMessage message) {
