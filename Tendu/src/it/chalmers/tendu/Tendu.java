@@ -179,8 +179,8 @@ public class Tendu implements ApplicationListener, Listener {
 
 				GameId gameId = gameSession.getNextGameId();
 				MiniGame game = gameSession.getMiniGame(gameId);
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.DEFAULT,
-						C.Msg.LOAD_THIS_GAME, game));
+				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
+				EventBus.INSTANCE.broadcast(evMsg);
 			}
 			break;
 		case LOAD_THIS_GAME:
@@ -195,7 +195,7 @@ public class Tendu implements ApplicationListener, Listener {
 		this.host = isHost;
 	}
 	
-	public boolean getHost() {
+	public boolean isHost() {
 		return host;
 	}	 
 }
