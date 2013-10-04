@@ -38,11 +38,13 @@ public class MainMenuScreen extends GameScreen {
                 	if(touchPos.y >= 180 && touchPos.y < 250) {
                 		Gdx.app.log("Testing", "Host");
                 		game.getNetworkHandler().hostSession();
+                		game.setHost(true);
                 	}
                 	
                 	if(touchPos.y >= 80 && touchPos.y < 150) {
                 		Gdx.app.log("Testing", "Join");
                 		game.getNetworkHandler().joinGame();
+                		game.setHost(false);
                 	}
                 } else if(touchPos.x > 600 && touchPos.y > 390) {
             			Gdx.app.log("Testing", "test test");
@@ -53,17 +55,14 @@ public class MainMenuScreen extends GameScreen {
 
 	@Override
 	public void render() {
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
 
-		font.draw(spriteBatch, "Host game", 35, 250);
-        font.draw(spriteBatch, "Join game", 47, 150);
+
+		font.draw(game.spriteBatch, "Host game", 35, 250);
+        font.draw(game.spriteBatch, "Join game", 47, 150);
         
-        testFont.draw(spriteBatch, "test stuff", 600, 450);
+        testFont.draw(game.spriteBatch, "test stuff", 600, 450);
 
-       
-		spriteBatch.end();
-	}
+   	}
 	
 	@Override
 	public void removed() {
