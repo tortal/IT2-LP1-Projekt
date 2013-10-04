@@ -179,6 +179,15 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
+		//TODO, move this...   make number visible if correctly chosen
+		for (Number num : numbers) {
+			if (model.getAnsweredNbrs().contains(num.number)) {
+				num.show = true;
+			}
+		}
+		
+		//Gdx.app.log("frame = ", "" + model.checkGameState());
+				
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
 		
@@ -192,17 +201,7 @@ public class NumberGameScreen extends GameScreen {
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
-						if (model.checkNbr(circle.getNumber())) {
-							Gdx.app.log("Correct number = ",
-									"" + circle.getNumber());
-							EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.SERVER, C.Msg.CORRECT_NUMBER_GUESS, circle.getNumber()));
-							for (Number num : numbers) {
-								if (num.number == circle.getNumber()) {
-									num.show = true;
-								}
-							}
-
-						}
+						EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, circle.getNumber()));			
 					}
 					circle.scale = 1;
 				}

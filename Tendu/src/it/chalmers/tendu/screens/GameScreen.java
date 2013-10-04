@@ -28,7 +28,8 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-		if (model != null) {
+
+		if(model != null) {
 			model.startGame();
 		}
 		shapeRenderer = new ShapeRenderer();
@@ -44,7 +45,7 @@ public abstract class GameScreen {
 
 	/** all rendering goes here **/
 	public void render(){
-		model.checkGame();
+		//model.checkGame();
 		
 		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -54,8 +55,8 @@ public abstract class GameScreen {
 			shapeRenderer.setColor(Color.RED);
 			count --;
 		}
-		Gdx.app.log("Quota", calculateTimerWidth() + "");
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		//Gdx.app.log("Quota", calculateTimerWidth() + "");
+		//shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 		shapeRenderer.end();
 	}
 
@@ -76,6 +77,7 @@ public abstract class GameScreen {
 
 	}
 	
+	//TODO maybe the model could remove time without involving the screen?
 	/**
 	 * Removes time for the user and shows this 
 	 * buy changing color on the timer.
