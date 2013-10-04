@@ -1,6 +1,7 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
@@ -12,6 +13,8 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.unused.BluetoothGameService;
 
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.gsm.SmsMessage.MessageClass;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
@@ -452,8 +456,23 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			break;
 		case PLAYERS_CONNECTED:
 			break;
+		case UPDATE_MODEL:
+			if(message.tag == C.Tag.COMMAND_AS_HOST) {
+				message.setTag(C.Tag.HOST_COMMANDED);
+				broadcastMessageOverNetwork(message);
+			}
+			break;
+		case NUMBER_GUESS:
+			if(message.tag == C.Tag.REQUEST_AS_CLIENT) {
+				message.setTag(C.Tag.CLIENT_REQUESTED);
+				broadcastMessageOverNetwork(message);
+			}
+			
 		default:
 			break;
+			
+			//message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, session.currentMiniGame);
+
 		}
 	}
 	
