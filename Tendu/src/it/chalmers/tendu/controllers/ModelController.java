@@ -32,7 +32,7 @@ public class ModelController implements Listener {
 	}
 	
 	private void handleMessageAsHost(EventMessage message) {
-		if(message.tag == C.Tag.REQUEST)  {
+		if(message.tag == C.Tag.REQUEST )  {
 			
 		}
 	}

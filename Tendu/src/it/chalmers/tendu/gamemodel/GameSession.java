@@ -10,7 +10,7 @@ import com.badlogic.gdx.Gdx;
 
 public class GameSession {
 
-	public MiniGame currentMinigame = null;
+	public MiniGame currentMiniGame = null;
 	private int currentLvl = 1;
 	private Difficulty difficulty = Difficulty.ONE;
 	// private List<Player> players;
@@ -38,13 +38,17 @@ public class GameSession {
 		int bonusTime = 0;
 		Gdx.app.log("gameId", " " + gameId);
 		
-		if(currentMinigame != null) {
-			bonusTime = (int) currentMinigame.getTimeLeft();
+		if(currentMiniGame != null) {
+			bonusTime = (int) currentMiniGame.getTimeLeft();
 		}
 		
-		currentMinigame = MiniGameFactory.createMiniGame(bonusTime, gameId,
+		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
 				difficulty);
-		return currentMinigame;
+		return currentMiniGame;
+	}
+	
+	public void setCurrentMiniGame(MiniGame miniGame) {
+		currentMiniGame = miniGame;
 	}
 
 	

@@ -181,6 +181,7 @@ public class Tendu implements ApplicationListener, Listener {
 			}
 			break;
 		case LOAD_THIS_GAME:
+			gameSession.setCurrentMiniGame((MiniGame)message.content);
 			setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame)message.content));
 			break;
 		default:
