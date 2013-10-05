@@ -63,6 +63,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
+				this.changeTimeWith(-1500);
 				return false;
 			}
 		}
