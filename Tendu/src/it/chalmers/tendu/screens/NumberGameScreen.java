@@ -21,15 +21,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 
-class Number {
-	int number;
-	boolean show;
-
-	Number(int number, boolean show) {
-		this.number = number;
-		this.show = show;
-	}
-}
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
@@ -40,7 +31,7 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<Color> colors;
 
 	private ArrayList<NumberCircle> numberCircles;
-	private ArrayList<Number> numbers;
+	private ArrayList<Integer> numbers;
 
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
@@ -66,7 +57,7 @@ public class NumberGameScreen extends GameScreen {
 								// scales it back
 
 		numberCircles = new ArrayList<NumberCircle>();
-		numbers = new ArrayList<Number>();
+		numbers = new ArrayList<Integer>();
 
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
@@ -80,7 +71,7 @@ public class NumberGameScreen extends GameScreen {
 		Collections.shuffle(colors);
 
 		for (Integer number : model.getAnswerList()) {
-			numbers.add(new Number(number.intValue(), false));
+			numbers.add(number.intValue());
 		}
 
 		// TODO chooses a static player atm.
@@ -102,15 +93,15 @@ public class NumberGameScreen extends GameScreen {
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
 				numberFont.setColor(colors.get(i));
-				numberFont.draw(game.spriteBatch, "" + numbers.get(i).number,
+				numberFont.draw(game.spriteBatch, "" + numbers.get(i),
 						numberAlignment + i * 105, 300);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
-				if (numbers.get(i).show == true) {
+				if (model.getAnsweredNbrs().contains(numbers.get(i))) {
 					numberFont.setColor(colors.get(i));
 					numberFont.draw(game.spriteBatch, ""
-							+ numbers.get(i).number, numberAlignment + i * 105,
+							+ numbers.get(i), numberAlignment + i * 105,
 							300);
 				}
 			}
@@ -171,22 +162,15 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.end();
 	}
 
-
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		//TODO, move this...   make number visible if correctly chosen
-		for (Number num : numbers) {
-			if (model.getAnsweredNbrs().contains(num.number)) {
-				num.show = true;
-			}
-		}
+		//TODO maybe not the best solution...
+		model = (NumberGame) game.gameSession.currentMiniGame;
 		
-		//Gdx.app.log("frame = ", "" + model.checkGameState());
-				
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
-		
+
 		if (time < 240) {
 			time++;
 		} else {
@@ -197,7 +181,9 @@ public class NumberGameScreen extends GameScreen {
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
-						EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model.getGameId(), circle.getNumber()));			
+						EventBus.INSTANCE.broadcast(new EventMessage(
+								C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model
+										.getGameId(), circle.getNumber()));
 					}
 					circle.scale = 1;
 				}

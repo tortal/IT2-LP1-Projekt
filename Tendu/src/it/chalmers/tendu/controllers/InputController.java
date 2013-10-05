@@ -1,6 +1,5 @@
 package it.chalmers.tendu.controllers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputController implements InputProcessor {

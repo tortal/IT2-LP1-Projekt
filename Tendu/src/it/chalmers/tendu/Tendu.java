@@ -44,7 +44,7 @@ public class Tendu implements ApplicationListener, Listener {
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
 	private GameLobby gameLobby;
-	private GameSession gameSession;
+	public GameSession gameSession;
 	private boolean host = false;
 	private ModelController modelController;
 
@@ -188,7 +188,7 @@ public class Tendu implements ApplicationListener, Listener {
 			if(!host) {
 				Gdx.app.log(TAG, "LOAD_THIS_GAME");
 				gameSession.setCurrentMiniGame((MiniGame)message.content);
-				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, (MiniGame)message.content));
+				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
 			}
 			break;
 		default:
