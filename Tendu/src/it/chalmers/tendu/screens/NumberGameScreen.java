@@ -75,8 +75,8 @@ public class NumberGameScreen extends GameScreen {
 		}
 
 		// TODO chooses a static player atm.
-		for (int i = 0; i < model.getPlayerList(3).size(); i++) {
-			numberCircles.add(new NumberCircle(model.getPlayerList(3).get(i),
+		for (int i = 0; i < model.getPlayerList(2).size(); i++) {
+			numberCircles.add(new NumberCircle(model.getPlayerList(2).get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
