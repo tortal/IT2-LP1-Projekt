@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
-	public static final int TEMP_PLAYERNUMBER = 2; // Temporary hardcoded player number
+	public static final int TEMP_PLAYERNUMBER = 0; // Temporary hardcoded player number
 	
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
