@@ -143,16 +143,16 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 					connectionLostAlert.setTitle("Connection lost");
 					connectionLostAlert
-							.setMessage("Your connection with the other players has been lost.");
+					.setMessage("Your connection with the other players has been lost.");
 
 					connectionLostAlert.setPositiveButton("Ok",
 							new OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Let app terminate itself?
-									// finish();
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int which) {
+							// TODO Let app terminate itself?
+							// finish();
+						}
+					});
 					connectionLostAlert.setCancelable(false);
 					try {
 						connectionLostAlert.show();
@@ -168,7 +168,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 			// Display on UI-thread
 			((AndroidApplication) context)
-					.runOnUiThread(new displayConnectionLostAlert());
+			.runOnUiThread(new displayConnectionLostAlert());
 
 			// shutdown EVERYTHING!
 			destroy();
@@ -197,7 +197,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)
-						.show();
+				.show();
 			}
 		});
 		if (D)
@@ -421,7 +421,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-				// Do nothing for now
+			// Do nothing for now
 		}
 	};
 
@@ -434,40 +434,18 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	@Override
 	public void onBroadcast(final EventMessage message) {
-		switch (message.msg) {
-		case LOAD_THIS_GAME:
-			if (message.tag == C.Tag.COMMAND_AS_HOST) {
-				message.setTag(C.Tag.HOST_COMMANDED); // Set new tag to prevent
-														// feedback loop
-				broadcastMessageOverNetwork(message);
-			}
+		switch (message.tag) {
+		case COMMAND_AS_HOST: 
+			message.setTag(C.Tag.HOST_COMMANDED); 	// Set new tag to prevent
+													// feedback loop
+			broadcastMessageOverNetwork(message);
 			break;
-		case LOBBY_READY:
-			break;
-		case PLAYERS_CONNECTED: // TODO temporary 
-			if (message.tag == C.Tag.COMMAND_AS_HOST) {
-				message.setTag(C.Tag.HOST_COMMANDED); 
-				broadcastMessageOverNetwork(message);
-			}
-			break;
-		case UPDATE_MODEL:
-			if(message.tag == C.Tag.COMMAND_AS_HOST) {
-				message.setTag(C.Tag.HOST_COMMANDED);
-				broadcastMessageOverNetwork(message);
-			}
-			break;
-		case NUMBER_GUESS:
-			if(message.tag == C.Tag.REQUEST_AS_CLIENT) {
+		case REQUEST_AS_CLIENT: 
 				message.setTag(C.Tag.CLIENT_REQUESTED);
 				broadcastMessageOverNetwork(message);
-			}
 			break;
-			
 		default:
 			break;
-			
-			//message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, session.currentMiniGame);
-
 		}
 	}
 
