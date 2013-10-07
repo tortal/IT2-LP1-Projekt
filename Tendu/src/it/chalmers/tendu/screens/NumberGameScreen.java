@@ -166,11 +166,6 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		//TODO maybe not the best solution...
-		model = (NumberGame) game.gameSession.currentMiniGame;
-		
-		if (model.checkGameState() != GameState.RUNNING)
-			return;
-
 		if (time < 240) {
 			time++;
 		} else {

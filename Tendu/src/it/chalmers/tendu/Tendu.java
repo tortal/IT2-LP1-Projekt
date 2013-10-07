@@ -8,11 +8,11 @@ import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
-import it.chalmers.tendu.screens.ShapesGameScreen;
+import it.chalmers.tendu.screens.NumberGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -47,7 +47,7 @@ public class Tendu implements ApplicationListener, Listener {
 	private ModelController modelController;
 
 	private String TAG = "Tendu"; // Tag for logging
-	
+
 	public Tendu(INetworkHandler netCom) {
 		setNetworkHandler(netCom);
 	}
@@ -55,21 +55,24 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void create() {
 
-		//here we should load the start screen of the game
-		//setScreenByNetworkState();
-		//setScreen(new MainMenuScreen(this, null));
-		//setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
-
-		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
-
-		setScreen(new ShapesGameScreen(this, new ShapesGame(0, Constants.Difficulty.ONE)));
-		
-		//create an inputController and register it with Gdx
-		EventBus.INSTANCE.addListener(this); // register with event bus
 		// here we should load the start screen of the game
-		//setScreen(new MainMenuScreen(this, null));
+		// setScreenByNetworkState();
+		// setScreen(new MainMenuScreen(this, null));
 		// setScreen(new NumberGameScreen(this, new NumberGame(0,
 		// Constants.Difficulty.ONE)));
+
+		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
+		// Constants.Difficulty.ONE)));
+		setScreen(new NumberGameScreen(this, new NumberGame(0,
+				Constants.Difficulty.ONE)));
+
+		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+		// Constants.Difficulty.ONE)));
+
+		// create an inputController and register it with Gdx
+		EventBus.INSTANCE.addListener(this); // register with event bus
+		// here we should load the start screen of the game
+		// setScreen(new MainMenuScreen(this, null));
 
 		// create an inputController and register it with Gdx
 		input = new InputController();
@@ -84,14 +87,14 @@ public class Tendu implements ApplicationListener, Listener {
 		gameLobby = new GameLobby();
 
 		spriteBatch = new SpriteBatch();
-		
-		//temp code
-//		gameSession = new GameSession();
-//		modelController = new ModelController(this, gameSession);
-//		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
-		//end temp
-		
-		
+
+		// temp code
+		// gameSession = new GameSession();
+		// modelController = new ModelController(this, gameSession);
+		// setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
+		// gameSession.getMiniGame(gameSession.getNextGameId())));
+		// end temp
+
 	}
 
 	// clean up
@@ -105,7 +108,7 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void render() {
 
-		//clear the entire screen
+		// clear the entire screen
 		// setScreenByNetworkState(); //changes to some error screen if
 		// connections is lost?
 		// clear the entire screen
@@ -159,6 +162,7 @@ public class Tendu implements ApplicationListener, Listener {
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
+
 	private void setNetworkHandler(INetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
 	}
@@ -167,7 +171,7 @@ public class Tendu implements ApplicationListener, Listener {
 	public void onBroadcast(EventMessage message) {
 		// TODO Auto-generated method stub
 		switch (message.msg) {
-		case PLAYERS_CONNECTED: 
+		case PLAYERS_CONNECTED:
 			Gdx.app.log(TAG, "PLAYERS_CONNECTED");
 		case LOBBY_READY:
 			Gdx.app.log(TAG, "LOBBY_READY");
@@ -176,17 +180,20 @@ public class Tendu implements ApplicationListener, Listener {
 			if (host) {
 				GameId gameId = gameSession.getNextGameId();
 				MiniGame game = gameSession.getMiniGame(gameId);
-				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
+				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST,
+						C.Msg.LOAD_THIS_GAME, game);
 				EventBus.INSTANCE.broadcast(evMsg);
-				
-				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
+
+				setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
+						gameSession.currentMiniGame));
 			}
 			break;
 		case LOAD_THIS_GAME:
-			if(!host) {
+			if (!host) {
 				Gdx.app.log(TAG, "LOAD_THIS_GAME");
-				gameSession.setCurrentMiniGame((MiniGame)message.content);
-				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
+				gameSession.setCurrentMiniGame((MiniGame) message.content);
+				setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
+						gameSession.currentMiniGame));
 			}
 			break;
 		default:
@@ -197,8 +204,8 @@ public class Tendu implements ApplicationListener, Listener {
 	public void setHost(boolean isHost) {
 		this.host = isHost;
 	}
-	
+
 	public boolean isHost() {
 		return host;
-	}	 
+	}
 }

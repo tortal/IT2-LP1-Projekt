@@ -84,20 +84,16 @@ public class Lock {
 	 */
 	public boolean fillSlot(Shape shape, Shape lockShape) {
 		if (!this.lockSequence.contains(lockShape)){
-			Gdx.app.log("Fillslot", "dont contain");
 			return false;
 		}
 		boolean curState = slotLock.get(lockShape);
 		if (curState == true){
-			Gdx.app.log("Fillslot", "filled");
 			return false; // TODO: Debugging
 		}
 		if (shape.equals(lockShape)) {
-			Gdx.app.log("Fillslot", "fills!!!!!!!!");
 			slotLock.put(shape, true);
 			return true;
 		}
-		Gdx.app.log("Last", "Last false");
 		return false;
 	}
 

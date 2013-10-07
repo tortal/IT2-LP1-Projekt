@@ -32,9 +32,9 @@ public class ShapesGameScreen extends GameScreen {
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
 		for (Shape s : this.model.getAllInventory().get(0)) {
-			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 150);
-			shapes.add(sgs);
+//			GraphicalShape sgs = new GraphicalShape(s);
+//			sgs.moveShape(x, 150);
+//			shapes.add(sgs);
 			x = x + 151;
 		}
 
@@ -58,6 +58,13 @@ public class ShapesGameScreen extends GameScreen {
 
 			for (GraphicalShape sgs : shapes) {
 				sgs.renderShape(shapeRenderer);
+			}
+			
+			for (Shape s : this.model.getAllInventory().get(0)) {
+				GraphicalShape sgs = new GraphicalShape(s);
+			//	sgs.moveShape(x, 150);
+				shapes.add(sgs);
+			//	x = x + 151;
 			}
 
 			for (GraphicalShape sgs : locks) {
@@ -83,11 +90,11 @@ public class ShapesGameScreen extends GameScreen {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 2");
 						}
-						if (s.getBounds().x >= Constants.SCREEN_WIDTH -10) {
+						if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 3");
 						}
-						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 10) {
+						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 1");
 						}
