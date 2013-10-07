@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screens;
 
-
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
@@ -14,14 +13,14 @@ import com.badlogic.gdx.math.Rectangle;
  * @author Markus
  * 
  */
-public class ShapesGameShape {
+public class GraphicalShape {
 
 	private Rectangle bounds;
 	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
 
-	public ShapesGameShape(Shape shape) {
+	public GraphicalShape(Shape shape) {
 		this.shape = shape;
 		bounds = new Rectangle();
 		bounds.x = Constants.SCREEN_WIDTH / 2;
@@ -38,7 +37,8 @@ public class ShapesGameShape {
 		case FilledCircle:
 			sr.begin(ShapeType.FilledCircle);
 			sr.setColor(color);
-			sr.filledCircle(bounds.x + bounds.width/2, bounds.y + bounds.height/2, bounds.height / 2);
+			sr.filledCircle(bounds.x + bounds.width / 2, bounds.y
+					+ bounds.height / 2, bounds.height / 2);
 			sr.end();
 			break;
 		case FilledRectangle:
@@ -54,10 +54,22 @@ public class ShapesGameShape {
 					bounds.height + bounds.y, bounds.x + bounds.width, bounds.y);
 			sr.end();
 			break;
+		case Rectangle:
+			sr.begin(ShapeType.Rectangle);
+			sr.setColor(color);
+			sr.filledRect(bounds.x, bounds.y, bounds.height, bounds.width);
+			sr.end();
+			break;
+		case Circle:
+			sr.begin(ShapeType.Circle);
+			sr.setColor(color);
+			sr.circle(bounds.x + bounds.width / 2,
+					bounds.y + bounds.height / 2, bounds.height / 2);
+			sr.end();
+			break;
 		default:
 		}
-		
-		
+
 	}
 
 	public void moveShape(float f, float g) {
@@ -71,9 +83,9 @@ public class ShapesGameShape {
 		case CIRCLE:
 			return ShapeType.FilledCircle;
 		case OCTAGON:
-			return ShapeType.FilledCircle;
+			return ShapeType.Circle;
 		case RHOMBOID:
-			return ShapeType.FilledCircle;
+			return ShapeType.Rectangle;
 		case SQUARE:
 			return ShapeType.FilledRectangle;
 		case TRIANGLE:
@@ -112,21 +124,24 @@ public class ShapesGameShape {
 	}
 
 	/**
-	 * @param shape the shape to set
+	 * @param shape
+	 *            the shape to set
 	 */
 	public void setShape(Shape shape) {
 		this.shape = shape;
 	}
 
 	/**
-	 * @param bounds the bounds to set
+	 * @param bounds
+	 *            the bounds to set
 	 */
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
 	}
 
 	/**
-	 * @param color the color to set
+	 * @param color
+	 *            the color to set
 	 */
 	public void setColor(com.badlogic.gdx.graphics.Color color) {
 		this.color = color;
