@@ -1,5 +1,7 @@
 package it.chalmers.tendu.controllers;
 
+import com.badlogic.gdx.Gdx;
+
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
@@ -12,6 +14,8 @@ import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
 
 public class ModelController implements Listener {
+	
+	private String TAG = "ModelController";
 
 	private GameSession gameSession;
 	private Tendu applicationListener;
@@ -31,6 +35,7 @@ public class ModelController implements Listener {
 		if (applicationListener.isHost()) {
 			handleAsHost(message);
 		} else {
+			Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
