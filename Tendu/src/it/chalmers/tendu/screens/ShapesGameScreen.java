@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
@@ -77,6 +78,18 @@ public class ShapesGameScreen extends GameScreen {
 							if (snapIntoPlace(s, lock)) {
 								// TODO: is game completed?
 							}
+						}
+						if (s.getBounds().x <= 10) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 2");
+						}
+						if (s.getBounds().x >= Constants.SCREEN_WIDTH -10) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 3");
+						}
+						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 10) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 1");
 						}
 						break;
 					}
