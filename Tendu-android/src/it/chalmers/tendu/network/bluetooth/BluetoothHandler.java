@@ -48,7 +48,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final int MAX_NUMBER_OF_PLAYERS = 1;
+	private static final int MAX_NUMBER_OF_PLAYERS = 3;
 	private static final int CONNECTION_DELAY = 5000;
 
 	// Handles the bluetooth connections
