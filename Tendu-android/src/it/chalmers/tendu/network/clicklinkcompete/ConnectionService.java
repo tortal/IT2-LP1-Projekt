@@ -86,17 +86,7 @@ public class ConnectionService {
 		mBtSockets = new HashMap<String, BluetoothSocket>();
 		mBtDevices = new ArrayList<BluetoothDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
-		// TODO Might be enough with One UUID
-		
-//		mUuid = new ArrayList<UUID>();
-//		// Allow up to 7 devices to connect to the server
-//		mUuid.add(UUID.fromString("a60f35f0-b93a-11de-8a39-08002009c666"));
-//		mUuid.add(UUID.fromString("503c7430-bc23-11de-8a39-0800200c9a66"));
-//		mUuid.add(UUID.fromString("503c7431-bc23-11de-8a39-0800200c9a66"));
-//		mUuid.add(UUID.fromString("503c7432-bc23-11de-8a39-0800200c9a66"));
-//		mUuid.add(UUID.fromString("503c7433-bc23-11de-8a39-0800200c9a66"));
-//		mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
-//		mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
+	
 		this.context = context;
 		mKryo = kryoFactory();
 	}
@@ -173,7 +163,6 @@ public class ConnectionService {
 						&& maxConnections > 0; i++) {
 					BluetoothServerSocket myServerSocket = mBtAdapter
 							.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
-									//mUuid.get(i));
 					BluetoothSocket myBSock = myServerSocket.accept();
 					myServerSocket.close(); // Close the socket now that the
 					// connection has been made.
@@ -254,7 +243,7 @@ public class ConnectionService {
 
 		for (int i = 0; i < Connection.MAX_SUPPORTED && myBSock == null; i++) {
 			for (int j = 0; j < 3 && myBSock == null; j++) {
-				myBSock = getConnectedSocket(myBtServer, APP_UUID); //mUuid.get(i));
+				myBSock = getConnectedSocket(myBtServer, APP_UUID);
 				if (myBSock == null) {
 					try {
 						Thread.sleep(200);
