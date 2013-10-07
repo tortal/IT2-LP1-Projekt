@@ -149,8 +149,8 @@ public class NumberGame extends MiniGame {
 	 * @return
 	 */
 	public ArrayList<Integer> getPlayerList(int player) {
-		//return playerLists. get(player);
-		return answerList;
+		return playerLists.get(player);
+		//return answerList;
 	}
 
 	/**
