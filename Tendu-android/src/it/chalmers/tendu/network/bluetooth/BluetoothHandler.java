@@ -1,7 +1,6 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
@@ -13,8 +12,6 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
-import it.chalmers.tendu.tbd.C.Msg;
-import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.unused.BluetoothGameService;
 
 import java.util.ArrayList;
@@ -34,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.gsm.SmsMessage.MessageClass;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
