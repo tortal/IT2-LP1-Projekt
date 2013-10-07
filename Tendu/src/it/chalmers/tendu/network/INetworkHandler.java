@@ -1,28 +1,10 @@
 package it.chalmers.tendu.network;
 
+import it.chalmers.tendu.tbd.EventMessage;
 
-import java.io.Serializable;
+
 
 public interface INetworkHandler {
-	
-	/**
-	 * Send object to remote device
-	 * @param o
-	 */
-	void sendObject(Serializable o);
-	
-	/**
-	 *  Returns the game state
-	 * @return
-	 */
-	GameStateBundle pollGameState();
-	
-	/**
-	 * Returns the network state
-	 * @return
-	 */
-	int pollNetworkState();
-	
 	/**
 	 * Host game that other players can search
 	 * for. 
@@ -34,23 +16,35 @@ public interface INetworkHandler {
 	 */
 	void joinGame(); 	//Should probably have a game or a player as argument.
 	
+	/**
+	 * Send object to remote device
+	 * @param o
+	 */
+	void broadcastMessageOverNetwork(EventMessage message);
 	
 	/**
 	 * Method to be called when exiting app
 	 */
 	void destroy();
 	
-	///** Test method */
-	//void testSendGameState(GameStateBundle state);
-	
 	/** Test method */
 	void testStuff();
-
-	 
 
 //	/**
 //	 * Search for active teams. 
 //	 */
 //	List<Object> searchTeam();
 
+//	/**
+//	 *  Returns the game state
+//	 * @return
+//	 */
+//	GameStateBundle pollGameState();
+	
+//	/**
+//	 * Returns the network state
+//	 * @return
+//	 */
+//	int pollNetworkState();
 }
+

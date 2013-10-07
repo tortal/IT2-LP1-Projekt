@@ -16,22 +16,12 @@
 
 package it.chalmers.tendu.network.clicklinkcompete;
 
-
-
-import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.RemoteException;
-import android.util.Log;
+import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,309 +30,328 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.Intent;
+import android.os.RemoteException;
+import android.util.Log;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 /**
  * Service for simplifying the process of establishing Bluetooth connections and
  * sending data in a way that is geared towards multi-player games.
  */
 
-public class ConnectionService extends Service {
-    public static final String TAG = "net.clc.bt.ConnectionService";
+public class ConnectionService {
+	public static final String TAG = "net.clc.bt.ConnectionService";
 
-    private ArrayList<UUID> mUuid;
+	private ArrayList<UUID> mUuid;
 
-    private ConnectionService mSelf;
+	private ConnectionService mSelf;
 
-    private String mApp; // Assume only one app can use this at a time; may
+	private ArrayList<BluetoothDevice> mBtDevices;
 
-    // change this later
+	private HashMap<String, BluetoothSocket> mBtSockets;
 
-    private IConnectionCallback mCallback;
+	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
-    private ArrayList<BluetoothDevice> mBtDevices;
+	private BluetoothAdapter mBtAdapter;
 
-    private HashMap<String, BluetoothSocket> mBtSockets;
+	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 
-    private HashMap<String, Thread> mBtStreamWatcherThreads;
+	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
 
-    private BluetoothAdapter mBtAdapter;
+	private OnMessageReceivedListener mOnMessageReceivedListener;
 
-    public ConnectionService() {
-        mSelf = this;
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        mApp = "";
-        mBtSockets = new HashMap<String, BluetoothSocket>();
-        mBtDevices = new ArrayList<BluetoothDevice>();
-        mBtStreamWatcherThreads = new HashMap<String, Thread>();
-        mUuid = new ArrayList<UUID>();
-        // Allow up to 7 devices to connect to the server
-        mUuid.add(UUID.fromString("a60f35f0-b93a-11de-8a39-08002009c666"));
-        mUuid.add(UUID.fromString("503c7430-bc23-11de-8a39-0800200c9a66"));
-        mUuid.add(UUID.fromString("503c7431-bc23-11de-8a39-0800200c9a66"));
-        mUuid.add(UUID.fromString("503c7432-bc23-11de-8a39-0800200c9a66"));
-        mUuid.add(UUID.fromString("503c7433-bc23-11de-8a39-0800200c9a66"));
-        mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
-        mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
-    }
+	private OnConnectionLostListener mOnConnectionLostListener;
 
-    @Override
-    public IBinder onBind(Intent arg0) {
-        return mBinder;
-    }
+	private Context context;
 
-    private class BtStreamWatcher implements Runnable {
-        private String address;
-        private BluetoothDevice device;
-        
-        private Handler handler = new Handler(Looper.getMainLooper());
+	/** Kryo Variables */
+	private Kryo mKryo;
 
-        public BtStreamWatcher(BluetoothDevice device) {
-            this.device = device;
-        	address = device.getAddress();
-        }
+	private Output out;
 
-        public void run() {
-            int bufferSize = 1024;
-            byte[] buffer = new byte[bufferSize];
-            BluetoothSocket bSock = mBtSockets.get(address);
-            try {
-                InputStream instream = bSock.getInputStream();
-                int bytesRead = -1;
-                String message = "";
-                while (true) {
-                    message = "";
-                    bytesRead = instream.read(buffer);
-                    if (bytesRead != -1) {
-                        while ((bytesRead == bufferSize) && (buffer[bufferSize - 1] != 0)) {
-                            message = message + new String(buffer, 0, bytesRead);
-                            bytesRead = instream.read(buffer);
-                        }
-                        message = message + new String(buffer, 0, bytesRead - 1); // Remove
-                        // the
-                        // stop
-                        // marker
-                        
-                       //handler.post()
-                        
-                        mCallback.messageReceived(device, message);
-                        //mCallback.messageReceived(device, "Test");
-                    }
-                }
-            } catch (IOException e) {
-                Log.i(TAG,"IOException in BtStreamWatcher - probably caused by normal disconnection",e);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException in BtStreamWatcher while reading data", e);
-            }
-            // Getting out of the while loop means the connection is dead.
-            try {
-                mBtDevices.remove(address);
-                mBtSockets.remove(address);
-                mBtStreamWatcherThreads.remove(address);
-                mCallback.connectionLost(device);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException in BtStreamWatcher while disconnecting", e);
-            }
-        }
-    }
+	public ConnectionService(Context context) {
+		mSelf = this;
+		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+		mBtSockets = new HashMap<String, BluetoothSocket>();
+		mBtDevices = new ArrayList<BluetoothDevice>();
+		mBtStreamWatcherThreads = new HashMap<String, Thread>();
 
-    private class ConnectionWaiter implements Runnable {
-        private String srcApp;
+		// TODO Might be enough with One UUID
+		mUuid = new ArrayList<UUID>();
+		// Allow up to 7 devices to connect to the server
+		mUuid.add(UUID.fromString("a60f35f0-b93a-11de-8a39-08002009c666"));
+		mUuid.add(UUID.fromString("503c7430-bc23-11de-8a39-0800200c9a66"));
+		mUuid.add(UUID.fromString("503c7431-bc23-11de-8a39-0800200c9a66"));
+		mUuid.add(UUID.fromString("503c7432-bc23-11de-8a39-0800200c9a66"));
+		mUuid.add(UUID.fromString("503c7433-bc23-11de-8a39-0800200c9a66"));
+		mUuid.add(UUID.fromString("503c7434-bc23-11de-8a39-0800200c9a66"));
+		mUuid.add(UUID.fromString("503c7435-bc23-11de-8a39-0800200c9a66"));
+		this.context = context;
+		mKryo = kryoFactory();
+	}
 
-        private int maxConnections;
+	private Kryo kryoFactory() {
+		Kryo kryo = new Kryo();
 
-        public ConnectionWaiter(String theApp, int connections) {
-            srcApp = theApp;
-            maxConnections = connections;
-        }
+		// Register the classes we want to send over the network
+		kryo.register(EventMessage.class);
+		return kryo;
+	}
 
-        public void run() {
-            try {
-                for (int i = 0; i < Connection.MAX_SUPPORTED && maxConnections > 0; i++) {
-                    BluetoothServerSocket myServerSocket = mBtAdapter
-                            .listenUsingRfcommWithServiceRecord(srcApp, mUuid.get(i));
-                    BluetoothSocket myBSock = myServerSocket.accept();
-                    myServerSocket.close(); // Close the socket now that the
-                    // connection has been made.
+	private class BtStreamWatcher implements Runnable {
+		private final String address;
+		private final BluetoothDevice device;
+		private final Input in;
 
-                    String address = myBSock.getRemoteDevice().getAddress();
-                    BluetoothDevice device = myBSock.getRemoteDevice();
-                    
-                    mBtSockets.put(address, myBSock);
-                    mBtDevices.add(device);
-                    Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
-                    mBtStreamWatcherThread.start();
-                    mBtStreamWatcherThreads.put(address, mBtStreamWatcherThread);
-                    maxConnections = maxConnections - 1;
-                    if (mCallback != null) {
-                        mCallback.incomingConnection(device);
-                    }
-                }
-                if (mCallback != null) {
-                    mCallback.maxConnectionsReached();
-                }
-            } catch (IOException e) {
-                Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter", e);
-            } catch (RemoteException e) {
-                Log.e(TAG, "RemoteException in ConnectionService:ConnectionWaiter", e);
-            }
-        }
-    }
+		private final InputStream mmInStream;
 
-    private BluetoothSocket getConnectedSocket(BluetoothDevice myBtServer, UUID uuidToTry) {
-        BluetoothSocket myBSock;
-        try {
-            myBSock = myBtServer.createRfcommSocketToServiceRecord(uuidToTry);
-            myBSock.connect();
-            return myBSock;
-        } catch (IOException e) {
-            Log.i(TAG, "IOException in getConnectedSocket", e);
-        }
-        return null;
-    }
+		public BtStreamWatcher(BluetoothDevice device) {
+			InputStream tmpIn = null;
 
-    private final IConnection.Stub mBinder = new IConnection.Stub() {
-        public int startServer(String srcApp, int maxConnections) throws RemoteException {
-            if (mApp.length() > 0) {
-                return Connection.FAILURE;
-            }
-            mApp = srcApp;
-            (new Thread(new ConnectionWaiter(srcApp, maxConnections))).start();
-            
-            //            Intent i = new Intent();
-//            i.setClass(mSelf, StartDiscoverableModeActivity.class);
-//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(i);
-            
-        	Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-    		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-    		discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    		startActivity(discoverableIntent);
-            return Connection.SUCCESS;
-        }
+			this.device = device;
+			address = device.getAddress();
+			BluetoothSocket btSocket = mBtSockets.get(address);
 
-        public int connect(String srcApp, BluetoothDevice device) throws RemoteException {
-            if (mApp.length() > 0) {
-                return Connection.FAILURE;
-            }
-            mApp = srcApp;
-            BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device.getAddress());
-            BluetoothSocket myBSock = null;
+			// Get the BluetoothSocket inputstream
+			try {
+				tmpIn = btSocket.getInputStream();
+			} catch (IOException e) {
+				Log.e(TAG, "temp sockets not created", e);
+			}
 
-            for (int i = 0; i < Connection.MAX_SUPPORTED && myBSock == null; i++) {
-                for (int j = 0; j < 3 && myBSock == null; j++) {
-                    myBSock = getConnectedSocket(myBtServer, mUuid.get(i));
-                    if (myBSock == null) {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "InterruptedException in connect", e);
-                        }
-                    }
-                }
-            }
-            if (myBSock == null) {
-                return Connection.FAILURE;
-            }
+			mmInStream = tmpIn;
+			Log.d(TAG, "Establishing Input() for this address: "
+					+ mBtSockets.get(address).getRemoteDevice().getAddress());
+			in = new Input(mmInStream);
+		}
 
-            mBtSockets.put(device.getAddress(), myBSock);
-            mBtDevices.add(device);
-            Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
-            mBtStreamWatcherThread.start();
-            mBtStreamWatcherThreads.put(device.getAddress(), mBtStreamWatcherThread);
-            return Connection.SUCCESS;
-        }
+		public void run() {
+			Log.d(TAG, "Started thread, waiting for input");
+			Object receivedObject;
 
-        public int broadcastMessage(String srcApp, String message) throws RemoteException {
-            if (!mApp.equals(srcApp)) {
-                return Connection.FAILURE;
-            }
-            for (int i = 0; i < mBtDevices.size(); i++) {
-                sendMessage(srcApp, mBtDevices.get(i), message);
-            }
-            return Connection.SUCCESS;
-        }
+			// TODO: Break loop when someone disconnects
+			while (true) {
+				try {
+					receivedObject = mKryo.readObject(in, EventMessage.class);
+					mOnMessageReceivedListener.OnMessageReceived(device, (EventMessage) receivedObject);
 
-        public String getConnections(String srcApp) throws RemoteException {
-            if (!mApp.equals(srcApp)) {
-                return "";
-            }
-            String connections = "";
-            for (int i = 0; i < mBtDevices.size(); i++) {
-                connections = connections + mBtDevices.get(i) + ",";
-            }
-            return connections;
-        }
+				} catch (KryoException k) {
+					Log.e(TAG, "The connection has most probably been lost");
+					k.printStackTrace();
+					break;
+				}
+			}
+			// If we end up outside the loop we have lost connection
+			 mBtDevices.remove(address);
+			 mBtSockets.remove(address);
+			 mBtStreamWatcherThreads.remove(address);
+			 mOnConnectionLostListener.OnConnectionLost(device);
 
-        public int getVersion() throws RemoteException {
-            try {
-                PackageManager pm = mSelf.getPackageManager();
-                PackageInfo pInfo = pm.getPackageInfo(mSelf.getPackageName(), 0);
-                return pInfo.versionCode;
-            } catch (NameNotFoundException e) {
-                Log.e(TAG, "NameNotFoundException in getVersion", e);
-            }
-            return 0;
-        }
+		}
+	}
 
-        public int registerCallback(String srcApp, IConnectionCallback cb) throws RemoteException {
-            if (!mApp.equals(srcApp)) {
-                return Connection.FAILURE;
-            }
-            mCallback = cb;
-            return Connection.SUCCESS;
-        }
+	private class ConnectionWaiter implements Runnable {
+		private String srcApp = Constants.APP_NAME;
 
-        public int sendMessage(String srcApp, BluetoothDevice destination, String message)
-                throws RemoteException {
-            if (!mApp.equals(srcApp)) {
-                return Connection.FAILURE;
-            }
-            try {
-                BluetoothSocket myBsock = mBtSockets.get(destination.getAddress());
-                if (myBsock != null) {
-                    OutputStream outStream = myBsock.getOutputStream();
-                    byte[] stringAsBytes = (message + " ").getBytes();
-                    stringAsBytes[stringAsBytes.length - 1] = 0; // Add a stop
-                    // marker
-                    outStream.write(stringAsBytes);
-                    return Connection.SUCCESS;
-                }
-            } catch (IOException e) {
-                Log.i(TAG, "IOException in sendMessage - Dest:" + destination.getName() + ", Msg:" + message,
-                        e);
-            }
-            return Connection.FAILURE;
-        }
+		private int maxConnections;
 
-        public void shutdown(String srcApp) throws RemoteException {
-            try {
-                for (int i = 0; i < mBtDevices.size(); i++) {
-                    BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
-                    myBsock.close();
-                }
-                mBtSockets = new HashMap<String, BluetoothSocket>();
-                mBtStreamWatcherThreads = new HashMap<String, Thread>();
-                mBtDevices = new ArrayList<BluetoothDevice>();
-                mApp = "";
-            } catch (IOException e) {
-                Log.i(TAG, "IOException in shutdown", e);
-            }
-        }
+		public ConnectionWaiter(int connections) {
+			maxConnections = connections;
+		}
 
-        public int unregisterCallback(String srcApp) throws RemoteException {
-            if (!mApp.equals(srcApp)) {
-                return Connection.FAILURE;
-            }
-            mCallback = null;
-            return Connection.SUCCESS;
-        }
+		public void run() {
+			try {
+				for (int i = 0; i < Connection.MAX_SUPPORTED
+						&& maxConnections > 0; i++) {
+					BluetoothServerSocket myServerSocket = mBtAdapter
+							.listenUsingRfcommWithServiceRecord(srcApp,
+									mUuid.get(i));
+					BluetoothSocket myBSock = myServerSocket.accept();
+					myServerSocket.close(); // Close the socket now that the
+					// connection has been made.
 
-        public String getAddress() throws RemoteException {
-            return mBtAdapter.getAddress();
-        }
-        
-        public String getName() throws RemoteException {
-            return mBtAdapter.getName();
-        }
-    };
+					String address = myBSock.getRemoteDevice().getAddress();
+					BluetoothDevice device = myBSock.getRemoteDevice();
 
+					mBtSockets.put(address, myBSock);
+					mBtDevices.add(device);
+					Thread mBtStreamWatcherThread = new Thread(
+							new BtStreamWatcher(device));
+					mBtStreamWatcherThread.start();
+					mBtStreamWatcherThreads
+							.put(address, mBtStreamWatcherThread);
+					maxConnections = maxConnections - 1;
+					if (mOnIncomingConnectionListener != null) {
+						mOnIncomingConnectionListener
+								.OnIncomingConnection(device);
+					}
+				}
+				if (mOnMaxConnectionsReachedListener != null) {
+					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+				}
+			} catch (IOException e) {
+				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
+						e);
+			}
+		}
+	}
+
+	private BluetoothSocket getConnectedSocket(BluetoothDevice myBtServer,
+			UUID uuidToTry) {
+		BluetoothSocket myBSock;
+		try {
+			myBSock = myBtServer.createRfcommSocketToServiceRecord(uuidToTry);
+			Log.d(TAG, "atempting connection to: " + myBSock + " Socket");
+			myBSock.connect();
+			return myBSock;
+		} catch (IOException e) {
+			Log.i(TAG, "IOException in getConnectedSocket", e);
+		}
+		return null;
+	}
+
+	public int startServer(int maxConnections,
+			OnIncomingConnectionListener oicListener,
+			OnMaxConnectionsReachedListener omcrListener,
+			OnMessageReceivedListener omrListener,
+			OnConnectionLostListener oclListener) throws RemoteException {
+
+		mOnIncomingConnectionListener = oicListener;
+		mOnMaxConnectionsReachedListener = omcrListener;
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+
+		(new Thread(new ConnectionWaiter(maxConnections))).start();
+
+		Intent discoverableIntent = new Intent(
+				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(
+				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		// discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		((AndroidApplication) context).startActivity(discoverableIntent);
+		return Connection.SUCCESS;
+	}
+
+	public int connect(BluetoothDevice device,
+			OnMessageReceivedListener omrListener,
+			OnConnectionLostListener oclListener) throws RemoteException {
+
+		mOnMessageReceivedListener = omrListener;
+		mOnConnectionLostListener = oclListener;
+
+		BluetoothDevice myBtServer = mBtAdapter.getRemoteDevice(device
+				.getAddress());
+		BluetoothSocket myBSock = null;
+
+		for (int i = 0; i < Connection.MAX_SUPPORTED && myBSock == null; i++) {
+			for (int j = 0; j < 3 && myBSock == null; j++) {
+				myBSock = getConnectedSocket(myBtServer, mUuid.get(i));
+				if (myBSock == null) {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						Log.e(TAG, "InterruptedException in connect", e);
+					}
+				}
+			}
+		}
+		if (myBSock == null) {
+			return Connection.FAILURE;
+		}
+
+		mBtSockets.put(device.getAddress(), myBSock);
+		mBtDevices.add(device);
+		Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
+		mBtStreamWatcherThread.start();
+		mBtStreamWatcherThreads
+				.put(device.getAddress(), mBtStreamWatcherThread);
+		return Connection.SUCCESS;
+	}
+
+	public int broadcastMessage(EventMessage message) throws RemoteException {
+		for (int i = 0; i < mBtDevices.size(); i++) {
+			Log.d(TAG, "sendMessage(): " + mBtDevices.get(i).getAddress()
+					+ " Message: " + message);
+			sendMessage(mBtDevices.get(i), message);
+		}
+		return Connection.SUCCESS;
+	}
+
+	public String getConnections() throws RemoteException {
+		String connections = "";
+		for (int i = 0; i < mBtDevices.size(); i++) {
+			connections = connections + mBtDevices.get(i) + ",";
+		}
+		return connections;
+	}
+
+	/**
+	 * Sends a message to a specific bluetoothdevice
+	 * 
+	 * @param srcApp
+	 * @param destination
+	 *            The destination device
+	 * @param message
+	 *            The message to send
+	 * @return Connection.FAILURE or Connection.SUCCESS
+	 * @throws RemoteException
+	 */
+	public int sendMessage(BluetoothDevice destination, EventMessage message)
+			throws RemoteException {
+		Log.d(TAG,
+				"sendMessage: " + message.toString() + " to "
+						+ destination.getAddress());
+		Kryo tempKryo = kryoFactory();
+
+		String address = destination.getAddress();
+		BluetoothSocket btSocket = mBtSockets.get(address);
+		try {
+			out = new Output(btSocket.getOutputStream());
+		} catch (IOException e1) {
+			Log.i(TAG,
+					"IOException in sendMessage - Dest:"
+							+ destination.getName() + ", Msg:" + message, e1);
+			return Connection.FAILURE;
+		}
+
+		tempKryo.writeObject(out, message);
+		out.flush();
+
+		return Connection.SUCCESS;
+	}
+
+	public void shutdown() throws RemoteException {
+		try {
+			for (int i = 0; i < mBtDevices.size(); i++) {
+				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
+				if (myBsock != null) {
+					myBsock.close();
+				}
+			}
+			mBtSockets = new HashMap<String, BluetoothSocket>();
+			mBtStreamWatcherThreads = new HashMap<String, Thread>();
+			mBtDevices = new ArrayList<BluetoothDevice>();
+		} catch (IOException e) {
+			Log.i(TAG, "IOException in shutdown", e);
+		}
+	}
+
+	public String getAddress() throws RemoteException {
+		return mBtAdapter.getAddress();
+	}
+
+	public String getName() throws RemoteException {
+		return mBtAdapter.getName();
+	}
 }
