@@ -48,10 +48,9 @@ public class ShapesGameTest {
 
 	@Test
 	public void testInsertShapeIntoSlot() {
-		//
 		Lock lock= shapesGame.getLock(0);
 		Shape shape= lock.getLockSequence().get(0);
-		assertTrue(shapesGame.insertShapeIntoSlot(0, shape));
+		assertTrue(shapesGame.insertShapeIntoSlot(0, shape,shape));
 	}
 
 

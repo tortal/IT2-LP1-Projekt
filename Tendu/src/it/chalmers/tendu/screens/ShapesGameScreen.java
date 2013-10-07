@@ -52,17 +52,7 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void render() {
 		super.render();
-<<<<<<< HEAD
-		spriteBatch.setProjectionMatrix(game.getCamera().combined);
-		spriteBatch.begin();
-		
-	
-		shapeRenderer.end();
-		
-=======
 		if (model.checkGameState() == GameState.RUNNING) {
->>>>>>> refs/heads/ShapesGameGraphics
-
 			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 
 			for (GraphicalShape sgs : shapes) {
@@ -91,29 +81,6 @@ public class ShapesGameScreen extends GameScreen {
 						break;
 					}
 
-<<<<<<< HEAD
-		
-		renderShapes();
-		renderLock();
-		// shapeRenderer.begin(ShapeType.FilledRectangle);
-		// shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.GREEN);
-		// shapeRenderer.filledRect(rect.x-50, rect.y- 50, 100, 100);
-		// shapeRenderer.end();
-
-		if (Gdx.input.isTouched()) {
-			Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(),
-					0);
-			game.getCamera().unproject(touchPos);
-			for (int i = 0; i < positions.size(); i++) {
-				if (touchPos.x - positions.get(i).x <= 100
-						&& touchPos.x - positions.get(i).x >= -80
-						&& touchPos.y - positions.get(i).y <= 100
-						&& touchPos.y - positions.get(i).y >= -80) {
-					positions.get(i).x = touchPos.x;
-					positions.get(i).y = touchPos.y;
-					break;
-=======
->>>>>>> refs/heads/ShapesGameGraphics
 				}
 			}
 			model.checkGame();

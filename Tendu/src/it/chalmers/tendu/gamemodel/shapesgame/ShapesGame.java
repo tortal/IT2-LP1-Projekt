@@ -36,12 +36,6 @@ public class ShapesGame extends MiniGame {
 	private Map<Integer, List<Shape>> allInventory;
 
 
-	/**
-	 * @return the allInventory
-	 */
-	public Map<Integer, List<Shape>> getAllInventory() {
-		return allInventory;
-	}
 
 	/**
 	 * Every players lock, mapped by player number (Integer)
