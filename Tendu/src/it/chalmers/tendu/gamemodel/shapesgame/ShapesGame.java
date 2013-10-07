@@ -120,9 +120,9 @@ public class ShapesGame extends MiniGame {
 	 *            to be inserted into the players §.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
-	public boolean insertShapeIntoSlot(int player, Shape shape) {
+	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
 		Lock lock = this.allLocks.get(player);
-		if (lock.fillSlot(shape))
+		if (lock.fillSlot(shape, lockShape))
 			return true;
 
 		return false;
@@ -209,7 +209,7 @@ public class ShapesGame extends MiniGame {
 		lock.addSlot(allShapes.remove(0));
 		
 		Shape myShape = new Shape(Color.GREEN, GeometricShape.CIRCLE);
-		System.out.println(lock.fillSlot(myShape));
+		//System.out.println(lock.fillSlot(myShape));
 		
 		System.out.println(lock);
 	}
