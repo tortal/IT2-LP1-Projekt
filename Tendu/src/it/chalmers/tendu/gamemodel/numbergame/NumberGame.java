@@ -63,7 +63,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
-				this.changeTimeWith(-1500);
+				this.changeTimeWith(-3000);
 				return false;
 			}
 		}
@@ -149,8 +149,8 @@ public class NumberGame extends MiniGame {
 	 * @return
 	 */
 	public ArrayList<Integer> getPlayerList(int player) {
-//		return playerLists. get(player);
-		return answerList;
+		return playerLists. get(player);
+		//return answerList;
 	}
 
 	/**
