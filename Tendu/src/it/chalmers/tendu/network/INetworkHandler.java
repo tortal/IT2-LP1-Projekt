@@ -30,6 +30,9 @@ public interface INetworkHandler {
 	/** Test method */
 	void testStuff();
 
+	/** Returns the units mac address */
+	public String getMacAddress();
+
 //	/**
 //	 * Search for active teams. 
 //	 */

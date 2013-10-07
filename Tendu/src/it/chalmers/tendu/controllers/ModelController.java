@@ -39,6 +39,7 @@ public class ModelController implements Listener {
 //			handleAsClient(message);
 //		}
 
+		// TODO check gamesession if host
 		if (applicationListener.isHost()) {
 			handleAsHost(message);
 		} else {

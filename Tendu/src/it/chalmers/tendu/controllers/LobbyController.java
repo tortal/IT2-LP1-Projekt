@@ -8,7 +8,10 @@ import it.chalmers.tendu.tbd.Listener;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+
 public class LobbyController implements Listener {
+	public static final String TAG = "LobbyController";
 
 	private LobbyModel model;
 
@@ -21,12 +24,16 @@ public class LobbyController implements Listener {
 		if (model.isHost()) {
 			// IM HOSTING
 			switch (message.msg) {
-			case PLAYERS_CONNECTED:
+			case ALL_PLAYERS_CONNECTED:
+				
 				// get mac addresses for each player.
 				List<String> list = (List<String>) message.content;
 				model.addPlayers(list);
 				EventBus.INSTANCE.broadcast(new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
+				break;
+			default:
+				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
 		} else {
