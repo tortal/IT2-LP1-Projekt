@@ -51,7 +51,7 @@ public class GameLobby implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if (message.msg == C.Msg.PLAYERS_CONNECTED) {
+		if (message.msg == C.Msg.ALL_PLAYERS_CONNECTED) {
 			Gdx.app.log("Lobby", "Players Connected");
 			// get mac addresses for each player.
 			List<String> list = (List<String>) message.content;

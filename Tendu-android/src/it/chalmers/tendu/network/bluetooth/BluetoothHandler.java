@@ -118,8 +118,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
 		public void OnIncomingConnection(final BluetoothDevice device) {
 			Log.d(TAG, "Incoming connection: " + device.getName());
-			// TODO Send on message to libgdx about who has connected so it can
-			// be displayed
 
 			((AndroidApplication) context).runOnUiThread(new Runnable() {
 				public void run() {
@@ -129,6 +127,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				}
 			});
 			connectedDevices.add(device);
+			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getName()));
 		}
 	};
 
@@ -356,7 +355,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	// Test Method
 	public void testStuff() {
 		connection.broadcastMessage(new EventMessage(C.Tag.DEFAULT,
-				C.Msg.PLAYERS_CONNECTED));
+				C.Msg.ALL_PLAYERS_CONNECTED));
 	}
 
 	// Message handler
@@ -404,8 +403,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.PLAYERS_CONNECTED, addresses);
-
+		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.ALL_PLAYERS_CONNECTED, addresses);
 		sendToEventBus(message);
 	}
 
@@ -416,5 +414,9 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void broadcastMessageOverNetwork(EventMessage message) {
 		connection.broadcastMessage(message);
+	}
+	
+	public void sendMessageToPlayer(BluetoothDevice device, EventMessage message) {
+		connection.sendMessage(device, message);
 	}
 }

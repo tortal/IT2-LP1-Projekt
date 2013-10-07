@@ -129,7 +129,6 @@ public class ConnectionService {
 			} catch (IOException e) {
 				Log.e(TAG, "temp sockets not created", e);
 			}
-
 			mmInStream = tmpIn;
 			Log.d(TAG, "Establishing Input() for this address: "
 					+ mBtSockets.get(address).getRemoteDevice().getAddress());
@@ -140,7 +139,6 @@ public class ConnectionService {
 			Log.d(TAG, "Started thread, waiting for input");
 			Object receivedObject;
 
-			// TODO: Break loop when someone disconnects
 			while (true) {
 				try {
 					receivedObject = mKryo.readObject(in, EventMessage.class);
@@ -157,7 +155,6 @@ public class ConnectionService {
 			 mBtSockets.remove(address);
 			 mBtStreamWatcherThreads.remove(address);
 			 mOnConnectionLostListener.OnConnectionLost(device);
-
 		}
 	}
 
@@ -300,7 +297,6 @@ public class ConnectionService {
 	/**
 	 * Sends a message to a specific bluetoothdevice
 	 * 
-	 * @param srcApp
 	 * @param destination
 	 *            The destination device
 	 * @param message
