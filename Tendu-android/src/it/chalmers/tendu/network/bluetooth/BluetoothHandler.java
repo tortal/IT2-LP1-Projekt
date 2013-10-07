@@ -30,6 +30,7 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
@@ -93,8 +94,10 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			// displayed.
 			((AndroidApplication) context).runOnUiThread(new Runnable() {
 				public void run() {
-					Toast.makeText(context, message.toString(),
-							Toast.LENGTH_SHORT).show();
+					Toast toast = Toast.makeText(context, message.toString(),
+							Toast.LENGTH_SHORT); 
+					toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+					toast.show();
 				}
 			});
 
