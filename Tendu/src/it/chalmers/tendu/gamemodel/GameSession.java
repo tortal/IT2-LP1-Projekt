@@ -15,6 +15,10 @@ public class GameSession {
 	private Difficulty difficulty = Difficulty.ONE;
 	// private List<Player> players;
 	// private Map<Player, Integer> playerNbr;
+	/**
+	 * Integer = player id
+	 * String = player mac adress 
+	 */
 	private Map<Integer, String> players;
 
 	public GameSession(Map<Integer, String> players) {
@@ -49,6 +53,10 @@ public class GameSession {
 	
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
+	}
+	
+	public Map<Integer, String> getPlayers(){
+		return players;
 	}
 
 	

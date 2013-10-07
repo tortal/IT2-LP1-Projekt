@@ -20,6 +20,11 @@ public class NumberGame extends MiniGame {
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
 
+	/** No args constructor for reflection use */
+	protected NumberGame() {
+		super();
+	};
+	
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameId.NUMBER_GAME);
 		nbrCorrectAnswer = 0;
@@ -58,6 +63,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
+				this.changeTimeWith(-3000);
 				return false;
 			}
 		}
@@ -143,8 +149,8 @@ public class NumberGame extends MiniGame {
 	 * @return
 	 */
 	public ArrayList<Integer> getPlayerList(int player) {
-//		return playerLists. get(player);
-		return answerList;
+		return playerLists. get(player);
+		//return answerList;
 	}
 
 	/**

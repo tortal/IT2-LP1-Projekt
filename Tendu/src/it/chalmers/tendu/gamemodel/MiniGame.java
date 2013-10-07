@@ -5,7 +5,6 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import java.util.List;
 
 
-
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
@@ -16,6 +15,8 @@ public abstract class MiniGame {
 	private long pausedTimeLeft; 
 
 
+	/** No args constructor for reflection use */
+	protected MiniGame() {};
 
 	/**
 	 * Creates a new minigame.
@@ -29,9 +30,9 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		setEndTime(time);
-		gameTime= time;
-		this.state = GameState.RUNNING;
+		this.state = GameState.DEFAULT;
+		gameTime= 30000+time;
+		startGame();
 	}
 
 	/**
@@ -129,7 +130,7 @@ public abstract class MiniGame {
 	 * Starts the game
 	 */
 	public void startGame() {
-		endTime= System.currentTimeMillis() + gameTime;
+		setEndTime(gameTime);
 		state=GameState.RUNNING;
 	}
 

@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /** Abstract screen class that can be extended by all minigame and menu screens */
 public abstract class GameScreen implements Screen {
+
 	public Tendu game; // reference to the main Tendu object
 	public MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
@@ -46,30 +48,29 @@ public abstract class GameScreen implements Screen {
 		game.setScreen(screen);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see it.chalmers.tendu.screens.IScreen#render()
-	 */
-	@Override
-	public void render() {
-		// model.checkGame();
 
-		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		if (count == 0) {
-			shapeRenderer.setColor(Color.YELLOW);
-		} else {
-			shapeRenderer.setColor(Color.RED);
-			count--;
+	/** all rendering goes here **/
+	public void render() {
+		model.checkGame();
+
+		if (model.checkGameState() == GameState.RUNNING) {
+			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
+			shapeRenderer.begin(ShapeType.FilledRectangle);
+			if (count == 0) {
+				shapeRenderer.setColor(Color.YELLOW);
+			} else {
+				shapeRenderer.setColor(Color.RED);
+				count--;
+			}
+			
+			// Gdx.app.log("Quota", calculateTimerWidth() + "");
+			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+			shapeRenderer.end();
 		}
-		// Gdx.app.log("Quota", calculateTimerWidth() + "");
-		// shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
-		shapeRenderer.end();
+
 	}
 
 	/*
-	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * it.chalmers.tendu.screens.IScreen#tick(it.chalmers.tendu.controllers.
@@ -78,11 +79,7 @@ public abstract class GameScreen implements Screen {
 	@Override
 	public abstract void tick(InputController input);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see it.chalmers.tendu.screens.IScreen#removed()
-	 */
+
 	@Override
 	public void removed() {
 

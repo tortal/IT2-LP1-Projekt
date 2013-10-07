@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 public class GameLobby implements Listener {
 
 	private Map<Integer, String> players;
@@ -33,10 +35,11 @@ public class GameLobby implements Listener {
 	}
 
 	public GameSession getGameSession() {
-		if (players.size() > 0)
+		//Gdx.app.log("Players = ", "" + players.size());
+		//if (players.size() > 0)
 			return new GameSession(players);
-		else
-			return null;
+//		else
+//			return null;
 	}
 
 	private void addPlayers(List<String> macAddress) {
@@ -48,14 +51,14 @@ public class GameLobby implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if (message.msg.equals(C.Msg.PLAYERS_CONNECTED)) {
+		if (message.msg == C.Msg.PLAYERS_CONNECTED) {
+			Gdx.app.log("Lobby", "Players Connected");
 			// get mac addresses for each player.
 			List<String> list = (List<String>) message.content;
 			addPlayers(list);
 			EventBus.INSTANCE.broadcast(new EventMessage(null, C.Msg.LOBBY_READY));
+			//EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
 
-//			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND,
-//					C.Msg.LOBBY_READY));
 		}
 	}
 }

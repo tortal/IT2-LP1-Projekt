@@ -3,8 +3,6 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.GameSession;
-import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.Screen;
@@ -32,8 +30,7 @@ public class Tendu implements ApplicationListener {
 											// for now)
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
-	private LobbyModel gameLobby;
-	private GameSession gameSession;
+	private boolean host = false;
 
 	private String TAG = "Tendu"; // Tag for logging
 
@@ -48,9 +45,23 @@ public class Tendu implements ApplicationListener {
 
 		// here we should load the start screen of the game
 
+		// here we should load the start screen of the game
+		// setScreenByNetworkState();
 		setScreen(new MainMenuScreen(this, null));
+
 		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
 		// Constants.Difficulty.ONE)));
+		// setScreen(new ShapesGameScreen(this, new ShapesGame(30000,
+		// Constants.Difficulty.ONE)));
+
+		// create an inputController and register it with Gdx
+
+		// setScreen(new NumberGameScreen(this, new NumberGame(0,
+		// Constants.Difficulty.ONE)));
+
+		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
+		// Constants.Difficulty.ONE)));
+
 		// setScreen(new ShapesGameScreen(this, new ShapesGame(30000,
 		// Constants.Difficulty.ONE)));
 
@@ -175,4 +186,5 @@ public class Tendu implements ApplicationListener {
 	// default:
 	// break;
 	// }
+
 }

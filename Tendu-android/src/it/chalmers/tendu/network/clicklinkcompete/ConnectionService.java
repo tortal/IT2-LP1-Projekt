@@ -144,11 +144,6 @@ public class ConnectionService {
 			while (true) {
 				try {
 					receivedObject = mKryo.readObject(in, EventMessage.class);
-
-					if (receivedObject != null) {
-						Log.d(TAG, "You recevied an item from: " + address);
-					}
-					
 					mOnMessageReceivedListener.OnMessageReceived(device, (EventMessage) receivedObject);
 
 				} catch (KryoException k) {
@@ -322,8 +317,6 @@ public class ConnectionService {
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
-			Log.d(TAG, "Establishing Output() for this address: "
-					+ btSocket.getRemoteDevice().getAddress());
 			out = new Output(btSocket.getOutputStream());
 		} catch (IOException e1) {
 			Log.i(TAG,
