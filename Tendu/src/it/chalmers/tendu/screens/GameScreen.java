@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.graphics.Color;
@@ -17,7 +18,6 @@ public abstract class GameScreen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	private BitmapFont numberFont;
-	
 
 	// displayed a short time.
 
@@ -31,7 +31,7 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
-		
+
 		if (model != null) {
 			model.startGame();
 		}
@@ -52,21 +52,25 @@ public abstract class GameScreen {
 
 	/** all rendering goes here **/
 	public void render() {
-		model.checkGame();
+		if (model.checkGameState() == GameState.RUNNING) {
+			model.checkGame();
 
-		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		if (count == 0) {
-			shapeRenderer.setColor(Color.YELLOW);
-		} else {
-			shapeRenderer.setColor(Color.RED);
-			count--;
+			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
+			shapeRenderer.begin(ShapeType.FilledRectangle);
+
+			if (count == 0) {
+				shapeRenderer.setColor(Color.YELLOW);
+			} else {
+				shapeRenderer.setColor(Color.RED);
+				count--;
+
+			}
+			// Gdx.app.log("Quota", calculateTimerWidth() + "");
+			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+			shapeRenderer.end();
+			renderPlayerIndicators();
 		}
-		// Gdx.app.log("Quota", calculateTimerWidth() + "");
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
-		shapeRenderer.end();
 
-		renderPlayerIndicators();
 	}
 
 	/** All game logic goes here */

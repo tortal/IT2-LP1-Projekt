@@ -14,9 +14,14 @@ public enum EventBus {
 	public void broadcast(EventMessage message){
 		Gdx.app.log("EventBus", "broadcasting" + message);
 		synchronized(listeners) {
-			for (Listener l : listeners){
-				l.onBroadcast(message);
+//			for (Listener l : listeners){
+//				l.onBroadcast(message);
+//			}
+			
+			for (int i = 0; i < listeners.size(); i++){
+				listeners.get(i).onBroadcast(message);
 			}
+			
 		}
 	}
 

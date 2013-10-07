@@ -171,7 +171,10 @@ public class Tendu implements ApplicationListener, Listener {
 	public void onBroadcast(EventMessage message) {
 		// TODO Auto-generated method stub
 		switch (message.msg) {
-		case PLAYERS_CONNECTED:
+		
+		case PLAYER_CONNECTED:
+
+		case ALL_PLAYERS_CONNECTED: 
 			Gdx.app.log(TAG, "PLAYERS_CONNECTED");
 		case LOBBY_READY:
 			Gdx.app.log(TAG, "LOBBY_READY");
@@ -196,6 +199,7 @@ public class Tendu implements ApplicationListener, Listener {
 						gameSession.currentMiniGame));
 			}
 			break;
+			
 		default:
 			break;
 		}
@@ -207,5 +211,7 @@ public class Tendu implements ApplicationListener, Listener {
 
 	public boolean isHost() {
 		return host;
+
 	}
+
 }
