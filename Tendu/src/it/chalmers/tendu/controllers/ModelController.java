@@ -18,10 +18,8 @@ public class ModelController implements Listener {
 	private String TAG = "ModelController";
 
 	private GameSession gameSession;
-	private Tendu applicationListener;
 
-	public ModelController(Tendu applicationListener, GameSession gameSession) {
-		this.applicationListener = applicationListener;
+	public ModelController(GameSession gameSession) {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
 	}

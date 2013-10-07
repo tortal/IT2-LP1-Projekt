@@ -1,5 +1,7 @@
 package it.chalmers.tendu.gamemodel;
 
+import it.chalmers.tendu.controllers.ModelController;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +42,9 @@ public class LobbyModel {
 		return allReady;
 	}
 
-	public GameSession getGameSession() {
-		if (players.size() > 0)
-			return new GameSession(players);
-		else
-			return null;
+	public void createGameSession() {
+		GameSession gameSession = new GameSession(players);
+		new ModelController(applicationListener, gameSession);
 	}
 
 	public Map<Integer, String> getLobbyMembers() {
