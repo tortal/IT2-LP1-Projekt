@@ -51,9 +51,10 @@ public abstract class GameScreen {
 
 	/** all rendering goes here **/
 	public void render() {
-		model.checkGame();
 
 		if (model.checkGameState() == GameState.RUNNING) {
+			model.checkGame();
+
 			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			if (count == 0) {
