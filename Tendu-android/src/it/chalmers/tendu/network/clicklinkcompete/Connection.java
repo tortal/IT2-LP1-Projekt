@@ -39,10 +39,6 @@ public class Connection {
 
 	public static final int MAX_SUPPORTED = 7;
 
-	public interface OnConnectionServiceReadyListener {
-		public void OnConnectionServiceReady();
-	}
-
 	public interface OnIncomingConnectionListener {
 		public void OnIncomingConnection(BluetoothDevice device);
 	}
@@ -60,21 +56,10 @@ public class Connection {
 		public void OnConnectionLost(BluetoothDevice device);
 	}
 
-	private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
-	private OnIncomingConnectionListener mOnIncomingConnectionListener;
-	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
-	private OnMessageReceivedListener mOnMessageReceivedListener;
-	private OnConnectionLostListener mOnConnectionLostListener;
-
-	private Context mContext;
-
-	private boolean mStarted = false;
-
 	private ConnectionService connectionService;
 
-	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
-		mOnConnectionServiceReadyListener = ocsrListener;
-		mContext = ctx;
+	public Connection(Context ctx) {
+		
 		connectionService = new ConnectionService(ctx);
 	}
 
@@ -89,10 +74,7 @@ public class Connection {
 					+ MAX_SUPPORTED);
 			return Connection.FAILURE;
 		}
-		mOnIncomingConnectionListener = oicListener;
-		mOnMaxConnectionsReachedListener = omcrListener;
-		mOnMessageReceivedListener = omrListener;
-		mOnConnectionLostListener = oclListener;
+		
 		try {
 			int result = connectionService.startServer(maxConnections,
 					oicListener, omcrListener, omrListener, oclListener);
@@ -106,9 +88,6 @@ public class Connection {
 	public int connect(BluetoothDevice device,
 			OnMessageReceivedListener omrListener,
 			OnConnectionLostListener oclListener) {
-
-		mOnMessageReceivedListener = omrListener;
-		mOnConnectionLostListener = oclListener;
 		try {
 			int result = connectionService.connect(device, omrListener,
 					oclListener);

@@ -4,6 +4,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
@@ -24,6 +25,8 @@ import com.badlogic.gdx.math.Vector3;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
+	public static final int TEMP_PLAYERNUMBER = 0; // Temporary hardcoded player number
+	
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
 	private NumberGame model; // Model for current minigame (number)
@@ -75,8 +78,8 @@ public class NumberGameScreen extends GameScreen {
 		}
 
 		// TODO chooses a static player atm.
-		for (int i = 0; i < model.getPlayerList(0).size(); i++) {
-			numberCircles.add(new NumberCircle(model.getPlayerList(0).get(i),
+		for (int i = 0; i < model.getPlayerList(TEMP_PLAYERNUMBER).size(); i++) {
+			numberCircles.add(new NumberCircle(model.getPlayerList(TEMP_PLAYERNUMBER).get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
@@ -146,20 +149,47 @@ public class NumberGameScreen extends GameScreen {
 				numberFont.setColor(Color.BLUE);
 				numberFont.draw(game.spriteBatch,
 						"Enter the numbers in the correct order", 60, 400);
+				
+				drawNumbers(false);
+				drawNumberCircles();
 			}
-			drawNumbers(false);
-			drawNumberCircles();
-
 		}
 
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
 			numberFont.scale(2);
-			numberFont.draw(game.spriteBatch, "You won!", 300, 450);
+			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
 			numberFont.scale(-2);
+			loadNext();
+		} else if (model.checkGameState() == GameState.LOST) {
+			numberFont.setColor(Color.RED);
+			numberFont.scale(2);
+			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
+			numberFont.scale(-2);
+			loadNext();
 		}
 
 		shapeRenderer.end();
+	}
+	
+	//TODO remove this method
+	//used to create infinite loop of number games for testing
+	private void loadNext() {
+		if(game.isHost()) {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			GameId gameId = game.gameSession.getNextGameId();
+			MiniGame nextGame = game.gameSession.getMiniGame(gameId);
+			EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, nextGame);
+			EventBus.INSTANCE.broadcast(evMsg);
+			
+			game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game, game.gameSession.currentMiniGame));
+		}
 	}
 
 	/** All game logic goes here */
