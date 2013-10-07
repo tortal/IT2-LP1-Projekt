@@ -343,6 +343,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	 * unregisters the receiver if the receiver exists and calls the shutdown
 	 * method
 	 */
+	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
