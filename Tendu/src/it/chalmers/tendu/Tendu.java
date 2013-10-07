@@ -62,7 +62,7 @@ public class Tendu implements ApplicationListener, Listener {
 
 		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
 
-		setScreen(new ShapesGameScreen(this, new ShapesGame(30000, Constants.Difficulty.ONE)));
+		setScreen(new ShapesGameScreen(this, new ShapesGame(0, Constants.Difficulty.ONE)));
 		
 		//create an inputController and register it with Gdx
 		EventBus.INSTANCE.addListener(this); // register with event bus

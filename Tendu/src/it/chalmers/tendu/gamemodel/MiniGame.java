@@ -4,6 +4,8 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 
 public abstract class MiniGame {
 	private Difficulty difficulty;
@@ -13,6 +15,7 @@ public abstract class MiniGame {
 	private long endTime;
 	private int gameTime;
 	private long pausedTimeLeft; 
+	
 
 
 	/** No args constructor for reflection use */
