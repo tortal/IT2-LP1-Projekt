@@ -34,6 +34,8 @@ public class ShapesGame extends MiniGame {
 	 * All shapes for all players mapped by player number (Integer).
 	 */
 	private Map<Integer, List<Shape>> allInventory;
+
+
 	/**
 	 * Every players lock, mapped by player number (Integer)
 	 */
@@ -127,9 +129,9 @@ public class ShapesGame extends MiniGame {
 	 *            to be inserted into the players slot.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
-	public boolean insertShapeIntoSlot(int player, Shape shape) {
+	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
 		Lock lock = this.allLocks.get(player);
-		if (lock.fillSlot(shape))
+		if (lock.fillSlot(shape, lockShape))
 			return true;
 
 		return false;
@@ -216,9 +218,16 @@ public class ShapesGame extends MiniGame {
 		lock.addSlot(allShapes.remove(0));
 		
 		Shape myShape = new Shape(Color.GREEN, GeometricShape.CIRCLE);
-		System.out.println(lock.fillSlot(myShape));
+		//System.out.println(lock.fillSlot(myShape));
 		
 		System.out.println(lock);
+	}
+	/**
+	 * Gets all the players shapes. 
+	 * @return All the players 
+	 */
+	public Map<Integer, List<Shape>> getAllInventory() {
+		return allInventory;
 	}
 
 }
