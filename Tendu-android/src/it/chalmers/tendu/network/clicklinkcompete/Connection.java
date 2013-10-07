@@ -39,10 +39,6 @@ public class Connection {
 
 	public static final int MAX_SUPPORTED = 7;
 
-	public interface OnConnectionServiceReadyListener {
-		public void OnConnectionServiceReady();
-	}
-
 	public interface OnIncomingConnectionListener {
 		public void OnIncomingConnection(BluetoothDevice device);
 	}
@@ -60,7 +56,6 @@ public class Connection {
 		public void OnConnectionLost(BluetoothDevice device);
 	}
 
-	private OnConnectionServiceReadyListener mOnConnectionServiceReadyListener;
 	private OnIncomingConnectionListener mOnIncomingConnectionListener;
 	private OnMaxConnectionsReachedListener mOnMaxConnectionsReachedListener;
 	private OnMessageReceivedListener mOnMessageReceivedListener;
@@ -72,8 +67,7 @@ public class Connection {
 
 	private ConnectionService connectionService;
 
-	public Connection(Context ctx, OnConnectionServiceReadyListener ocsrListener) {
-		mOnConnectionServiceReadyListener = ocsrListener;
+	public Connection(Context ctx) {
 		mContext = ctx;
 		connectionService = new ConnectionService(ctx);
 	}

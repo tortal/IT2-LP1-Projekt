@@ -4,7 +4,6 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionServiceReadyListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
@@ -74,7 +73,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			enableBluetooth();
 		}
 
-		connection = new Connection(this.context, serviceReadyListener);
+		connection = new Connection(this.context);
 		availableDevices = new HashSet<BluetoothDevice>();
 		connectedDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
@@ -174,12 +173,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 			// shutdown EVERYTHING!
 			destroy();
-		}
-	};
-
-	private OnConnectionServiceReadyListener serviceReadyListener = new OnConnectionServiceReadyListener() {
-		public void OnConnectionServiceReady() {
-			Log.d(TAG, "Connection service ready");
 		}
 	};
 
