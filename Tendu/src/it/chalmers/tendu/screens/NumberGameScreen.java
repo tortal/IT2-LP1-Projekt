@@ -24,6 +24,8 @@ import com.badlogic.gdx.math.Vector3;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
+	public static final int TEMP_PLAYERNUMBER = 2; // Temporary hardcoded player number
+	
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
 	private NumberGame model; // Model for current minigame (number)
@@ -75,8 +77,8 @@ public class NumberGameScreen extends GameScreen {
 		}
 
 		// TODO chooses a static player atm.
-		for (int i = 0; i < model.getPlayerList(3).size(); i++) {
-			numberCircles.add(new NumberCircle(model.getPlayerList(3).get(i),
+		for (int i = 0; i < model.getPlayerList(TEMP_PLAYERNUMBER).size(); i++) {
+			numberCircles.add(new NumberCircle(model.getPlayerList(TEMP_PLAYERNUMBER).get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
