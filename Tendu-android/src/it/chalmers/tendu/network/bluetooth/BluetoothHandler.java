@@ -105,7 +105,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private OnMaxConnectionsReachedListener maxConnectionsListener = new OnMaxConnectionsReachedListener() {
 		public void OnMaxConnectionsReached() {
 			Log.d(TAG, "Max connections reached");
-			// TODO Let libgdx class know it can start the game
 
 			// Send on a list of all connected devices mac addresses
 			List<String> addresses = new ArrayList<String>();
