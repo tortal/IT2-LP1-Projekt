@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -41,7 +42,12 @@ public class NumberGameScreen extends GameScreen {
 	private int time; // used to time certain "events" during the game.
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
-
+	
+	private Sound correct = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.wav"));
+	private Sound success = Gdx.audio.newSound(Gdx.files.internal("sounds/success.mp3"));
+	private Sound wrong = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.wav"));
+	private Sound lost = Gdx.audio.newSound(Gdx.files.internal("sounds/lost.wav"));
+	
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 
@@ -160,12 +166,14 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
 			numberFont.scale(-2);
+			success.play();
 			loadNext();
 		} else if (model.checkGameState() == GameState.LOST) {
 			numberFont.setColor(Color.RED);
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
 			numberFont.scale(-2);
+			lost.play();
 			loadNext();
 		}
 
