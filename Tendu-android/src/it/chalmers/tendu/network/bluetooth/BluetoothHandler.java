@@ -38,7 +38,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler implements INetworkHandler, Listener {
 	private boolean D = true; // Debug flag
-	private String TAG = "BluetoothHandler";
+	private String TAG = "BluetoothHandler"; // Logging tag
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
@@ -83,7 +83,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 
 	private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
-
 		public void OnMessageReceived(BluetoothDevice device,
 				final EventMessage message) {
 			Log.d(TAG, "Received Message: " + message + " From device: "
@@ -221,24 +220,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		}, CONNECTION_DELAY);
 	}
 
-	/**
-	 * Goes through the list of discovered devices and checks if they are valid
-	 * "Tendu" players. Then adds these to a list of "team members".
-	 * 
-	 * @return list of team members
-	 * @see {@link devicesList}, {@link isDeviceValid}
-	 */
-	public Set<BluetoothDevice> searchTeam() {
-
-		Set<BluetoothDevice> devices = new HashSet<BluetoothDevice>();
-		for (BluetoothDevice d : availableDevices) {
-			if (isDeviceValidClient(d)) {
-				devices.add(d);
-			}
-		}
-		return devices;
-	}
-
 	// **************************** HELPER METHODS *************************
 
 	/**
@@ -296,23 +277,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
 	}
 
-	/**
-	 * Checks if the given device is using "Tendu", rather than just having
-	 * Bluetooth enabled
-	 * 
-	 * @param remote
-	 *            {@link BluetoothDevice} to validate
-	 * @return <code>true</code> if valid <code>false</code> if non-valid
-	 */
-
-	// TODO No longer in use?
-	private boolean isDeviceValidClient(BluetoothDevice device) {
-		if (device == null)
-			return false;
-		if (device.getName() == null)
-			return false;
-		return device.getName().contains(Constants.CLIENT_NAME);
-	}
 
 	/**
 	 * Checks if device is a valid server by looking for the proper name suffix
@@ -332,7 +296,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		context.registerReceiver(mReceiver, filter); // Don't forget to
+		context.registerReceiver(mReceiver, filter); 
+		// Don't forget to
 		// unregister during
 		// onDestroy
 	}
@@ -372,29 +337,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		}
 		Log.d(TAG, "No eligible Servers found");
 		return null;
-	}
-
-	// TODO Needed?
-	private BluetoothDevice findFirstAvailableDevice() {
-		// Return the first eligible device among the available devices set
-		Iterator<BluetoothDevice> iter = availableDevices.iterator();
-		while (iter.hasNext()) {
-			BluetoothDevice device = iter.next();
-			if (isDeviceValidClient(device)) {
-				return device;
-			}
-		}
-		Log.d(TAG, "No eligible devices found");
-		return null;
-	}
-
-	// TODO Needed?
-	private void beDiscoverable() {
-		Intent discoverableIntent = new Intent(
-				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		discoverableIntent.putExtra(
-				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-		context.startActivity(discoverableIntent);
 	}
 
 	/**

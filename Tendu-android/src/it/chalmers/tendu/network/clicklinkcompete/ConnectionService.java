@@ -234,6 +234,7 @@ public class ConnectionService {
 
 		(new Thread(new ConnectionWaiter(maxConnections))).start();
 
+		// Be discoverable
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		discoverableIntent.putExtra(
