@@ -127,13 +127,14 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				}
 			});
 			connectedDevices.add(device);
-			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getName()));
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getName()));
 		}
 	};
 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.CONNECTION_LOST, device.getName()));
 			// Show a dialogue notifying user it got disconnected
 			class displayConnectionLostAlert implements Runnable {
 				public void run() {
