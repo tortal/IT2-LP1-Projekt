@@ -6,25 +6,28 @@ import java.util.Map;
 
 public class LobbyModel {
 
-	private Map<Integer, String> players;
-	private Map<Integer, Boolean> playerReady;
-	public boolean isHost;
+	public String hostMacAddress;
+	public Map<Integer, String> players;
+	public Map<Integer, Boolean> playerReady;
 
 	public LobbyModel() {
 		players = new HashMap<Integer, String>();
 		playerReady = new HashMap<Integer, Boolean>();
-		isHost = false;
 	}
 
 	public boolean isHost() {
-		return isHost;
+		if (Player.getInstance().getMac().equals(hostMacAddress)) {
+			return true;
+		}
+		return false;
+
 	}
 
-	public void setHost(boolean isHost) {
-		this.isHost = isHost;
+	public void addHost(String myMacAddress) {
+		this.hostMacAddress = myMacAddress;
 	}
 
-	public boolean playerReady(int player, boolean ready) {
+	public boolean playerReady(String player, boolean ready) {
 		return playerReady.put(player, ready);
 	}
 

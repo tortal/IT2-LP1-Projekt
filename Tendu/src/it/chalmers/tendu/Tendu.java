@@ -3,6 +3,7 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.Screen;
@@ -34,12 +35,16 @@ public class Tendu implements ApplicationListener {
 
 	private String TAG = "Tendu"; // Tag for logging
 
-	public Tendu(INetworkHandler netCom) {
-		setNetworkHandler(netCom);
+	public Tendu(INetworkHandler networkHandler) {
+		setNetworkHandler(networkHandler);
 	}
 
 	@Override
 	public void create() {
+		
+		String mac = networkHandler.getMacAddress();
+		Player.setMac(mac);
+		Gdx.app.log(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
 

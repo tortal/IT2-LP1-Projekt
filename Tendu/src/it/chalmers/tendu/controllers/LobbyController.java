@@ -1,6 +1,7 @@
 package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.LobbyModel;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -32,6 +33,8 @@ public class LobbyController implements Listener {
 				EventBus.INSTANCE.broadcast(new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
 				break;
+			case PLAYER_READY:
+				model.playerReady(Player.getInstance().getMac(), true);
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
