@@ -374,6 +374,11 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 
 	@Override
+	public String getMacAddress() {
+		return connection.getAddress();
+	}
+	
+	@Override
 	public void onBroadcast(final EventMessage message) {
 		switch (message.tag) {
 		case COMMAND_AS_HOST: 
