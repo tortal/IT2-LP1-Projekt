@@ -354,8 +354,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	// Test Method
 	public void testStuff() {
-		connection.broadcastMessage(new EventMessage(C.Tag.DEFAULT,
-				C.Msg.ALL_PLAYERS_CONNECTED));
+		connection.broadcastMessage(new EventMessage(C.Tag.TEST,
+				C.Msg.TEST));
 	}
 
 	// Message handler
