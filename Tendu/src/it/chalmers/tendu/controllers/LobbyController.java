@@ -39,39 +39,19 @@ public class LobbyController implements Listener {
 				|| message.tag == C.Tag.ACCESS_MODEL) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
-				model.addPlayer((String)message.content);
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.UPDATE_LOBBY_MODEL, model));
-				if(model.allConnected()){
-					GameSession gameSession = new GameSession();
-					new ModelController(gameSession);
-					gameSession.setCurrentMiniGame(gameSession.getNextMiniGame());
-					EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION));
-				}
-				break;
-			case ALL_PLAYERS_CONNECTED:
-
-				// get mac addresses for each player.
-				List<String> list = (List<String>) message.content;
-//				model.addPlayer(list);
-
-				// Create GameSeeion and ModelController and choose miniGame
-				// TODO maybe this should be done in LobbyModel.
-				GameSession gameSession = new GameSession();
-				new ModelController(gameSession);
-				gameSession.setCurrentMiniGame(gameSession.getNextMiniGame());
-				
-				// Tells everybody to create a GameSession and a ModelController
-				EventBus.INSTANCE.broadcast(new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
-
-				// push updated GameSession to clients
-				message = new EventMessage(Tag.COMMAND_AS_HOST,
-						Msg.UPDATE_MODEL, GameId.NUMBER_GAME, gameSession);
-
-				// Update LobbyModel
+				model.addPlayer((String) message.content);
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
 								C.Msg.UPDATE_LOBBY_MODEL, model));
+				if (model.isMaxPlayersConnected()) {
+					GameSession gameSession = new GameSession();
+					new ModelController(gameSession);
+					gameSession.setCurrentMiniGame(gameSession
+							.getNextMiniGame());
+					EventBus.INSTANCE.broadcast(new EventMessage(
+							C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
+							gameSession));
+				}
 				break;
 			case PLAYER_READY:
 
@@ -80,7 +60,7 @@ public class LobbyController implements Listener {
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
 								C.Msg.UPDATE_LOBBY_MODEL, model));
-				
+
 				// Start the game for all players if they are ready.
 				if (model.allPlayersReady()) {
 					EventBus.INSTANCE.broadcast(new EventMessage(
@@ -103,8 +83,11 @@ public class LobbyController implements Listener {
 			}
 
 			if (message.tag == Tag.HOST_COMMANDED) {
-				if (message.msg == Msg.LOBBY_READY) {
-					createGameSession();
+				if (message.msg == Msg.GAME_SESSION_MODEL) {
+					new ModelController((GameSession) message.content);
+				}
+				if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
+					this.model = (LobbyModel) message.content;
 				}
 			}
 		}
