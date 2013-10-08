@@ -2,7 +2,7 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.ModelController;
+import it.chalmers.tendu.controllers.NumberGameModelController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
@@ -46,7 +46,7 @@ public class Tendu implements ApplicationListener, Listener {
 	private GameLobby gameLobby;
 	public GameSession gameSession;
 	private boolean host = false;
-	private ModelController modelController;
+	private NumberGameModelController modelController;
 
 	private String TAG = "Tendu"; // Tag for logging
 
@@ -181,7 +181,7 @@ public class Tendu implements ApplicationListener, Listener {
 		case LOBBY_READY:
 			Gdx.app.log(TAG, "LOBBY_READY");
 			gameSession = gameLobby.getGameSession();
-			modelController = new ModelController(this, gameSession);
+			modelController = new NumberGameModelController(this, gameSession);
 			if (host) {
 				GameId gameId = gameSession.getNextGameId();
 				MiniGame game = gameSession.getMiniGame(gameId);

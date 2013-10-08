@@ -21,7 +21,7 @@ import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 
 public class ShapesGameScreen extends GameScreen {
 
-	private static final Object PLAYER_NUM = 0;
+	private static final int PLAYER_NUM = 0;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
@@ -86,17 +86,7 @@ public class ShapesGameScreen extends GameScreen {
 			for (GraphicalShape gs : removeList)
 				shapes.remove(gs);
 
-			if (count == 500)
-				this.model.getAllInventory().get(PLAYER_NUM).remove(1);
-			count++;
 
-			if (count == 700)
-				this.model
-						.getAllInventory()
-						.get(PLAYER_NUM)
-						.add(new Shape(
-								it.chalmers.tendu.gamemodel.shapesgame.Color.RED,
-								GeometricShape.SQUARE));
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
 				sgs.renderShape(shapeRenderer);
@@ -159,10 +149,10 @@ public class ShapesGameScreen extends GameScreen {
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			if (model.getLock(0).fillSlot(shape.getShape(), lock.getShape())) {
+			if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(), lock.getShape())) {
 				lock.setColor(Color.WHITE);
 				rightShapeSound.play();
-				shapes.remove(shape);
+				model.getAllInventory().get(PLAYER_NUM).remove(shape.getShape());
 				return true;
 			}
 
