@@ -18,6 +18,10 @@ public class LobbyModel {
 		playerReady = new HashMap<Integer, Boolean>();
 		this.maxPlayers = maxPlayers;
 	}
+	
+	private LobbyModel() {
+		//For kryo
+	}
 
 	public boolean isHost() {
 		if (Player.getInstance().getMac().equals(hostMacAddress)) {

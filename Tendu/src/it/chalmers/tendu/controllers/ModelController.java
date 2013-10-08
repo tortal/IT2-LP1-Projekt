@@ -23,6 +23,9 @@ public class ModelController implements Listener {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
 	}
+	
+	private ModelController() {
+	}
 
 	public void setModel(GameSession session) {
 		this.gameSession = session;
