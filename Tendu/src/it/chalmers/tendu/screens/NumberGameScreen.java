@@ -44,6 +44,12 @@ public class NumberGameScreen extends GameScreen {
 	private int time; // used to time certain "events" during the game.
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
+	private Sound correct = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.wav"));
+	private Sound success = Gdx.audio.newSound(Gdx.files.internal("sounds/success.mp3"));
+	private Sound wrong = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.wav"));
+	private Sound lost = Gdx.audio.newSound(Gdx.files.internal("sounds/lost.wav"));
+	
+	
 	/**
 	 * @param game the applicationlistener
 	 * @param model the MiniGame model associated with the screen
