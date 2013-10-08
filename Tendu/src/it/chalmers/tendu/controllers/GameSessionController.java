@@ -12,18 +12,18 @@ import it.chalmers.tendu.tbd.Listener;
 
 import com.badlogic.gdx.Gdx;
 
-public class ModelController implements Listener {
+public class GameSessionController implements Listener {
 
-	private String TAG = "ModelController";
+	private String TAG = getClass().getSimpleName();
 
 	private GameSession gameSession;
 
-	public ModelController(GameSession gameSession) {
+	public GameSessionController(GameSession gameSession) {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
 	}
 
-	private ModelController() {
+	private GameSessionController() {
 	}
 
 	public void setModel(GameSession session) {

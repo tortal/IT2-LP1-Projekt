@@ -1,6 +1,6 @@
 package it.chalmers.tendu.gamemodel;
 
-import it.chalmers.tendu.controllers.ModelController;
+import it.chalmers.tendu.controllers.GameSessionController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class LobbyModel {
 
 	public void createGameSession() {
 		GameSession gameSession = new GameSession(players, hostMacAddress);
-		new ModelController(gameSession);
+		new GameSessionController(gameSession);
 	}
 
 	public Map<String, Integer> getLobbyMembers() {

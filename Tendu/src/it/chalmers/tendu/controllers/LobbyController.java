@@ -45,7 +45,7 @@ public class LobbyController implements Listener {
 								C.Msg.UPDATE_LOBBY_MODEL, model));
 				if (model.isMaxPlayersConnected()) {
 					GameSession gameSession = new GameSession();
-					new ModelController(gameSession);
+					new GameSessionController(gameSession);
 					gameSession.setCurrentMiniGame(gameSession
 							.getNextMiniGame());
 					EventBus.INSTANCE.broadcast(new EventMessage(
@@ -84,7 +84,7 @@ public class LobbyController implements Listener {
 			}
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.msg == Msg.GAME_SESSION_MODEL) {
-				new ModelController((GameSession) message.content);
+				new GameSessionController((GameSession) message.content);
 			}
 			if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
 				LobbyModel lModel = (LobbyModel) message.content;
@@ -97,7 +97,7 @@ public class LobbyController implements Listener {
 
 	private void createGameSession() {
 		GameSession gameSession = new GameSession();
-		new ModelController(gameSession);
+		new GameSessionController(gameSession);
 	}
 
 	public LobbyModel getModel() {

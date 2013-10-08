@@ -45,7 +45,7 @@ public class GameSession {
 		}
 
 		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
-				difficulty);
+				difficulty, players);
 		return currentMiniGame;
 	}
 

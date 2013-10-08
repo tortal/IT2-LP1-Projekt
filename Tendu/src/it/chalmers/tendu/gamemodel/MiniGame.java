@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.List;
+import java.util.Map;
 
 //TODO make none dependent of internal clock
 
@@ -10,10 +11,13 @@ public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
 	private GameId gameId;
-	private List<Player> players;
 	private long endTime;
 	private int gameTime;
 	private long pausedTimeLeft;
+	/**
+	 * Integer = player id String = player MacAddress
+	 */
+	private Map<String, Integer> players;
 
 	/** No args constructor for reflection use */
 	protected MiniGame() {
@@ -28,11 +32,12 @@ public abstract class MiniGame {
 	 *            the game's difficulty
 	 * @param gameId
 	 */
-	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
+	public MiniGame(int time, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.DEFAULT;
 		gameTime = 30000 + time;
+		this.players = players;
 		startGame();
 	}
 
@@ -162,5 +167,14 @@ public abstract class MiniGame {
 
 	public long getGameTime() {
 		return gameTime;
+	}
+	/**
+	 * Get the player number corresponding to your own macAddress.
+	 * @return
+	 */
+	public int getplayerNbr() {
+		String myMac = Player.getInstance().getMac();
+		int playerNbr = players.get(myMac);
+		return playerNbr;
 	}
 }

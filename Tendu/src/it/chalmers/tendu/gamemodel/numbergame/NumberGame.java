@@ -23,8 +23,8 @@ public class NumberGame extends MiniGame {
 		super();
 	};
 
-	public NumberGame(int addTime, Difficulty difficulty) {
-		super(addTime, difficulty, GameId.NUMBER_GAME);
+	public NumberGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(addTime, difficulty, GameId.NUMBER_GAME, players);
 		nbrCorrectAnswer = 0;
 		switch (difficulty) {
 		case ONE:
@@ -146,8 +146,9 @@ public class NumberGame extends MiniGame {
 	 * @param player
 	 * @return
 	 */
-	public ArrayList<Integer> getPlayerList(int player) {
-		return playerLists.get(player);
+	public ArrayList<Integer> getMyList() {
+		int playerNbr = getplayerNbr();
+		return playerLists.get(playerNbr);
 		// return answerList;
 	}
 

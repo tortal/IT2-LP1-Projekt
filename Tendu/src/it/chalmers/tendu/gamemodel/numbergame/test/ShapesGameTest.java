@@ -21,8 +21,9 @@ public class ShapesGameTest {
 
 	@Test
 	public void testShapesGame() {
-		shapesGame = new ShapesGame(30000, Difficulty.ONE);
-		shapesGame = new ShapesGame(30000, Difficulty.TWO);
+		// crash
+		shapesGame = new ShapesGame(30000, Difficulty.ONE, null);
+		shapesGame = new ShapesGame(30000, Difficulty.TWO, null);
 
 		List<Shape> shapes = shapesGame.getAllInventory().get(0);
 		for (Shape s : shapes) {
