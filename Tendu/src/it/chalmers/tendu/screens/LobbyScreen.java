@@ -34,10 +34,10 @@ public class LobbyScreen implements Screen {
 			initClient();
 
 		bigFont = new BitmapFont();
-		bigFont.scale(4);
+		bigFont.scale(2);
 
 		smallFont = new BitmapFont();
-		smallFont.scale(2);
+		smallFont.scale(1);
 	}
 
 	private void initHost() {
