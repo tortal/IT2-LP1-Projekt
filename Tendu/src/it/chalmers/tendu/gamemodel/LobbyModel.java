@@ -37,8 +37,8 @@ public class LobbyModel {
 	}
 
 	public void playerReady(String player, boolean ready) {
-		// TODO
-//		playerReady.put(player, ready);
+		int playerNbr = players.get(player);
+		playerReady.put(playerNbr, ready);
 	}
 
 	public boolean allPlayersReady() {
