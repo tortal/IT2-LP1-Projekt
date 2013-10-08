@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -23,11 +24,13 @@ public class ShapesGameScreen extends GameScreen {
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
+	private Sound rightShapeSound;
 
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		this.model = (ShapesGame) model;
 		this.shapeRenderer = new ShapeRenderer();
+		 rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
@@ -123,6 +126,7 @@ public class ShapesGameScreen extends GameScreen {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (model.getLock(0).fillSlot(shape.getShape(), lock.getShape())) {
 				lock.setColor(Color.WHITE);
+				rightShapeSound.play();
 				shapes.remove(shape);
 				return true;
 			}
