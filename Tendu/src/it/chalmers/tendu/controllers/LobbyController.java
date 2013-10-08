@@ -101,4 +101,8 @@ public class LobbyController implements Listener {
 		GameSession gameSession = new GameSession();
 		new ModelController(gameSession);
 	}
+	
+	public LobbyModel getModel(){
+		return model;
+	}
 }

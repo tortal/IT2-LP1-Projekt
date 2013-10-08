@@ -20,14 +20,13 @@ public class LobbyScreen implements Screen {
 	private BitmapFont bigFont;
 	private BitmapFont smallFont;
 	private Vector3 touchPos = new Vector3();
-	private LobbyModel lobbyModel;
+	private LobbyController lobbyController;
 	private Tendu tendu;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
 		this.tendu = tendu;
-
-		lobbyModel = new LobbyModel(2);
-		new LobbyController(lobbyModel);
+		LobbyModel model = new LobbyModel(2);
+		lobbyController = new LobbyController(model);
 
 		if (isHost)
 			initHost();
@@ -42,7 +41,8 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initHost() {
-		lobbyModel.addHost(tendu.getNetworkHandler().getMacAddress());
+		String macAddress = tendu.getNetworkHandler().getMacAddress();
+		getModel().addHost(macAddress);
 		tendu.getNetworkHandler().hostSession();
 	}
 
@@ -54,15 +54,16 @@ public class LobbyScreen implements Screen {
 
 		// TODO Get a ready button
 		if (Gdx.input.justTouched()) {
-			
+
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			tendu.getCamera().unproject(touchPos);
 
 			if (touchPos.x > 35 && touchPos.x < 435) {
 				if (touchPos.y >= 80 && touchPos.y < 150) {
 					Gdx.app.log("Testing", "Ready"); // Testing
-					EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL,
-							C.Msg.PLAYER_READY, Player.getInstance().getMac()));
+					EventBus.INSTANCE.broadcast(new EventMessage(
+							C.Tag.ACCESS_MODEL, C.Msg.PLAYER_READY, Player
+									.getInstance().getMac()));
 				}
 			}
 		}
@@ -75,7 +76,7 @@ public class LobbyScreen implements Screen {
 
 		float x = 40f;
 		float y = 410f;
-		for (Map.Entry<String, Integer> p : lobbyModel.getLobbyMembers()
+		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {
 			bigFont.draw(tendu.spriteBatch,
 					"Player: " + p.getValue() + ":" + p.getKey(), x, y);
@@ -83,6 +84,10 @@ public class LobbyScreen implements Screen {
 		}
 		smallFont.draw(tendu.spriteBatch, "Ready", 47, 150);
 
+	}
+
+	private LobbyModel getModel() {
+		return lobbyController.getModel();
 	}
 
 	@Override
