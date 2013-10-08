@@ -43,7 +43,7 @@ import it.chalmers.tendu.tbd.EventBusListener;
  * @author johnpetersson
  *
  */
-public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pManager.ConnectionInfoListener {
+public class WifiHandler extends NetworkHandler implements INetworkHandler, EventBusListener, WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
 	private static final int CONNECTION_DELAY = 5000;
@@ -389,10 +389,7 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 		kryo.register(EventMessage.class);
 	}
 
-	@Override
-	public void onBroadcast(EventMessage message) {
-		// TODO Hook up to event bus	
-	}
+	
 
 	
 }
