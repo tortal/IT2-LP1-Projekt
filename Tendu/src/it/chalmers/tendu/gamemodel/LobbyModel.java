@@ -11,10 +11,12 @@ public class LobbyModel {
 	public String hostMacAddress;
 	public Map<String, Integer> players;
 	public Map<Integer, Boolean> playerReady;
+	public int maxPlayers;
 
-	public LobbyModel() {
+	public LobbyModel(int maxPlayers) {
 		players = new HashMap<String, Integer>();
 		playerReady = new HashMap<Integer, Boolean>();
+		this.maxPlayers = maxPlayers;
 	}
 
 	public boolean isHost() {
@@ -56,6 +58,10 @@ public class LobbyModel {
 		for (int i = 0; i < macAddress.size(); i++) {
 			players.put(macAddress.get(i), (Integer) i);
 		}
+	}
+	
+	public boolean isMaxPlayersConnected(){
+		return players.keySet().size() == maxPlayers;
 	}
 
 }

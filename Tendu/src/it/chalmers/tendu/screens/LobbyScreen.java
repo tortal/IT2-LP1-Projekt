@@ -26,7 +26,7 @@ public class LobbyScreen implements Screen {
 	public LobbyScreen(Tendu tendu, boolean isHost) {
 		this.tendu = tendu;
 
-		lobbyModel = new LobbyModel();
+		lobbyModel = new LobbyModel(2);
 		new LobbyController(lobbyModel);
 
 		if (isHost)
