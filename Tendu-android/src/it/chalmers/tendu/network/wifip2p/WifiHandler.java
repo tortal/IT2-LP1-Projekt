@@ -282,7 +282,7 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 			// One common case is creating a server thread and accepting
 			// incoming connections.
 			Log.d(TAG, "Acting as server");
-			Toast.makeText(context, "Group Owner", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
 			new StartKryoNetServerTask().execute(); 
 			//startKryoNetServer();
 
@@ -291,7 +291,7 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 			// you'll want to create a client thread that connects to the group
 			// owner.
 			Log.d(TAG, "Acting as client");
-			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
 			//startKryoNetClient(groupOwnerAddress);
 			new StartKryoNetClientTask().execute(groupOwnerAddress);
 		}
