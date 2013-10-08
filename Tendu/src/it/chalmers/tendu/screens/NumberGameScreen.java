@@ -4,11 +4,8 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -42,6 +39,9 @@ public class NumberGameScreen extends GameScreen {
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 
+	private Sound completedGameSound;
+	private Sound lostGameSound;
+
 	/**
 	 * @param game
 	 *            the applicationlistener
@@ -56,6 +56,10 @@ public class NumberGameScreen extends GameScreen {
 		numberFont = new BitmapFont();
 		touchPos = new Vector3();
 		this.model = (NumberGame) model;
+
+		completedGameSound = Gdx.audio.newSound(Gdx.files
+				.internal("completed.wav"));
+		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		setUpGame();
 	}
@@ -170,6 +174,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
+
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
 			numberFont.scale(2);
@@ -180,7 +185,12 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.scale(2);
 			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
 			numberFont.scale(-2);
+
 		}
+
+		
+		showGameResult();
+
 
 		shapeRenderer.end();
 	}
@@ -189,7 +199,7 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		// TODO maybe not the best solution...
-//		model = (NumberGame) game.gameSession.currentMiniGame;
+		// model = (NumberGame) game.gameSession.currentMiniGame;
 
 		if (model.checkGameState() != GameState.RUNNING)
 			return;

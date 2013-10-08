@@ -6,7 +6,7 @@ package it.chalmers.tendu.gamemodel;
 public class Player {
 	private static Player instance = null;
 
-	private static String mac;
+	private String mac;
 
 	private Player() {
 	}
@@ -20,7 +20,7 @@ public class Player {
 		return instance;
 	}
 	
-	public static void setMac(String myMac){
+	public void setMac(String myMac){
 		mac = myMac;
 	}
 

@@ -2,11 +2,18 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +22,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
+
 public class Tendu implements ApplicationListener {
+
+	public static final String TAG = "Tendu"; // Tag for logging
+
 	private Screen screen; // contains whats shown on device screen in any
 							// given moment. Changes depending current
 							// minigame or if in a menu etc
@@ -34,10 +45,9 @@ public class Tendu implements ApplicationListener {
 
 	private boolean host = false;
 
-	public static String TAG = "Tendu"; // Tag for logging
-
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
+
 	}
 
 	@Override
@@ -49,11 +59,12 @@ public class Tendu implements ApplicationListener {
 
 		spriteBatch = new SpriteBatch();
 
-		// here we should load the start screen of the game
-
-		// here we should load the start screen of the game
-		// setScreenByNetworkState();
 		setScreen(new MainMenuScreen(this));
+
+
+//		 setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+//		 Constants.Difficulty.ONE)));
+
 
 		// create an inputController and register it with Gdx
 		input = new InputController();
@@ -63,8 +74,6 @@ public class Tendu implements ApplicationListener {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
-
-
 	}
 
 	// clean up

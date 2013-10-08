@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 /**
- * The puzzle to be solved. Every player has a lock which represents n
- * numbers of slots to be fitted with the given shapes. Every player should
- * have one of these.
+ * The puzzle to be solved. Every player has a lock which represents n numbers
+ * of slots to be fitted with the given shapes. Every player should have one of
+ * these.
  * 
  */
 public class Lock {
@@ -64,8 +66,8 @@ public class Lock {
 	}
 
 	/**
-	 * @return true if player has matched all slots in the lock sequence.
-	 *         Hint: use this to check if player is GAME OVER.
+	 * @return true if player has matched all slots in the lock sequence. Hint:
+	 *         use this to check if player is GAME OVER.
 	 */
 	public boolean isAllSlotsFilled() {
 		for (Boolean slot : slotLock.values()) {
@@ -80,21 +82,26 @@ public class Lock {
 	 *            to fill the lock with
 	 * @return true if the slot was empty and the shape fits.
 	 */
-	boolean fillSlot(Shape shape) {
-		if (!this.lockSequence.contains(shape))
+	public boolean fillSlot(Shape shape, Shape lockShape) {
+		if (!this.lockSequence.contains(lockShape)){
 			return false;
-		boolean curState = slotLock.get(shape);
-		if (curState == true)
+		}
+		boolean curState = slotLock.get(lockShape);
+		if (curState == true){
 			return false; // TODO: Debugging
-		slotLock.put(shape, true);
-		return true;
+		}
+		if (shape.equals(lockShape)) {
+			slotLock.put(shape, true);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public String toString() {
 		StringBuffer s = new StringBuffer();
 		s.append("Lock: [\n");
-		for (Shape shape : lockSequence){
+		for (Shape shape : lockSequence) {
 			s.append("\t");
 			s.append(shape);
 			s.append(" : ");
@@ -102,7 +109,7 @@ public class Lock {
 			s.append("\n");
 		}
 		s.append("\t]");
-		
+
 		return s.toString();
 	}
 
