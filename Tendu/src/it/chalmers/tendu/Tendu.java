@@ -4,17 +4,18 @@ package it.chalmers.tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.NumberGameScreen;
-
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.Listener;
@@ -174,20 +175,25 @@ public class Tendu implements ApplicationListener, Listener {
 			gameSession = gameLobby.getGameSession();
 			modelController = new ModelController(this, gameSession);
 			if (host) {
-				GameId gameId = gameSession.getNextGameId();
-				MiniGame game = gameSession.getMiniGame(gameId);
-				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
-				EventBus.INSTANCE.broadcast(evMsg);
+//				GameId gameId = gameSession.getNextGameId();
+//				MiniGame game = gameSession.getMiniGame(gameId);
+//				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
+//				EventBus.INSTANCE.broadcast(evMsg);
+//				
+//				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
 				
-				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
+				GameId gameId = gameSession.getNextGameId();
+				MiniGame nextGame = MiniGameFactory.createMiniGame(0, gameId, Difficulty.ONE);
+				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, nextGame);
+				EventBus.INSTANCE.broadcast(evMsg);
 			}
 			break;
 		case LOAD_THIS_GAME:
-			if(!host) {
+			//if(!host) {
 				Gdx.app.log(TAG, "LOAD_THIS_GAME");
 				gameSession.setCurrentMiniGame((MiniGame)message.content);
 				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
-			}
+			//}
 			break;
 			
 		default:

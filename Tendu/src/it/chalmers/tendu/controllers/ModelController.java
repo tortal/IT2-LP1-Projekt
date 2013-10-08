@@ -46,10 +46,16 @@ public class ModelController implements Listener {
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
-					gameSession.setCurrentMiniGame(game);
-					message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, gameSession.currentMiniGame);
-					EventBus.INSTANCE.broadcast(message);						
+					if(game.checkNbr((Integer) message.content)) {
+						gameSession.setCurrentMiniGame(game);
+						//message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, gameSession.currentMiniGame);
+						message.tag = Tag.COMMAND_AS_HOST;
+						EventBus.INSTANCE.broadcast(message);
+					} else {
+						gameSession.setCurrentMiniGame(game);
+						message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.REMOVE_TIME, GameId.NUMBER_GAME, null);
+						EventBus.INSTANCE.broadcast(message);
+					}
 				}
 			}
 		}
@@ -61,9 +67,9 @@ public class ModelController implements Listener {
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
+					//game.checkNbr((Integer) message.content);
 					message.tag = Tag.REQUEST_AS_CLIENT;
-					EventBus.INSTANCE.broadcast(message);				
+					EventBus.INSTANCE.broadcast(message);
 				}
 			}
 		}
@@ -72,8 +78,14 @@ public class ModelController implements Listener {
 			//*********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if(message.msg == Msg.UPDATE_MODEL) {
-					NumberGame game = (NumberGame)message.content;
-					gameSession.setCurrentMiniGame(game);
+					//NumberGame game = ;
+					gameSession.setCurrentMiniGame((NumberGame)message.content);
+					//Gdx.app.log(TAG, " Time left = " + gameSession.currentMiniGame.getTimeLeft());
+				} else if(message.msg == Msg.REMOVE_TIME) {
+					gameSession.currentMiniGame.changeTimeWith(-3000);
+				} else if(message.msg == Msg.NUMBER_GUESS) {
+					NumberGame game = (NumberGame) gameSession.currentMiniGame;
+					game.checkNbr((Integer) message.content);
 				}
 			}
 		}

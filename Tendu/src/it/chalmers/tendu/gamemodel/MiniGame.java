@@ -4,7 +4,7 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.List;
 
-
+//TODO make none dependent of internal clock
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
