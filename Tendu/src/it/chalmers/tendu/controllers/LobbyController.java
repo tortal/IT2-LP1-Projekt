@@ -85,14 +85,14 @@ public class LobbyController implements Listener {
 						C.Tag.REQUEST_AS_CLIENT, C.Msg.PLAYER_READY, Player
 								.getInstance().getMac()));
 			}
-
-			if (message.tag == Tag.HOST_COMMANDED) {
-				if (message.msg == Msg.GAME_SESSION_MODEL) {
-					new ModelController((GameSession) message.content);
-				}
-				if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
-					this.model = (LobbyModel) message.content;
-				}
+		} else if (message.tag == Tag.HOST_COMMANDED) {
+			if (message.msg == Msg.GAME_SESSION_MODEL) {
+				new ModelController((GameSession) message.content);
+			}
+			if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
+				LobbyModel lModel = (LobbyModel) message.content;
+				Gdx.app.debug("DEBUG LOBBY", "new Model:" + lModel.players.keySet().toString());
+				this.model = lModel;
 			}
 		}
 	}
