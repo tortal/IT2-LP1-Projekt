@@ -1,10 +1,15 @@
 package it.chalmers.tendu.network.wifip2p;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -28,6 +33,7 @@ import android.util.Log;
 import android.widget.Toast;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventMessage;
 
 /** Handles the Wifi connection
@@ -38,10 +44,15 @@ import it.chalmers.tendu.tbd.EventMessage;
 public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
-	private static final long CONNECTION_DELAY = 5000;
-	
+	private static final int CONNECTION_DELAY = 5000;
+
+	private static final int MAX_KRYO_BLOCKING_TIME = 5000;
+	private static final int TCP_PORT = 54555;
+	private Client client;
+	private Server server;
+
 	private Context context;
-	
+
 	WifiP2pManager mManager;
 	Channel mChannel;
 	//BroadcastReceiver mReceiver;
@@ -51,14 +62,15 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 	private List<WifiP2pDevice> peers = new ArrayList();
 
 	private Handler mHandler = new Handler();
-	
+	//private Kryo kryo;
+
 	public WifiHandler(Context ctx) {
 		context = ctx;
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 		// mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, context);
-		
+
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -68,19 +80,19 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 		context.registerReceiver(mReceiver, mIntentFilter); // Not necessary when we start calling onResume()
 
 		myPeerListListener = new PeerListListener() {
-			
+
 			@Override
 			public void onPeersAvailable(WifiP2pDeviceList peerList) {
 				peers.clear();
-	            peers.addAll(peerList.getDeviceList());
-	           // Log.d(TAG, peers.toString());			
-	            if (peers.size() == 0) {
-	                Log.d(TAG, "No devices found");
-	                return;
-	            }
+				peers.addAll(peerList.getDeviceList());
+				// Log.d(TAG, peers.toString());			
+				if (peers.size() == 0) {
+					Log.d(TAG, "No devices found");
+					return;
+				}
 			}
 		};
-		
+
 	}
 
 	@Override
@@ -110,7 +122,12 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 
 	@Override
 	public void broadcastMessageOverNetwork(EventMessage message) {
-		// TODO Auto-generated method stub
+		if (client != null) {
+			client.sendTCP(message);
+		}
+		if (server != null) {
+			server.sendToAllTCP(message);
+		}
 
 	}
 
@@ -134,8 +151,8 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 
 	@Override
 	public void testStuff() {
-		// TODO Auto-generated method stub
-
+		EventMessage message = new EventMessage(C.Tag.TEST, C.Msg.TEST);
+		broadcastMessageOverNetwork(message);
 	}
 
 	@Override
@@ -175,29 +192,29 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 
 			} else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
 				// request available peers from the wifi p2p manager. This is an
-			    // asynchronous call and the calling activity is notified with a
-			    // callback on PeerListListener.onPeersAvailable()
-			    if (mManager != null) {
-			        mManager.requestPeers(mChannel, myPeerListListener);
-			    }
-			    Log.d(TAG, "P2P peers changed");
+				// asynchronous call and the calling activity is notified with a
+				// callback on PeerListListener.onPeersAvailable()
+				if (mManager != null) {
+					mManager.requestPeers(mChannel, myPeerListListener);
+				}
+				Log.d(TAG, "P2P peers changed");
 			} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 				// Respond to new connection or disconnections
 				Log.d(TAG, "Connected or disconnected with someone");
 				if (mManager == null) {
-	                return;
-	            }
+					return;
+				}
 
-	            NetworkInfo networkInfo = (NetworkInfo) intent
-	                    .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+				NetworkInfo networkInfo = (NetworkInfo) intent
+						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
-	            if (networkInfo.isConnected()) {
+				if (networkInfo.isConnected()) {
 
-	                // We are connected with the other device, request connection
-	                // info to find group owner IP
+					// We are connected with the other device, request connection
+					// info to find group owner IP
 
-	                mManager.requestConnectionInfo(mChannel, WifiHandler.this);
-	            }
+					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
+				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 				// Respond to this device's wifi state changing
 			}
@@ -217,21 +234,21 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			}
 		}); 
 	}
-	
+
 	private WifiP2pDevice findFirstEligibleDevice(List<WifiP2pDevice> peers) {
 		for (WifiP2pDevice device: peers) {
 			return device;
 			//			if (device.deviceName.contains(Constants.SERVER_NAME)) {
-//				Log.d(TAG, "Device name contains " + Constants.SERVER_NAME);
-//				return device;
-//			} else {
-//				Log.d(TAG, "Device name is ineligible");
-//			}
+			//				Log.d(TAG, "Device name contains " + Constants.SERVER_NAME);
+			//				return device;
+			//			} else {
+			//				Log.d(TAG, "Device name is ineligible");
+			//			}
 		}
 		return null; 
 	}
 
-	
+
 	private void connectToDevice(final WifiP2pDevice device) {
 		//obtain a peer from the WifiP2pDeviceList
 		WifiP2pConfig config = new WifiP2pConfig();
@@ -239,24 +256,24 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 		//config.wps.setup = WpsInfo.PBC;
 		mManager.connect(mChannel, config, new ActionListener() {
 
-		    @Override
-		    public void onSuccess() {
-		    	// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
-		    	Log.d(TAG, "Connection initiated to: " + device.deviceName);
-		    }
+			@Override
+			public void onSuccess() {
+				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
+				Log.d(TAG, "Connection initiated to: " + device.deviceName);
+			}
 
-		    @Override
-		    public void onFailure(int reason) {
-		    	Log.d(TAG, "Could not connect to: " + device.deviceName);
-		    }
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Could not connect to: " + device.deviceName);
+			}
 		});
 	}
-	
+
 	@Override
 	public void onConnectionInfoAvailable(WifiP2pInfo info) {
 		// InetAddress from WifiP2pInfo struct.
 		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
-		
+
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
 			// Do whatever tasks are specific to the group owner.
@@ -264,29 +281,67 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			// incoming connections.
 			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Group Owner", Toast.LENGTH_SHORT).show();
-			new StartServerTask().execute(); 
-			
+			//new StartServerTask().execute(); 
+			startKryoNetServer();
+
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
 			// you'll want to create a client thread that connects to the group
 			// owner.
 			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
+			startKryoNetClient(groupOwnerAddress);
 		}
-		
-	}
-	
-	private class StartServerTask extends AsyncTask {
 
-		@Override
-		protected Object doInBackground(Object... params) {
-//			Server server = new Server();
-//			server.start();
-//			server.bind(54555, 54777);
-			return null;
-		}
-		
 	}
-	
-	
+
+	private void startKryoNetServer() {
+		server = new Server();
+		server.start();
+		registerKryoClasses(server.getKryo());
+		try {
+			server.bind(TCP_PORT); //, 54777); // UDP
+		} catch (IOException e) {
+			Log.d(TAG, "KryoNet Server creation failure");
+			e.printStackTrace();
+		}
+
+		server.addListener(new Listener() {
+			public void received (com.esotericsoftware.kryonet.Connection connection, Object object) {
+				if (object instanceof EventMessage) {
+					EventMessage request = (EventMessage)object;
+					Log.d(TAG, "Received: " + request.toString());
+				}
+			}
+		});
+	}
+
+	private void startKryoNetClient(String address) {
+		client = new Client();
+		client.start();
+		registerKryoClasses(client.getKryo());
+		try {
+			client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); // UDP
+		} catch (IOException e) {
+			Log.d(TAG, "Error in connecting via KryoNet");
+			e.printStackTrace();
+		}
+
+		EventMessage request = new EventMessage(C.Tag.TEST, C.Msg.TEST);
+		client.sendTCP(request);
+
+		client.addListener(new Listener() {
+			public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
+				if (object instanceof EventMessage) {
+					EventMessage request = (EventMessage)object;
+					Log.d(TAG, "Received: " + request.toString());
+				}
+			}
+		});
+	}
+
+	/** Register the classes we want to send over the network */
+	private void registerKryoClasses(Kryo kryo) {
+		kryo.register(EventMessage.class);
+	}
 }
