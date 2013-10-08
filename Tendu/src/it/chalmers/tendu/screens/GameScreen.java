@@ -20,8 +20,8 @@ public abstract class GameScreen implements Screen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	private BitmapFont numberFont;
-	
-	private Sound completedGameSound; 
+
+	private Sound completedGameSound;
 	private Sound lostGameSound;
 
 	// displayed a short time.
@@ -36,8 +36,9 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-		
-		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
+
+		completedGameSound = Gdx.audio.newSound(Gdx.files
+				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		if (model != null) {
@@ -161,8 +162,8 @@ public abstract class GameScreen implements Screen {
 				Constants.SCREEN_HEIGHT / 2 + 5);
 
 	}
-	
-	public void showGameResult(){
+
+	public void showGameResult() {
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
 			numberFont.scale(2);

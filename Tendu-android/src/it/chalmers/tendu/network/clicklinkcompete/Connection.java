@@ -59,7 +59,7 @@ public class Connection {
 	private ConnectionService connectionService;
 
 	public Connection(Context ctx) {
-		
+
 		connectionService = new ConnectionService(ctx);
 	}
 
@@ -74,7 +74,7 @@ public class Connection {
 					+ MAX_SUPPORTED);
 			return Connection.FAILURE;
 		}
-		
+
 		try {
 			int result = connectionService.startServer(maxConnections,
 					oicListener, omcrListener, omrListener, oclListener);

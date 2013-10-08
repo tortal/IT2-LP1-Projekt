@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -19,7 +20,7 @@ public class GraphicalShape {
 	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
-	private boolean locked=false;
+	private boolean locked = false;
 
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
@@ -176,22 +177,22 @@ public class GraphicalShape {
 	public void setColor(com.badlogic.gdx.graphics.Color color) {
 		this.color = color;
 	}
-	
+
 	/**
-	 * Makes the shape unable to move. 
+	 * Makes the shape unable to move.
 	 */
-	public void lock(){
-		locked=true;
+	public void lock() {
+		locked = true;
 	}
-	
+
 	/**
 	 * Makes the shape able to move.
 	 */
-	public void unsLock(){
-		locked=false;
+	public void unsLock() {
+		locked = false;
 	}
-	
-	public boolean isLocked(){
+
+	public boolean isLocked() {
 		return locked;
 	}
 }

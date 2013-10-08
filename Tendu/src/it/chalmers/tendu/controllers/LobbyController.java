@@ -1,17 +1,14 @@
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
-import it.chalmers.tendu.tbd.C.Msg;
-import it.chalmers.tendu.tbd.C.Tag;
-
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 
@@ -91,7 +88,8 @@ public class LobbyController implements Listener {
 			}
 			if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
 				LobbyModel lModel = (LobbyModel) message.content;
-				Gdx.app.debug("DEBUG LOBBY", "new Model:" + lModel.players.keySet().toString());
+				Gdx.app.debug("DEBUG LOBBY", "new Model:"
+						+ lModel.players.keySet().toString());
 				this.model = lModel;
 			}
 		}
@@ -101,8 +99,8 @@ public class LobbyController implements Listener {
 		GameSession gameSession = new GameSession();
 		new ModelController(gameSession);
 	}
-	
-	public LobbyModel getModel(){
+
+	public LobbyModel getModel() {
 		return model;
 	}
 }

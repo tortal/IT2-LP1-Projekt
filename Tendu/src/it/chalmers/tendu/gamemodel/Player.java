@@ -16,11 +16,11 @@ public class Player {
 			return instance;
 		}
 		instance = new Player();
-		
+
 		return instance;
 	}
-	
-	public void setMac(String myMac){
+
+	public void setMac(String myMac) {
 		mac = myMac;
 	}
 

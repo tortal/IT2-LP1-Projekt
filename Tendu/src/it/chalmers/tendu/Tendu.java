@@ -2,26 +2,17 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
-import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-
 
 public class Tendu implements ApplicationListener {
 
@@ -52,7 +43,7 @@ public class Tendu implements ApplicationListener {
 
 	@Override
 	public void create() {
-		
+
 		String mac = networkHandler.getMacAddress();
 		Player.getInstance().setMac(mac);
 		Gdx.app.log(TAG, Player.getInstance().getMac());
@@ -61,10 +52,8 @@ public class Tendu implements ApplicationListener {
 
 		setScreen(new MainMenuScreen(this));
 
-
-//		 setScreen(new ShapesGameScreen(this, new ShapesGame(0,
-//		 Constants.Difficulty.ONE)));
-
+		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+		// Constants.Difficulty.ONE)));
 
 		// create an inputController and register it with Gdx
 		input = new InputController();
