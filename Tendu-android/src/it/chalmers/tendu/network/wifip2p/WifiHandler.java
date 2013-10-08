@@ -164,20 +164,6 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 	}
 
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		//		public void onReceive(Context context, Intent intent) {
-		//			String action = intent.getAction();
-		//			// When discovery finds a device
-		//			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-		//				// Get the BluetoothDevice object from the Intent
-		//				BluetoothDevice device = intent
-		//						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-		//				if (D)
-		//					Log.v(TAG, "Device found: " + device.getName() + "Adress: "
-		//							+ device.getAddress());
-		//				// Add the device to a list
-		//				availableDevices.add(device);
-		//			}
-		//		}
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -271,6 +257,7 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 		});
 	}
 
+	
 	@Override
 	public void onConnectionInfoAvailable(WifiP2pInfo info) {
 		// InetAddress from WifiP2pInfo struct.
