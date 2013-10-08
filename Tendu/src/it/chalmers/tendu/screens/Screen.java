@@ -10,8 +10,8 @@ public interface Screen {
 	/** All game logic goes here */
 	public abstract void tick(InputController input);
 
-	/** clean up goes here
-	 * 	make sure to call super() if overriden
+	/**
+	 * clean up goes here make sure to call super() if overriden
 	 */
 	public abstract void removed();
 

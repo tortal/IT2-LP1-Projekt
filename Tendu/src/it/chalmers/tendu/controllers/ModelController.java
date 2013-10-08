@@ -1,8 +1,5 @@
 package it.chalmers.tendu.controllers;
 
-import com.badlogic.gdx.Gdx;
-
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
@@ -12,6 +9,8 @@ import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
+
+import com.badlogic.gdx.Gdx;
 
 public class ModelController implements Listener {
 

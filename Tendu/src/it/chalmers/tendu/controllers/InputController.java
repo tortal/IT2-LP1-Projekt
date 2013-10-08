@@ -11,9 +11,8 @@ public class InputController implements InputProcessor {
 	private boolean touchedDown = false;
 	private int x, y;
 
-	
 	public void tick() {
-		touchedUp = false;		
+		touchedUp = false;
 		touchedDown = false;
 	}
 
@@ -47,32 +46,32 @@ public class InputController implements InputProcessor {
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		x = screenX;
 		y = screenY;
-		touchedUp = true;		
+		touchedUp = true;
 		return true;
 	}
-	
-	public boolean isTouchedUp () {
+
+	public boolean isTouchedUp() {
 		return touchedUp;
 	}
-	
-	public boolean isTouchedDown () {
+
+	public boolean isTouchedDown() {
 		return touchedDown;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		//Gdx.app.log("TouchedDrag" , " x = " + screenX + " y = " + screenY);
+		// Gdx.app.log("TouchedDrag" , " x = " + screenX + " y = " + screenY);
 		x = screenX;
 		y = screenY;
 		return false;
 	}
-	
-	public List<Integer> getDraggedXY(){
+
+	public List<Integer> getDraggedXY() {
 		List<Integer> l = new ArrayList<Integer>();
 		l.add(x);
 		l.add(y);
 		return l;
-		
+
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package it.chalmers.tendu.gamemodel;
 import it.chalmers.tendu.controllers.ModelController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LobbyModel {
@@ -18,9 +17,9 @@ public class LobbyModel {
 		playerReady = new HashMap<Integer, Boolean>();
 		this.maxPlayers = maxPlayers;
 	}
-	
+
 	private LobbyModel() {
-		//For kryo
+		// For kryo
 	}
 
 	public boolean isHost() {
@@ -33,7 +32,7 @@ public class LobbyModel {
 	public void addHost(String myMacAddress) {
 		this.hostMacAddress = myMacAddress;
 		addPlayer(myMacAddress);
-		
+
 	}
 
 	public void playerReady(String player, boolean ready) {
@@ -62,12 +61,12 @@ public class LobbyModel {
 	public void addPlayer(String macAddress) {
 		// connect mac id with player
 		players.put(macAddress, players.size());
-//		for (int i = 0; i < macAddress.size(); i++) {
-//			players.put(macAddress.get(i), (Integer) i);
-//		}
+		// for (int i = 0; i < macAddress.size(); i++) {
+		// players.put(macAddress.get(i), (Integer) i);
+		// }
 	}
-	
-	public boolean isMaxPlayersConnected(){
+
+	public boolean isMaxPlayersConnected() {
 		return players.keySet().size() == maxPlayers;
 	}
 

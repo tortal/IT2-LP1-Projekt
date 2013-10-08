@@ -1,17 +1,15 @@
 package it.chalmers.tendu.gamemodel.numbergame;
 
+import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.MiniGame;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.MiniGame;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Timer;
 
 public class NumberGame extends MiniGame {
 
@@ -24,7 +22,7 @@ public class NumberGame extends MiniGame {
 	protected NumberGame() {
 		super();
 	};
-	
+
 	public NumberGame(int addTime, Difficulty difficulty) {
 		super(addTime, difficulty, GameId.NUMBER_GAME);
 		nbrCorrectAnswer = 0;
@@ -150,11 +148,12 @@ public class NumberGame extends MiniGame {
 	 */
 	public ArrayList<Integer> getPlayerList(int player) {
 		return playerLists.get(player);
-		//return answerList;
+		// return answerList;
 	}
 
 	/**
 	 * Returns the numbers that have been answered correctly.
+	 * 
 	 * @return
 	 */
 	public ArrayList<Integer> getAnsweredNbrs() {

@@ -160,7 +160,8 @@ public class NumberGameScreen extends GameScreen {
 
 		if (time < 240) {
 			numberFont.setColor(Color.BLUE);
-			numberFont.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
+			numberFont
+					.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
 			drawNumbers(true);
 
 		} else {
@@ -173,7 +174,6 @@ public class NumberGameScreen extends GameScreen {
 				drawNumberCircles();
 			}
 		}
-
 
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
@@ -188,9 +188,7 @@ public class NumberGameScreen extends GameScreen {
 
 		}
 
-		
 		showGameResult();
-
 
 		shapeRenderer.end();
 	}

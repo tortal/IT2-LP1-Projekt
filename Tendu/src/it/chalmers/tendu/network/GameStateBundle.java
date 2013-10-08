@@ -2,20 +2,21 @@ package it.chalmers.tendu.network;
 
 import java.io.Serializable;
 
-/** Class for sending the gamestate over the network
+/**
+ * Class for sending the gamestate over the network
  * 
  * @author johnpetersson
- *
+ * 
  */
 public class GameStateBundle implements Serializable {
 	private int gameType;
 	private String gameName;
-	
+
 	public GameStateBundle() {
 		gameType = 1;
 		gameName = "Default game";
 	}
-	
+
 	public GameStateBundle(int type, String name) {
 		gameType = type;
 		gameName = name;
@@ -55,8 +56,5 @@ public class GameStateBundle implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
 }

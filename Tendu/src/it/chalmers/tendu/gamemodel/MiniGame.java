@@ -13,12 +13,11 @@ public abstract class MiniGame {
 	private List<Player> players;
 	private long endTime;
 	private int gameTime;
-	private long pausedTimeLeft; 
-	
-
+	private long pausedTimeLeft;
 
 	/** No args constructor for reflection use */
-	protected MiniGame() {};
+	protected MiniGame() {
+	};
 
 	/**
 	 * Creates a new minigame.
@@ -33,7 +32,7 @@ public abstract class MiniGame {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.DEFAULT;
-		gameTime= 30000+time;
+		gameTime = 30000 + time;
 		startGame();
 	}
 
@@ -62,7 +61,7 @@ public abstract class MiniGame {
 	 * @return the time in milliseconds.
 	 */
 	public long getTimeLeft() {
-		if(endTime - System.currentTimeMillis() < 0)
+		if (endTime - System.currentTimeMillis() < 0)
 			gameLost();
 		return (endTime - System.currentTimeMillis());
 	}
@@ -78,9 +77,11 @@ public abstract class MiniGame {
 	}
 
 	/**
-	 * Changes the time. 
-	 * @param time Changes the time with requested amounts 
-	 * of milliseconds. Could be positive or negative number. 
+	 * Changes the time.
+	 * 
+	 * @param time
+	 *            Changes the time with requested amounts of milliseconds. Could
+	 *            be positive or negative number.
 	 */
 	public void changeTimeWith(int time) {
 		setEndTime(getTimeLeft() + time);
@@ -91,13 +92,13 @@ public abstract class MiniGame {
 
 	/**
 	 * Gets the state of the game.
+	 * 
 	 * @return the game's state
 	 */
 	public GameState checkGameState() {
 		return state;
 	}
 
-	
 	private void gameLost() {
 		state = GameState.LOST;
 	}
@@ -105,24 +106,25 @@ public abstract class MiniGame {
 	protected void gameWon() {
 		state = GameState.WON;
 	}
-	
-	public void setGameState(GameState g){
+
+	public void setGameState(GameState g) {
 		state = g;
 	}
 
-
 	/**
-	 * Gets the game id. 
+	 * Gets the game id.
+	 * 
 	 * @return the game's id
 	 */
 	public GameId getGameId() {
 		return gameId;
 	}
 
-
 	/**
-	 * Set the game id. 
-	 * @param gameId requested game id. 
+	 * Set the game id.
+	 * 
+	 * @param gameId
+	 *            requested game id.
 	 */
 	public void setGameId(GameId gameId) {
 		this.gameId = gameId;
@@ -133,31 +135,31 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		setEndTime(gameTime);
-		state=GameState.RUNNING;
+		state = GameState.RUNNING;
 	}
 
 	/**
 	 * Pauses the game
 	 */
 	public void pauseGame() {
-		pausedTimeLeft=getTimeLeft();
+		pausedTimeLeft = getTimeLeft();
 	}
-	
+
 	/**
 	 * Resume the game
 	 */
-	public void resumeGame(){
+	public void resumeGame() {
 		setEndTime(pausedTimeLeft);
 	}
-	
+
 	/**
-	 * Checks if the game is over. 
+	 * Checks if the game is over.
 	 */
 	public void checkGame() {
-		if(getTimeLeft() < 0)
-			state=GameState.LOST;
+		if (getTimeLeft() < 0)
+			state = GameState.LOST;
 	}
-	
+
 	public long getGameTime() {
 		return gameTime;
 	}

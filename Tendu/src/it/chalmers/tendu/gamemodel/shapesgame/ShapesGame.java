@@ -35,19 +35,16 @@ public class ShapesGame extends MiniGame {
 	 */
 	private Map<Integer, List<Shape>> allInventory;
 
-
-
 	/**
 	 * Every players lock, mapped by player number (Integer)
 	 */
 	private Map<Integer, Lock> allLocks;
-	
 
 	/** No args constructor for reflection use */
 	protected ShapesGame() {
 		super();
 	};
-	
+
 	/**
 	 * This will create a ShapesGame. It creates a list of all possible
 	 * combinations of the enums {@link GeometricShape} and link {@link Color}
@@ -66,8 +63,7 @@ public class ShapesGame extends MiniGame {
 
 		// Every player only has an explicit number of slots to fill, so let's
 		// grab the need amount of shapes from our allShapes list
-		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE
-				* PLAYER_COUNT);
+		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * PLAYER_COUNT);
 
 		for (int i = 0; i < LOCK_SIZE * PLAYER_COUNT; i++) {
 			Shape randomShape = allShapes.remove(0);
@@ -128,11 +124,9 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-	 *            to be inserted into the players �.
-=======
-	 *            to be inserted into the players slot.
->>>>>>> refs/heads/ShapesGameGraphics
+	 *            <<<<<<< HEAD to be inserted into the players �. ======= to
+	 *            be inserted into the players slot. >>>>>>>
+	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -176,10 +170,12 @@ public class ShapesGame extends MiniGame {
 		}
 		return owner;
 	}
-	
+
 	/**
-	 * @param player who is the owner of the lock.
-	 * @return the lock a particular player has. null if there is no such player.
+	 * @param player
+	 *            who is the owner of the lock.
+	 * @return the lock a particular player has. null if there is no such
+	 *         player.
 	 */
 	public Lock getLock(int player) {
 		Lock lock = allLocks.get(player);
@@ -218,19 +214,21 @@ public class ShapesGame extends MiniGame {
 	 */
 	public static void main(String[] a) {
 		Lock lock = new Lock();
-		
+
 		List<Shape> allShapes = Shape.getAllShapes();
 		lock.addSlot(allShapes.remove(0));
 		lock.addSlot(allShapes.remove(0));
-		
+
 		Shape myShape = new Shape(Color.GREEN, GeometricShape.CIRCLE);
-		//System.out.println(lock.fillSlot(myShape));
-		
+		// System.out.println(lock.fillSlot(myShape));
+
 		System.out.println(lock);
 	}
+
 	/**
-	 * Gets all the players shapes. 
-	 * @return All the players 
+	 * Gets all the players shapes.
+	 * 
+	 * @return All the players
 	 */
 	public Map<Integer, List<Shape>> getAllInventory() {
 		return allInventory;

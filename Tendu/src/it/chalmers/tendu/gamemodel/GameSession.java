@@ -1,10 +1,8 @@
-
 /*-******THIS IS OUR GAME MODEL*********/
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
