@@ -302,10 +302,11 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 		@Override
 		protected Object doInBackground(Object... params) {
 			server = new Server();
+			Kryo kryo = server.getKryo();
+			registerKryoClasses(kryo);
 			server.start();
-			registerKryoClasses(server.getKryo());
 			try {
-				server.bind(TCP_PORT); //, 54777); // UDP
+				server.bind(TCP_PORT); //, 54777); // other figure is for UDP
 			} catch (IOException e) {
 				Log.d(TAG, "KryoNet Server creation failure");
 				e.printStackTrace();
@@ -328,11 +329,12 @@ public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pMa
 		protected Object doInBackground(String... addresses) {
 			String address = addresses[0];
 			client = new Client();
+			Kryo kryo = client.getKryo();
+			registerKryoClasses(kryo);
 			client.start();
-			registerKryoClasses(client.getKryo());
 			try {
 				Log.d(TAG, "KryoNet will now connct to address: " + address);
-				client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); // UDP
+				client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
 			} catch (IOException e) {
 				Log.d(TAG, "Error in connecting via KryoNet");
 				e.printStackTrace();
