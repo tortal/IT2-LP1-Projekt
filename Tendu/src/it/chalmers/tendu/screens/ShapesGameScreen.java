@@ -15,29 +15,34 @@ import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 
 public class ShapesGameScreen extends GameScreen {
 
+	private static final Object PLAYER_NUM = 0;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
-	private Sound rightShapeSound;
+//	private Sound rightShapeSound;
+
+	// For debug
+	int count = 0;
 
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		this.model = (ShapesGame) model;
 		this.shapeRenderer = new ShapeRenderer();
-		rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
+	//	rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
 		for (Shape s : this.model.getAllInventory().get(0)) {
-//			GraphicalShape sgs = new GraphicalShape(s);
-//			sgs.moveShape(x, 150);
-//			shapes.add(sgs);
+			GraphicalShape sgs = new GraphicalShape(s);
+			sgs.moveShape(x, 150);
+			shapes.add(sgs);
 			x = x + 151;
 		}
 
@@ -59,18 +64,45 @@ public class ShapesGameScreen extends GameScreen {
 		if (model.checkGameState() == GameState.RUNNING) {
 			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
 
-			for (GraphicalShape sgs : shapes) {
-				sgs.renderShape(shapeRenderer);
-			}
-			
+			// Adds shapes to the gui that are no longer part
+			// of the model.
 			for (Shape s : this.model.getAllInventory().get(0)) {
-				GraphicalShape sgs = new GraphicalShape(s);
-			//	sgs.moveShape(x, 150);
-				shapes.add(sgs);
-			//	x = x + 151;
+				if (!shapes.contains(new GraphicalShape(s))) {
+					shapes.add(new GraphicalShape(s));
+				}
 			}
 
+			// Removes shapes that are no longer parts of the
+			// model.
+			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+			for (GraphicalShape gs : shapes) {
+				if (!this.model.getAllInventory().get(PLAYER_NUM)
+						.contains(gs.getShape())) {
+					removeList.add(gs);
+				}
+			}
+
+			for (GraphicalShape gs : removeList)
+				shapes.remove(gs);
+
+			if (count == 500)
+				this.model.getAllInventory().get(PLAYER_NUM).remove(1);
+			count++;
+
+			if (count == 700)
+				this.model
+						.getAllInventory()
+						.get(PLAYER_NUM)
+						.add(new Shape(
+								it.chalmers.tendu.gamemodel.shapesgame.Color.RED,
+								GeometricShape.SQUARE));
+			// Renders locks
 			for (GraphicalShape sgs : locks) {
+				sgs.renderShape(shapeRenderer);
+			}
+
+			// Renders shapes
+			for (GraphicalShape sgs : shapes) {
 				sgs.renderShape(shapeRenderer);
 			}
 
@@ -126,7 +158,7 @@ public class ShapesGameScreen extends GameScreen {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (model.getLock(0).fillSlot(shape.getShape(), lock.getShape())) {
 				lock.setColor(Color.WHITE);
-				rightShapeSound.play();
+			//	rightShapeSound.play();
 				shapes.remove(shape);
 				return true;
 			}

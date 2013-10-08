@@ -43,8 +43,8 @@ public class NumberGameScreen extends GameScreen {
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	
-	private Sound completedGameSound; 
-	private Sound lostGameSound;
+	//private Sound completedGameSound; 
+	//private Sound lostGameSound;
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -55,8 +55,8 @@ public class NumberGameScreen extends GameScreen {
 		touchPos = new Vector3();
 		this.model = (NumberGame) model;
 		
-		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
+		//completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
+		//lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		
 		setUpGame();
 	}
@@ -167,14 +167,14 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
 			numberFont.scale(-2);
-			completedGameSound.play();
+		//	completedGameSound.play();
 			loadNext();
 		} else if (model.checkGameState() == GameState.LOST) {
 			numberFont.setColor(Color.RED);
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
 			numberFont.scale(-2);
-			lostGameSound.play();
+			//lostGameSound.play();
 			loadNext();
 		}
 

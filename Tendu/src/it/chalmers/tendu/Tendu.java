@@ -9,10 +9,12 @@ import it.chalmers.tendu.gamemodel.GameLobby;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.screens.ShapesGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -63,11 +65,11 @@ public class Tendu implements ApplicationListener, Listener {
 
 		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
 		// Constants.Difficulty.ONE)));
-		setScreen(new NumberGameScreen(this, new NumberGame(0,
-				Constants.Difficulty.ONE)));
+		//setScreen(new NumberGameScreen(this, new NumberGame(0,
+		//		Constants.Difficulty.ONE)));
 
-		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
-		// Constants.Difficulty.ONE)));
+		 setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+		 Constants.Difficulty.ONE)));
 
 		// create an inputController and register it with Gdx
 		EventBus.INSTANCE.addListener(this); // register with event bus
