@@ -126,7 +126,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				}
 			});
 			connectedDevices.add(device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getAddress()));
+			sendToEventBus(new EventMessage(C.Tag.CLIENT_REQUESTED, C.Msg.PLAYER_CONNECTED, device.getAddress()));
 		}
 	};
 
