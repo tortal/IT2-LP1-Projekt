@@ -4,9 +4,11 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.MiniGameFactory;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -25,7 +27,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
-	public static final int TEMP_PLAYERNUMBER = 0; // Temporary hardcoded player number
+	public static final int TEMP_PLAYERNUMBER = 3; // Temporary hardcoded player number
 	
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
@@ -41,7 +43,10 @@ public class NumberGameScreen extends GameScreen {
 	private int time; // used to time certain "events" during the game.
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
-
+	/**
+	 * @param game the applicationlistener
+	 * @param model the MiniGame model associated with the screen
+	 */
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 
@@ -54,6 +59,9 @@ public class NumberGameScreen extends GameScreen {
 		setUpGame();
 	}
 
+	/**
+	 * Initiall setup
+	 */
 	private void setUpGame() {
 		time = 0;
 		numberFont.scale(2); // scale up font relative to the previous scale, -2
@@ -90,6 +98,11 @@ public class NumberGameScreen extends GameScreen {
 		}
 	}
 
+	/**
+	 * Draws the current number list to the screen
+	 * 
+	 * @param showAll set to false if only correctly answered numbers should be drawn
+	 */
 	private void drawNumbers(boolean showAll) {
 		numberFont.scale(1.6f);
 
@@ -112,6 +125,7 @@ public class NumberGameScreen extends GameScreen {
 		numberFont.scale(-1.6f);
 	}
 
+	
 	private void drawNumberCircle(NumberCircle circle) {
 		shapeRenderer.setColor(circle.color);
 		numberFont.setColor(circle.color);
@@ -175,28 +189,24 @@ public class NumberGameScreen extends GameScreen {
 	//TODO remove this method
 	//used to create infinite loop of number games for testing
 	private void loadNext() {
-		if(game.isHost()) {
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(game.isHost() && time > 360) {
 			
 			GameId gameId = game.gameSession.getNextGameId();
-			MiniGame nextGame = game.gameSession.getMiniGame(gameId);
+			MiniGame nextGame = MiniGameFactory.createMiniGame(0, gameId, Difficulty.TWO);
 			EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, nextGame);
 			EventBus.INSTANCE.broadcast(evMsg);
 			
 			game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game, game.gameSession.currentMiniGame));
 		}
+		
+		time++;
 	}
 
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
 		//TODO maybe not the best solution...
-		model = (NumberGame) game.gameSession.currentMiniGame;
+		model = (NumberGame)game.gameSession.currentMiniGame;
 		
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
