@@ -43,8 +43,11 @@ public class NumberGameScreen extends GameScreen {
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	
+<<<<<<< HEAD
 	//private Sound completedGameSound; 
 	//private Sound lostGameSound;
+=======
+>>>>>>> branch 'ShapesGameGraphics2' of https://github.com/tortal/IT2-LP1-Tendu.git
 
 	public NumberGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -54,9 +57,12 @@ public class NumberGameScreen extends GameScreen {
 		numberFont = new BitmapFont();
 		touchPos = new Vector3();
 		this.model = (NumberGame) model;
+<<<<<<< HEAD
 		
 		//completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
 		//lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
+=======
+>>>>>>> branch 'ShapesGameGraphics2' of https://github.com/tortal/IT2-LP1-Tendu.git
 		
 		setUpGame();
 	}
@@ -161,6 +167,7 @@ public class NumberGameScreen extends GameScreen {
 				drawNumberCircles();
 			}
 		}
+<<<<<<< HEAD
 
 		if (model.checkGameState() == GameState.WON) {
 			numberFont.setColor(Color.GREEN);
@@ -177,6 +184,11 @@ public class NumberGameScreen extends GameScreen {
 			//lostGameSound.play();
 			loadNext();
 		}
+=======
+		
+		showGameResult();
+		loadNext();
+>>>>>>> branch 'ShapesGameGraphics2' of https://github.com/tortal/IT2-LP1-Tendu.git
 
 		shapeRenderer.end();
 	}

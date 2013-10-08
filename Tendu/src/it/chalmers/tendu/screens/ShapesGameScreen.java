@@ -26,10 +26,13 @@ public class ShapesGameScreen extends GameScreen {
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
-//	private Sound rightShapeSound;
+	//	private Sound rightShapeSound;
 
 	// For debug
 	int count = 0;
+
+	
+	private Sound rightShapeSound;
 
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -139,7 +142,9 @@ public class ShapesGameScreen extends GameScreen {
 				}
 			}
 			model.checkGame();
-		}
+		}else{
+			showGameResult();
+		}	
 	}
 
 	/** All game logic goes here (within the model...) */
