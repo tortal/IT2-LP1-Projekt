@@ -93,8 +93,6 @@ public class Tendu implements ApplicationListener, Listener {
 //		modelController = new ModelController(this, gameSession);
 //		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
 		//end temp
-		
-		
 	}
 
 	// clean up
