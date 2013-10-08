@@ -33,7 +33,7 @@ public class Tendu implements ApplicationListener {
 
 	private boolean host = false;
 
-	private String TAG = "Tendu"; // Tag for logging
+	public static String TAG = "Tendu"; // Tag for logging
 
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
@@ -43,7 +43,7 @@ public class Tendu implements ApplicationListener {
 	public void create() {
 		
 		String mac = networkHandler.getMacAddress();
-		Player.setMac(mac);
+		Player.getInstance().setMac(mac);
 		Gdx.app.log(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
