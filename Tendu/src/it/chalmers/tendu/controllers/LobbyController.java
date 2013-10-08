@@ -21,12 +21,14 @@ public class LobbyController implements Listener {
 	private LobbyModel model;
 
 	public LobbyController(LobbyModel model) {
+		EventBus.INSTANCE.addListener(this);
 		this.model = model;
 	}
 
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (model.isHost()) {
+			Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));
@@ -39,6 +41,7 @@ public class LobbyController implements Listener {
 				|| message.tag == C.Tag.ACCESS_MODEL) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
+				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				model.addPlayer((String) message.content);
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
