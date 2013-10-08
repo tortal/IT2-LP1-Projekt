@@ -6,14 +6,15 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /** Abstract screen class that can be extended by all minigame and menu screens */
 public abstract class GameScreen implements Screen {
-
-	public Tendu game; // reference to the main Tendu object
+	public Tendu tendu; // reference to the main Tendu object
 	public MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
@@ -27,8 +28,8 @@ public abstract class GameScreen implements Screen {
 	 *            MiniGame model, set to null if not used (menu)
 	 * @return a new GameScreen
 	 */
-	public GameScreen(Tendu game, MiniGame model) {
-		this.game = game;
+	public GameScreen(Tendu tendu, MiniGame model) {
+		this.tendu = tendu;
 		this.model = model;
 
 		if (model != null) {
@@ -44,17 +45,16 @@ public abstract class GameScreen implements Screen {
 	 * @param screen
 	 *            the new screen
 	 */
-	protected void setScreen(Screen screen) {
-		game.setScreen(screen);
+	protected void setScreen(GameScreen screen) {
+		tendu.setScreen(screen);
 	}
-
 
 	/** all rendering goes here **/
 	public void render() {
 		model.checkGame();
 
 		if (model.checkGameState() == GameState.RUNNING) {
-			shapeRenderer.setProjectionMatrix(game.getCamera().combined);
+			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			if (count == 0) {
 				shapeRenderer.setColor(Color.YELLOW);
@@ -70,19 +70,13 @@ public abstract class GameScreen implements Screen {
 
 	}
 
-	/*
-	 * 
-	 * @see
-	 * it.chalmers.tendu.screens.IScreen#tick(it.chalmers.tendu.controllers.
-	 * InputController)
-	 */
-	@Override
+	/** All game logic goes here */
 	public abstract void tick(InputController input);
 
-
-	@Override
+	/**
+	 * clean up goes here make sure to call super() if overriden
+	 */
 	public void removed() {
-
 	}
 
 	private int calculateTimerWidth() {

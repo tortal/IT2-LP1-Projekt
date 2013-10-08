@@ -1,4 +1,5 @@
-/*-******THIS IS OUR MAIN MODEL*********/
+
+/*-******THIS IS OUR GAME MODEL*********/
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
@@ -15,8 +16,7 @@ public class GameSession {
 	private int currentLvl = 1;
 	private Difficulty difficulty = Difficulty.ONE;
 	/**
-	 * Integer = player id
-	 * String = player MacAddress 
+	 * Integer = player id String = player MacAddress
 	 */
 	private Map<String, Integer> players;
 
@@ -41,33 +41,33 @@ public class GameSession {
 	private MiniGame getMiniGame(GameId gameId) {
 		int bonusTime = 0;
 		Gdx.app.log("gameId", " " + gameId);
-		
-		if(currentMiniGame != null) {
+
+		if (currentMiniGame != null) {
 			bonusTime = (int) currentMiniGame.getTimeLeft();
 		}
-		
+
 		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
 				difficulty);
 		return currentMiniGame;
 	}
-	
+
 	public MiniGame getNextMiniGame() {
 		return getMiniGame(getNextGameId());
-		
+
 	}
-	
+
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
 	}
-	
-	public Map<String, Integer> getPlayers(){
+
+	public Map<String, Integer> getPlayers() {
 		return players;
 	}
-	
-	public void startGame(){
-		
+
+	public void startGame() {
+
 	}
-	
+
 	public boolean isHost() {
 		if (Player.getInstance().getMac().equals(hostMacAddress)) {
 			return true;
@@ -75,5 +75,4 @@ public class GameSession {
 		return false;
 	}
 
-	
 }

@@ -23,7 +23,7 @@ public class ModelController implements Listener {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
 	}
-	
+
 	private ModelController() {
 	}
 
@@ -52,18 +52,26 @@ public class ModelController implements Listener {
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.ACCESS_MODEL) {
-			if(message.msg == C.Msg.START_MINI_GAME){
-				gameSession.startGame();
+			if (message.msg == C.Msg.START_MINI_GAME) {
+				// TODO: gameSession.startGame();
 			}
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
-					gameSession.setCurrentMiniGame(game);
-					message = new EventMessage(Tag.COMMAND_AS_HOST,
-							Msg.UPDATE_MODEL, GameId.NUMBER_GAME, game);
-					EventBus.INSTANCE.broadcast(message);
+					if (game.checkNbr((Integer) message.content)) {
+						gameSession.setCurrentMiniGame(game);
+						// message = new EventMessage(Tag.COMMAND_AS_HOST,
+						// Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
+						// gameSession.currentMiniGame);
+						message.tag = Tag.COMMAND_AS_HOST;
+						EventBus.INSTANCE.broadcast(message);
+					} else {
+						gameSession.setCurrentMiniGame(game);
+						message = new EventMessage(Tag.COMMAND_AS_HOST,
+								Msg.REMOVE_TIME, GameId.NUMBER_GAME, null);
+						EventBus.INSTANCE.broadcast(message);
+					}
 				}
 			}
 		}
@@ -75,7 +83,7 @@ public class ModelController implements Listener {
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
+					// game.checkNbr((Integer) message.content);
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
@@ -87,9 +95,18 @@ public class ModelController implements Listener {
 			// TODO do we need to check what MiniGame we are playing in order to
 			// update the MiniGameModel?
 			if (message.gameId == GameId.NUMBER_GAME) {
+
 				if (message.msg == Msg.UPDATE_MODEL) {
-					NumberGame game = (NumberGame) message.content;
-					gameSession.setCurrentMiniGame(game);
+					// NumberGame game = ;
+					gameSession
+							.setCurrentMiniGame((NumberGame) message.content);
+					// Gdx.app.log(TAG, " Time left = " +
+					// gameSession.currentMiniGame.getTimeLeft());
+				} else if (message.msg == Msg.REMOVE_TIME) {
+					gameSession.currentMiniGame.changeTimeWith(-3000);
+				} else if (message.msg == Msg.NUMBER_GUESS) {
+					NumberGame game = (NumberGame) gameSession.currentMiniGame;
+					game.checkNbr((Integer) message.content);
 				}
 			}
 		}

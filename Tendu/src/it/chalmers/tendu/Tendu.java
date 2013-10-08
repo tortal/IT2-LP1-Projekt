@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
 public class Tendu implements ApplicationListener {
 	private Screen screen; // contains whats shown on device screen in any
 							// given moment. Changes depending current
@@ -52,29 +53,7 @@ public class Tendu implements ApplicationListener {
 
 		// here we should load the start screen of the game
 		// setScreenByNetworkState();
-		setScreen(new MainMenuScreen(this, null));
-
-		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
-		// Constants.Difficulty.ONE)));
-		// setScreen(new ShapesGameScreen(this, new ShapesGame(30000,
-		// Constants.Difficulty.ONE)));
-
-		// create an inputController and register it with Gdx
-
-		// setScreen(new NumberGameScreen(this, new NumberGame(0,
-		// Constants.Difficulty.ONE)));
-
-		// setScreen(new NumberGameScreen(this, new NumberGame(30000,
-		// Constants.Difficulty.ONE)));
-
-		// setScreen(new ShapesGameScreen(this, new ShapesGame(30000,
-		// Constants.Difficulty.ONE)));
-
-		// create an inputController and register it with Gdx
-		// here we should load the start screen of the game
-		// setScreen(new MainMenuScreen(this, null));
-		// setScreen(new NumberGameScreen(this, new NumberGame(0,
-		// Constants.Difficulty.ONE)));
+		setScreen(new MainMenuScreen(this));
 
 		// create an inputController and register it with Gdx
 		input = new InputController();
@@ -85,12 +64,6 @@ public class Tendu implements ApplicationListener {
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
 
-		// temp code
-		// gameSession = new GameSession();
-		// modelController = new ModelController(this, gameSession);
-		// setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
-		// gameSession.getMiniGame(gameSession.getNextGameId())));
-		// end temp
 
 	}
 
@@ -163,32 +136,4 @@ public class Tendu implements ApplicationListener {
 	private void setNetworkHandler(INetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
 	}
-
-	// TODO: MOVE TO LOBBY CONTROLLER
-	// public void onBroadcast(EventMessage message) {
-	// // TODO Auto-generated method stub
-	// switch (message.msg) {
-	// case PLAYERS_CONNECTED:
-	// Gdx.app.log(TAG, "PLAYERS_CONNECTED");
-	// case LOBBY_READY:
-	// Gdx.app.log(TAG, "LOBBY_READY");
-	// gameSession = gameLobby.getGameSession();
-	// modelController = new ModelController(this, gameSession);
-	// if (host) {
-	//
-	// GameId gameId = gameSession.getNextGameId();
-	// MiniGame game = gameSession.getMiniGame(gameId);
-	// EventMessage evMsg = new EventMessage(C.Tag.DEFAULT,
-	// C.Msg.LOAD_THIS_GAME, game);
-	// EventBus.INSTANCE.broadcast(evMsg);
-	// }
-	// break;
-	// case LOAD_THIS_GAME:
-	// gameSession.setCurrentMiniGame((MiniGame)message.content);
-	// setScreen(MiniGameScreenFactory.createMiniGameScreen(this,
-	// (MiniGame)message.content));
-	// break;
-	// default:
-	// break;
-	// }
 }
