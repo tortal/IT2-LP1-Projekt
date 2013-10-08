@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +22,7 @@ import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 import it.chalmers.tendu.defaults.Constants;
@@ -33,6 +36,8 @@ import it.chalmers.tendu.tbd.EventMessage;
  */
 public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
+
+	private static final long CONNECTION_DELAY = 5000;
 	
 	private Context context;
 	
@@ -44,18 +49,22 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 	PeerListListener myPeerListListener;
 	private List<WifiP2pDevice> peers = new ArrayList();
 
+	private Handler mHandler = new Handler();
+	
 	public WifiHandler(Context ctx) {
 		context = ctx;
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 		// mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, context);
-
+		
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+		context.registerReceiver(mReceiver, mIntentFilter); // Not necessary when we start calling onResume()
 
 		myPeerListListener = new PeerListListener() {
 			
@@ -63,24 +72,38 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			public void onPeersAvailable(WifiP2pDeviceList peerList) {
 				peers.clear();
 	            peers.addAll(peerList.getDeviceList());
-	            Log.d(TAG, peers.toString());			}
+	           // Log.d(TAG, peers.toString());			
+	            if (peers.size() == 0) {
+	                Log.d(TAG, "No devices found");
+	                return;
+	            }
+			}
 		};
 		
 	}
 
 	@Override
 	public void hostSession() {
-		// TODO Auto-generated method stub
+		discoverPeers();
 
 	}
 
 	@Override
 	public void joinGame() {
 		discoverPeers();
-		WifiP2pDevice device = findFirstEligibleDevice(peers);
-		if (device != null) {
-			connectToDevice(device);
-		}
+		mHandler.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				WifiP2pDevice device = findFirstEligibleDevice(peers);
+				if (device != null) {
+					Log.d(TAG, "Will now try and connect to: " + device.deviceName);
+					connectToDevice(device);
+				} else {
+					Log.d(TAG, "No device to connect to");
+				}
+			}
+		}, CONNECTION_DELAY);
 
 	}
 
@@ -159,6 +182,7 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			    Log.d(TAG, "P2P peers changed");
 			} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 				// Respond to new connection or disconnections
+				Log.d(TAG, "Connected or disconnected with someone");
 				if (mManager == null) {
 	                return;
 	            }
@@ -195,9 +219,13 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 	
 	private WifiP2pDevice findFirstEligibleDevice(List<WifiP2pDevice> peers) {
 		for (WifiP2pDevice device: peers) {
-			if (device.deviceName.contains(Constants.SERVER_NAME)) {
-				return device;
-			}
+			return device;
+			//			if (device.deviceName.contains(Constants.SERVER_NAME)) {
+//				Log.d(TAG, "Device name contains " + Constants.SERVER_NAME);
+//				return device;
+//			} else {
+//				Log.d(TAG, "Device name is ineligible");
+//			}
 		}
 		return null; 
 	}
