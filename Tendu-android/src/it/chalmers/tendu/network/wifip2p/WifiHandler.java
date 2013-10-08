@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
@@ -35,13 +36,14 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.tbd.EventBusListener;
 
 /** Handles the Wifi connection
  * 
  * @author johnpetersson
  *
  */
-public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionInfoListener {
+public class WifiHandler implements INetworkHandler, EventBusListener, WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
 	private static final int CONNECTION_DELAY = 5000;
@@ -133,7 +135,7 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+		context.unregisterReceiver(mReceiver);
 
 	}
 
@@ -291,12 +293,12 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
 			//startKryoNetClient(groupOwnerAddress);
-			new StartKryoNetClientTask().execute();
+			new StartKryoNetClientTask().execute(groupOwnerAddress);
 		}
 
 	}
 
-	private class StartKryoNetServerTask extends AsyncTask {
+	private class StartKryoNetServerTask extends AsyncTask<Object, Object, Object> {
 		@Override
 		protected Object doInBackground(Object... params) {
 			server = new Server();
@@ -310,7 +312,7 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			}
 
 			server.addListener(new Listener() {
-				public void received (com.esotericsoftware.kryonet.Connection connection, Object object) {
+				public void received (Connection connection, Object object) {
 					if (object instanceof EventMessage) {
 						EventMessage request = (EventMessage)object;
 						Log.d(TAG, "Received: " + request.toString());
@@ -336,9 +338,6 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 				e.printStackTrace();
 			}
 
-			EventMessage request = new EventMessage(C.Tag.TEST, C.Msg.TEST);
-			client.sendTCP(request);
-
 			client.addListener(new Listener() {
 				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
 					if (object instanceof EventMessage) {
@@ -356,4 +355,10 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 		kryo.register(EventMessage.class);
 	}
 
+	@Override
+	public void onBroadcast(EventMessage message) {
+		// TODO Hook up to event bus	
+	}
+
+	
 }

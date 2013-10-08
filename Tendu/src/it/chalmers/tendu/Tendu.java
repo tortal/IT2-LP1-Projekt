@@ -18,7 +18,7 @@ import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.NumberGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.EventBusListener;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Tendu implements ApplicationListener, Listener {
+public class Tendu implements ApplicationListener, EventBusListener {
 	private GameScreen screen; // contains whats shown on device screen in any
 								// given moment. Changes depending current
 								// minigame or if in a menu etc

@@ -10,7 +10,7 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedLi
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.EventBusListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +37,7 @@ import android.widget.Toast;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class BluetoothHandler implements INetworkHandler, Listener {
+public class BluetoothHandler implements INetworkHandler, EventBusListener {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler"; // Logging tag
 

@@ -11,9 +11,9 @@ import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.EventBusListener;
 
-public class ModelController implements Listener {
+public class ModelController implements EventBusListener {
 	
 	private String TAG = "ModelController";
 

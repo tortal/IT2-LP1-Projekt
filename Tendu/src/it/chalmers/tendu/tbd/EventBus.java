@@ -9,7 +9,7 @@ public enum EventBus {
 
 	INSTANCE;
 
-	private List<Listener> listeners = new ArrayList<Listener>();
+	private List<EventBusListener> listeners = new ArrayList<EventBusListener>();
 
 	public void broadcast(EventMessage message){
 		Gdx.app.log("EventBus", "broadcasting" + message);
@@ -25,11 +25,11 @@ public enum EventBus {
 		}
 	}
 
-	public void addListener(Listener l) {
+	public void addListener(EventBusListener l) {
 		listeners.add(l);
 	}
 
-	public void removeListener(Listener l){
+	public void removeListener(EventBusListener l){
 		listeners.remove(l);
 	}
 }
