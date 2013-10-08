@@ -59,7 +59,7 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 
 	IntentFilter mIntentFilter;
 	PeerListListener myPeerListListener;
-	private List<WifiP2pDevice> peers = new ArrayList();
+	private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
 
 	private Handler mHandler = new Handler();
 	//private Kryo kryo;
@@ -281,8 +281,8 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			// incoming connections.
 			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Group Owner", Toast.LENGTH_SHORT).show();
-			//new StartServerTask().execute(); 
-			startKryoNetServer();
+			new StartKryoNetServerTask().execute(); 
+			//startKryoNetServer();
 
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
@@ -290,58 +290,70 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			// owner.
 			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
-			startKryoNetClient(groupOwnerAddress);
+			//startKryoNetClient(groupOwnerAddress);
+			new StartKryoNetClientTask().execute();
 		}
 
 	}
 
-	private void startKryoNetServer() {
-		server = new Server();
-		server.start();
-		registerKryoClasses(server.getKryo());
-		try {
-			server.bind(TCP_PORT); //, 54777); // UDP
-		} catch (IOException e) {
-			Log.d(TAG, "KryoNet Server creation failure");
-			e.printStackTrace();
-		}
-
-		server.addListener(new Listener() {
-			public void received (com.esotericsoftware.kryonet.Connection connection, Object object) {
-				if (object instanceof EventMessage) {
-					EventMessage request = (EventMessage)object;
-					Log.d(TAG, "Received: " + request.toString());
-				}
+	private class StartKryoNetServerTask extends AsyncTask {
+		@Override
+		protected Object doInBackground(Object... params) {
+			server = new Server();
+			server.start();
+			registerKryoClasses(server.getKryo());
+			try {
+				server.bind(TCP_PORT); //, 54777); // UDP
+			} catch (IOException e) {
+				Log.d(TAG, "KryoNet Server creation failure");
+				e.printStackTrace();
 			}
-		});
+
+			server.addListener(new Listener() {
+				public void received (com.esotericsoftware.kryonet.Connection connection, Object object) {
+					if (object instanceof EventMessage) {
+						EventMessage request = (EventMessage)object;
+						Log.d(TAG, "Received: " + request.toString());
+					}
+				}
+			});
+			return null;
+		}
 	}
 
-	private void startKryoNetClient(String address) {
-		client = new Client();
-		client.start();
-		registerKryoClasses(client.getKryo());
-		try {
-			client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); // UDP
-		} catch (IOException e) {
-			Log.d(TAG, "Error in connecting via KryoNet");
-			e.printStackTrace();
-		}
-
-		EventMessage request = new EventMessage(C.Tag.TEST, C.Msg.TEST);
-		client.sendTCP(request);
-
-		client.addListener(new Listener() {
-			public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
-				if (object instanceof EventMessage) {
-					EventMessage request = (EventMessage)object;
-					Log.d(TAG, "Received: " + request.toString());
-				}
+	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
+		@Override
+		protected Object doInBackground(String... addresses) {
+			String address = addresses[0];
+			client = new Client();
+			client.start();
+			registerKryoClasses(client.getKryo());
+			try {
+				Log.d(TAG, "KryoNet will now connct to address: " + address);
+				client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); // UDP
+			} catch (IOException e) {
+				Log.d(TAG, "Error in connecting via KryoNet");
+				e.printStackTrace();
 			}
-		});
+
+			EventMessage request = new EventMessage(C.Tag.TEST, C.Msg.TEST);
+			client.sendTCP(request);
+
+			client.addListener(new Listener() {
+				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
+					if (object instanceof EventMessage) {
+						EventMessage request = (EventMessage)object;
+						Log.d(TAG, "Received: " + request.toString());
+					}
+				}
+			});
+			return null;
+		}
 	}
 
 	/** Register the classes we want to send over the network */
 	private void registerKryoClasses(Kryo kryo) {
 		kryo.register(EventMessage.class);
 	}
+
 }
