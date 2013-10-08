@@ -41,6 +41,8 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initHost() {
+		Player.getInstance().setHost(true);
+		//TODO use Player.getInstance().isHost instead...
 		String macAddress = tendu.getNetworkHandler().getMacAddress();
 		getModel().addHost(macAddress);
 		tendu.getNetworkHandler().hostSession();
