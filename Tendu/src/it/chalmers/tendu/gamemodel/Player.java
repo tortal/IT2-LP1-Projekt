@@ -12,10 +12,12 @@ public class Player {
 	}
 
 	public static Player getInstance() {
-		if (instance == null) {
+		if (instance != null) {
 			return instance;
 		}
-		return new Player();
+		instance = new Player();
+		
+		return instance;
 	}
 	
 	public static void setMac(String myMac){
