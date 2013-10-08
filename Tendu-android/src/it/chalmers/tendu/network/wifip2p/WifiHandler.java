@@ -1,24 +1,18 @@
 package it.chalmers.tendu.network.wifip2p;
 
+import it.chalmers.tendu.network.NetworkHandler;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventMessage;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
-
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
-import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -26,34 +20,30 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.EventBusListener;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 
 /** Handles the Wifi connection
  * 
  * @author johnpetersson
  *
  */
-public class WifiHandler extends NetworkHandler implements INetworkHandler, EventBusListener, WifiP2pManager.ConnectionInfoListener {
+public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
-
-	private static final int CONNECTION_DELAY = 5000;
 
 	private static final int MAX_KRYO_BLOCKING_TIME = 5000;
 	private static final int TCP_PORT = 54555;
 	private Client client;
 	private Server server;
-
-	private Context context;
 
 	WifiP2pManager mManager;
 	Channel mChannel;
@@ -64,10 +54,9 @@ public class WifiHandler extends NetworkHandler implements INetworkHandler, Even
 	private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
 
 	private Handler mHandler = new Handler();
-	//private Kryo kryo;
 
 	public WifiHandler(Context ctx) {
-		context = ctx;
+		super(ctx);
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);

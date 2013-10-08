@@ -1,7 +1,7 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.network.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
@@ -10,7 +10,6 @@ import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedLi
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.EventBusListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,19 +36,16 @@ import android.widget.Toast;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class BluetoothHandler implements INetworkHandler, EventBusListener {
+public class BluetoothHandler extends NetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler"; // Logging tag
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final int MAX_NUMBER_OF_PLAYERS = 3;
-	private static final int CONNECTION_DELAY = 5000;
+	
 
 	// Handles the bluetooth connections
 	private Connection connection;
-	/** Context in which the handler was declared */
-	private Context context;
 	/** Connection to android bluetooth hardware */
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
@@ -66,7 +62,7 @@ public class BluetoothHandler implements INetworkHandler, EventBusListener {
 	 */
 
 	public BluetoothHandler(Context context) {
-		this.context = context;
+		super(context);
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -77,9 +73,6 @@ public class BluetoothHandler implements INetworkHandler, EventBusListener {
 		availableDevices = new HashSet<BluetoothDevice>();
 		connectedDevices = new HashSet<BluetoothDevice>();
 		registerBroadcastReceiver();
-
-		// Register as listener on the eventbus
-		EventBus.INSTANCE.addListener(this);
 
 	}
 
@@ -380,23 +373,6 @@ public class BluetoothHandler implements INetworkHandler, EventBusListener {
 	@Override
 	public String getMacAddress() {
 		return connection.getAddress();
-	}
-	
-	@Override
-	public void onBroadcast(final EventMessage message) {
-		switch (message.tag) {
-		case COMMAND_AS_HOST: 
-			message.setTag(C.Tag.HOST_COMMANDED); 	// Set new tag to prevent
-													// feedback loop
-			broadcastMessageOverNetwork(message);
-			break;
-		case REQUEST_AS_CLIENT: 
-				message.setTag(C.Tag.CLIENT_REQUESTED);
-				broadcastMessageOverNetwork(message);
-			break;
-		default:
-			break;
-		}
 	}
 
 	/** Broadcast a message on the event bus */
