@@ -103,7 +103,7 @@ public class ShapesGameScreen extends GameScreen {
 				game.getCamera().unproject(touchPos);
 				for (GraphicalShape s : shapes) {
 					// TODO: Should not prio the shape that is first by index.
-					if (s.getBounds().contains(touchPos.x, touchPos.y)) {
+					if (s.getBounds().contains(touchPos.x, touchPos.y) && !s.isLocked()) {
 						Collections.swap(shapes, 0, shapes.indexOf(s));
 						s.moveShape(touchPos.x - s.getBounds().width / 2,
 								touchPos.y - s.getBounds().height / 2);
@@ -150,9 +150,9 @@ public class ShapesGameScreen extends GameScreen {
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(), lock.getShape())) {
-				lock.setColor(Color.WHITE);
+				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				shape.lock();
 				rightShapeSound.play();
-				model.getAllInventory().get(PLAYER_NUM).remove(shape.getShape());
 				return true;
 			}
 

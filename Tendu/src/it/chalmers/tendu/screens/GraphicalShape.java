@@ -19,6 +19,7 @@ public class GraphicalShape {
 	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
+	private boolean locked=false;
 
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
@@ -175,5 +176,22 @@ public class GraphicalShape {
 	public void setColor(com.badlogic.gdx.graphics.Color color) {
 		this.color = color;
 	}
-
+	
+	/**
+	 * Makes the shape unable to move. 
+	 */
+	public void lock(){
+		locked=true;
+	}
+	
+	/**
+	 * Makes the shape able to move.
+	 */
+	public void unsLock(){
+		locked=false;
+	}
+	
+	public boolean isLocked(){
+		return locked;
+	}
 }
