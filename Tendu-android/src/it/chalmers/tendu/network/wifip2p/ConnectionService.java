@@ -26,6 +26,7 @@ import it.chalmers.tendu.tbd.EventMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class ConnectionService {
 	private Context context;
 
 	private UUID APP_UUID = UUID.fromString("a60f35f0-b93a-11de-8a39-08002009c666");
-	
+
 	/** Kryo Variables */
 	private Kryo mKryo;
 
@@ -85,7 +86,7 @@ public class ConnectionService {
 		mBtSockets = new HashMap<String, Socket>();
 		mBtDevices = new ArrayList<WifiP2pDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
-	
+
 		this.context = context;
 		mKryo = kryoFactory();
 	}
@@ -108,49 +109,49 @@ public class ConnectionService {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
-//		public BtStreamWatcher(WifiP2pDevice device) {
-//			InputStream tmpIn = null;
-//
-//			this.device = device;
-//			address = device.deviceAddress;
-//			Socket btSocket = mBtSockets.get(address);
-//
-//			// Get the Socket inputstream
-//			try {
-//				tmpIn = btSocket.getInputStream();
-//			} catch (IOException e) {
-//				Log.e(TAG, "temp sockets not created", e);
-//			}
-//			mmInStream = tmpIn;
-//			Log.d(TAG, "Establishing Input() for this address: "
-//					+ mBtSockets.get(address).getRemoteDevice().deviceAddress);
-//			in = new Input(mmInStream);
-//		}
-//
-//		public void run() {
-//			Log.d(TAG, "Started thread, waiting for input");
-//			Object receivedObject;
-//
-//			while (true) {
-//				try {
-//					receivedObject = mKryo.readObject(in, EventMessage.class);
-//					mOnMessageReceivedListener.OnMessageReceived(device, (EventMessage) receivedObject);
-//
-//				} catch (KryoException k) {
-//					Log.e(TAG, "The connection has most probably been lost");
-//					//k.printStackTrace();
-//					break;
-//				}
-//			}
-//			// If we end up outside the loop we have lost connection
-//			 mBtDevices.remove(address);
-//			 mBtSockets.remove(address);
-//			 mBtStreamWatcherThreads.remove(address);
-//			 mOnConnectionLostListener.OnConnectionLost(device);
-//		}
+		//		public BtStreamWatcher(WifiP2pDevice device) {
+		//			InputStream tmpIn = null;
+		//
+		//			this.device = device;
+		//			address = device.deviceAddress;
+		//			Socket btSocket = mBtSockets.get(address);
+		//
+		//			// Get the Socket inputstream
+		//			try {
+		//				tmpIn = btSocket.getInputStream();
+		//			} catch (IOException e) {
+		//				Log.e(TAG, "temp sockets not created", e);
+		//			}
+		//			mmInStream = tmpIn;
+		//			Log.d(TAG, "Establishing Input() for this address: "
+		//					+ mBtSockets.get(address).getRemoteDevice().deviceAddress);
+		//			in = new Input(mmInStream);
+		//		}
+		//
+		//		public void run() {
+		//			Log.d(TAG, "Started thread, waiting for input");
+		//			Object receivedObject;
+		//
+		//			while (true) {
+		//				try {
+		//					receivedObject = mKryo.readObject(in, EventMessage.class);
+		//					mOnMessageReceivedListener.OnMessageReceived(device, (EventMessage) receivedObject);
+		//
+		//				} catch (KryoException k) {
+		//					Log.e(TAG, "The connection has most probably been lost");
+		//					//k.printStackTrace();
+		//					break;
+		//				}
+		//			}
+		//			// If we end up outside the loop we have lost connection
+		//			 mBtDevices.remove(address);
+		//			 mBtSockets.remove(address);
+		//			 mBtStreamWatcherThreads.remove(address);
+		//			 mOnConnectionLostListener.OnConnectionLost(device);
+		//		}
 	}
 
 	private class ConnectionWaiter implements Runnable {
@@ -164,59 +165,93 @@ public class ConnectionService {
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-			
-		}
+			try {
 
-//		public void run() {
-//			try {
-//				for (int i = 0; i < Connection.MAX_SUPPORTED
-//						&& maxConnections > 0; i++) {
+				for (int i = 0; i < Connection.MAX_SUPPORTED
+						&& maxConnections > 0; i++) {
+					ServerSocket serverSocket = new ServerSocket(8888);
 //					ServcerSocket myServerSocket = mBtAdapter
-//							.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
+							.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
+					Socket client = serverSocket.accept();
 //					Socket myBSock = myServerSocket.accept();
-//					myServerSocket.close(); // Close the socket now that the
-//					// connection has been made.
-//
-//					String address = myBSock.getRemoteDevice().deviceAddress;
-//					WifiP2pDevice device = myBSock.getRemoteDevice();
-//
+					serverSocket.close(); // Close the socket now that the
+					// connection has been made.
+
+					//String address = client.getRemoteDevice().deviceAddress;
+					//WifiP2pDevice device = client.getRemoteDevice();
+
 //					mBtSockets.put(address, myBSock);
 //					mBtDevices.add(device);
-//					Thread mBtStreamWatcherThread = new Thread(
-//							new BtStreamWatcher(device));
-//					mBtStreamWatcherThread.start();
-//					mBtStreamWatcherThreads
-//							.put(address, mBtStreamWatcherThread);
-//					maxConnections = maxConnections - 1;
-//					if (mOnIncomingConnectionListener != null) {
-//						mOnIncomingConnectionListener
-//								.OnIncomingConnection(device);
-//					}
-//				}
-//				if (mOnMaxConnectionsReachedListener != null) {
-//					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
-//				}
-//			} catch (IOException e) {
-//				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
-//						e);
-//			}
-//		}
+					Thread mBtStreamWatcherThread = new Thread(
+							new BtStreamWatcher(device));
+					mBtStreamWatcherThread.start();
+					mBtStreamWatcherThreads
+					.put(address, mBtStreamWatcherThread);
+					maxConnections = maxConnections - 1;
+					if (mOnIncomingConnectionListener != null) {
+						mOnIncomingConnectionListener
+						.OnIncomingConnection(device);
+					}
+				}
+				if (mOnMaxConnectionsReachedListener != null) {
+					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+				}
+			} catch (IOException e) {
+				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
+						e);
+			}
+
+		}
+
+		//		public void run() {
+		//			try {
+		//				for (int i = 0; i < Connection.MAX_SUPPORTED
+		//						&& maxConnections > 0; i++) {
+		//					ServcerSocket myServerSocket = mBtAdapter
+		//							.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
+		//					Socket myBSock = myServerSocket.accept();
+		//					myServerSocket.close(); // Close the socket now that the
+		//					// connection has been made.
+		//
+		//					String address = myBSock.getRemoteDevice().deviceAddress;
+		//					WifiP2pDevice device = myBSock.getRemoteDevice();
+		//
+		//					mBtSockets.put(address, myBSock);
+		//					mBtDevices.add(device);
+		//					Thread mBtStreamWatcherThread = new Thread(
+		//							new BtStreamWatcher(device));
+		//					mBtStreamWatcherThread.start();
+		//					mBtStreamWatcherThreads
+		//							.put(address, mBtStreamWatcherThread);
+		//					maxConnections = maxConnections - 1;
+		//					if (mOnIncomingConnectionListener != null) {
+		//						mOnIncomingConnectionListener
+		//								.OnIncomingConnection(device);
+		//					}
+		//				}
+		//				if (mOnMaxConnectionsReachedListener != null) {
+		//					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+		//				}
+		//			} catch (IOException e) {
+		//				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
+		//						e);
+		//			}
+		//		}
 	}
 
-//	private Socket getConnectedSocket(WifiP2pDevice myBtServer,
-//			UUID uuidToTry) {
-//		Socket myBSock;
-//		try {
-//			myBSock = myBtServer.createRfcommSocketToServiceRecord(uuidToTry);
-//			Log.d(TAG, "atempting connection to: " + myBSock + " Socket");
-//			myBSock.connect();
-//			return myBSock;
-//		} catch (IOException e) {
-//			Log.i(TAG, "IOException in getConnectedSocket", e);
-//		}
-//		return null;
-//	}
+	//	private Socket getConnectedSocket(WifiP2pDevice myBtServer,
+	//			UUID uuidToTry) {
+	//		Socket myBSock;
+	//		try {
+	//			myBSock = myBtServer.createRfcommSocketToServiceRecord(uuidToTry);
+	//			Log.d(TAG, "atempting connection to: " + myBSock + " Socket");
+	//			myBSock.connect();
+	//			return myBSock;
+	//		} catch (IOException e) {
+	//			Log.i(TAG, "IOException in getConnectedSocket", e);
+	//		}
+	//		return null;
+	//	}
 
 	public int startServer(int maxConnections,
 			OnIncomingConnectionListener oicListener,
@@ -232,14 +267,14 @@ public class ConnectionService {
 		(new Thread(new ConnectionWaiter(maxConnections))).start();
 		return 0;
 
-//		// Be discoverable
-//		Intent discoverableIntent = new Intent(
-//				WifiP2pManager.ACTION_REQUEST_DISCOVERABLE);
-//		discoverableIntent.putExtra(
-//				WifiP2pManager.EXTRA_DISCOVERABLE_DURATION, 300);
-//		// discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		((AndroidApplication) context).startActivity(discoverableIntent);
-//		return Connection.SUCCESS;
+		//		// Be discoverable
+		//		Intent discoverableIntent = new Intent(
+		//				WifiP2pManager.ACTION_REQUEST_DISCOVERABLE);
+		//		discoverableIntent.putExtra(
+		//				WifiP2pManager.EXTRA_DISCOVERABLE_DURATION, 300);
+		//		// discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		//		((AndroidApplication) context).startActivity(discoverableIntent);
+		//		return Connection.SUCCESS;
 	}
 
 	public int connect(WifiP2pDevice device,
@@ -249,33 +284,33 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-//		WifiP2pDevice myBtServer = mBtAdapter.getRemoteDevice(device
-//				.deviceAddress);
-//		Socket myBSock = null;
-//
-//		for (int i = 0; i < Connection.MAX_SUPPORTED && myBSock == null; i++) {
-//			for (int j = 0; j < 3 && myBSock == null; j++) {
-//				myBSock = getConnectedSocket(myBtServer, APP_UUID);
-//				if (myBSock == null) {
-//					try {
-//						Thread.sleep(200);
-//					} catch (InterruptedException e) {
-//						Log.e(TAG, "InterruptedException in connect", e);
-//					}
-//				}
-//			}
-//		}
-//		if (myBSock == null) {
-//			return Connection.FAILURE;
-//		}
-//
-//		mBtSockets.put(device.deviceAddress, myBSock);
-//		mBtDevices.add(device);
-//		Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
-//		mBtStreamWatcherThread.start();
-//		mBtStreamWatcherThreads
-//				.put(device.deviceAddress, mBtStreamWatcherThread);
-//		return Connection.SUCCESS;
+		//		WifiP2pDevice myBtServer = mBtAdapter.getRemoteDevice(device
+		//				.deviceAddress);
+		//		Socket myBSock = null;
+		//
+		//		for (int i = 0; i < Connection.MAX_SUPPORTED && myBSock == null; i++) {
+		//			for (int j = 0; j < 3 && myBSock == null; j++) {
+		//				myBSock = getConnectedSocket(myBtServer, APP_UUID);
+		//				if (myBSock == null) {
+		//					try {
+		//						Thread.sleep(200);
+		//					} catch (InterruptedException e) {
+		//						Log.e(TAG, "InterruptedException in connect", e);
+		//					}
+		//				}
+		//			}
+		//		}
+		//		if (myBSock == null) {
+		//			return Connection.FAILURE;
+		//		}
+		//
+		//		mBtSockets.put(device.deviceAddress, myBSock);
+		//		mBtDevices.add(device);
+		//		Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
+		//		mBtStreamWatcherThread.start();
+		//		mBtStreamWatcherThreads
+		//				.put(device.deviceAddress, mBtStreamWatcherThread);
+		//		return Connection.SUCCESS;
 		return 0;
 	}
 

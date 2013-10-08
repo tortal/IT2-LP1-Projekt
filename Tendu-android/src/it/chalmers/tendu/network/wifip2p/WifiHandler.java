@@ -1,20 +1,27 @@
 package it.chalmers.tendu.network.wifip2p;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
+import android.widget.Toast;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -24,7 +31,7 @@ import it.chalmers.tendu.tbd.EventMessage;
  * @author johnpetersson
  *
  */
-public class WifiHandler implements INetworkHandler {
+public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 	
 	private Context context;
@@ -35,7 +42,7 @@ public class WifiHandler implements INetworkHandler {
 
 	IntentFilter mIntentFilter;
 	PeerListListener myPeerListListener;
-	static WifiP2pDeviceList peers;
+	private List<WifiP2pDevice> peers = new ArrayList();
 
 	public WifiHandler(Context ctx) {
 		context = ctx;
@@ -53,9 +60,10 @@ public class WifiHandler implements INetworkHandler {
 		myPeerListListener = new PeerListListener() {
 			
 			@Override
-			public void onPeersAvailable(WifiP2pDeviceList peers) {
-				WifiHandler.peers = peers;
-			}
+			public void onPeersAvailable(WifiP2pDeviceList peerList) {
+				peers.clear();
+	            peers.addAll(peerList.getDeviceList());
+	            Log.d(TAG, peers.toString());			}
 		};
 		
 	}
@@ -68,7 +76,11 @@ public class WifiHandler implements INetworkHandler {
 
 	@Override
 	public void joinGame() {
-		// TODO Auto-generated method stub
+		discoverPeers();
+		WifiP2pDevice device = findFirstEligibleDevice(peers);
+		if (device != null) {
+			connectToDevice(device);
+		}
 
 	}
 
@@ -144,8 +156,23 @@ public class WifiHandler implements INetworkHandler {
 			    if (mManager != null) {
 			        mManager.requestPeers(mChannel, myPeerListListener);
 			    }
+			    Log.d(TAG, "P2P peers changed");
 			} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 				// Respond to new connection or disconnections
+				if (mManager == null) {
+	                return;
+	            }
+
+	            NetworkInfo networkInfo = (NetworkInfo) intent
+	                    .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+	            if (networkInfo.isConnected()) {
+
+	                // We are connected with the other device, request connection
+	                // info to find group owner IP
+
+	                mManager.requestConnectionInfo(mChannel, WifiHandler.this);
+	            }
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 				// Respond to this device's wifi state changing
 			}
@@ -156,7 +183,7 @@ public class WifiHandler implements INetworkHandler {
 		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
 			@Override
 			public void onSuccess() {
-				Log.d(TAG, "discovered something");
+				Log.d(TAG, "Initiated discovery");
 			}
 
 			@Override
@@ -166,14 +193,12 @@ public class WifiHandler implements INetworkHandler {
 		}); 
 	}
 	
-	private WifiP2pDevice findFirstEligibleDevice(WifiP2pDeviceList peers) {
-		Collection<WifiP2pDevice> devices = peers.getDeviceList();
-		for (WifiP2pDevice device: devices) {
+	private WifiP2pDevice findFirstEligibleDevice(List<WifiP2pDevice> peers) {
+		for (WifiP2pDevice device: peers) {
 			if (device.deviceName.contains(Constants.SERVER_NAME)) {
 				return device;
 			}
 		}
-		
 		return null; 
 	}
 	
@@ -222,11 +247,12 @@ public class WifiHandler implements INetworkHandler {
 		//obtain a peer from the WifiP2pDeviceList
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
+		config.wps.setup = WpsInfo.PBC;
 		mManager.connect(mChannel, config, new ActionListener() {
 
 		    @Override
 		    public void onSuccess() {
-		    	Log.d(TAG, "Successfully connected to: " + device.deviceName);
+		    	// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 		    }
 
 		    @Override
@@ -235,7 +261,26 @@ public class WifiHandler implements INetworkHandler {
 		    }
 		});
 	}
-
+	
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		// InetAddress from WifiP2pInfo struct.
+		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
+		
+		// After the group negotiation, we can determine the group owner.
+		if (info.groupFormed && info.isGroupOwner) {
+			// Do whatever tasks are specific to the group owner.
+			// One common case is creating a server thread and accepting
+			// incoming connections.
+			Toast.makeText(context, "Group Owner", Toast.LENGTH_SHORT).show();
+		} else if (info.groupFormed) {
+			// The other device acts as the client. In this case,
+			// you'll want to create a client thread that connects to the group
+			// owner.
+			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 	
 	
 }
