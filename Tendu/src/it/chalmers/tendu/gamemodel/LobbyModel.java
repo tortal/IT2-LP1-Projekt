@@ -26,6 +26,8 @@ public class LobbyModel {
 
 	public void addHost(String myMacAddress) {
 		this.hostMacAddress = myMacAddress;
+		addPlayer(myMacAddress);
+		
 	}
 
 	public void playerReady(String player, boolean ready) {
@@ -51,11 +53,12 @@ public class LobbyModel {
 		return new HashMap<String, Integer>(players);
 	}
 
-	public void addPlayers(List<String> macAddress) {
+	public void addPlayer(String macAddress) {
 		// connect mac id with player
-		for (int i = 0; i < macAddress.size(); i++) {
-			players.put(macAddress.get(i), (Integer) i);
-		}
+		players.put(macAddress, players.size());
+//		for (int i = 0; i < macAddress.size(); i++) {
+//			players.put(macAddress.get(i), (Integer) i);
+//		}
 	}
 
 }
