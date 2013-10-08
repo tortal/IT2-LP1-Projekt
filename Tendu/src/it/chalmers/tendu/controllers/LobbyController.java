@@ -69,6 +69,7 @@ public class LobbyController implements Listener {
 					EventBus.INSTANCE.broadcast(new EventMessage(
 							C.Tag.COMMAND_AS_HOST, C.Msg.START_MINI_GAME));
 				}
+				break;
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
