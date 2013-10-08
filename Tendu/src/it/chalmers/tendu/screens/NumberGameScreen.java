@@ -181,12 +181,14 @@ public class NumberGameScreen extends GameScreen {
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
 			numberFont.scale(-2);
+			success.play();
 			loadNext();
 		} else if (model.checkGameState() == GameState.LOST) {
 			numberFont.setColor(Color.RED);
 			numberFont.scale(2);
 			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
 			numberFont.scale(-2);
+			lost.play();
 			loadNext();
 		}
 
