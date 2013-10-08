@@ -6,6 +6,8 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -18,6 +20,9 @@ public abstract class GameScreen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	private BitmapFont numberFont;
+	
+	private Sound completedGameSound; 
+	private Sound lostGameSound;
 
 	// displayed a short time.
 
@@ -31,6 +36,9 @@ public abstract class GameScreen {
 	public GameScreen(Tendu game, MiniGame model) {
 		this.game = game;
 		this.model = model;
+		
+		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
+		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		if (model != null) {
 			model.startGame();
@@ -152,6 +160,22 @@ public abstract class GameScreen {
 		numberFont.draw(game.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
 				Constants.SCREEN_HEIGHT / 2 + 5);
 
+	}
+	
+	public void showGameResult(){
+		if (model.checkGameState() == GameState.WON) {
+			numberFont.setColor(Color.GREEN);
+			numberFont.scale(2);
+			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
+			numberFont.scale(-2);
+			completedGameSound.play();
+		} else if (model.checkGameState() == GameState.LOST) {
+			numberFont.setColor(Color.RED);
+			numberFont.scale(2);
+			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
+			numberFont.scale(-2);
+			lostGameSound.play();
+		}
 	}
 
 }
