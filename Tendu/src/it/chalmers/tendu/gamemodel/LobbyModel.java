@@ -9,11 +9,11 @@ import java.util.Map;
 public class LobbyModel {
 
 	public String hostMacAddress;
-	public Map<Integer, String> players;
+	public Map<String, Integer> players;
 	public Map<Integer, Boolean> playerReady;
 
 	public LobbyModel() {
-		players = new HashMap<Integer, String>();
+		players = new HashMap<String, Integer>();
 		playerReady = new HashMap<Integer, Boolean>();
 	}
 
@@ -22,15 +22,15 @@ public class LobbyModel {
 			return true;
 		}
 		return false;
-
 	}
 
 	public void addHost(String myMacAddress) {
 		this.hostMacAddress = myMacAddress;
 	}
 
-	public boolean playerReady(String player, boolean ready) {
-		return playerReady.put(player, ready);
+	public void playerReady(String player, boolean ready) {
+		// TODO
+//		playerReady.put(player, ready);
 	}
 
 	public boolean allPlayersReady() {
@@ -43,18 +43,18 @@ public class LobbyModel {
 	}
 
 	public void createGameSession() {
-		GameSession gameSession = new GameSession(players);
-		new ModelController(applicationListener, gameSession);
+		GameSession gameSession = new GameSession(players, hostMacAddress);
+		new ModelController(gameSession);
 	}
 
-	public Map<Integer, String> getLobbyMembers() {
-		return new HashMap<Integer, String>(players);
+	public Map<String, Integer> getLobbyMembers() {
+		return new HashMap<String, Integer>(players);
 	}
 
 	public void addPlayers(List<String> macAddress) {
 		// connect mac id with player
 		for (int i = 0; i < macAddress.size(); i++) {
-			players.put((Integer) i, macAddress.get(i));
+			players.put(macAddress.get(i), (Integer) i);
 		}
 	}
 

@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.LobbyController;
 import it.chalmers.tendu.gamemodel.LobbyModel;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -50,25 +51,21 @@ public class LobbyScreen implements Screen {
 	}
 
 	public void tick(InputController input) {
-		
+
 		// TODO Get a ready button
-		 if (Gdx.input.justTouched()) {
-			 EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL, C.Msg.PLAYER_READY));
-//		 touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-//		 tendu.getCamera().unproject(touchPos);
-//		
-//		 if (touchPos.x > 35 && touchPos.x < 435) {
-//		 if (touchPos.y >= 180 && touchPos.y < 250) {
-//		 Gdx.app.log("Testing", "Host");
-//		 }
-//		
-//		 if (touchPos.y >= 80 && touchPos.y < 150) {
-//		 Gdx.app.log("Testing", "Join");
-//		 }
-//		 } else if (touchPos.x > 600 && touchPos.y > 390) {
-//		 Gdx.app.log("Testing", "test test");
-//		 }
-		 }
+		if (Gdx.input.justTouched()) {
+			
+			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+			tendu.getCamera().unproject(touchPos);
+
+			if (touchPos.x > 35 && touchPos.x < 435) {
+				if (touchPos.y >= 80 && touchPos.y < 150) {
+					Gdx.app.log("Testing", "Ready"); // Testing
+					EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL,
+							C.Msg.PLAYER_READY, Player.getInstance().getMac()));
+				}
+			}
+		}
 	}
 
 	@Override
@@ -78,12 +75,13 @@ public class LobbyScreen implements Screen {
 
 		float x = 40f;
 		float y = 410f;
-		for (Map.Entry<Integer, String> p : lobbyModel.getLobbyMembers()
+		for (Map.Entry<String, Integer> p : lobbyModel.getLobbyMembers()
 				.entrySet()) {
 			bigFont.draw(tendu.spriteBatch,
-					"Player: " + p.getKey() + ":" + p.getValue(), x, y);
+					"Player: " + p.getValue() + ":" + p.getKey(), x, y);
 			y -= 50;
 		}
+		smallFont.draw(tendu.spriteBatch, "Ready", 47, 150);
 
 	}
 

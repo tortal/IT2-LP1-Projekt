@@ -14,7 +14,7 @@ import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
 
 public class ModelController implements Listener {
-	
+
 	private String TAG = "ModelController";
 
 	private GameSession gameSession;
@@ -31,14 +31,14 @@ public class ModelController implements Listener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 
-//		if (applicationListener.isHost()) {
-//			handleAsHost(message);
-//		} else {
-//			handleAsClient(message);
-//		}
+		// if (applicationListener.isHost()) {
+		// handleAsHost(message);
+		// } else {
+		// handleAsClient(message);
+		// }
 
 		// TODO check gamesession if host
-		if (applicationListener.isHost()) {
+		if (gameSession.isHost()) {
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));
@@ -47,15 +47,20 @@ public class ModelController implements Listener {
 	}
 
 	private void handleAsHost(EventMessage message) {
-		if (message.tag == C.Tag.CLIENT_REQUESTED || message.tag == C.Tag.ACCESS_MODEL) {
-			//*********NUMBER GAME***********
+		if (message.tag == C.Tag.CLIENT_REQUESTED
+				|| message.tag == C.Tag.ACCESS_MODEL) {
+			if(message.msg == C.Msg.START_MINI_GAME){
+				gameSession.startGame();
+			}
+			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
 					game.checkNbr((Integer) message.content);
 					gameSession.setCurrentMiniGame(game);
-					message = new EventMessage(Tag.COMMAND_AS_HOST, Msg.UPDATE_MODEL, GameId.NUMBER_GAME, game);
-					EventBus.INSTANCE.broadcast(message);						
+					message = new EventMessage(Tag.COMMAND_AS_HOST,
+							Msg.UPDATE_MODEL, GameId.NUMBER_GAME, game);
+					EventBus.INSTANCE.broadcast(message);
 				}
 			}
 		}
@@ -63,22 +68,24 @@ public class ModelController implements Listener {
 
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.ACCESS_MODEL) {
-			//*********NUMBER GAME***********
+			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
 					game.checkNbr((Integer) message.content);
 					message.tag = Tag.REQUEST_AS_CLIENT;
-					EventBus.INSTANCE.broadcast(message);				
+					EventBus.INSTANCE.broadcast(message);
 				}
 			}
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
-			//*********NUMBER GAME***********
+			// *********NUMBER GAME***********
+			// TODO do we need to check what MiniGame we are playing in order to
+			// update the MiniGameModel?
 			if (message.gameId == GameId.NUMBER_GAME) {
-				if(message.msg == Msg.UPDATE_MODEL) {
-					NumberGame game = (NumberGame)message.content;
+				if (message.msg == Msg.UPDATE_MODEL) {
+					NumberGame game = (NumberGame) message.content;
 					gameSession.setCurrentMiniGame(game);
 				}
 			}

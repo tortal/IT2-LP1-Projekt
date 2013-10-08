@@ -40,16 +40,43 @@ public class LobbyController implements Listener {
 				|| message.tag == C.Tag.ACCESS_MODEL) {
 			switch (message.msg) {
 			case ALL_PLAYERS_CONNECTED:
+
 				// get mac addresses for each player.
 				List<String> list = (List<String>) message.content;
-				model.addPlayers(list);				
+				model.addPlayers(list);
+
+				// Create GameSeeion and ModelController and choose miniGame
+				// TODO maybe this should be done in LobbyModel.
+				GameSession gameSession = new GameSession();
+				new ModelController(gameSession);
+				gameSession.setCurrentMiniGame(gameSession.getNextMiniGame());
+				
+				// Tells everybody to create a GameSession and a ModelController
 				EventBus.INSTANCE.broadcast(new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.LOBBY_READY));
+
+				// push updated GameSession to clients
+				message = new EventMessage(Tag.COMMAND_AS_HOST,
+						Msg.UPDATE_MODEL, GameId.NUMBER_GAME, gameSession);
+
+				// Update LobbyModel
+				EventBus.INSTANCE
+						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
+								C.Msg.UPDATE_LOBBY_MODEL, model));
 				break;
 			case PLAYER_READY:
-				model.playerReady(Player.getInstance().getMac(), true);
-				EventBus.INSTANCE.broadcast(new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.UPDATE_MODEL, model));
+
+				// Message content is the players macID
+				model.playerReady((String) message.content, true);
+				EventBus.INSTANCE
+						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
+								C.Msg.UPDATE_LOBBY_MODEL, model));
+				
+				// Start the game for all players if they are ready.
+				if (model.allPlayersReady()) {
+					EventBus.INSTANCE.broadcast(new EventMessage(
+							C.Tag.COMMAND_AS_HOST, C.Msg.START_MINI_GAME));
+				}
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
@@ -68,9 +95,14 @@ public class LobbyController implements Listener {
 
 			if (message.tag == Tag.HOST_COMMANDED) {
 				if (message.msg == Msg.LOBBY_READY) {
-
+					createGameSession();
 				}
 			}
 		}
+	}
+
+	private void createGameSession() {
+		GameSession gameSession = new GameSession();
+		new ModelController(gameSession);
 	}
 }

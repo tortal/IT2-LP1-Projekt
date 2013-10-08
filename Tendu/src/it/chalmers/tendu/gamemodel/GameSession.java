@@ -10,19 +10,19 @@ import com.badlogic.gdx.Gdx;
 
 public class GameSession {
 
+	public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
 	private int currentLvl = 1;
 	private Difficulty difficulty = Difficulty.ONE;
-	// private List<Player> players;
-	// private Map<Player, Integer> playerNbr;
 	/**
 	 * Integer = player id
-	 * String = player mac adress 
+	 * String = player MacAddress 
 	 */
-	private Map<Integer, String> players;
+	private Map<String, Integer> players;
 
-	public GameSession(Map<Integer, String> players) {
+	public GameSession(Map<String, Integer> players, String hostMac) {
 		this.players = players;
+		hostMacAddress = hostMac;
 	}
 
 	public GameSession() {
@@ -51,12 +51,28 @@ public class GameSession {
 		return currentMiniGame;
 	}
 	
+	public MiniGame getNextMiniGame() {
+		return getMiniGame(getNextGameId());
+		
+	}
+	
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
 	}
 	
-	public Map<Integer, String> getPlayers(){
+	public Map<String, Integer> getPlayers(){
 		return players;
+	}
+	
+	public void startGame(){
+		
+	}
+	
+	public boolean isHost() {
+		if (Player.getInstance().getMac().equals(hostMacAddress)) {
+			return true;
+		}
+		return false;
 	}
 
 	

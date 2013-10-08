@@ -34,13 +34,13 @@ public class GameLobby implements Listener {
 		return allReady;
 	}
 
-	public GameSession getGameSession() {
-		//Gdx.app.log("Players = ", "" + players.size());
-		//if (players.size() > 0)
-			return new GameSession(players);
-//		else
-//			return null;
-	}
+//	public GameSession getGameSession() {
+//		//Gdx.app.log("Players = ", "" + players.size());
+//		//if (players.size() > 0)
+//			return new GameSession(players);
+////		else
+////			return null;
+//	}
 
 	private void addPlayers(List<String> macAddress) {
 		// connect mac id with player
