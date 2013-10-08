@@ -29,7 +29,7 @@ public class GameSession {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GameId getNextGameId() {
+	private GameId getNextGameId() {
 		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
 		} else if (currentLvl < 10) {
@@ -38,7 +38,7 @@ public class GameSession {
 		return MiniGameFactory.createGameId(difficulty);
 	}
 
-	public MiniGame getMiniGame(GameId gameId) {
+	private MiniGame getMiniGame(GameId gameId) {
 		int bonusTime = 0;
 		Gdx.app.log("gameId", " " + gameId);
 		
