@@ -20,7 +20,7 @@ public class ShapesGameTest {
 	@Before
 	public void setUp() throws Exception {
 	}
-
+ 
 	@Test
 	public void testShapesGame() {
 		shapesGame = new ShapesGame(30000, Difficulty.ONE);

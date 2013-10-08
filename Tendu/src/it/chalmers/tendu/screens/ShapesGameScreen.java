@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,8 +26,9 @@ public class ShapesGameScreen extends GameScreen {
 	private List<Rectangle> positions;
 
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private ShapesGame model;
-
+	private ShapesGame model; 
+	
+	
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		this.model = (ShapesGame) model;
