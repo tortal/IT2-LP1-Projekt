@@ -91,7 +91,9 @@ public class LobbyController implements Listener {
 					new ModelController((GameSession) message.content);
 				}
 				if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
-					this.model = (LobbyModel) message.content;
+					LobbyModel lModel = (LobbyModel) message.content;
+					Gdx.app.debug("DEBUG LOBBY", "new Model:" + lModel.players.keySet().toString());
+					this.model = lModel;
 				}
 			}
 		}
