@@ -165,41 +165,41 @@ public class ConnectionService {
 
 		@Override
 		public void run() {
-			try {
+		//	ServerSocket serverSocket = new ServerSocket(8888);
+			//Socket client = serverSocket.accept();
+		//	try {
 
-				for (int i = 0; i < Connection.MAX_SUPPORTED
-						&& maxConnections > 0; i++) {
-					ServerSocket serverSocket = new ServerSocket(8888);
-//					ServcerSocket myServerSocket = mBtAdapter
-							.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
-					Socket client = serverSocket.accept();
-//					Socket myBSock = myServerSocket.accept();
-					serverSocket.close(); // Close the socket now that the
-					// connection has been made.
-
-					//String address = client.getRemoteDevice().deviceAddress;
-					//WifiP2pDevice device = client.getRemoteDevice();
-
-//					mBtSockets.put(address, myBSock);
-//					mBtDevices.add(device);
-					Thread mBtStreamWatcherThread = new Thread(
-							new BtStreamWatcher(device));
-					mBtStreamWatcherThread.start();
-					mBtStreamWatcherThreads
-					.put(address, mBtStreamWatcherThread);
-					maxConnections = maxConnections - 1;
-					if (mOnIncomingConnectionListener != null) {
-						mOnIncomingConnectionListener
-						.OnIncomingConnection(device);
-					}
-				}
-				if (mOnMaxConnectionsReachedListener != null) {
-					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
-				}
-			} catch (IOException e) {
-				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
-						e);
-			}
+//				for (int i = 0; i < Connection.MAX_SUPPORTED
+//						&& maxConnections > 0; i++) {
+////					ServcerSocket myServerSocket = mBtAdapter
+//			//				.listenUsingRfcommWithServiceRecord(srcApp, APP_UUID);
+////					Socket myBSock = myServerSocket.accept();
+//					serverSocket.close(); // Close the socket now that the
+//					// connection has been made.
+//
+//					//String address = client.getRemoteDevice().deviceAddress;
+//					//WifiP2pDevice device = client.getRemoteDevice();
+//
+////					mBtSockets.put(address, myBSock);
+////					mBtDevices.add(device);
+//		//			Thread mBtStreamWatcherThread = new Thread(
+//			//				new BtStreamWatcher(device));
+//					mBtStreamWatcherThread.start();
+//					mBtStreamWatcherThreads
+//					.put(address, mBtStreamWatcherThread);
+//					maxConnections = maxConnections - 1;
+//					if (mOnIncomingConnectionListener != null) {
+//						mOnIncomingConnectionListener
+//						.OnIncomingConnection(device);
+//					}
+//				}
+//				if (mOnMaxConnectionsReachedListener != null) {
+//					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
+//				}
+//			} catch (IOException e) {
+//				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
+//						e);
+//			}
 
 		}
 
