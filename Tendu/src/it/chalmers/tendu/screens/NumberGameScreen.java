@@ -90,7 +90,6 @@ public class NumberGameScreen extends GameScreen {
 			numbers.add(number.intValue());
 		}
 
-		// TODO chooses a static player atm.
 		for (int i = 0; i < model.getMyList().size(); i++) {
 			numberCircles.add(new NumberCircle(model.getMyList().get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
