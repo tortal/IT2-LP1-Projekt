@@ -30,7 +30,7 @@ public class ShapesGameScreen extends GameScreen {
 		super(game, model);
 		this.model = (ShapesGame) model;
 		this.shapeRenderer = new ShapeRenderer();
-		 rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
+		rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
