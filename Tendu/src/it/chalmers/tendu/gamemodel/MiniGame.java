@@ -38,7 +38,6 @@ public abstract class MiniGame {
 		this.state = GameState.DEFAULT;
 		gameTime = 30000 + time;
 		this.players = players;
-		startGame();
 	}
 
 	/**

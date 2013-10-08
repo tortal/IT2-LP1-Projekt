@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -15,26 +17,16 @@ import it.chalmers.tendu.tbd.C.Tag;
 public class NumberGameController implements Listener {
 
 	private static final String TAG = "NumberGameController";
+	private NumberGame numberGame;
 	
-	public NumberGameController() {
+	public NumberGameController(NumberGame model) {
+		numberGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
-//	public void setModel(GameSession session) {
-//		this.gameSession = session;
-//	}
-
 	@Override
 	public void onBroadcast(EventMessage message) {
-
-		// if (applicationListener.isHost()) {
-		// handleAsHost(message);
-		// } else {
-		// handleAsClient(message);
-		// }
-
-		// TODO check gamesession if host
-		if (gameSession.isHost()) {
+		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));
@@ -50,19 +42,13 @@ public class NumberGameController implements Listener {
 			}
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					if (game.checkNbr((Integer) message.content)) {
-						gameSession.setCurrentMiniGame(game);
-						// message = new EventMessage(Tag.COMMAND_AS_HOST,
-						// Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
-						// gameSession.currentMiniGame);
+					if (numberGame.checkNbr((Integer) message.content)) {
 						message.tag = Tag.COMMAND_AS_HOST;
 						EventBus.INSTANCE.broadcast(message);
 					} else {
-						gameSession.setCurrentMiniGame(game);
 						message = new EventMessage(Tag.COMMAND_AS_HOST,
-								Msg.REMOVE_TIME, GameId.NUMBER_GAME, null);
+								Msg.REMOVE_TIME, GameId.NUMBER_GAME);
 						EventBus.INSTANCE.broadcast(message);
 					}
 				}
@@ -74,9 +60,7 @@ public class NumberGameController implements Listener {
 		if (message.tag == C.Tag.ACCESS_MODEL) {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					// game.checkNbr((Integer) message.content);
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
@@ -85,25 +69,21 @@ public class NumberGameController implements Listener {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			// *********NUMBER GAME***********
-			// TODO do we need to check what MiniGame we are playing in order to
-			// update the MiniGameModel?
 			if (message.gameId == GameId.NUMBER_GAME) {
 
 				if (message.msg == Msg.UPDATE_MODEL) {
-					// NumberGame game = ;
-					gameSession
-							.setCurrentMiniGame((NumberGame) message.content);
 					// Gdx.app.log(TAG, " Time left = " +
 					// gameSession.currentMiniGame.getTimeLeft());
 				} else if (message.msg == Msg.REMOVE_TIME) {
-					gameSession.currentMiniGame.changeTimeWith(-3000);
+					numberGame.changeTimeWith(-3000);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
-					NumberGame game = (NumberGame) gameSession.currentMiniGame;
-					game.checkNbr((Integer) message.content);
+					numberGame.checkNbr((Integer) message.content);
 				}
 			}
 		}
 	}
 
-
+	public NumberGame getModel() {
+		return numberGame;
+	}
 }

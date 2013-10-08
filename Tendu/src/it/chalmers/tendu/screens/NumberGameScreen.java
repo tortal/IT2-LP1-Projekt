@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 //TODO needs major refactoring
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.math.Vector3;
 public class NumberGameScreen extends GameScreen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
-	private NumberGame model; // Model for current minigame (number)
 
 	private ArrayList<Color> colors;
 
@@ -39,24 +39,25 @@ public class NumberGameScreen extends GameScreen {
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 
+	private NumberGameController controller;
 	private Sound completedGameSound;
 	private Sound lostGameSound;
 
 	/**
-	 * @param game
+	 * @param tendu
 	 *            the applicationlistener
 	 * @param model
 	 *            the MiniGame model associated with the screen
 	 */
-	public NumberGameScreen(Tendu game, MiniGame model) {
-		super(game, model);
+	public NumberGameScreen(Tendu tendu, MiniGame model) {
+		super(tendu, model);
 
 		shapeRenderer = new ShapeRenderer();
 
 		numberFont = new BitmapFont();
 		touchPos = new Vector3();
-		this.model = (NumberGame) model;
-
+		controller = new NumberGameController((NumberGame) model);
+		
 		completedGameSound = Gdx.audio.newSound(Gdx.files
 				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
@@ -86,12 +87,12 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
-		for (Integer number : model.getAnswerList()) {
+		for (Integer number : getModel().getAnswerList()) {
 			numbers.add(number.intValue());
 		}
 
-		for (int i = 0; i < model.getMyList().size(); i++) {
-			numberCircles.add(new NumberCircle(model.getMyList().get(i),
+		for (int i = 0; i < getModel().getMyList().size(); i++) {
+			numberCircles.add(new NumberCircle(getModel().getMyList().get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
@@ -120,7 +121,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
-				if (model.getAnsweredNbrs().contains(numbers.get(i))) {
+				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
 					numberFont.setColor(colors.get(i));
 					numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
 							numberAlignment + i * 105, 300);
@@ -230,6 +231,10 @@ public class NumberGameScreen extends GameScreen {
 				}
 			}
 		}
+	}
+	
+	private NumberGame getModel() {
+		return controller.getModel();
 	}
 
 	@Override
