@@ -22,6 +22,7 @@ import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -229,58 +230,19 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 		}
 		return null; 
 	}
-	
-	/**
-	 * Adds a the name "TenduS" as a suffix to this device name. This is needed
-	 * as identification
-	 * 
-	 * If the device has no name, it is set to "Name"
-	 * 
-	 * @param server
-	 *            if this device is a server device or not
-	 */
-//	private void addTenduToDeviceName(final boolean isServer) {
-//		if (WifiP2pManager.getName() == null) {
-//			mBluetoothAdapter.setName("Name");
-//		}
-//
-//		String newName = "No rename occured";
-//		String oldName = mBluetoothAdapter.getName();
-//		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
-//			newName = oldName + Constants.SERVER_NAME;
-//			mBluetoothAdapter.setName(newName);
-//			while (!mBluetoothAdapter.getName().equals(newName)) {
-//				// Loop while name changes
-//			}
-//		}
-//	}
 
-	/**
-	 * Removes the "TenduS" suffix from the bluetooth name
-	 */
-//	private void removeTenduFromDeviceName() {
-//		String oldName = mBluetoothAdapter.getName();
-//		String newName = new String(oldName);
-//
-//		if (oldName.contains(Constants.SERVER_NAME)) {
-//			newName = oldName.replace(Constants.SERVER_NAME, "");
-//			Log.d(TAG, "Bluetooth name removal successfull? "
-//					+ mBluetoothAdapter.setName(newName));
-//		}
-//		Log.v(TAG, "Remove: " + oldName + " -> " + newName
-//				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
-//	}
 	
 	private void connectToDevice(final WifiP2pDevice device) {
 		//obtain a peer from the WifiP2pDeviceList
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
-		config.wps.setup = WpsInfo.PBC;
+		//config.wps.setup = WpsInfo.PBC;
 		mManager.connect(mChannel, config, new ActionListener() {
 
 		    @Override
 		    public void onSuccess() {
 		    	// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
+		    	Log.d(TAG, "Connection initiated to: " + device.deviceName);
 		    }
 
 		    @Override
@@ -300,12 +262,28 @@ public class WifiHandler implements INetworkHandler, WifiP2pManager.ConnectionIn
 			// Do whatever tasks are specific to the group owner.
 			// One common case is creating a server thread and accepting
 			// incoming connections.
+			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Group Owner", Toast.LENGTH_SHORT).show();
+			new StartServerTask().execute(); 
+			
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
 			// you'll want to create a client thread that connects to the group
 			// owner.
+			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Client", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+	
+	private class StartServerTask extends AsyncTask {
+
+		@Override
+		protected Object doInBackground(Object... params) {
+//			Server server = new Server();
+//			server.start();
+//			server.bind(54555, 54777);
+			return null;
 		}
 		
 	}
