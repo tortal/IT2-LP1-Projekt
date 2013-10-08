@@ -13,11 +13,12 @@ public class Player {
 	}
 
 	public static Player getInstance() {
-		if (instance == null) {
+		if (instance != null) {
 			return instance;
 		}
+		instance = new Player();
 		
-		return new Player();
+		return instance;
 	}
 	
 	public void setMac(String myMac){
