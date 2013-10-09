@@ -270,7 +270,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
 			//startKryoNetClient(groupOwnerAddress);
-			new StartKryoNetClientTask().execute(groupOwnerAddress);
+			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
 		}
 
 	}
@@ -296,55 +296,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 		});
 	}
-	
-//	private class StartKryoNetServerTask extends AsyncTask<Object, Object, Object> {
-//		@Override
-//		protected Object doInBackground(Object... params) {
-//			server = new Server();
-//			Kryo kryo = server.getKryo();
-//			registerKryoClasses(kryo);
-//			server.start();
-//			try {
-//				server.bind(TCP_PORT); //, 54777); // other figure is for UDP
-//			} catch (IOException e) {
-//				Log.d(TAG, "KryoNet Server creation failure");
-//				e.printStackTrace();
-//			}
-//
-//			server.addListener(new Listener() {
-//				public void received (Connection connection, Object object) {
-//					if (object instanceof EventMessage) {
-//						EventMessage request = (EventMessage)object;
-//						Log.d(TAG, "Received: " + request.toString());
-//					}
-//				}
-//			});
-//			return null;
-//		}
-//	}
-
-//	private void startKryoNetClient(String address) {
-//		client = new Client();
-//		Kryo kryo = client.getKryo();
-//		registerKryoClasses(kryo);
-//		client.start();
-//		try {
-//			Log.d(TAG, "KryoNet will now connct to address: " + address);
-//			client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
-//		} catch (IOException e) {
-//			Log.d(TAG, "Error in connecting via KryoNet");
-//			e.printStackTrace();
-//		}
-//
-//		client.addListener(new Listener() {
-//			public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
-//				if (object instanceof EventMessage) {
-//					EventMessage request = (EventMessage)object;
-//					Log.d(TAG, "Received: " + request.toString());
-//				}
-//			}
-//		});
-//	}
 	
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
 		@Override
