@@ -28,6 +28,7 @@ public class ShapesGameScreen extends GameScreen {
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
+
 	private Sound rightShapeSound;
 	private ShapeGameModelController controller;
 
@@ -39,7 +40,6 @@ public class ShapesGameScreen extends GameScreen {
 		this.model = (ShapesGame) model;
 		controller = new ShapeGameModelController(this.model);
 		this.shapeRenderer = new ShapeRenderer();
-		rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
@@ -152,20 +152,27 @@ public class ShapesGameScreen extends GameScreen {
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-//			if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(),
-//					lock.getShape())) {
-				List<Object> content = new ArrayList<Object>();
-				content.add(PLAYER_NUM);
-				content.add(lock);
-				content.add(shape);
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL, C.Msg.LOCK_ATTEMPT, content));
-				//shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				//shape.lock();
-				//rightShapeSound.play();
+			// if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(),
+			// lock.getShape())) {
+			List<Object> content = new ArrayList<Object>();
+			content.add(PLAYER_NUM);
+			content.add(lock);
+			content.add(shape);
+			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL,
+					C.Msg.LOCK_ATTEMPT, content));
+			// shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+			// shape.lock();
+			// rightShapeSound.play();
+			if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(),
+					lock.getShape())) {
+				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				shape.lock();
+				playSound();
+
 				return true;
 			}
 
-		//}
+		}
 		return false;
 	}
 

@@ -23,6 +23,7 @@ public abstract class GameScreen implements Screen {
 
 	private Sound completedGameSound;
 	private Sound lostGameSound;
+	private Sound succeededSound;
 
 	// displayed a short time.
 
@@ -40,6 +41,7 @@ public abstract class GameScreen implements Screen {
 		completedGameSound = Gdx.audio.newSound(Gdx.files
 				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
+		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		if (model != null) {
 			model.startGame();
@@ -177,6 +179,10 @@ public abstract class GameScreen implements Screen {
 			numberFont.scale(-2);
 			lostGameSound.play();
 		}
+	}
+	
+	public void playSound(){
+		succeededSound.play();
 	}
 
 }
