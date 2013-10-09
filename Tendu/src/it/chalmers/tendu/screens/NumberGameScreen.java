@@ -7,10 +7,8 @@ import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
@@ -44,7 +42,7 @@ public class NumberGameScreen extends GameScreen {
 	private NumberGameController controller;
 	private Sound completedGameSound;
 	private Sound lostGameSound;
-
+	
 	/**
 	 * @param tendu
 	 *            the applicationlistener
@@ -177,20 +175,35 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
-		if (model.checkGameState() == GameState.WON) {
-			numberFont.setColor(Color.GREEN);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You won!", 300, 300);
-			numberFont.scale(-2);
-		} else if (model.checkGameState() == GameState.LOST) {
-			numberFont.setColor(Color.RED);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-			numberFont.scale(-2);
+//		if (model.checkGameState() == GameState.WON) {
+//			numberFont.setColor(Color.GREEN);
+//			numberFont.scale(2);
+//			numberFont.draw(tendu.spriteBatch, "You won!", 300, 300);
+//			numberFont.scale(-2);
+//		} else if (model.checkGameState() == GameState.LOST) {
+//			numberFont.setColor(Color.RED);
+//			numberFont.scale(2);
+//			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
+//			numberFont.scale(-2);
+//
+//		}
 
+		//TODO refactor
+		if (model.checkGameState() == GameState.WON || model.checkGameState() == GameState.LOST) {
+			time++;
+			showGameResult();
+			
+			if(time == 360) {
+				if(model.checkGameState() == GameState.WON) {
+					EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.GAME_WON, model.getTimeLeft());
+					EventBus.INSTANCE.broadcast(message);
+				} else if(model.checkGameState() == GameState.LOST) {
+					EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.GAME_LOST, model.getTimeLeft());
+					EventBus.INSTANCE.broadcast(message);
+
+				}
+			}
 		}
-
-		showGameResult();
 
 		shapeRenderer.end();
 	}
@@ -242,7 +255,6 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		shapeRenderer.dispose();
 		numberFont.dispose();
 	}
 }

@@ -23,6 +23,9 @@ public abstract class GameScreen implements Screen {
 
 	private Sound completedGameSound;
 	private Sound lostGameSound;
+	
+	//TODO change this
+	private boolean playCompletedSound = true;
 
 	// displayed a short time.
 
@@ -94,6 +97,10 @@ public abstract class GameScreen implements Screen {
 	 * clean up goes here make sure to call super() if overriden
 	 */
 	public void removed() {
+		shapeRenderer.dispose();
+		completedGameSound.dispose();
+		font.dispose();
+		lostGameSound.dispose();
 	}
 
 	private int calculateTimerWidth() {
@@ -174,14 +181,19 @@ public abstract class GameScreen implements Screen {
 			font.scale(2);
 			font.draw(tendu.spriteBatch, "You won!", 300, 300);
 			font.scale(-2);
-			completedGameSound.play();
+			if(playCompletedSound) {
+				completedGameSound.play();
+				playCompletedSound = false;
+			}
 		} else if (model.checkGameState() == GameState.LOST) {
 			font.setColor(Color.RED);
 			font.scale(2);
 			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
 			font.scale(-2);
-			lostGameSound.play();
+			if(playCompletedSound) {
+				lostGameSound.play();
+				playCompletedSound = false;
+			}
 		}
 	}
-
 }
