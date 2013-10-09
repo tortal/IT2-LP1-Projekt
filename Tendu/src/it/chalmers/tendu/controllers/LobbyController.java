@@ -60,6 +60,7 @@ public class LobbyController implements Listener {
 
 				// Start the game for all players if they are ready.
 				if (model.arePlayersReady()) {
+					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
 					MiniGame miniGame = gameSession.getNextMiniGame();
