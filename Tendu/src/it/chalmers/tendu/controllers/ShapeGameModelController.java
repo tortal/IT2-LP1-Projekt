@@ -1,10 +1,7 @@
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.tbd.C;
@@ -23,12 +20,11 @@ public class ShapeGameModelController implements Listener {
 	private final String TAG = "ShapeGameModelController";
 	private ShapesGame model;
 
-
 	public ShapeGameModelController(ShapesGame model) {
 		this.model = model;
 		EventBus.INSTANCE.addListener(this);
 	}
-	
+
 	public ShapesGame getModel() {
 		return model;
 	}
@@ -65,8 +61,8 @@ public class ShapeGameModelController implements Listener {
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.ACCESS_MODEL) {
 			if (message.gameId == GameId.SHAPES_GAME) {
-				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					intoSlot(message.content);
+				if (message.msg == C.Msg.LOCK_ATTEMPT
+						|| message.msg == C.Msg.SHAPE_SENT) {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
