@@ -151,8 +151,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void destroy() {
+		Log.i(TAG, "ON DESTROY");
 		context.unregisterReceiver(mReceiver);
-
+		if (server != null) {
+			server.close();
+		}
+		if (client != null) {
+			client.close();
+		}
 	}
 
 	//	@Override
