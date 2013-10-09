@@ -371,8 +371,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private Listener networkMessageListener = new Listener() {
 		public void received (Connection connection, Object object) {
 			if (object instanceof EventMessage) {
-				EventMessage request = (EventMessage)object;
-				Log.d(TAG, "Received: " + request.toString() + " from: " + connection.getRemoteAddressTCP() + ", " + connection);
+				EventMessage message = (EventMessage)object;
+				toastMessage(message);
+				Log.d(TAG, "Received: " + message.toString() + " from: " + connection.getRemoteAddressTCP() + ", " + connection);
 			}
 		}
 	};
