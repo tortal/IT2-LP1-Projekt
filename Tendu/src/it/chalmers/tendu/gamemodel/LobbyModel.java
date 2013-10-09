@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LobbyModel {
-
-//	public String hostMacAddress;
+	
 	public Map<String, Integer> players;
 	public Map<Integer, Boolean> playerReady;
 	public int maxPlayers;
