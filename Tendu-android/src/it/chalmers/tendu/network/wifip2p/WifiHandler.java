@@ -218,7 +218,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
 				if (networkInfo.isConnected()) {
-
+					
+					Log.d(TAG, "Connected to: " + networkInfo.getExtraInfo());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
