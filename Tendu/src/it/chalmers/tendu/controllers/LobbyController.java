@@ -52,7 +52,7 @@ public class LobbyController implements Listener {
 
 				// Message content is the players macID
 				String playerMac = (String) message.content;
-				model.playerReady(playerMac, true);
+				model.playerReady(playerMac);
 
 				EventMessage updateModel = new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.UPDATE_LOBBY_MODEL, model);
@@ -87,7 +87,7 @@ public class LobbyController implements Listener {
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.PLAYER_READY) {
-				model.playerReady(Player.getInstance().getMac(), true);
+//				model.playerReady(Player.getInstance().getMac());
 				EventBus.INSTANCE.broadcast(new EventMessage(
 						C.Tag.REQUEST_AS_CLIENT, C.Msg.PLAYER_READY, Player
 								.getInstance().getMac()));
