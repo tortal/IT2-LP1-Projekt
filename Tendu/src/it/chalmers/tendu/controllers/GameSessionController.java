@@ -1,11 +1,9 @@
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -23,9 +21,6 @@ public class GameSessionController implements Listener {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
 		gameSession.nextScreen();
-	}
-
-	private GameSessionController() {
 	}
 
 	public void setModel(GameSession session) {
@@ -56,6 +51,16 @@ public class GameSessionController implements Listener {
 					EventBus.INSTANCE.broadcast(msg);
 				}
 			}
+			if (message.msg == C.Msg.GAME_WON){
+				gameSession.miniGameWon();
+				MiniGame miniGame = gameSession.getNextMiniGame();
+				gameSession.setCurrentMiniGame(miniGame);
+				EventMessage eventMessage = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				EventBus.INSTANCE.broadcast(eventMessage);
+			}
+			if (message.msg == C.Msg.GAME_LOST){
+				gameSession.miniGameLost();
+			}
 		}
 	}
 
@@ -65,12 +70,23 @@ public class GameSessionController implements Listener {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
 			}
+			if (message.msg == C.Msg.GAME_WON){
+				gameSession.miniGameWon();
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+			}
+			if (message.msg == C.Msg.GAME_LOST){
+				gameSession.miniGameLost();
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
+			if(message.msg == C.Msg.LOAD_THIS_GAME){
+				MiniGame miniGame = (MiniGame) message.content;
+				gameSession.setCurrentMiniGame(miniGame);
+			}
 			if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);			}
 		}
 	}
-
 }

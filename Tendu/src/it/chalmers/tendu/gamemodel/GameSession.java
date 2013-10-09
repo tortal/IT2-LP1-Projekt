@@ -13,7 +13,7 @@ import com.badlogic.gdx.Gdx;
 
 public class GameSession {
 
-//	public String hostMacAddress;
+	// public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
 	private int currentLvl = 1;
 	private Difficulty difficulty = Difficulty.ONE;
@@ -23,10 +23,10 @@ public class GameSession {
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
 
-//	public GameSession(Map<String, Integer> players, String hostMac) {
-//		this.players = players;
-//		hostMacAddress = hostMac;
-//	}
+	// public GameSession(Map<String, Integer> players, String hostMac) {
+	// this.players = players;
+	// hostMacAddress = hostMac;
+	// }
 	public GameSession(Map<String, Integer> players) {
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
@@ -66,6 +66,7 @@ public class GameSession {
 
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
+		nextScreen();
 	}
 
 	public Map<String, Integer> getPlayers() {
@@ -75,11 +76,22 @@ public class GameSession {
 	public void playerWaitingToStart(String macAddress) {
 		playersWaitingToStart.put(macAddress, true);
 	}
-	public boolean allWaiting(){
+
+	public boolean allWaiting() {
 		return (players.size() == playersWaitingToStart.size());
 	}
+
 	public void nextScreen() {
-		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_SCREEN, currentMiniGame);
+		EventMessage message = new EventMessage(C.Tag.TO_SELF,
+				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
+	}
+
+	public void miniGameWon() {
+		currentLvl++;
+	}
+
+	public void miniGameLost() {
+		// as host go back to lobby
 	}
 }
