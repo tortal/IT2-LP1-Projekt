@@ -256,5 +256,6 @@ public class NumberGameScreen extends GameScreen {
 	public void removed() {
 		super.removed();
 		numberFont.dispose();
+		controller.unregister();
 	}
 }

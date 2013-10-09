@@ -10,5 +10,7 @@ public interface MiniGameController extends Listener {
 	
 	public void handleAsHost(EventMessage message);
 	
+	public void unregister();
+	
 	public MiniGame getModel();
 }

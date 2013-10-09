@@ -14,7 +14,7 @@ import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
 
-public class NumberGameController implements Listener {
+public class NumberGameController implements MiniGameController {
 
 	private static final String TAG = "NumberGameController";
 	private NumberGame numberGame;
@@ -35,7 +35,8 @@ public class NumberGameController implements Listener {
 		}
 	}
 
-	private void handleAsHost(EventMessage message) {
+	@Override
+	public void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.START_MINI_GAME) {
@@ -57,7 +58,8 @@ public class NumberGameController implements Listener {
 		}
 	}
 
-	private void handleAsClient(EventMessage message) {
+	@Override
+	public void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
@@ -88,5 +90,10 @@ public class NumberGameController implements Listener {
 
 	public NumberGame getModel() {
 		return numberGame;
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 }
