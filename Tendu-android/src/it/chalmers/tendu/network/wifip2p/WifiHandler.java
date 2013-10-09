@@ -19,6 +19,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
@@ -104,6 +105,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Group creation failed: " + reason);				
+			}
+		});
+		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+			
+			@Override
+			public void onGroupInfoAvailable(WifiP2pGroup group) {
+				//group.
+				
 			}
 		});
 		discoverPeers();
@@ -228,7 +237,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
 			//new StartKryoNetServerTask().execute(); 
 			startKryoNetServer();
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 				
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
@@ -321,6 +329,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}
 
 		server.addListener(networkMessageListener);
+		sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 	}
 	
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
