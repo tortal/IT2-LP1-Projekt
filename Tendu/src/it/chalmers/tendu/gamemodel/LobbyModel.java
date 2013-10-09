@@ -27,7 +27,7 @@ public class LobbyModel {
 		playerReady.put(playerNbr, ready);
 	}
 
-	public boolean allPlayersReady() {
+	public boolean arePlayersReady() {
 		boolean allReady = true;
 		for (Boolean rdy : playerReady.values()) {
 			if (!rdy)
