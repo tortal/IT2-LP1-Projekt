@@ -22,6 +22,7 @@ public class NumberGameController implements Listener {
 	public NumberGameController(NumberGame model) {
 		numberGame = model;
 		EventBus.INSTANCE.addListener(this);
+		
 	}
 
 	@Override
@@ -36,9 +37,9 @@ public class NumberGameController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
-				|| message.tag == C.Tag.ACCESS_MODEL) {
+				|| message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.START_MINI_GAME) {
-				// TODO: gameSession.startGame();
+				numberGame.startGame();
 			}
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
@@ -57,13 +58,15 @@ public class NumberGameController implements Listener {
 	}
 
 	private void handleAsClient(EventMessage message) {
-		if (message.tag == C.Tag.ACCESS_MODEL) {
+		if (message.tag == C.Tag.TO_SELF) {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if (message.msg == C.Msg.NUMBER_GUESS) {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
+			} else if(message.msg == C.Msg.START_MINI_GAME) {
+				numberGame.startGame();
 			}
 		}
 

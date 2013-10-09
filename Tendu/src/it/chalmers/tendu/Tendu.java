@@ -3,10 +3,16 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.tbd.Listener;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +20,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Tendu implements ApplicationListener {
+public class Tendu implements ApplicationListener, Listener {
 
 	public static final String TAG = "Tendu"; // Tag for logging
 
@@ -131,5 +137,17 @@ public class Tendu implements ApplicationListener {
 
 	private void setNetworkHandler(INetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
+	}
+
+	@Override
+	public void onBroadcast(EventMessage message) {
+		if(message.msg == C.Msg.CREATE_SCREEN) {
+			MiniGame game = (MiniGame)message.content;
+			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this, game);
+			setScreen(screen);
+			
+			EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
+			EventBus.INSTANCE.broadcast(msg);
+		}
 	}
 }

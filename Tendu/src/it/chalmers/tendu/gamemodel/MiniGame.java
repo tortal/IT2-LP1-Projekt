@@ -35,7 +35,7 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.DEFAULT;
+		this.state = GameState.LOADING;
 		gameTime = 30000 + time;
 		this.players = players;
 	}

@@ -7,8 +7,10 @@ import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
@@ -197,7 +199,7 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		// TODO maybe not the best solution...
-		// model = (NumberGame) game.gameSession.currentMiniGame;
+		model = getModel();
 	
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
@@ -213,7 +215,7 @@ public class NumberGameScreen extends GameScreen {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
 						EventBus.INSTANCE.broadcast(new EventMessage(
-								C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model
+								C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
 										.getGameId(), circle.getNumber()));
 					}
 					circle.scale = 1;

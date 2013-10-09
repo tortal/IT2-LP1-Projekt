@@ -36,7 +36,7 @@ public class LobbyController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
-				|| message.tag == C.Tag.ACCESS_MODEL) {
+				|| message.tag == C.Tag.TO_SELF) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
 				if (model.isMaxPlayersConnected())
@@ -63,14 +63,15 @@ public class LobbyController implements Listener {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
-					MiniGame miniGame = gameSession.getNextMiniGame();
-					gameSession.setCurrentMiniGame(miniGame);
+					//MiniGame miniGame = gameSession.getNextMiniGame();
+					//gameSession.setCurrentMiniGame(miniGame);
 					new GameSessionController(gameSession);
 					
 					EventMessage newGameSession = new EventMessage(
 							C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
 							gameSession);
 					EventBus.INSTANCE.broadcast(newGameSession);
+					EventBus.INSTANCE.removeListener(this);
 
 					// EventBus.INSTANCE.broadcast(new EventMessage(
 					// C.Tag.COMMAND_AS_HOST, C.Msg.START_MINI_GAME));
@@ -84,7 +85,7 @@ public class LobbyController implements Listener {
 	}
 
 	private void handleAsClient(EventMessage message) {
-		if (message.tag == C.Tag.ACCESS_MODEL) {
+		if (message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.PLAYER_READY) {
 				model.playerReady(Player.getInstance().getMac(), true);
 				EventBus.INSTANCE.broadcast(new EventMessage(
@@ -94,6 +95,7 @@ public class LobbyController implements Listener {
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.msg == Msg.GAME_SESSION_MODEL) {
 				new GameSessionController((GameSession) message.content);
+				EventBus.INSTANCE.removeListener(this);
 			}
 			if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
 				LobbyModel lModel = (LobbyModel) message.content;

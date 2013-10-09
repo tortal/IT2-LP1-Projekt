@@ -51,7 +51,7 @@ public class ShapeGameModelController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
-				|| message.tag == C.Tag.ACCESS_MODEL) {
+				|| message.tag == C.Tag.TO_SELF) {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
@@ -68,7 +68,7 @@ public class ShapeGameModelController implements Listener {
 	}
 
 	private void handleAsClient(EventMessage message) {
-		if (message.tag == C.Tag.ACCESS_MODEL) {
+		if (message.tag == C.Tag.TO_SELF) {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				NumberGame game = (NumberGame) gameSession.currentMiniGame;
