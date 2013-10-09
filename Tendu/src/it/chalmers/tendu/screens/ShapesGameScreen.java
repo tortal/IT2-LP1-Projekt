@@ -119,14 +119,25 @@ public class ShapesGameScreen extends GameScreen {
 						if (s.getBounds().x <= 10) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 2");
+							EventBus.INSTANCE.broadcast(new EventMessage(
+									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									messageContentFactory(2, s.getShape())));
 						}
 						if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 3");
+							EventBus.INSTANCE.broadcast(new EventMessage(
+									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									messageContentFactory(3, s.getShape())));
+							
 						}
 						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 1");
+							
+							EventBus.INSTANCE.broadcast(new EventMessage(
+									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									messageContentFactory(1, s.getShape())));
 						}
 						break;
 					}
@@ -137,6 +148,23 @@ public class ShapesGameScreen extends GameScreen {
 		} else {
 			showGameResult();
 		}
+	}
+
+	/**
+	 * 
+	 * @param player
+	 *            That will receive the shape
+	 * @param shape
+	 *            shape to be sent
+	 * @return
+	 */
+	private List<Object> messageContentFactory(int player, Shape shape) {
+
+		List<Object> l = new ArrayList<Object>();
+		l.add(player);
+		l.add(shape);
+		return l;
+
 	}
 
 	/** All game logic goes here (within the model...) */
