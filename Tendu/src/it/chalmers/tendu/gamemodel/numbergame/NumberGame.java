@@ -129,7 +129,7 @@ public class NumberGame extends MiniGame {
 		int length = list.size();
 		while (i < (8 - length)) {
 			int randomNbr = 1 + (int) (Math.random() * 99);
-			if (!(list.contains(randomNbr))) {
+			if (!(answerList.contains(randomNbr)) || !(list.contains(randomNbr))) {
 				list.add(randomNbr);
 				i++;
 			}
@@ -142,7 +142,7 @@ public class NumberGame extends MiniGame {
 	}
 
 	/**
-	 * Return the indicated players list of numbers.
+	 * Return a players list of numbers.
 	 * 
 	 * @param player
 	 * @return
