@@ -37,7 +37,7 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	@Override
 	public void onBroadcast(EventMessage message) {
 		// TODO Hook up to event bus	
-		
+
 		switch (message.tag) {
 		case COMMAND_AS_HOST: 
 			message.setTag(C.Tag.HOST_COMMANDED); 	// Set new tag to prevent
@@ -63,5 +63,15 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 				toast.show();
 			}
 		});
+	}
+
+	/** Translates the network error codes into something interpretable */
+	protected String translateErrorCodeToMessage(int eCode) {
+		switch (eCode) {
+		case 0: return "ERROR";
+		case 1: return "UNSUPPORTED";
+		case 2: return "BUSY";
+		default: return "Shouldn't happen";
+		}
 	}
 }

@@ -96,7 +96,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "Failed to remove group");				
+				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));				
 			}
 			
 			@Override
@@ -222,13 +222,13 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				// request available peers from the wifi p2p manager. This is an
 				// asynchronous call and the calling activity is notified with a
 				// callback on PeerListListener.onPeersAvailable()
+				Log.d(TAG, "P2P peers changed");
 				if (mManager != null) {
 					mManager.requestPeers(mChannel, myPeerListListener);
 				}
-				Log.d(TAG, "P2P peers changed");
 			} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 				// Respond to new connection or disconnections
-				Log.d(TAG, "Connected or disconnected with someone");
+				Log.d(TAG, "Connection changed");
 				if (mManager == null) {
 					return;
 				}
@@ -244,6 +244,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
+				Log.d(TAG, "This device changed");
 				// Respond to this device's wifi state changing
 			}
 		}
@@ -287,7 +288,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "Couldn't stop peer deiscovery: " + reason);
+				Log.d(TAG, "Couldn't stop peer deiscovery: " + translateErrorCodeToMessage(reason));
 			}
 		});
 	}
@@ -301,7 +302,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			@Override
 			public void onFailure(int reasonCode) {
-				Log.d(TAG, "Error in discovery: " + reasonCode);
+				Log.d(TAG, "Error in discovery: " + translateErrorCodeToMessage(reasonCode));
 			}
 		}); 
 	}
@@ -335,7 +336,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "Could not connect to: " + device.deviceName);
+				Log.d(TAG, "Could not connect to: " + device.deviceName + ": " + translateErrorCodeToMessage(reason));
 			}
 		});
 	}
