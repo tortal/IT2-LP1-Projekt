@@ -105,8 +105,7 @@ public class ShapesGameScreen extends GameScreen {
 				tendu.getCamera().unproject(touchPos);
 				for (GraphicalShape s : shapes) {
 					// TODO: Should not prio the shape that is first by index.
-					if (s.getBounds().contains(touchPos.x, touchPos.y)
-							&& !s.isLocked()) {
+					if (s.getBounds().contains(touchPos.x, touchPos.y)) {
 						Collections.swap(shapes, 0, shapes.indexOf(s));
 						s.moveShape(touchPos.x - s.getBounds().width / 2,
 								touchPos.y - s.getBounds().height / 2);
@@ -180,28 +179,21 @@ public class ShapesGameScreen extends GameScreen {
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			// if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(),
-			// lock.getShape())) {
+			if (controller.getModel().insertShapeIntoSlot(PLAYER_NUM,
+					shape.getShape(), lock.getShape())) {
+				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				rightShapeSound.play();
+				return true;
+			}
 			List<Object> content = new ArrayList<Object>();
 			content.add(PLAYER_NUM);
 			content.add(lock);
 			content.add(shape);
 			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL,
 					C.Msg.LOCK_ATTEMPT, content));
-			// shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-			// shape.lock();
-			// rightShapeSound.play();
-			if (model.insertShapeIntoSlot(PLAYER_NUM, shape.getShape(),
-					lock.getShape())) {
-				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				shape.lock();
-				playSound();
-
-				return true;
-			}
-
 		}
 		return false;
+
 	}
 
 }

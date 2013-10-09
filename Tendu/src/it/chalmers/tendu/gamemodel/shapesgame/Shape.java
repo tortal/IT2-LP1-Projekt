@@ -10,6 +10,7 @@ public class Shape {
 
 	public final Color color;
 	public final GeometricShape geometricShape;
+	public boolean locked;
 
 	public Shape(Color color, GeometricShape geometricShape) {
 		this.color = color;
@@ -62,5 +63,19 @@ public class Shape {
 		if (geometricShape != other.geometricShape)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the locked
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
+
+	/**
+	 * @param locked the locked to set
+	 */
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 }
