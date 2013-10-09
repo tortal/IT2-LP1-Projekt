@@ -88,48 +88,18 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				}
 			}
 		};
-
-	}
-
-	private void removeWifiGroup() {
-		mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
-			
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));				
-			}
-			
-			@Override
-			public void onSuccess() {
-				// Do nothing
-			}
-		});	
-		
 	}
 	
 	@Override
 	public void hostSession() {
 		// remove any remaining wifi group
-			removeWifiGroup();
-			
-		// Create a new wifi group
-//		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
-//		
-//			@Override
-//			public void onSuccess() {
-//				// Do nothing
-//				
-//			}
-//			@Override
-//			public void onFailure(int reason) {
-//				Log.d(TAG, "Group creation failed: " + reason);				
-//			}
-//		});
+			//removeWifiGroup();
+
 //		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
 //			
 //			@Override
 //			public void onGroupInfoAvailable(WifiP2pGroup group) {
-//				//group.
+//				
 //				
 //			}
 //		});
@@ -139,7 +109,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void joinGame() {
-		removeWifiGroup();
+		//removeWifiGroup();
 		discoverPeers();
 		mHandler.postDelayed(new Runnable() {
 
@@ -171,13 +141,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void destroy() {
 		Log.i(TAG, "ON DESTROY");
-		context.unregisterReceiver(mReceiver);
-		if (server != null) {
-			server.close();
+		if (mReceiver != null) {
+			context.unregisterReceiver(mReceiver);
 		}
-		if (client != null) {
-			client.close();
-		}
+		resetNetwork();
 	}
 
 	@Override
@@ -189,7 +156,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void onPause() {
 		/* unregister the broadcast receiver */
-		context.unregisterReceiver(mReceiver);
+		if (mReceiver != null) {
+			context.unregisterReceiver(mReceiver);
+		}
 	}
 
 	@Override
@@ -341,6 +310,47 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	private void resetNetwork() {
+		removeWifiGroup();
+		
+		if (server != null) {
+			server.close();
+		}
+		if (client != null) {
+			client.close();
+		}
+	}
+	 
+	private void removeWifiGroup() {
+		mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+			
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));				
+			}
+			
+			@Override
+			public void onSuccess() {
+				// Do nothing
+			}
+		});		
+	}
+	
+	private void createNewWifiGroup() {
+		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+			
+				@Override
+				public void onSuccess() {
+					// Do nothing
+					
+				}
+				@Override
+				public void onFailure(int reason) {
+					Log.d(TAG, "Group creation failed: " + reason);				
+				}
+			});
+	}
+	
 	// ********************** Kryo *********************************
 	
 	private void startKryoNetServer() {
