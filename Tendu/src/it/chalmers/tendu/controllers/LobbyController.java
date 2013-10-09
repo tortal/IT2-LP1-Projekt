@@ -2,6 +2,7 @@ package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -38,33 +39,40 @@ public class LobbyController implements Listener {
 				|| message.tag == C.Tag.ACCESS_MODEL) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
+				if (model.isMaxPlayersConnected())
+					break;
+
 				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				model.addPlayer((String) message.content);
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
 								C.Msg.UPDATE_LOBBY_MODEL, model));
-				if (model.isMaxPlayersConnected()) {
-					GameSession gameSession = new GameSession();
-					new GameSessionController(gameSession);
-					gameSession.setCurrentMiniGame(gameSession
-							.getNextMiniGame());
-					EventBus.INSTANCE.broadcast(new EventMessage(
-							C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
-							gameSession));
-				}
 				break;
 			case PLAYER_READY:
 
 				// Message content is the players macID
-				model.playerReady((String) message.content, true);
-				EventBus.INSTANCE
-						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
-								C.Msg.UPDATE_LOBBY_MODEL, model));
+				String playerMac = (String) message.content;
+				model.playerReady(playerMac, true);
+
+				EventMessage updateModel = new EventMessage(
+						C.Tag.COMMAND_AS_HOST, C.Msg.UPDATE_LOBBY_MODEL, model);
+				EventBus.INSTANCE.broadcast(updateModel);
 
 				// Start the game for all players if they are ready.
-				if (model.allPlayersReady()) {
-					EventBus.INSTANCE.broadcast(new EventMessage(
-							C.Tag.COMMAND_AS_HOST, C.Msg.START_MINI_GAME));
+				if (model.arePlayersReady()) {
+					GameSession gameSession = new GameSession(
+							model.getLobbyMembers());
+					MiniGame miniGame = gameSession.getNextMiniGame();
+					gameSession.setCurrentMiniGame(miniGame);
+					new GameSessionController(gameSession);
+					
+					EventMessage newGameSession = new EventMessage(
+							C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
+							gameSession);
+					EventBus.INSTANCE.broadcast(newGameSession);
+
+					// EventBus.INSTANCE.broadcast(new EventMessage(
+					// C.Tag.COMMAND_AS_HOST, C.Msg.START_MINI_GAME));
 				}
 				break;
 			default:
