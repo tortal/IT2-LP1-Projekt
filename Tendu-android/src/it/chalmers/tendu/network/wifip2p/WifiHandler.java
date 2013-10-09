@@ -163,14 +163,12 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	//	@Override
 	public void onResume() {
-		Log.d(TAG, "ON RESUME");
 		/* register the broadcast receiver with the intent values to be matched */
 		context.registerReceiver(mReceiver, mIntentFilter);
 	}
 
 	//	@Override
 	public void onPause() {
-		Log.d(TAG, "ON PAUSE");
 		/* unregister the broadcast receiver */
 		context.unregisterReceiver(mReceiver);
 	}
