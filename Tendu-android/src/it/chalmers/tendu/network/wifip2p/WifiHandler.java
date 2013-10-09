@@ -95,26 +95,26 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void hostSession() {
 		
 		// Create a new wifi group
-		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
-		
-			@Override
-			public void onSuccess() {
-				// Do nothing
-				
-			}
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Group creation failed: " + reason);				
-			}
-		});
-		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-			
-			@Override
-			public void onGroupInfoAvailable(WifiP2pGroup group) {
-				//group.
-				
-			}
-		});
+//		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+//		
+//			@Override
+//			public void onSuccess() {
+//				// Do nothing
+//				
+//			}
+//			@Override
+//			public void onFailure(int reason) {
+//				Log.d(TAG, "Group creation failed: " + reason);				
+//			}
+//		});
+//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+//			
+//			@Override
+//			public void onGroupInfoAvailable(WifiP2pGroup group) {
+//				//group.
+//				
+//			}
+//		});
 		discoverPeers();
 
 	}
