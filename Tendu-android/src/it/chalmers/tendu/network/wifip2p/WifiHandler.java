@@ -110,7 +110,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void hostSession() {
 		// remove any remaining wifi group
-			removeWifiGroup();
+		//	removeWifiGroup();
 			
 		// Create a new wifi group
 //		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
@@ -139,7 +139,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void joinGame() {
-		removeWifiGroup();
+		//removeWifiGroup();
 		discoverPeers();
 		mHandler.postDelayed(new Runnable() {
 
@@ -366,6 +366,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 			@Override
 			public void disconnected(Connection connection) {
+				Log.d(TAG, "Client disconnected");
 				server.close();
 			}
 		});
@@ -397,6 +398,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				}
 				@Override
 				public void disconnected(Connection connection) {
+					Log.d(TAG, "Disconnected from server");
 					client.close();
 				}
 			});
