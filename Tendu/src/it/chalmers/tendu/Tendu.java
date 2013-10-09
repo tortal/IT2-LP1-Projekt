@@ -4,9 +4,11 @@ package it.chalmers.tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.Screen;
+import it.chalmers.tendu.screens.ShapesGameScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -45,16 +47,16 @@ public class Tendu implements ApplicationListener {
 	@Override
 	public void create() {
 
-		String mac = networkHandler.getMacAddress();
-		Player.getInstance().setMac(mac);
-		Gdx.app.log(TAG, Player.getInstance().getMac());
+		//String mac = networkHandler.getMacAddress();
+		//Player.getInstance().setMac(mac);
+		//Gdx.app.log(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
 
-		setScreen(new MainMenuScreen(this));
+		//setScreen(new MainMenuScreen(this));
 
-		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
-		// Constants.Difficulty.ONE)));
+		 setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+		 Constants.Difficulty.ONE, null)));
 
 		// create an inputController and register it with Gdx
 		input = new InputController();
