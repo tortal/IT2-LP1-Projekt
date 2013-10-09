@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.Tendu;
@@ -8,6 +5,7 @@ import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -16,30 +14,23 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 
-/**
- * 
- *
- */
 public class ShapeGameModelController implements Listener {
 
 	private final String TAG = "ShapeGameModelController";
-	private GameSession gameSession;
-	private Tendu tendu;
+	private ShapesGame model;
 
-	// TODO: not sure if all controllers need tendu, perhaps only
-	// gamesessioncontroller.
 
-	public ShapeGameModelController(Tendu tendu, GameSession gameSession) {
-		this.tendu = tendu;
-		this.gameSession = gameSession;
-
+	public ShapeGameModelController(ShapesGame model) {
+		this.model = model;
 		EventBus.INSTANCE.addListener(this);
 	}
-
-	public void setModel(GameSession session) {
-		this.gameSession = session;
+	
+	public ShapesGame getModel() {
+		return model;
 	}
 
 	@Override
@@ -55,16 +46,17 @@ public class ShapeGameModelController implements Listener {
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.ACCESS_MODEL) {
-			// *********NUMBER GAME***********
 			if (message.gameId == GameId.SHAPES_GAME) {
-				ShapesGame game = (ShapesGame) gameSession.currentMiniGame;
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					
-					gameSession.setCurrentMiniGame(game);
-					message = new EventMessage(Tag.COMMAND_AS_HOST,
-							Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
-							gameSession.currentMiniGame);
-					EventBus.INSTANCE.broadcast(message);
+					if (intoSlot(message.content)) {
+						message.tag = C.Tag.COMMAND_AS_HOST;
+						EventBus.INSTANCE.broadcast(message);
+					} else {
+
+						message = new EventMessage(Tag.COMMAND_AS_HOST,
+								Msg.REMOVE_TIME, GameId.SHAPES_GAME);
+						EventBus.INSTANCE.broadcast(message);
+					}
 				}
 			}
 		}
@@ -72,11 +64,9 @@ public class ShapeGameModelController implements Listener {
 
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.ACCESS_MODEL) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
+			if (message.gameId == GameId.SHAPES_GAME) {
+				if (message.msg == C.Msg.LOCK_ATTEMPT) {
+					intoSlot(message.content);
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
@@ -84,14 +74,24 @@ public class ShapeGameModelController implements Listener {
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				if (message.msg == Msg.UPDATE_MODEL) {
-					NumberGame game = (NumberGame) message.content;
-					gameSession.setCurrentMiniGame(game);
+			if (message.gameId == GameId.SHAPES_GAME) {
+				if (message.msg == Msg.REMOVE_TIME) {
+					model.changeTimeWith(-3000);
+				}
+				if (message.msg == Msg.LOCK_ATTEMPT) {
+					intoSlot(message.content);
 				}
 			}
 		}
+	}
+
+	private boolean intoSlot(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape lockShape = (Shape) messageContent.get(1);
+		Shape shape = (Shape) messageContent.get(2);
+
+		return model.insertShapeIntoSlot(player, shape, lockShape);
 	}
 
 }
