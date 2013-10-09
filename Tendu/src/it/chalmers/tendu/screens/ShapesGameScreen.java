@@ -120,14 +120,14 @@ public class ShapesGameScreen extends GameScreen {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 2");
 							EventBus.INSTANCE.broadcast(new EventMessage(
-									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
 									messageContentFactory(2, s.getShape())));
 						}
 						if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
 							Gdx.app.log("SENT!!", s.toString()
 									+ "sent to player 3");
 							EventBus.INSTANCE.broadcast(new EventMessage(
-									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
 									messageContentFactory(3, s.getShape())));
 							
 						}
@@ -136,7 +136,7 @@ public class ShapesGameScreen extends GameScreen {
 									+ "sent to player 1");
 							
 							EventBus.INSTANCE.broadcast(new EventMessage(
-									C.Tag.ACCESS_MODEL, C.Msg.SHAPE_SENT,
+									C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
 									messageContentFactory(1, s.getShape())));
 						}
 						break;
