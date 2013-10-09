@@ -65,12 +65,7 @@ public class ShapeGameModelController implements Listener {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPES_GAME) {
-				if (message.msg == Msg.REMOVE_TIME) {
-					model.changeTimeWith(-3000);
-				}
-				if (message.msg == Msg.LOCK_ATTEMPT) {
-					intoSlot(message.content);
-				}
+				intoSlot(message.content);
 			}
 		}
 	}

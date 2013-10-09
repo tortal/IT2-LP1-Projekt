@@ -134,6 +134,7 @@ public class ShapesGame extends MiniGame {
 		if (lock.fillSlot(shape, lockShape))
 			return true;
 
+		super.changeTimeWith(-3000);
 		return false;
 	}
 

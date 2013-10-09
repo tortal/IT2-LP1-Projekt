@@ -74,10 +74,8 @@ public class GraphicalShape {
 	}
 
 	public void moveShape(float f, float g) {
-		if (!shape.isLocked()) {
-			bounds.x = f;
-			bounds.y = g;
-		}
+		bounds.x = f;
+		bounds.y = g;
 	}
 
 	public static ShapeType determineGeometricShape(Shape s) {

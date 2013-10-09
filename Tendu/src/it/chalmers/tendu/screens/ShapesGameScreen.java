@@ -107,7 +107,8 @@ public class ShapesGameScreen extends GameScreen {
 				tendu.getCamera().unproject(touchPos);
 				for (GraphicalShape s : shapes) {
 					// TODO: Should not prio the shape that is first by index.
-					if (s.getBounds().contains(touchPos.x, touchPos.y)) {
+					if (s.getBounds().contains(touchPos.x, touchPos.y) &&
+							!s.getShape().isLocked()) {
 						Collections.swap(shapes, 0, shapes.indexOf(s));
 						s.moveShape(touchPos.x - s.getBounds().width / 2,
 								touchPos.y - s.getBounds().height / 2);
@@ -180,12 +181,13 @@ public class ShapesGameScreen extends GameScreen {
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
+		boolean result = false;
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (controller.getModel().insertShapeIntoSlot(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				rightShapeSound.play();
-				return true;
+				//rightShapeSound.play();
+				result = true;
 			}
 			List<Object> content = new ArrayList<Object>();
 			content.add(player_num);
@@ -195,7 +197,7 @@ public class ShapesGameScreen extends GameScreen {
 					.broadcast(new EventMessage(Player.getInstance().getMac(),
 							C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(), content));
 		}
-		return false;
+		return result;
 
 	}
 
