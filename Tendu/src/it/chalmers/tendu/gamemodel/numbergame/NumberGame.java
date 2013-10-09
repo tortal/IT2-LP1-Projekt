@@ -13,7 +13,7 @@ import com.badlogic.gdx.Gdx;
 
 public class NumberGame extends MiniGame {
 
-	private static int PLAYER_COUNT = 4;
+	private int playerCount;
 	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
@@ -26,14 +26,15 @@ public class NumberGame extends MiniGame {
 	public NumberGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
 		super(addTime, difficulty, GameId.NUMBER_GAME, players);
 		nbrCorrectAnswer = 0;
+		playerCount = players.size();
 		switch (difficulty) {
 		case ONE:
 			this.setEndTime(30000);
-			answerList = createAnswer(4);
+			answerList = createAnswer(playerCount);
 			break;
 		case TWO:
 			this.setEndTime(30000);
-			answerList = createAnswer(8);
+			answerList = createAnswer(playerCount*2);
 			break;
 		default:
 			// TODO:
@@ -103,10 +104,10 @@ public class NumberGame extends MiniGame {
 
 		Collections.shuffle(temp);
 
-		for (int i = 0; i < PLAYER_COUNT; i++) {
+		for (int i = 0; i < playerCount; i++) {
 			ArrayList<Integer> newList = new ArrayList<Integer>();
 
-			for (int j = 0; j < answerList.size() / PLAYER_COUNT; j++) {
+			for (int j = 0; j < answerList.size() / playerCount; j++) {
 				Integer r = temp.remove(0);
 				newList.add(r);
 			}
