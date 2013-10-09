@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LobbyModel {
-	
+
 	public Map<String, Integer> players;
 	public Map<Integer, Boolean> playerReady;
 	public int maxPlayers;
@@ -17,22 +17,10 @@ public class LobbyModel {
 		this.maxPlayers = maxPlayers;
 	}
 
+	// For reflection
+	@SuppressWarnings("unused")
 	private LobbyModel() {
-		// For kryo
 	}
-
-//	public boolean isHost() {
-//		if (Player.getInstance().getMac().equals(hostMacAddress)) {
-//			return true;
-//		}
-//		return false;
-//	}
-
-//	public void addHost(String myMacAddress) {
-//		this.hostMacAddress = myMacAddress;
-//		addPlayer(myMacAddress);
-//
-//	}
 
 	public void playerReady(String player, boolean ready) {
 		int playerNbr = players.get(player);
@@ -49,7 +37,7 @@ public class LobbyModel {
 	}
 
 	public void createGameSession() {
-//		GameSession gameSession = new GameSession(players, hostMacAddress);
+		// GameSession gameSession = new GameSession(players, hostMacAddress);
 		GameSession gameSession = new GameSession(players);
 		new GameSessionController(gameSession);
 	}
