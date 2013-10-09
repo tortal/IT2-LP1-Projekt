@@ -24,7 +24,6 @@ public class ShapesGameScreen extends GameScreen {
 	private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
-	private Sound rightShapeSound;
 
 	// For debug
 	int count = 0;
@@ -33,7 +32,6 @@ public class ShapesGameScreen extends GameScreen {
 		super(game, model);
 		this.model = (ShapesGame) model;
 		this.shapeRenderer = new ShapeRenderer();
-		rightShapeSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
@@ -150,7 +148,7 @@ public class ShapesGameScreen extends GameScreen {
 					lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
 				shape.lock();
-				rightShapeSound.play();
+				playSound();
 				return true;
 			}
 

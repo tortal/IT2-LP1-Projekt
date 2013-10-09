@@ -40,8 +40,6 @@ public class NumberGameScreen extends GameScreen {
 									// on the screen
 
 	private NumberGameController controller;
-	private Sound completedGameSound;
-	private Sound lostGameSound;
 
 	/**
 	 * @param tendu
@@ -57,10 +55,6 @@ public class NumberGameScreen extends GameScreen {
 		numberFont = new BitmapFont();
 		touchPos = new Vector3();
 		controller = new NumberGameController((NumberGame) model);
-		
-		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		setUpGame();
 	}
@@ -199,8 +193,12 @@ public class NumberGameScreen extends GameScreen {
 		// TODO maybe not the best solution...
 		// model = (NumberGame) game.gameSession.currentMiniGame;
 
-		if (model.checkGameState() != GameState.RUNNING)
+		if (controller.getModel().checkGameState() != GameState.RUNNING)
 			return;
+		
+		if(controller.getModel().checkSound()){
+			playSound();
+		}
 
 		if (time < 240) {
 			time++;
