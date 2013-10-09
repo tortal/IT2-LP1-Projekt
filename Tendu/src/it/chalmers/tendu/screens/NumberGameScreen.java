@@ -28,10 +28,11 @@ public class NumberGameScreen extends GameScreen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont numberFont; // for rendering fonts
 
-	private ArrayList<Color> colors;
+	private ArrayList<Color> colors; // list with colors for all numbers
 
-	private ArrayList<NumberCircle> numberCircles;
-	private ArrayList<Integer> numbers;
+	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
+													// with (guess)
+	private ArrayList<Integer> numbers; // the correct numbers
 
 	private Vector3 touchPos; // used to store coordinates for on screen touches
 
@@ -40,9 +41,7 @@ public class NumberGameScreen extends GameScreen {
 									// on the screen
 
 	private NumberGameController controller;
-	private Sound completedGameSound;
-	private Sound lostGameSound;
-	
+
 	/**
 	 * @param tendu
 	 *            the applicationlistener
@@ -57,16 +56,12 @@ public class NumberGameScreen extends GameScreen {
 		numberFont = new BitmapFont();
 		touchPos = new Vector3();
 		controller = new NumberGameController((NumberGame) model);
-		
-		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		setUpGame();
 	}
 
 	/**
-	 * Initiall setup
+	 * Initial setup
 	 */
 	private void setUpGame() {
 		time = 0;
@@ -104,7 +99,7 @@ public class NumberGameScreen extends GameScreen {
 	}
 
 	/**
-	 * Draws the current number list to the screen
+	 * Draws the correct numbers list to the screen
 	 * 
 	 * @param showAll
 	 *            set to false if only correctly answered numbers should be
@@ -131,6 +126,12 @@ public class NumberGameScreen extends GameScreen {
 		numberFont.scale(-1.6f);
 	}
 
+	/**
+	 * Draws one NumberCircle
+	 * 
+	 * @param circle
+	 *            circle to draw
+	 */
 	private void drawNumberCircle(NumberCircle circle) {
 		shapeRenderer.setColor(circle.color);
 		numberFont.setColor(circle.color);
@@ -143,20 +144,26 @@ public class NumberGameScreen extends GameScreen {
 				circle.getNumberX(), circle.getNumberY());
 	}
 
+	/**
+	 * Draws all NumberCircles
+	 */
 	private void drawNumberCircles() {
+		shapeRenderer.begin(ShapeType.Circle);
+		
 		numberFont.scale(-0.8f);
 		for (int i = 0; i < numberCircles.size(); i++) {
 			drawNumberCircle(numberCircles.get(i));
 		}
 		numberFont.scale(0.8f);
+		
+		shapeRenderer.end();
 	}
 
-	/** Draw all graphics here */
+	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		super.render();
+		super.render(); //draws common ui-stuff
 		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-		shapeRenderer.begin(ShapeType.Circle);
 
 		if (time < 240) {
 			numberFont.setColor(Color.BLUE);
@@ -175,37 +182,24 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
-//		if (model.checkGameState() == GameState.WON) {
-//			numberFont.setColor(Color.GREEN);
-//			numberFont.scale(2);
-//			numberFont.draw(tendu.spriteBatch, "You won!", 300, 300);
-//			numberFont.scale(-2);
-//		} else if (model.checkGameState() == GameState.LOST) {
-//			numberFont.setColor(Color.RED);
-//			numberFont.scale(2);
-//			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-//			numberFont.scale(-2);
-//
-//		}
-
-		//TODO refactor
-		if (model.checkGameState() == GameState.WON || model.checkGameState() == GameState.LOST) {
+		// TODO refactor
+		if (model.checkGameState() == GameState.WON
+				|| model.checkGameState() == GameState.LOST) {
 			time++;
-			showGameResult();
-			
-			if(time == 360) {
-				if(model.checkGameState() == GameState.WON) {
-					EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.GAME_WON, model.getTimeLeft());
+
+			if (time == 360) {
+				if (model.checkGameState() == GameState.WON) {
+					EventMessage message = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.GAME_WON, model.getTimeLeft());
 					EventBus.INSTANCE.broadcast(message);
-				} else if(model.checkGameState() == GameState.LOST) {
-					EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.GAME_LOST, model.getTimeLeft());
+				} else if (model.checkGameState() == GameState.LOST) {
+					EventMessage message = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.GAME_LOST, model.getTimeLeft());
 					EventBus.INSTANCE.broadcast(message);
 
 				}
 			}
 		}
-
-		shapeRenderer.end();
 	}
 
 	/** All game logic goes here */
@@ -213,17 +207,17 @@ public class NumberGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		// TODO maybe not the best solution...
 		model = getModel();
-	
+
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
-	
+
 		if (time < 240) {
 			time++;
 		} else {
 			if (input.isTouchedUp()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				tendu.getCamera().unproject(touchPos);
-	
+
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
@@ -234,11 +228,11 @@ public class NumberGameScreen extends GameScreen {
 					circle.scale = 1;
 				}
 			}
-	
+
 			if (input.isTouchedDown()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				tendu.getCamera().unproject(touchPos);
-	
+
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						circle.scale = 1.5f;
@@ -257,5 +251,6 @@ public class NumberGameScreen extends GameScreen {
 		super.removed();
 		numberFont.dispose();
 		controller.unregister();
+		shapeRenderer.dispose();
 	}
 }

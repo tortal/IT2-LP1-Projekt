@@ -35,8 +35,9 @@ public abstract class MiniGame {
 	public MiniGame(int time, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.LOADING;
+		this.state = GameState.WAITING;
 		gameTime = 30000 + time;
+		setEndTime(gameTime);
 		this.players = players;
 	}
 
@@ -157,9 +158,9 @@ public abstract class MiniGame {
 	}
 
 	/**
-	 * Checks if the game is over.
+	 * Checks if the game is over. (out of time)
 	 */
-	public void checkGame() {
+	public void checkGameOver() {
 		if (getTimeLeft() < 0)
 			state = GameState.LOST;
 	}

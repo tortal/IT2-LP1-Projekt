@@ -126,7 +126,7 @@ public class ShapesGameScreen extends GameScreen {
 
 				}
 			}
-			model.checkGame();
+			model.checkGameOver();
 		} else {
 			showGameResult();
 		}

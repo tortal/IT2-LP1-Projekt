@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-/** Abstract screen class that can be extended by all minigame and menu screens */
+/** Abstract screen class that can be extended by all minigame screens */
 public abstract class GameScreen implements Screen {
 	public Tendu tendu; // reference to the main Tendu object
 	protected MiniGame model; // model of current minigame
@@ -24,10 +24,8 @@ public abstract class GameScreen implements Screen {
 	private Sound completedGameSound;
 	private Sound lostGameSound;
 	
-	//TODO change this
+	//makes sure end sounds only plays once
 	private boolean playCompletedSound = true;
-
-	// displayed a short time.
 
 	/**
 	 * @param game
@@ -51,30 +49,22 @@ public abstract class GameScreen implements Screen {
 		font = new BitmapFont();
 	}
 
-	/**
-	 * Call to change current screen to a new screen Only use when the current
-	 * screen is finished
-	 * 
-	 * @param screen
-	 *            the new screen
-	 */
-	protected void setScreen(GameScreen screen) {
-		tendu.setScreen(screen);
-	}
-
 	/** all rendering goes here **/
 	public void render() {
-		if(model.checkGameState() == GameState.LOADING) {
-			// TODO drawLoading();
+		if(model.checkGameState() == GameState.WAITING) {
+			// TODO drawWaiting();
+			// TODO Maybe unnecessary
 			return;
-		}
-		
-		model.checkGame();
-
-		if (model.checkGameState() == GameState.RUNNING) {
+		} else if (model.checkGameState() == GameState.RUNNING) {		
+			//checks if time has run out and if so changes the game state to lost
+			//TODO maybe not in render, but in tick instead?
+			model.checkGameOver();
+			
+			//draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 
+			//currently does nothing
 			if (count == 0) {
 				shapeRenderer.setColor(Color.YELLOW);
 			} else {
@@ -86,7 +76,10 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 			shapeRenderer.end();
 			renderPlayerIndicators();
+		} else {
+			showGameResult();
 		}
+
 
 	}
 
@@ -103,6 +96,10 @@ public abstract class GameScreen implements Screen {
 		lostGameSound.dispose();
 	}
 
+	/**
+	 * Calculates the width of the countdown time
+	 * relative to the total amount of time
+	 */
 	private int calculateTimerWidth() {
 		double quota = (double) model.getTimeLeft()
 				/ (double) model.getGameTime();
@@ -112,6 +109,7 @@ public abstract class GameScreen implements Screen {
 	}
 
 	// TODO maybe the model could remove time without involving the screen?
+	// TODO not currently used, remove?
 	/**
 	 * Removes time for the user and shows this buy changing color on the timer.
 	 * 
@@ -123,6 +121,10 @@ public abstract class GameScreen implements Screen {
 	}
 
 	// TODO: could probably look better.
+	// TODO: show only connected players
+	/**
+	 * Renders a visual indicator for respective player
+	 */
 	public void renderPlayerIndicators() {
 		// Player 1
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -175,6 +177,11 @@ public abstract class GameScreen implements Screen {
 
 	}
 
+	/**
+	 * Call when game ends
+	 * shows either a success or a failure message
+	 * and plays the corresponding sound
+	 */
 	public void showGameResult() {
 		if (model.checkGameState() == GameState.WON) {
 			font.setColor(Color.GREEN);
