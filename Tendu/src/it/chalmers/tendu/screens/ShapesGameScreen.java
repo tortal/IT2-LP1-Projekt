@@ -191,8 +191,8 @@ public class ShapesGameScreen extends GameScreen {
 			}
 			List<Object> content = new ArrayList<Object>();
 			content.add(player_num);
-			content.add(lock);
-			content.add(shape);
+			content.add(lock.getShape());
+			content.add(shape.getShape());
 			EventBus.INSTANCE
 					.broadcast(new EventMessage(Player.getInstance().getMac(),
 							C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(), content));
