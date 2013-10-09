@@ -44,14 +44,8 @@ public class ShapeGameModelController implements Listener {
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					if (intoSlot(message.content)) {
-						message.tag = C.Tag.COMMAND_AS_HOST;
-						EventBus.INSTANCE.broadcast(message);
-					} else {
-						message = new EventMessage(Tag.COMMAND_AS_HOST,
-								Msg.REMOVE_TIME, GameId.SHAPES_GAME);
-						EventBus.INSTANCE.broadcast(message);
-					}
+					message.tag = C.Tag.COMMAND_AS_HOST;
+					EventBus.INSTANCE.broadcast(message);
 				}
 			}
 		}
