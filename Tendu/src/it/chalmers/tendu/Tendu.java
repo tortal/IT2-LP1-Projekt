@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
 public class Tendu implements ApplicationListener {
 
 	public static final String TAG = "Tendu"; // Tag for logging
