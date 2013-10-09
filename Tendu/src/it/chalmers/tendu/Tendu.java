@@ -34,8 +34,6 @@ public class Tendu implements ApplicationListener {
 											// for now)
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
-	private boolean host = false;
-
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
 

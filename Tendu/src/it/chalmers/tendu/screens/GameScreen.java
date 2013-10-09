@@ -19,7 +19,7 @@ public abstract class GameScreen implements Screen {
 	public MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
-	private BitmapFont numberFont;
+	private BitmapFont font;
 
 	private Sound completedGameSound;
 	private Sound lostGameSound;
@@ -45,7 +45,7 @@ public abstract class GameScreen implements Screen {
 			model.startGame();
 		}
 		shapeRenderer = new ShapeRenderer();
-		numberFont = new BitmapFont();
+		font = new BitmapFont();
 	}
 
 	/**
@@ -61,6 +61,11 @@ public abstract class GameScreen implements Screen {
 
 	/** all rendering goes here **/
 	public void render() {
+		if(model.checkGameState() != GameState.LOADING) {
+			// TODO drawLoading();
+			return;
+		}
+		
 		model.checkGame();
 
 		if (model.checkGameState() == GameState.RUNNING) {
@@ -125,8 +130,8 @@ public abstract class GameScreen implements Screen {
 				Constants.SCREEN_HEIGHT - 5, 29);
 		shapeRenderer.end();
 
-		numberFont.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-		numberFont.draw(tendu.spriteBatch, "1", Constants.SCREEN_WIDTH / 2 - 4,
+		font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+		font.draw(tendu.spriteBatch, "1", Constants.SCREEN_WIDTH / 2 - 4,
 				Constants.SCREEN_HEIGHT - 10);
 
 		// Player 2
@@ -140,8 +145,8 @@ public abstract class GameScreen implements Screen {
 		shapeRenderer.filledCircle(0, Constants.SCREEN_HEIGHT / 2, 29);
 		shapeRenderer.end();
 
-		numberFont.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-		numberFont.draw(tendu.spriteBatch, "2", 10,
+		font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+		font.draw(tendu.spriteBatch, "2", 10,
 				Constants.SCREEN_HEIGHT / 2 + 5);
 
 		// Player 3
@@ -157,24 +162,24 @@ public abstract class GameScreen implements Screen {
 				Constants.SCREEN_HEIGHT / 2, 29);
 		shapeRenderer.end();
 
-		numberFont.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-		numberFont.draw(tendu.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
+		font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
+		font.draw(tendu.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
 				Constants.SCREEN_HEIGHT / 2 + 5);
 
 	}
 
 	public void showGameResult() {
 		if (model.checkGameState() == GameState.WON) {
-			numberFont.setColor(Color.GREEN);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You won!", 300, 300);
-			numberFont.scale(-2);
+			font.setColor(Color.GREEN);
+			font.scale(2);
+			font.draw(tendu.spriteBatch, "You won!", 300, 300);
+			font.scale(-2);
 			completedGameSound.play();
 		} else if (model.checkGameState() == GameState.LOST) {
-			numberFont.setColor(Color.RED);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-			numberFont.scale(-2);
+			font.setColor(Color.RED);
+			font.scale(2);
+			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
+			font.scale(-2);
 			lostGameSound.play();
 		}
 	}
