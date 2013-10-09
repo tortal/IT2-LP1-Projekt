@@ -20,7 +20,6 @@ public class GraphicalShape {
 	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
-	private boolean locked = false;
 
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
@@ -75,8 +74,10 @@ public class GraphicalShape {
 	}
 
 	public void moveShape(float f, float g) {
-		bounds.x = f;
-		bounds.y = g;
+		if (!shape.isLocked()) {
+			bounds.x = f;
+			bounds.y = g;
+		}
 	}
 
 	public static ShapeType determineGeometricShape(Shape s) {
@@ -178,21 +179,4 @@ public class GraphicalShape {
 		this.color = color;
 	}
 
-	/**
-	 * Makes the shape unable to move.
-	 */
-	public void lock() {
-		locked = true;
-	}
-
-	/**
-	 * Makes the shape able to move.
-	 */
-	public void unsLock() {
-		locked = false;
-	}
-
-	public boolean isLocked() {
-		return locked;
-	}
 }
