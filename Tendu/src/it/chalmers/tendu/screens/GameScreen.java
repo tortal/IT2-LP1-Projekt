@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 /** Abstract screen class that can be extended by all minigame and menu screens */
 public abstract class GameScreen implements Screen {
 	public Tendu tendu; // reference to the main Tendu object
-	public MiniGame model; // model of current minigame
+	protected MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
 	private BitmapFont font;
@@ -31,7 +31,7 @@ public abstract class GameScreen implements Screen {
 	 * @param game
 	 *            Tendu object that creates the screen
 	 * @param model
-	 *            MiniGame model, set to null if not used (menu)
+	 *            MiniGame model
 	 * @return a new GameScreen
 	 */
 	public GameScreen(Tendu tendu, MiniGame model) {
@@ -63,7 +63,7 @@ public abstract class GameScreen implements Screen {
 
 	/** all rendering goes here **/
 	public void render() {
-		if(model.checkGameState() != GameState.LOADING) {
+		if(model.checkGameState() == GameState.LOADING) {
 			// TODO drawLoading();
 			return;
 		}

@@ -165,7 +165,7 @@ public class ShapesGameScreen extends GameScreen {
 			content.add(shape);
 			EventBus.INSTANCE
 					.broadcast(new EventMessage(Player.getInstance().getMac(),
-							C.Tag.ACCESS_MODEL, C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(), content));
+							C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(), content));
 		}
 		return false;
 

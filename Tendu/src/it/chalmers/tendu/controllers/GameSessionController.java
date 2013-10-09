@@ -22,6 +22,7 @@ public class GameSessionController implements Listener {
 	public GameSessionController(GameSession gameSession) {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
+		gameSession.nextScreen();
 	}
 
 	private GameSessionController() {
@@ -33,13 +34,6 @@ public class GameSessionController implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-
-		// if (applicationListener.isHost()) {
-		// handleAsHost(message);
-		// } else {
-		// handleAsClient(message);
-		// }
-
 		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
@@ -50,64 +44,32 @@ public class GameSessionController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
-				|| message.tag == C.Tag.ACCESS_MODEL) {
-			if (message.msg == C.Msg.START_MINI_GAME) {
-				// TODO: gameSession.startGame();
-			}
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					if (game.checkNbr((Integer) message.content)) {
-						gameSession.setCurrentMiniGame(game);
-						// message = new EventMessage(Tag.COMMAND_AS_HOST,
-						// Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
-						// gameSession.currentMiniGame);
-						message.tag = Tag.COMMAND_AS_HOST;
-						EventBus.INSTANCE.broadcast(message);
-					} else {
-						gameSession.setCurrentMiniGame(game);
-						message = new EventMessage(Player.getInstance().getMac(),Tag.COMMAND_AS_HOST,
-								Msg.REMOVE_TIME, GameId.NUMBER_GAME, null);
-						EventBus.INSTANCE.broadcast(message);
-					}
+				|| message.tag == C.Tag.TO_SELF) {
+			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
+				String macAddress = (String) message.content;
+				gameSession.playerWaitingToStart(macAddress);
+				if (gameSession.allWaiting()) {
+					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
+							C.Msg.START_MINI_GAME);
+					EventBus.INSTANCE.broadcast(msg);
+					msg.tag = C.Tag.TO_SELF;
+					EventBus.INSTANCE.broadcast(msg);
 				}
 			}
 		}
 	}
 
 	private void handleAsClient(EventMessage message) {
-		if (message.tag == C.Tag.ACCESS_MODEL) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					// game.checkNbr((Integer) message.content);
-					message.tag = Tag.REQUEST_AS_CLIENT;
-					EventBus.INSTANCE.broadcast(message);
-				}
+		if (message.tag == C.Tag.TO_SELF) {
+			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+				EventBus.INSTANCE.broadcast(message);
 			}
-		}
 
-		if (message.tag == Tag.HOST_COMMANDED) {
-			// *********NUMBER GAME***********
-			// TODO do we need to check what MiniGame we are playing in order to
-			// update the MiniGameModel?
-			if (message.gameId == GameId.NUMBER_GAME) {
-
-				if (message.msg == Msg.UPDATE_MODEL) {
-					// NumberGame game = ;
-					gameSession
-							.setCurrentMiniGame((NumberGame) message.content);
-					// Gdx.app.log(TAG, " Time left = " +
-					// gameSession.currentMiniGame.getTimeLeft());
-				} else if (message.msg == Msg.REMOVE_TIME) {
-					gameSession.currentMiniGame.changeTimeWith(-3000);
-				} else if (message.msg == Msg.NUMBER_GUESS) {
-					NumberGame game = (NumberGame) gameSession.currentMiniGame;
-					game.checkNbr((Integer) message.content);
-				}
-			}
+		} else if (message.tag == Tag.HOST_COMMANDED) {
+			if (message.msg == C.Msg.START_MINI_GAME) {
+				message.tag = C.Tag.TO_SELF;
+				EventBus.INSTANCE.broadcast(message);			}
 		}
 	}
 

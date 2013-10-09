@@ -23,12 +23,11 @@ public class ShapeGameModelController implements Listener {
 	private final String TAG = "ShapeGameModelController";
 	private ShapesGame model;
 
-
 	public ShapeGameModelController(ShapesGame model) {
 		this.model = model;
 		EventBus.INSTANCE.addListener(this);
 	}
-	
+
 	public ShapesGame getModel() {
 		return model;
 	}
@@ -45,14 +44,13 @@ public class ShapeGameModelController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
-				|| message.tag == C.Tag.ACCESS_MODEL) {
+				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (intoSlot(message.content)) {
 						message.tag = C.Tag.COMMAND_AS_HOST;
 						EventBus.INSTANCE.broadcast(message);
 					} else {
-
 						message = new EventMessage(Tag.COMMAND_AS_HOST,
 								Msg.REMOVE_TIME, GameId.SHAPES_GAME);
 						EventBus.INSTANCE.broadcast(message);
@@ -60,10 +58,11 @@ public class ShapeGameModelController implements Listener {
 				}
 			}
 		}
+
 	}
 
 	private void handleAsClient(EventMessage message) {
-		if (message.tag == C.Tag.ACCESS_MODEL) {
+		if (message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					intoSlot(message.content);

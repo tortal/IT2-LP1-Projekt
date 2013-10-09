@@ -64,7 +64,7 @@ public class LobbyScreen implements Screen {
 				if (touchPos.y >= 80 && touchPos.y < 150) {
 					Gdx.app.log("Testing", "Ready"); // Testing
 					EventBus.INSTANCE.broadcast(new EventMessage(
-							C.Tag.ACCESS_MODEL, C.Msg.PLAYER_READY, Player
+							C.Tag.TO_SELF, C.Msg.PLAYER_READY, Player
 									.getInstance().getMac()));
 				}
 			}

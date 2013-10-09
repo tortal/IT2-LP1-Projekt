@@ -2,7 +2,11 @@
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -17,6 +21,7 @@ public class GameSession {
 	 * Integer = player id String = player MacAddress
 	 */
 	private Map<String, Integer> players;
+	private Map<String, Boolean> playersWaitingToStart;
 
 //	public GameSession(Map<String, Integer> players, String hostMac) {
 //		this.players = players;
@@ -24,6 +29,8 @@ public class GameSession {
 //	}
 	public GameSession(Map<String, Integer> players) {
 		this.players = players;
+		playersWaitingToStart = new HashMap<String, Boolean>();
+		currentMiniGame = getNextMiniGame();
 	}
 
 	private GameSession() {
@@ -65,15 +72,14 @@ public class GameSession {
 		return players;
 	}
 
-	public void startGame() {
-
+	public void playerWaitingToStart(String macAddress) {
+		playersWaitingToStart.put(macAddress, true);
 	}
-
-//	public boolean isHost() {
-//		if (Player.getInstance().getMac().equals(hostMacAddress)) {
-//			return true;
-//		}
-//		return false;
-//	}
-
+	public boolean allWaiting(){
+		return (players.size() == playersWaitingToStart.size());
+	}
+	public void nextScreen() {
+		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_SCREEN, currentMiniGame);
+		EventBus.INSTANCE.broadcast(message);
+	}
 }
