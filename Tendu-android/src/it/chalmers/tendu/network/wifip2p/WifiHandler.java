@@ -320,14 +320,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			e.printStackTrace();
 		}
 
-		server.addListener(new Listener() {
-			public void received (Connection connection, Object object) {
-				if (object instanceof EventMessage) {
-					EventMessage request = (EventMessage)object;
-					Log.d(TAG, "Received: " + request.toString());
-				}
-			}
-		});
+		server.addListener(networkMessageListener);
 	}
 	
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
@@ -346,14 +339,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				e.printStackTrace();
 			}
 
-			client.addListener(new Listener() {
-				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
-					if (object instanceof EventMessage) {
-						EventMessage request = (EventMessage)object;
-						Log.d(TAG, "Received: " + request.toString());
-					}
-				}
-			});
+			client.addListener(networkMessageListener);
 			return null;
 		}
 	}
@@ -365,5 +351,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(C.class);
 		kryo.register(C.Msg.class);
 		kryo.register(C.Tag.class);
-	}	
+	}
+	
+	private Listener networkMessageListener = new Listener() {
+		public void received (Connection connection, Object object) {
+			if (object instanceof EventMessage) {
+				EventMessage request = (EventMessage)object;
+				Log.d(TAG, "Received: " + request.toString());
+			}
+		}
+	};
 }
