@@ -375,17 +375,6 @@ public class BluetoothHandler extends NetworkHandler {
 		return connection.getAddress();
 	}
 
-	/** Broadcast a message on the event bus */
-	private void sendToEventBus(final EventMessage message) {
-		Gdx.app.postRunnable(new Runnable() {
-
-			@Override
-			public void run() {
-				EventBus.INSTANCE.broadcast(message);
-			}
-		});
-	}
-
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
 		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.ALL_PLAYERS_CONNECTED, addresses);

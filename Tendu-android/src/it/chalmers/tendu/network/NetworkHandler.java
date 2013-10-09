@@ -1,5 +1,7 @@
 package it.chalmers.tendu.network;
 
+import com.badlogic.gdx.Gdx;
+
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventBusListener;
@@ -17,6 +19,17 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 		
 		// Register as listener on the eventbus
 		EventBus.INSTANCE.addListener(this);
+	}
+	
+	/** Broadcast a message on the event bus */
+	protected void sendToEventBus(final EventMessage message) {
+		Gdx.app.postRunnable(new Runnable() {
+			
+			@Override
+			public void run() {
+				EventBus.INSTANCE.broadcast(message);
+			}
+		});
 	}
 	
 	@Override

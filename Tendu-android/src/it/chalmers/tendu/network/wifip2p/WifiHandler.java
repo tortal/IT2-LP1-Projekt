@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -23,6 +25,7 @@ import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -89,6 +92,20 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void hostSession() {
+		
+		// Create a new wifi group
+		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+		
+			@Override
+			public void onSuccess() {
+				// Do nothing
+				
+			}
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Group creation failed: " + reason);				
+			}
+		});
 		discoverPeers();
 
 	}
@@ -154,7 +171,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	}
 
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -190,7 +206,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 					// We are connected with the other device, request connection
 					// info to find group owner IP
-
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
@@ -198,7 +213,50 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 		}
 	};
+	
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		// InetAddress from WifiP2pInfo struct.
+		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
+		
+		// After the group negotiation, we can determine the group owner.
+		if (info.groupFormed && info.isGroupOwner) {
+			// Do whatever tasks are specific to the group owner.
+			// One common case is creating a server thread and accepting
+			// incoming connections.
+			Log.d(TAG, "Acting as server");
+			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
+			//new StartKryoNetServerTask().execute(); 
+			startKryoNetServer();
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
+				
+		} else if (info.groupFormed) {
+			// The other device acts as the client. In this case,
+			// you'll want to create a client thread that connects to the group
+			// owner.
+			Log.d(TAG, "Acting as client");
+			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
+			//startKryoNetClient(groupOwnerAddress);
+			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
+		}
+	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void resetConnection() {
+		mManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
+			
+			@Override
+			public void onSuccess() {
+				// do nothing
+			}
+			
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Couldn't stop peer deiscovery: " + reason);
+			}
+		});
+	}
+	
 	private void discoverPeers() { 
 		mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
 			@Override
@@ -246,35 +304,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 		});
 	}
-
 	
-	@Override
-	public void onConnectionInfoAvailable(WifiP2pInfo info) {
-		// InetAddress from WifiP2pInfo struct.
-		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 
-		// After the group negotiation, we can determine the group owner.
-		if (info.groupFormed && info.isGroupOwner) {
-			// Do whatever tasks are specific to the group owner.
-			// One common case is creating a server thread and accepting
-			// incoming connections.
-			Log.d(TAG, "Acting as server");
-			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
-			//new StartKryoNetServerTask().execute(); 
-			startKryoNetServer();
-
-		} else if (info.groupFormed) {
-			// The other device acts as the client. In this case,
-			// you'll want to create a client thread that connects to the group
-			// owner.
-			Log.d(TAG, "Acting as client");
-			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
-			//startKryoNetClient(groupOwnerAddress);
-			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
-		}
-
-	}
-
+	// ********************** Kryo *********************************
+	
 	private void startKryoNetServer() {
 		server = new Server();
 		Kryo kryo = server.getKryo();
