@@ -1,5 +1,6 @@
 package it.chalmers.tendu.network.wifip2p;
 
+import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -259,8 +260,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			// incoming connections.
 			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
-			new StartKryoNetServerTask().execute(); 
-			//startKryoNetServer();
+			//new StartKryoNetServerTask().execute(); 
+			startKryoNetServer();
 
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
@@ -274,53 +275,53 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	}
 
-//	private void startKryoNetServer() {
-//		server = new Server();
-//		Kryo kryo = server.getKryo();
-//		registerKryoClasses(kryo);
-//		server.start();
-//		try {
-//			server.bind(TCP_PORT); //, 54777); // other figure is for UDP
-//		} catch (IOException e) {
-//			Log.d(TAG, "KryoNet Server creation failure");
-//			e.printStackTrace();
-//		}
-//
-//		server.addListener(new Listener() {
-//			public void received (Connection connection, Object object) {
-//				if (object instanceof EventMessage) {
-//					EventMessage request = (EventMessage)object;
-//					Log.d(TAG, "Received: " + request.toString());
-//				}
-//			}
-//		});
-//	}
-	
-	private class StartKryoNetServerTask extends AsyncTask<Object, Object, Object> {
-		@Override
-		protected Object doInBackground(Object... params) {
-			server = new Server();
-			Kryo kryo = server.getKryo();
-			registerKryoClasses(kryo);
-			server.start();
-			try {
-				server.bind(TCP_PORT); //, 54777); // other figure is for UDP
-			} catch (IOException e) {
-				Log.d(TAG, "KryoNet Server creation failure");
-				e.printStackTrace();
-			}
-
-			server.addListener(new Listener() {
-				public void received (Connection connection, Object object) {
-					if (object instanceof EventMessage) {
-						EventMessage request = (EventMessage)object;
-						Log.d(TAG, "Received: " + request.toString());
-					}
-				}
-			});
-			return null;
+	private void startKryoNetServer() {
+		server = new Server();
+		Kryo kryo = server.getKryo();
+		registerKryoClasses(kryo);
+		server.start();
+		try {
+			server.bind(TCP_PORT); //, 54777); // other figure is for UDP
+		} catch (IOException e) {
+			Log.d(TAG, "KryoNet Server creation failure");
+			e.printStackTrace();
 		}
+
+		server.addListener(new Listener() {
+			public void received (Connection connection, Object object) {
+				if (object instanceof EventMessage) {
+					EventMessage request = (EventMessage)object;
+					Log.d(TAG, "Received: " + request.toString());
+				}
+			}
+		});
 	}
+	
+//	private class StartKryoNetServerTask extends AsyncTask<Object, Object, Object> {
+//		@Override
+//		protected Object doInBackground(Object... params) {
+//			server = new Server();
+//			Kryo kryo = server.getKryo();
+//			registerKryoClasses(kryo);
+//			server.start();
+//			try {
+//				server.bind(TCP_PORT); //, 54777); // other figure is for UDP
+//			} catch (IOException e) {
+//				Log.d(TAG, "KryoNet Server creation failure");
+//				e.printStackTrace();
+//			}
+//
+//			server.addListener(new Listener() {
+//				public void received (Connection connection, Object object) {
+//					if (object instanceof EventMessage) {
+//						EventMessage request = (EventMessage)object;
+//						Log.d(TAG, "Received: " + request.toString());
+//					}
+//				}
+//			});
+//			return null;
+//		}
+//	}
 
 //	private void startKryoNetClient(String address) {
 //		client = new Client();
@@ -376,9 +377,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	/** Register the classes we want to send over the network */
 	private void registerKryoClasses(Kryo kryo) {
 		kryo.register(EventMessage.class);
-	}
-
-	
-
-	
+		kryo.register(GameId.class);
+		kryo.register(C.class);
+		kryo.register(C.Msg.class);
+		kryo.register(C.Tag.class);
+	}	
 }
