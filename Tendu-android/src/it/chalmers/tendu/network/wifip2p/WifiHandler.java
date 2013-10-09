@@ -91,9 +91,27 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	}
 
+	private void removeWifiGroup() {
+		mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+			
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Failed to remove group");				
+			}
+			
+			@Override
+			public void onSuccess() {
+				// Do nothing
+			}
+		});	
+		
+	}
+	
 	@Override
 	public void hostSession() {
-		
+		// remove any remaining wifi group
+			removeWifiGroup();
+			
 		// Create a new wifi group
 //		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 //		
@@ -121,6 +139,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void joinGame() {
+		removeWifiGroup();
 		discoverPeers();
 		mHandler.postDelayed(new Runnable() {
 
@@ -320,7 +339,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 		});
 	}
-	
 
 	// ********************** Kryo *********************************
 	
@@ -338,11 +356,16 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 
 		server.addListener(new Listener() {
+			@Override
 			public void received (Connection connection, Object object) {
 				if (object instanceof EventMessage) {
 					EventMessage request = (EventMessage)object;
 					Log.d(TAG, "Received: " + request.toString());
 				}
+			}
+			@Override
+			public void disconnected(Connection connection) {
+				server.close();
 			}
 		});
 	}
@@ -364,11 +387,16 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 
 			client.addListener(new Listener() {
+				@Override
 				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
 					if (object instanceof EventMessage) {
 						EventMessage request = (EventMessage)object;
 						Log.d(TAG, "Received: " + request.toString());
 					}
+				}
+				@Override
+				public void disconnected(Connection connection) {
+					client.close();
 				}
 			});
 			return null;
