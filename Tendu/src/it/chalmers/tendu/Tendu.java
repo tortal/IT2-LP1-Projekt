@@ -42,12 +42,11 @@ public class Tendu implements ApplicationListener, Listener {
 
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
-
+		EventBus.INSTANCE.addListener(this);
 	}
 
 	@Override
 	public void create() {
-
 		String mac = networkHandler.getMacAddress();
 		Player.getInstance().setMac(mac);
 		Gdx.app.log(TAG, Player.getInstance().getMac());
