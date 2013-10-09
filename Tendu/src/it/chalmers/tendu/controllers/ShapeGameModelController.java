@@ -6,6 +6,7 @@ package it.chalmers.tendu.controllers;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -25,9 +26,10 @@ public class ShapeGameModelController implements Listener {
 	private final String TAG = "ShapeGameModelController";
 	private GameSession gameSession;
 	private Tendu tendu;
+	// TODO: not sure if all controllers need tendu, perhaps only gamesessioncontroller.
 
-	public ShapeGameModelController(Tendu appListener, GameSession gameSession) {
-		this.tendu = appListener;
+	public ShapeGameModelController(Tendu tendu, GameSession gameSession) {
+		this.tendu = tendu;
 		this.gameSession = gameSession;
 
 		EventBus.INSTANCE.addListener(this);
@@ -39,7 +41,7 @@ public class ShapeGameModelController implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if (gameSession.isHost()) {
+		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));

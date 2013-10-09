@@ -2,6 +2,7 @@ package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -39,8 +40,7 @@ public class GameSessionController implements Listener {
 		// handleAsClient(message);
 		// }
 
-		// TODO check gamesession if host
-		if (gameSession.isHost()) {
+		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));

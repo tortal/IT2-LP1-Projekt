@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 
 public class GameSession {
 
-	public String hostMacAddress;
+//	public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
 	private int currentLvl = 1;
 	private Difficulty difficulty = Difficulty.ONE;
@@ -18,9 +18,12 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 
-	public GameSession(Map<String, Integer> players, String hostMac) {
+//	public GameSession(Map<String, Integer> players, String hostMac) {
+//		this.players = players;
+//		hostMacAddress = hostMac;
+//	}
+	public GameSession(Map<String, Integer> players) {
 		this.players = players;
-		hostMacAddress = hostMac;
 	}
 
 	public GameSession() {
@@ -66,11 +69,11 @@ public class GameSession {
 
 	}
 
-	public boolean isHost() {
-		if (Player.getInstance().getMac().equals(hostMacAddress)) {
-			return true;
-		}
-		return false;
-	}
+//	public boolean isHost() {
+//		if (Player.getInstance().getMac().equals(hostMacAddress)) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 }

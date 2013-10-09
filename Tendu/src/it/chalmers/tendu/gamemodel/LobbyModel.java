@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class LobbyModel {
 
-	public String hostMacAddress;
+//	public String hostMacAddress;
 	public Map<String, Integer> players;
 	public Map<Integer, Boolean> playerReady;
 	public int maxPlayers;
@@ -22,18 +22,18 @@ public class LobbyModel {
 		// For kryo
 	}
 
-	public boolean isHost() {
-		if (Player.getInstance().getMac().equals(hostMacAddress)) {
-			return true;
-		}
-		return false;
-	}
+//	public boolean isHost() {
+//		if (Player.getInstance().getMac().equals(hostMacAddress)) {
+//			return true;
+//		}
+//		return false;
+//	}
 
-	public void addHost(String myMacAddress) {
-		this.hostMacAddress = myMacAddress;
-		addPlayer(myMacAddress);
-
-	}
+//	public void addHost(String myMacAddress) {
+//		this.hostMacAddress = myMacAddress;
+//		addPlayer(myMacAddress);
+//
+//	}
 
 	public void playerReady(String player, boolean ready) {
 		int playerNbr = players.get(player);
@@ -50,7 +50,8 @@ public class LobbyModel {
 	}
 
 	public void createGameSession() {
-		GameSession gameSession = new GameSession(players, hostMacAddress);
+//		GameSession gameSession = new GameSession(players, hostMacAddress);
+		GameSession gameSession = new GameSession(players);
 		new GameSessionController(gameSession);
 	}
 
@@ -61,13 +62,9 @@ public class LobbyModel {
 	public void addPlayer(String macAddress) {
 		// connect mac id with player
 		players.put(macAddress, players.size());
-		// for (int i = 0; i < macAddress.size(); i++) {
-		// players.put(macAddress.get(i), (Integer) i);
-		// }
 	}
 
 	public boolean isMaxPlayersConnected() {
 		return players.keySet().size() == maxPlayers;
 	}
-
 }

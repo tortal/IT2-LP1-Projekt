@@ -24,7 +24,7 @@ public class LobbyController implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if (model.isHost()) {
+		if (Player.getInstance().isHost()) {
 			Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
@@ -93,11 +93,6 @@ public class LobbyController implements Listener {
 				this.model = lModel;
 			}
 		}
-	}
-
-	private void createGameSession() {
-		GameSession gameSession = new GameSession();
-		new GameSessionController(gameSession);
 	}
 
 	public LobbyModel getModel() {

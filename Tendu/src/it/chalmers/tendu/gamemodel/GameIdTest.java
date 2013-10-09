@@ -17,7 +17,5 @@ public class GameIdTest {
 		GameId game = games.get(0);
 		assertTrue(game == GameId.NUMBER_GAME);
 		assertTrue(game != GameId.SHAPES_GAME);
-
 	}
-
 }
