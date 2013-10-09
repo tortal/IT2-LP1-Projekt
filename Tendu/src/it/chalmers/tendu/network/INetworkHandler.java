@@ -33,6 +33,12 @@ public interface INetworkHandler {
 	/** Returns the units mac address */
 	public String getMacAddress();
 
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onPause();
+
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onResume();
+
 //	/**
 //	 * Search for active teams. 
 //	 */

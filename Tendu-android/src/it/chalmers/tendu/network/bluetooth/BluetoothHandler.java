@@ -72,6 +72,7 @@ public class BluetoothHandler extends NetworkHandler {
 		connection = new Connection(this.context);
 		availableDevices = new HashSet<BluetoothDevice>();
 		connectedDevices = new HashSet<BluetoothDevice>();
+		
 		registerBroadcastReceiver();
 
 	}
@@ -349,6 +350,16 @@ public class BluetoothHandler extends NetworkHandler {
 		connection.shutdown();
 	}
 
+	@Override
+	public void onPause() {
+		context.unregisterReceiver(mReceiver);
+	}
+	
+	@Override
+	public void onResume() {
+		registerBroadcastReceiver();
+	}
+	
 	// Test Method
 	public void testStuff() {
 		connection.broadcastMessage(new EventMessage(C.Tag.TEST,

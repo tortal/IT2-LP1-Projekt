@@ -135,10 +135,12 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 	@Override
 	public void pause() {
+		networkHandler.onPause();
 	}
 
 	@Override
 	public void resume() {
+		networkHandler.onResume();
 
 	}
 

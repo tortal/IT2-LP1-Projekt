@@ -163,12 +163,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	//	@Override
 	public void onResume() {
+		Log.d(TAG, "ON RESUME");
 		/* register the broadcast receiver with the intent values to be matched */
 		context.registerReceiver(mReceiver, mIntentFilter);
 	}
 
 	//	@Override
-	protected void onPause() {
+	public void onPause() {
+		Log.d(TAG, "ON PAUSE");
 		/* unregister the broadcast receiver */
 		context.unregisterReceiver(mReceiver);
 	}
@@ -244,6 +246,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
 			//new StartKryoNetServerTask().execute(); 
 			startKryoNetServer();
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 				
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
@@ -344,7 +347,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				}
 			}
 		});
-		sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 	}
 	
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
