@@ -335,7 +335,15 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			e.printStackTrace();
 		}
 
-		server.addListener(networkMessageListener);
+
+		server.addListener(new Listener() {
+			public void received (Connection connection, Object object) {
+				if (object instanceof EventMessage) {
+					EventMessage request = (EventMessage)object;
+					Log.d(TAG, "Received: " + request.toString());
+				}
+			}
+		});
 		sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 	}
 	
@@ -355,7 +363,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				e.printStackTrace();
 			}
 
-			client.addListener(networkMessageListener);
+			client.addListener(new Listener() {
+				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
+					if (object instanceof EventMessage) {
+						EventMessage request = (EventMessage)object;
+						Log.d(TAG, "Received: " + request.toString());
+					}
+				}
+			});
 			return null;
 		}
 	}
@@ -367,15 +382,5 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(C.class);
 		kryo.register(C.Msg.class);
 		kryo.register(C.Tag.class);
-	}
-	
-	private Listener networkMessageListener = new Listener() {
-		public void received (Connection connection, Object object) {
-			if (object instanceof EventMessage) {
-				EventMessage message = (EventMessage)object;
-				toastMessage(message);
-				Log.d(TAG, "Received: " + message.toString() + " from: " + connection.getRemoteAddressTCP() + ", " + connection);
-			}
-		}
-	};
+	}	
 }
