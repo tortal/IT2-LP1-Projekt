@@ -41,12 +41,12 @@ public class GameSession {
 		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
 		} // TODO add more lvls
-//		} else if (currentLvl < 10) {
-//			difficulty = Difficulty.TWO;
-//		}
-			else {
-				difficulty = Difficulty.TWO;
-			}
+		// } else if (currentLvl < 10) {
+		// difficulty = Difficulty.TWO;
+		// }
+		else {
+			difficulty = Difficulty.TWO;
+		}
 		return MiniGameFactory.createGameId(difficulty);
 	}
 
@@ -96,6 +96,6 @@ public class GameSession {
 	}
 
 	public void miniGameLost() {
-		// as host go back to lobby
+		currentLvl = 1;
 	}
 }

@@ -60,6 +60,10 @@ public class GameSessionController implements Listener {
 			}
 			if (message.msg == C.Msg.GAME_LOST){
 				gameSession.miniGameLost();
+				MiniGame miniGame = gameSession.getNextMiniGame();
+				gameSession.setCurrentMiniGame(miniGame);
+				EventMessage eventMessage = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				EventBus.INSTANCE.broadcast(eventMessage);
 			}
 		}
 	}
