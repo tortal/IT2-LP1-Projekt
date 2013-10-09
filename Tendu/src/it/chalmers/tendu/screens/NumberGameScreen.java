@@ -193,8 +193,13 @@ public class NumberGameScreen extends GameScreen {
 		// TODO maybe not the best solution...
 		// model = (NumberGame) game.gameSession.currentMiniGame;
 
+
 		if (controller.getModel().checkGameState() != GameState.RUNNING)
+
+		if (model.checkGameState() != GameState.RUNNING)
+
 			return;
+
 		
 		if(controller.getModel().checkSound()){
 			playSound();
@@ -206,7 +211,7 @@ public class NumberGameScreen extends GameScreen {
 			if (input.isTouchedUp()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				tendu.getCamera().unproject(touchPos);
-
+	
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
@@ -217,11 +222,11 @@ public class NumberGameScreen extends GameScreen {
 					circle.scale = 1;
 				}
 			}
-
+	
 			if (input.isTouchedDown()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				tendu.getCamera().unproject(touchPos);
-
+	
 				for (NumberCircle circle : numberCircles) {
 					if (circle.collided(touchPos)) {
 						circle.scale = 1.5f;
@@ -230,7 +235,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 	}
-	
+
 	private NumberGame getModel() {
 		return controller.getModel();
 	}

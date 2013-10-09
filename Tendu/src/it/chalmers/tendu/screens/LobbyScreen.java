@@ -43,6 +43,9 @@ public class LobbyScreen implements Screen {
 	private void initHost() {
 		Player.getInstance().setHost(true);
 		tendu.getNetworkHandler().hostSession();
+		
+		String myMac = Player.getInstance().getMac();
+		lobbyController.getModel().addPlayer(myMac);
 	}
 
 	private void initClient() {
