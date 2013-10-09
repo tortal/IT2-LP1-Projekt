@@ -40,9 +40,13 @@ public class GameSession {
 	private GameId getNextGameId() {
 		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
-		} else if (currentLvl < 10) {
-			difficulty = Difficulty.TWO;
-		}
+		} // TODO add more lvls
+//		} else if (currentLvl < 10) {
+//			difficulty = Difficulty.TWO;
+//		}
+			else {
+				difficulty = Difficulty.TWO;
+			}
 		return MiniGameFactory.createGameId(difficulty);
 	}
 
