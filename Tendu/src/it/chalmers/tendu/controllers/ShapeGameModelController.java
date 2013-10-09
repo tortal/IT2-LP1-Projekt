@@ -8,6 +8,7 @@ import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
@@ -26,7 +27,9 @@ public class ShapeGameModelController implements Listener {
 	private final String TAG = "ShapeGameModelController";
 	private GameSession gameSession;
 	private Tendu tendu;
-	// TODO: not sure if all controllers need tendu, perhaps only gamesessioncontroller.
+
+	// TODO: not sure if all controllers need tendu, perhaps only
+	// gamesessioncontroller.
 
 	public ShapeGameModelController(Tendu tendu, GameSession gameSession) {
 		this.tendu = tendu;
@@ -53,10 +56,10 @@ public class ShapeGameModelController implements Listener {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.ACCESS_MODEL) {
 			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
+			if (message.gameId == GameId.SHAPES_GAME) {
+				ShapesGame game = (ShapesGame) gameSession.currentMiniGame;
+				if (message.msg == C.Msg.LOCK_ATTEMPT) {
+					
 					gameSession.setCurrentMiniGame(game);
 					message = new EventMessage(Tag.COMMAND_AS_HOST,
 							Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
