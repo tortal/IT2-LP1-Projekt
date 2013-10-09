@@ -45,16 +45,16 @@ public class Tendu implements ApplicationListener {
 	@Override
 	public void create() {
 
-		//String mac = networkHandler.getMacAddress();
-		//Player.getInstance().setMac(mac);
-		//Gdx.app.log(TAG, Player.getInstance().getMac());
+		String mac = networkHandler.getMacAddress();
+		Player.getInstance().setMac(mac);
+		Gdx.app.log(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
 
-		//setScreen(new MainMenuScreen(this));
+		 setScreen(new MainMenuScreen(this));
 
-		 setScreen(new ShapesGameScreen(this, new ShapesGame(0,
-		 Constants.Difficulty.ONE, null)));
+		 //setScreen(new ShapesGameScreen(this, new ShapesGame(0,
+		 //Constants.Difficulty.ONE, null)));
 
 		// create an inputController and register it with Gdx
 		input = new InputController();

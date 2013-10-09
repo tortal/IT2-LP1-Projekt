@@ -67,7 +67,7 @@ public class GameSessionController implements Listener {
 						EventBus.INSTANCE.broadcast(message);
 					} else {
 						gameSession.setCurrentMiniGame(game);
-						message = new EventMessage(Tag.COMMAND_AS_HOST,
+						message = new EventMessage(Player.getInstance().getMac(),Tag.COMMAND_AS_HOST,
 								Msg.REMOVE_TIME, GameId.NUMBER_GAME, null);
 						EventBus.INSTANCE.broadcast(message);
 					}

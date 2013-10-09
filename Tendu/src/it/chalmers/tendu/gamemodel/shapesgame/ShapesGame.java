@@ -27,7 +27,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class ShapesGame extends MiniGame {
 
-	private final static int PLAYER_COUNT = 4;
+	private final static int PLAYER_COUNT = 2;
 	private final static int LOCK_SIZE = 4;
 
 	/**

@@ -6,6 +6,7 @@ import it.chalmers.tendu.controllers.ShapeGameModelController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.tbd.C;
@@ -23,9 +24,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ShapesGameScreen extends GameScreen {
 
-	private static final int PLAYER_NUM = 0;
+	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private ShapesGame model;
+	//private ShapesGame model;
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -37,13 +38,14 @@ public class ShapesGameScreen extends GameScreen {
 
 	public ShapesGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
-		this.model = (ShapesGame) model;
-		controller = new ShapeGameModelController(this.model);
+		controller = new ShapeGameModelController((ShapesGame) model);
 		this.shapeRenderer = new ShapeRenderer();
+
+		player_num = controller.getModel().getplayerNbr();
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
-		for (Shape s : this.model.getAllInventory().get(0)) {
+		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
 			sgs.moveShape(x, 150);
 			shapes.add(sgs);
@@ -52,7 +54,7 @@ public class ShapesGameScreen extends GameScreen {
 
 		locks = new ArrayList<GraphicalShape>();
 		x = 150;
-		for (Shape s : this.model.getLock(0).getLockSequence()) {
+		for (Shape s : controller.getModel().getLock(player_num).getLockSequence()) {
 			GraphicalShape sgs = new GraphicalShape(s);
 			sgs.moveShape(x, 300);
 			locks.add(sgs);
@@ -70,7 +72,7 @@ public class ShapesGameScreen extends GameScreen {
 
 			// Adds shapes to the gui that are no longer part
 			// of the model.
-			for (Shape s : this.model.getAllInventory().get(0)) {
+			for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 				if (!shapes.contains(new GraphicalShape(s))) {
 					shapes.add(new GraphicalShape(s));
 				}
@@ -80,7 +82,7 @@ public class ShapesGameScreen extends GameScreen {
 			// model.
 			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
 			for (GraphicalShape gs : shapes) {
-				if (!this.model.getAllInventory().get(PLAYER_NUM)
+				if (!controller.getModel().getAllInventory().get(player_num)
 						.contains(gs.getShape())) {
 					removeList.add(gs);
 				}
@@ -151,18 +153,19 @@ public class ShapesGameScreen extends GameScreen {
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			if (controller.getModel().insertShapeIntoSlot(PLAYER_NUM,
+			if (controller.getModel().insertShapeIntoSlot(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
 				rightShapeSound.play();
 				return true;
 			}
 			List<Object> content = new ArrayList<Object>();
-			content.add(PLAYER_NUM);
+			content.add(player_num);
 			content.add(lock);
 			content.add(shape);
-			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.ACCESS_MODEL,
-					C.Msg.LOCK_ATTEMPT, content));
+			EventBus.INSTANCE
+					.broadcast(new EventMessage(Player.getInstance().getMac(),
+							C.Tag.ACCESS_MODEL, C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(), content));
 		}
 		return false;
 

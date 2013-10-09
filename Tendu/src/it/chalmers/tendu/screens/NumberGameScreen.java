@@ -7,6 +7,7 @@ import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -216,7 +217,7 @@ public class NumberGameScreen extends GameScreen {
 					if (circle.collided(touchPos)) {
 						Gdx.input.vibrate(25);
 						EventBus.INSTANCE.broadcast(new EventMessage(
-								C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model
+								Player.getInstance().getMac(), C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model
 										.getGameId(), circle.getNumber()));
 					}
 					circle.scale = 1;
