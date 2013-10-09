@@ -22,6 +22,7 @@ public class GameSessionController implements Listener {
 	public GameSessionController(GameSession gameSession) {
 		this.gameSession = gameSession;
 		EventBus.INSTANCE.addListener(this);
+		gameSession.nextScreen();
 	}
 
 	private GameSessionController() {
