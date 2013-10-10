@@ -383,6 +383,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (object instanceof EventMessage) {
 					EventMessage request = (EventMessage)object;
 					Log.d(TAG, "Received: " + request.toString());
+					toastMessage(request);
 				}
 			}
 			@Override
@@ -416,6 +417,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					if (object instanceof EventMessage) {
 						EventMessage request = (EventMessage)object;
 						Log.d(TAG, "Received: " + request.toString());
+						toastMessage(request);
 					}
 				}
 				@Override
