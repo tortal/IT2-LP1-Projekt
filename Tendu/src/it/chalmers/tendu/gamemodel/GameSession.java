@@ -15,7 +15,7 @@ public class GameSession {
 
 	// public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
-	private int currentLvl = 1;
+	private int currentLvl;
 	private Difficulty difficulty = Difficulty.ONE;
 	/**
 	 * Integer = player id String = player MacAddress
@@ -28,6 +28,7 @@ public class GameSession {
 	// hostMacAddress = hostMac;
 	// }
 	public GameSession(Map<String, Integer> players) {
+		currentLvl = 1;
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
