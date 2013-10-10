@@ -54,15 +54,15 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	}
 
 	protected void toastMessage(final EventMessage message) {
-		Gdx.app.postRunnable(new Runnable() {
+		//Gdx.app.postRunnable(new Runnable() {
 
-			@Override
-			public void run() {
+			//@Override
+			//public void run() {
 				Toast toast = Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
 				toast.show();
-			}
-		});
+		//	}
+	//	});
 	}
 
 	/** Translates the network error codes into something interpretable */
