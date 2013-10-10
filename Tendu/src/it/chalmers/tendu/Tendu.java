@@ -73,7 +73,6 @@ public class Tendu implements ApplicationListener, Listener {
 	public void dispose() {
 		spriteBatch.dispose();
 		networkHandler.destroy();
-		
 	}
 
 	// **The games main loop, everything but early setup happens here
