@@ -23,6 +23,7 @@ public class GameSession {
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
 
+	@SuppressWarnings("unused")
 	private GameSession() {
 		// For reflection.
 	}
