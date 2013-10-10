@@ -297,6 +297,17 @@ public class BluetoothHandler extends NetworkHandler {
 		// unregister during
 		// onDestroy
 	}
+	
+	private void unregisterBroadcastReceiver() {
+		/* unregister the broadcast receiver */
+		if (mReceiver != null) {
+			try {
+				context.unregisterReceiver(mReceiver);				
+			} catch(IllegalArgumentException e) {
+				Log.d(TAG, "Receiver not registered, can't be deleted");
+			}
+		}
+	}
 
 	// Create a BroadcastReceiver for ACTION_FOUND
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -344,9 +355,7 @@ public class BluetoothHandler extends NetworkHandler {
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
 		removeTenduFromDeviceName();
-		if (mReceiver != null) {
-			context.unregisterReceiver(mReceiver);
-		}
+		unregisterBroadcastReceiver();
 		connection.shutdown();
 	}
 

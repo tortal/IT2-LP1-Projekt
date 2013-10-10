@@ -222,7 +222,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private void unregisterBroadcastReceiver() {
 		/* unregister the broadcast receiver */
 		if (mReceiver != null) {
-			context.unregisterReceiver(mReceiver);
+			try {
+				context.unregisterReceiver(mReceiver);				
+			} catch(IllegalArgumentException e) {
+				Log.d(TAG, "Receiver not registered, can't be deleted");
+			}
 		}
 	}
 
@@ -426,6 +430,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				@Override
 				public void disconnected(Connection connection) {
 					connection.close();
+					client.stop();
 					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 					resetNetwork();
 					//client.close();
