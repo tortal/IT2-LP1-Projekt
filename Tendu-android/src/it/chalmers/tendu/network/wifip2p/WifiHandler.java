@@ -325,9 +325,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		removeWifiGroup();
 
 		if (server != null) {
+			server.stop();
 			server.close();
 		}
 		if (client != null) {
+			client.stop();
 			client.close();
 		}
 	}
