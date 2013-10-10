@@ -422,6 +422,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				e.printStackTrace();
 			}
 
+			client.setKeepAliveTCP(100);
 			client.addListener(new Listener() {
 				@Override
 				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
