@@ -122,11 +122,15 @@ public class ShapesGame extends MiniGame {
 		}
 	}
 
+	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape){
+		return allLocks.get(player).fitsIntoSlot(shape, lockShape);
+	}
+	
 	/**
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD to be inserted into the players �. ======= to
+	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
 	 *            be inserted into the players slot. >>>>>>>
 	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.

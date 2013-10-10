@@ -44,8 +44,10 @@ public class ShapeGameModelController implements Listener {
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					message.tag = C.Tag.COMMAND_AS_HOST;
-					EventBus.INSTANCE.broadcast(message);
+					if (fitsIntoSlot(message.content)) {
+						message.tag = C.Tag.COMMAND_AS_HOST;
+						EventBus.INSTANCE.broadcast(message);
+					}
 				}
 			}
 		}
@@ -65,12 +67,21 @@ public class ShapeGameModelController implements Listener {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPES_GAME) {
-				intoSlot(message.content);
+				insertIntoSlot(message.content);
 			}
 		}
 	}
 
-	private boolean intoSlot(Object content) {
+	private boolean fitsIntoSlot(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape lockShape = (Shape) messageContent.get(1);
+		Shape shape = (Shape) messageContent.get(2);
+
+		return model.shapeFitIntoLock(player, shape, lockShape);
+	}
+
+	private boolean insertIntoSlot(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape lockShape = (Shape) messageContent.get(1);
