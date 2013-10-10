@@ -69,6 +69,35 @@ public class NumberGame extends MiniGame {
 		return false;
 	}
 
+	public ArrayList<Integer> getAnswerList() {
+		return answerList;
+	}
+
+	/**
+	 * Return a players list of numbers.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public ArrayList<Integer> getMyList() {
+		int playerNbr = getplayerNbr();
+		return playerLists.get(playerNbr);
+		// return answerList;
+	}
+
+	/**
+	 * Returns the numbers that have been answered correctly.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getAnsweredNbrs() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < nbrCorrectAnswer; i++) {
+			list.add(answerList.get(i));
+		}
+		return list;
+	}
+
 	/**
 	 * Returns a list with random numbers from 1-99 that represents the correct
 	 * answer in the game.
@@ -97,16 +126,16 @@ public class NumberGame extends MiniGame {
 	 */
 	private Map<Integer, ArrayList<Integer>> divideAndConquer(
 			ArrayList<Integer> list) {
-
+	
 		Map<Integer, ArrayList<Integer>> newMap = new HashMap<Integer, ArrayList<Integer>>();
-
+	
 		ArrayList<Integer> temp = new ArrayList<Integer>(answerList);
-
+	
 		Collections.shuffle(temp);
-
+	
 		for (int i = 0; i < playerCount; i++) {
 			ArrayList<Integer> newList = new ArrayList<Integer>();
-
+	
 			for (int j = 0; j < answerList.size() / playerCount; j++) {
 				Integer r = temp.remove(0);
 				newList.add(r);
@@ -115,7 +144,7 @@ public class NumberGame extends MiniGame {
 			newMap.put(i, newList);
 		}
 		return newMap;
-
+	
 	}
 
 	/**
@@ -135,35 +164,6 @@ public class NumberGame extends MiniGame {
 			}
 		}
 		Collections.shuffle(list);
-	}
-
-	public ArrayList<Integer> getAnswerList() {
-		return answerList;
-	}
-
-	/**
-	 * Return a players list of numbers.
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public ArrayList<Integer> getMyList() {
-		int playerNbr = getplayerNbr();
-		return playerLists.get(playerNbr);
-		// return answerList;
-	}
-
-	/**
-	 * Returns the numbers that have been answered correctly.
-	 * 
-	 * @return
-	 */
-	public ArrayList<Integer> getAnsweredNbrs() {
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < nbrCorrectAnswer; i++) {
-			list.add(answerList.get(i));
-		}
-		return list;
 	}
 
 }
