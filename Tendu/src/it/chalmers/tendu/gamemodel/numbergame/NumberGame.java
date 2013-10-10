@@ -36,6 +36,16 @@ public class NumberGame extends MiniGame {
 			this.setEndTime(30000);
 			answerList = createAnswer(playerCount*2);
 			break;
+		case THREE:
+			this.setEndTime(15000);
+			answerList = createAnswer(playerCount);
+			break;
+		case FOUR:
+			this.setEndTime(15000);
+			answerList = createAnswer(playerCount*2);
+		case FIVE:
+			this.setEndTime(0);
+			answerList = createAnswer(playerCount*2);
 		default:
 			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");

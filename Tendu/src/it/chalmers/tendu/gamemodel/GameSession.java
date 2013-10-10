@@ -40,12 +40,14 @@ public class GameSession {
 	private GameId getNextGameId() {
 		if (currentLvl < 5) {
 			difficulty = Difficulty.ONE;
-		} // TODO add more lvls
-		// } else if (currentLvl < 10) {
-		// difficulty = Difficulty.TWO;
-		// }
-		else {
+		} else if (currentLvl < 10) {
 			difficulty = Difficulty.TWO;
+		} else if (currentLvl < 15) {
+			difficulty = Difficulty.THREE;
+		} else if (currentLvl < 20) {
+			difficulty = Difficulty.FOUR;
+		} else {
+			difficulty = Difficulty.FIVE;
 		}
 		return MiniGameFactory.createGameId(difficulty);
 	}
@@ -70,7 +72,7 @@ public class GameSession {
 
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
-		nextScreen();
+		nextGameScreen();
 	}
 
 	public Map<String, Integer> getPlayers() {
@@ -85,7 +87,7 @@ public class GameSession {
 		return (players.size() == playersWaitingToStart.size());
 	}
 
-	public void nextScreen() {
+	public void nextGameScreen() {
 		EventMessage message = new EventMessage(C.Tag.TO_SELF,
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
