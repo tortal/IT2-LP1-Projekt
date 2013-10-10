@@ -2,20 +2,19 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.controllers.GameSessionController;
 
-import java.util.ArrayList;
+import java.awt.Container;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LobbyModel {
 
 	public Map<String, Integer> players;
-	public List<String> playerReady;
+	public Map<String, Boolean> playerReady;
 	public int maxPlayers;
 
 	public LobbyModel(int maxPlayers) {
 		players = new HashMap<String, Integer>();
-		playerReady = new ArrayList<String>();
+		playerReady = new HashMap<String, Boolean>();
 		this.maxPlayers = maxPlayers;
 	}
 
@@ -24,14 +23,19 @@ public class LobbyModel {
 	private LobbyModel() {
 	}
 
-	public void playerReady(String player) {
-		if (!playerReady.contains(player)) {
-			playerReady.add(player);
-		}
+	public void setPlayerReady(String mac) {
+		playerReady.put(mac, true);
 	}
 
 	public boolean arePlayersReady() {
-		return (players.size() == playerReady.size());
+
+		for (String p : players.keySet()) {
+			if (playerReady.get(p) == null || playerReady.get(p) == false)
+				return false;
+		}
+
+		// All players are ready
+		return true;
 	}
 
 	public void createGameSession() {
