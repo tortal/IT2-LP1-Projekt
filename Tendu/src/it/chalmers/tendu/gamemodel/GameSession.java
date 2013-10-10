@@ -23,6 +23,10 @@ public class GameSession {
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
 
+	private GameSession() {
+		// TODO Auto-generated constructor stub
+	}
+
 	// public GameSession(Map<String, Integer> players, String hostMac) {
 	// this.players = players;
 	// hostMacAddress = hostMac;
@@ -33,8 +37,40 @@ public class GameSession {
 		currentMiniGame = getNextMiniGame();
 	}
 
-	private GameSession() {
-		// TODO Auto-generated constructor stub
+	public Map<String, Integer> getPlayers() {
+		return players;
+	}
+
+	public void playerWaitingToStart(String macAddress) {
+		playersWaitingToStart.put(macAddress, true);
+	}
+
+	public boolean allWaiting() {
+		return (players.size() == playersWaitingToStart.size());
+	}
+
+	public void miniGameWon() {
+		currentLvl++;
+	}
+
+	public void miniGameLost() {
+		currentLvl = 1;
+	}
+
+	public void setCurrentMiniGame(MiniGame miniGame) {
+		currentMiniGame = miniGame;
+		nextGameScreen();
+	}
+
+	public void nextGameScreen() {
+		EventMessage message = new EventMessage(C.Tag.TO_SELF,
+				C.Msg.CREATE_SCREEN, currentMiniGame);
+		EventBus.INSTANCE.broadcast(message);
+	}
+
+	public MiniGame getNextMiniGame() {
+		return getMiniGame(getNextGameId());
+	
 	}
 
 	private GameId getNextGameId() {
@@ -55,49 +91,13 @@ public class GameSession {
 	private MiniGame getMiniGame(GameId gameId) {
 		int bonusTime = 0;
 		Gdx.app.log("gameId", " " + gameId);
-
+	
 		if (currentMiniGame != null) {
 			bonusTime = (int) currentMiniGame.getTimeLeft();
 		}
-
+	
 		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
 				difficulty, players);
 		return currentMiniGame;
-	}
-
-	public MiniGame getNextMiniGame() {
-		return getMiniGame(getNextGameId());
-
-	}
-
-	public void setCurrentMiniGame(MiniGame miniGame) {
-		currentMiniGame = miniGame;
-		nextGameScreen();
-	}
-
-	public Map<String, Integer> getPlayers() {
-		return players;
-	}
-
-	public void playerWaitingToStart(String macAddress) {
-		playersWaitingToStart.put(macAddress, true);
-	}
-
-	public boolean allWaiting() {
-		return (players.size() == playersWaitingToStart.size());
-	}
-
-	public void nextGameScreen() {
-		EventMessage message = new EventMessage(C.Tag.TO_SELF,
-				C.Msg.CREATE_SCREEN, currentMiniGame);
-		EventBus.INSTANCE.broadcast(message);
-	}
-
-	public void miniGameWon() {
-		currentLvl++;
-	}
-
-	public void miniGameLost() {
-		currentLvl = 1;
 	}
 }
