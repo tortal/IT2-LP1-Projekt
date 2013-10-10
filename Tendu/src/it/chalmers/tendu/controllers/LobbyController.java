@@ -107,4 +107,9 @@ public class LobbyController implements Listener {
 	public LobbyModel getModel() {
 		return model;
 	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
 }
