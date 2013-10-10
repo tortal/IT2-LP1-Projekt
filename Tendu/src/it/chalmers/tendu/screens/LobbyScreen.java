@@ -94,8 +94,9 @@ public class LobbyScreen implements Screen {
 
 	@Override
 	public void removed() {
-		// TODO Auto-generated method stub
-
+		bigFont.dispose();
+		smallFont.dispose();
+		lobbyController.unregister();
 	}
 
 }

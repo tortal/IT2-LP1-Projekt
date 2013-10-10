@@ -13,15 +13,19 @@ import com.badlogic.gdx.Gdx;
 
 public class GameSession {
 
-	// public String hostMacAddress;
-	public MiniGame currentMiniGame = null;
-	private int currentLvl = 1;
-	private Difficulty difficulty = Difficulty.ONE;
+	public MiniGame currentMiniGame;;
+	private int currentLvl;
+	private Difficulty difficulty;
+	
 	/**
-	 * Integer = player id String = player MacAddress
+	 * Map of players MAC-address (key) and their player number (value).
 	 */
 	private Map<String, Integer> players;
-	private Map<String, Boolean> playersWaitingToStart;
+	
+	/**
+	 * Map of players MAC-addresses that have loaded game resources.
+	 */
+	private Map<String, Boolean> playerIsReady;
 
 	@SuppressWarnings("unused")
 	private GameSession() {
@@ -29,9 +33,11 @@ public class GameSession {
 	}
 
 	public GameSession(Map<String, Integer> players) {
-		this.players = players;
-		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
+		currentLvl = 1;
+		
+		this.players = players;
+		playerIsReady = new HashMap<String, Boolean>();
 	}
 
 	public Map<String, Integer> getPlayers() {
@@ -39,11 +45,11 @@ public class GameSession {
 	}
 
 	public void playerWaitingToStart(String macAddress) {
-		playersWaitingToStart.put(macAddress, true);
+		playerIsReady.put(macAddress, true);
 	}
 
 	public boolean allWaiting() {
-		return (players.size() == playersWaitingToStart.size());
+		return (players.size() == playerIsReady.size());
 	}
 
 	public void miniGameWon() {

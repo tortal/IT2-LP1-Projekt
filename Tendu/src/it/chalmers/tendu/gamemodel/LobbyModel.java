@@ -2,7 +2,6 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.controllers.GameSessionController;
 
-import java.awt.Container;
 import java.util.HashMap;
 import java.util.Map;
 

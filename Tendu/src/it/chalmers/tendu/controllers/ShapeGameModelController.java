@@ -91,4 +91,10 @@ public class ShapeGameModelController implements Listener {
 		}
 	}
 
+	@Override
+	public void unregister() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
