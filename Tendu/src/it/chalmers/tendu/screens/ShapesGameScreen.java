@@ -32,7 +32,6 @@ public class ShapesGameScreen extends GameScreen {
 
 	private GraphicalShape movingShape;
 
-	private Sound rightShapeSound;
 	private ShapeGameModelController controller;
 
 	// For debug

@@ -198,9 +198,6 @@ public class NumberGameScreen extends GameScreen {
 			model = getModel();
 		if (model.checkGameState() != GameState.RUNNING)
 			return;
-		if (controller.getModel().checkSound()) {
-			playSound();
-		}
 		if (time < 240) {
 			time++;
 		} else {

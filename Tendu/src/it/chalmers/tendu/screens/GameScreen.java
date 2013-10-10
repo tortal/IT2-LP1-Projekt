@@ -21,10 +21,6 @@ public abstract class GameScreen implements Screen {
 	private int count; // used to count renders for events that should be
 	private BitmapFont font;
 
-	private Sound completedGameSound;
-	private Sound lostGameSound;
-	private Sound succeededSound;
-
 	// displayed a short time.
 
 	/**
@@ -37,12 +33,7 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-
-		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
-		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-
+		
 		if (model != null) {
 			model.startGame();
 		}
@@ -98,12 +89,6 @@ public abstract class GameScreen implements Screen {
 	 */
 	public void removed() {
 		
-		/**
-		 * dispose sounds
-		 */
-		completedGameSound.dispose();
-		lostGameSound.dispose();
-		succeededSound.dispose();
 	}
 
 	private int calculateTimerWidth() {
@@ -177,25 +162,18 @@ public abstract class GameScreen implements Screen {
 				Constants.SCREEN_HEIGHT / 2 + 5);
 
 	}
-
 	public void showGameResult() {
 		if (model.checkGameState() == GameState.WON) {
 			font.setColor(Color.GREEN);
 			font.scale(2);
 			font.draw(tendu.spriteBatch, "You won!", 300, 300);
 			font.scale(-2);
-			completedGameSound.play();
 		} else if (model.checkGameState() == GameState.LOST) {
 			font.setColor(Color.RED);
 			font.scale(2);
 			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
 			font.scale(-2);
-			lostGameSound.play();
 		}
 	}
 	
-	public void playSound(){
-		succeededSound.play();
-	}
-
 }

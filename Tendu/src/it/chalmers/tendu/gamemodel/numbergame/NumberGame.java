@@ -167,20 +167,7 @@ public class NumberGame extends MiniGame {
 		}
 		return list;
 	}
-	/**
-	 * TODO:
-	 * @return
-	 */
-	public boolean checkSound(){
-		return sound;
-	}
-	/**
-	 * TODO:
-	 * @param sound
-	 */
-	public void setSound(boolean sound){
-		this.sound = sound;
-	}
+
 		
 
 }
