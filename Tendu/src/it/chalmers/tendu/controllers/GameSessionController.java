@@ -40,6 +40,7 @@ public class GameSessionController implements Listener {
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
+
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
 				String macAddress = (String) message.content;
 				gameSession.playerWaitingToStart(macAddress);
@@ -51,18 +52,20 @@ public class GameSessionController implements Listener {
 					EventBus.INSTANCE.broadcast(msg);
 				}
 			}
-			if (message.msg == C.Msg.GAME_WON){
+			if (message.msg == C.Msg.GAME_WON) {
 				gameSession.miniGameWon();
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
-				EventMessage eventMessage = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				EventMessage eventMessage = new EventMessage(
+						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventBus.INSTANCE.broadcast(eventMessage);
 			}
-			if (message.msg == C.Msg.GAME_LOST){
+			if (message.msg == C.Msg.GAME_LOST) {
 				gameSession.miniGameLost();
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
-				EventMessage eventMessage = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				EventMessage eventMessage = new EventMessage(
+						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventBus.INSTANCE.broadcast(eventMessage);
 			}
 		}
@@ -70,27 +73,30 @@ public class GameSessionController implements Listener {
 
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
+
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
 			}
-			if (message.msg == C.Msg.GAME_WON){
+			if (message.msg == C.Msg.GAME_WON) {
 				gameSession.miniGameWon();
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 			}
-			if (message.msg == C.Msg.GAME_LOST){
+			if (message.msg == C.Msg.GAME_LOST) {
 				gameSession.miniGameLost();
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
-			if(message.msg == C.Msg.LOAD_THIS_GAME){
+
+			if (message.msg == C.Msg.LOAD_THIS_GAME) {
 				MiniGame miniGame = (MiniGame) message.content;
 				gameSession.setCurrentMiniGame(miniGame);
 			}
 			if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
-				EventBus.INSTANCE.broadcast(message);			}
+				EventBus.INSTANCE.broadcast(message);
+			}
 		}
 	}
 }

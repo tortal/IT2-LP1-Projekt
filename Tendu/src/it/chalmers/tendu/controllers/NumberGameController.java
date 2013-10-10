@@ -1,28 +1,25 @@
 package it.chalmers.tendu.controllers;
 
-import com.badlogic.gdx.Gdx;
-
 import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameSession;
-import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
+
+import com.badlogic.gdx.Gdx;
 
 public class NumberGameController implements MiniGameController {
 
 	private static final String TAG = "NumberGameController";
 	private NumberGame numberGame;
-	
+
 	public NumberGameController(NumberGame model) {
 		numberGame = model;
 		EventBus.INSTANCE.addListener(this);
-		
+
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public class NumberGameController implements MiniGameController {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
-			} else if(message.msg == C.Msg.START_MINI_GAME) {
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
 		}
