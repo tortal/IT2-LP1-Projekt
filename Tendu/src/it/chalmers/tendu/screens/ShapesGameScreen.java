@@ -73,28 +73,6 @@ public class ShapesGameScreen extends GameScreen {
 		if (model.checkGameState() == GameState.RUNNING) {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
-			// Adds shapes to the gui that are no longer part
-			// of the model.
-			for (Shape s : controller.getModel().getAllInventory()
-					.get(player_num)) {
-				if (!shapes.contains(new GraphicalShape(s))) {
-					shapes.add(new GraphicalShape(s));
-				}
-			}
-
-			// Removes shapes that are no longer parts of the
-			// model.
-			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
-			for (GraphicalShape gs : shapes) {
-				if (!controller.getModel().getAllInventory().get(player_num)
-						.contains(gs.getShape())) {
-					removeList.add(gs);
-				}
-			}
-
-			for (GraphicalShape gs : removeList)
-				shapes.remove(gs);
-
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
 				sgs.renderShape(shapeRenderer);
@@ -199,7 +177,9 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				movingShape.moveShape(touchPos.x, touchPos.y);
+				movingShape.moveShape(touchPos.x
+						- movingShape.getBounds().width / 2, touchPos.y
+						- movingShape.getBounds().height / 2);
 			}
 		}
 	}
@@ -210,11 +190,32 @@ public class ShapesGameScreen extends GameScreen {
 	}
 
 	private void updateShapesFromModel() {
+		// Adds shapes to the gui that are no longer part
+		// of the model.
+		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
+			if (!shapes.contains(new GraphicalShape(s))) {
+				shapes.add(new GraphicalShape(s));
+			}
+		}
+
+		// Removes shapes that are no longer parts of the
+		// model.
+		List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+		for (GraphicalShape gs : shapes) {
+			if (!controller.getModel().getAllInventory().get(player_num)
+					.contains(gs.getShape())) {
+				removeList.add(gs);
+			}
+		}
+
+		for (GraphicalShape gs : removeList)
+			shapes.remove(gs);
 
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		boolean result = false;
+		updateShapesFromModel();
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (controller.getModel().insertShapeIntoSlot(player_num,
 					shape.getShape(), lock.getShape())) {
