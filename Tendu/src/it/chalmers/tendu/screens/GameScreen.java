@@ -56,11 +56,6 @@ public abstract class GameScreen implements Screen {
 			// TODO Maybe unnecessary
 			return;
 		} else if (model.checkGameState() == GameState.RUNNING) {
-			// checks if time has run out and if so changes the game state to
-			// lost
-			// TODO maybe not in render, but in tick instead?
-			model.checkGameOver();
-
 			// draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -106,24 +101,17 @@ public abstract class GameScreen implements Screen {
 	 * of time
 	 */
 	private int calculateTimerWidth() {
-		double quota = (double) model.getTimeLeft()
-				/ (double) model.getGameTime();
+//		double quota = (double) model.getTimeLeft()
+//				/ (double) model.getGameTime();
+//		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
+//		return (int) timerWitdth;
+		double quota = (double) model.getRemainingTime()
+				/ (double) model.getStartTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
-
+		//return (int)model.getRemainingTime();
 	}
 
-	// TODO maybe the model could remove time without involving the screen?
-	// TODO not currently used, remove?
-	/**
-	 * Removes time for the user and shows this buy changing color on the timer.
-	 * 
-	 * @param time
-	 */
-	public void loseTime(int time) {
-		count = 60;
-		model.changeTimeWith(-time);
-	}
 
 	// TODO: could probably look better.
 	// TODO: show only connected players
@@ -212,6 +200,16 @@ public abstract class GameScreen implements Screen {
 				lostGameSound.play();
 				playCompletedSound = false;
 			}
+		}
+	}
+	
+	/**
+	 * Called every frame.
+	 * Make sure to call super() from subclass
+	 */
+	public void tick() {
+		if(model.checkGameState() == GameState.RUNNING) {
+			model.decreaseTime(Gdx.graphics.getDeltaTime());
 		}
 	}
 }

@@ -6,7 +6,9 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -22,6 +24,7 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
+	private List<GameResult> gameResults;
 
 	// public GameSession(Map<String, Integer> players, String hostMac) {
 	// this.players = players;
@@ -31,6 +34,7 @@ public class GameSession {
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
+		gameResults = new ArrayList<GameResult>();
 	}
 
 	private GameSession() {
@@ -51,16 +55,15 @@ public class GameSession {
 	}
 
 	private MiniGame getMiniGame(GameId gameId) {
-		int bonusTime = 0;
-		Gdx.app.log("gameId", " " + gameId);
+		int extraTime = 0;
 
-		if (currentMiniGame != null) {
-			bonusTime = (int) currentMiniGame.getTimeLeft();
-		}
+//		if (gameResults.size() > 0) {
+//			extraTime = gameResults.get(gameResults.size()-1).getRemainingTime();
+//		}
 
-		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
+		return MiniGameFactory.createMiniGame(extraTime, gameId,
 				difficulty, players);
-		return currentMiniGame;
+		
 	}
 
 	public MiniGame getNextMiniGame() {
@@ -70,7 +73,6 @@ public class GameSession {
 
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
-		nextScreen();
 	}
 
 	public Map<String, Integer> getPlayers() {
@@ -90,12 +92,17 @@ public class GameSession {
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
 	}
-
-	public void miniGameWon() {
-		currentLvl++;
-	}
-
-	public void miniGameLost() {
-		currentLvl = 1;
+	
+	public void miniGameEnded(GameResult gameResult) {
+		if(gameResult.getGameState() == GameState.WON) {
+			gameResults.add(gameResult);
+		} else {
+			//TODO do something with the results (present to user...)
+			
+			//empty the results list
+			gameResults.clear();
+		}
+		
+		currentLvl = (gameResults.size()+1);
 	}
 }

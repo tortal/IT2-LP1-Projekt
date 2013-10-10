@@ -2,6 +2,8 @@ package it.chalmers.tendu.gamemodel.numbergame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -23,17 +25,17 @@ public class NumberGame extends MiniGame {
 		super();
 	};
 
-	public NumberGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(addTime, difficulty, GameId.NUMBER_GAME, players);
+	public NumberGame(float extraTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(difficulty, GameId.NUMBER_GAME, players);
 		nbrCorrectAnswer = 0;
 		playerCount = players.size();
 		switch (difficulty) {
 		case ONE:
-			this.setEndTime(30000);
+			this.setStartTime(30, extraTime);
 			answerList = createAnswer(playerCount);
 			break;
 		case TWO:
-			this.setEndTime(30000);
+			this.setStartTime(30, extraTime);
 			answerList = createAnswer(playerCount*2);
 			break;
 		default:
@@ -41,6 +43,8 @@ public class NumberGame extends MiniGame {
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
 		}
 		playerLists = divideAndConquer(answerList);
+
+		Gdx.app.log("NumberGame", "Starttid = " + getStartTime());
 
 	}
 
@@ -62,7 +66,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
-				this.changeTimeWith(-3000);
+				this.decreaseTime(3);
 				return false;
 			}
 		}
@@ -164,6 +168,17 @@ public class NumberGame extends MiniGame {
 			}
 		}
 		Collections.shuffle(list);
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		if(checkGameState() == GameState.WON || checkGameState() == GameState.LOST) {
+			float spentTime = (getStartTime()-getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime, getRemainingTime(), getGameState());
+			return result;
+		}
+		
+		return null;
 	}
 
 }

@@ -62,7 +62,7 @@ public class NumberGameScreen extends GameScreen {
 	private void setUpGame() {
 		time = 0;
 		font.scale(2); // scale up font relative to the previous scale, -2
-								// scales it back
+						// scales it back
 
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Integer>();
@@ -145,26 +145,25 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void drawNumberCircles() {
 		shapeRenderer.begin(ShapeType.Circle);
-		
+
 		font.scale(-0.8f);
 		for (int i = 0; i < numberCircles.size(); i++) {
 			drawNumberCircle(numberCircles.get(i));
 		}
 		font.scale(0.8f);
-		
+
 		shapeRenderer.end();
 	}
 
 	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		super.render(); //draws common ui-stuff
+		super.render(); // draws common ui-stuff
 		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
 		if (time < 240) {
 			font.setColor(Color.BLUE);
-			font
-					.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
+			font.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
 			drawNumbers(true);
 
 		} else {
@@ -178,38 +177,36 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
-		// TODO refactor
-		if (model.checkGameState() == GameState.WON
-				|| model.checkGameState() == GameState.LOST) {
-			time++;
-
-			if (time == 360) {
-				if (model.checkGameState() == GameState.WON) {
-					EventMessage message = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.GAME_WON, model.getTimeLeft());
-					EventBus.INSTANCE.broadcast(message);
-				} else if (model.checkGameState() == GameState.LOST) {
-					EventMessage message = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.GAME_LOST, model.getTimeLeft());
-					EventBus.INSTANCE.broadcast(message);
-
-				}
-			}
-		}
 	}
 
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
+		super.tick();
 		// TODO maybe not the best solution...
 		model = getModel();
-
-		if (model.checkGameState() != GameState.RUNNING)
+		if (model.checkGameState() != GameState.RUNNING) {
+			// TODO refactor
+			if (model.checkGameState() == GameState.WON
+					|| model.checkGameState() == GameState.LOST) {
+				time++;
+				
+				//Game is done, broadcast results
+				if (time == 360) {
+						EventMessage message = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.GAME_RESULT, model.getGameResult());
+						EventBus.INSTANCE.broadcast(message);
+				}
+			}
 			return;
+		}
 
 		if (time < 240) {
 			time++;
-		} else {
+			return;
+		}
+
+		if (time == 240) {
 			if (input.isTouchedUp()) {
 				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 				tendu.getCamera().unproject(touchPos);

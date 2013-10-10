@@ -64,7 +64,9 @@ public class NumberGameController implements MiniGameController {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
-			} else if (message.msg == C.Msg.START_MINI_GAME) {
+			} 
+			
+			if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
 		}
@@ -77,7 +79,7 @@ public class NumberGameController implements MiniGameController {
 					// Gdx.app.log(TAG, " Time left = " +
 					// gameSession.currentMiniGame.getTimeLeft());
 				} else if (message.msg == Msg.REMOVE_TIME) {
-					numberGame.changeTimeWith(-3000);
+					numberGame.decreaseTime(3);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
 					numberGame.checkNbr((Integer) message.content);
 				}

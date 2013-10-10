@@ -2,6 +2,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class ShapesGame extends MiniGame {
 	 * settings (player count and lock seqeuence length)
 	 */
 	public ShapesGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(addTime, difficulty, GameId.SHAPES_GAME, players);
+		super(difficulty, GameId.SHAPES_GAME, players);
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
@@ -124,7 +125,7 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD to be inserted into the players �. ======= to
+	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
 	 *            be inserted into the players slot. >>>>>>>
 	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
@@ -232,6 +233,12 @@ public class ShapesGame extends MiniGame {
 	 */
 	public Map<Integer, List<Shape>> getAllInventory() {
 		return allInventory;
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

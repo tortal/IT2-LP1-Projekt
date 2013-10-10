@@ -11,9 +11,8 @@ public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
 	private GameId gameId;
-	private long endTime;
-	private int gameTime;
-	private long pausedTimeLeft;
+	private float remainingTime;
+	private float startTime;
 	/**
 	 * Integer = player id String = player MacAddress
 	 */
@@ -21,23 +20,21 @@ public abstract class MiniGame {
 
 	/** No args constructor for reflection use */
 	protected MiniGame() {
-	};
+	}
 
 	/**
 	 * Creates a new minigame.
 	 * 
 	 * @param addTime
-	 *            The game's maximum time in milliseconds
+	 *            > 0 if extra time should be added
 	 * @param difficulty
 	 *            the game's difficulty
 	 * @param gameId
 	 */
-	public MiniGame(int addTime, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
+	public MiniGame(Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.WAITING;
-		gameTime = 30000 + addTime;
-		setEndTime(gameTime);
 		this.players = players;
 	}
 
@@ -59,48 +56,67 @@ public abstract class MiniGame {
 	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
 	}
+	
+	/**
+	 * Sets total amount of time when game starts 
+	 */
+	public void setStartTime(float gameTime, float extraTime) {
+		startTime = gameTime+extraTime;
+		setRemainingTime(startTime);
+	}
+	
+	public float getStartTime() {
+		return startTime;
+	}
 
 	/**
 	 * Gets the time left.
 	 * 
 	 * @return the time in milliseconds.
 	 */
-	public long getTimeLeft() {
-		if (endTime - System.currentTimeMillis() < 0)
-			gameLost();
-		return (endTime - System.currentTimeMillis());
+	public float getRemainingTime() {
+		return remainingTime;
+	}
+	
+	private void setRemainingTime(float gameTime) {
+		this.remainingTime = gameTime;
 	}
 
 	/**
-	 * Sets the time left.
-	 * 
-	 * @param timeLeft
-	 *            The wanted time in milliseconds.
-	 */
-	public void setEndTime(long time) {
-		endTime = System.currentTimeMillis() + time;
-	}
-
-	/**
-	 * Changes the time.
+	 * Decreases the time.
 	 * 
 	 * @param time
-	 *            Changes the time with requested amounts of milliseconds. Could
-	 *            be positive or negative number.
+	 *            Decrease the time with requested amounts (positive number) of seconds.
+	 *            
 	 */
-	public void changeTimeWith(int time) {
-		setEndTime(getTimeLeft() + time);
-		if (getTimeLeft() <= 0) {
-			gameLost();
-		}
+	public void decreaseTime(float time) {
+		if(time < 0) return;
+		setRemainingTime(getRemainingTime()-time);
 	}
+	
+	/**
+	 * Increases the time.
+	 * 
+	 * @param time
+	 *            Increase the time with requested amounts (positive number) of seconds.
+	 *            
+	 */
+	public void increaseTime(float time) {
+		if(time < 0)
+		setRemainingTime(getRemainingTime()+time);
+	}
+	
+	
 
 	/**
-	 * Gets the state of the game.
+	 * Checks and returns the state of the game.
 	 * 
 	 * @return the game's state
 	 */
 	public GameState checkGameState() {
+		if(getRemainingTime() <= 0) {
+			gameLost();
+		}
 		return state;
 	}
 
@@ -139,7 +155,6 @@ public abstract class MiniGame {
 	 * Starts the game
 	 */
 	public void startGame() {
-		setEndTime(gameTime);
 		state = GameState.RUNNING;
 	}
 
@@ -147,27 +162,14 @@ public abstract class MiniGame {
 	 * Pauses the game
 	 */
 	public void pauseGame() {
-		pausedTimeLeft = getTimeLeft();
 	}
 
 	/**
 	 * Resume the game
 	 */
 	public void resumeGame() {
-		setEndTime(pausedTimeLeft);
 	}
-
-	/**
-	 * Checks if the game is over. (out of time)
-	 */
-	public void checkGameOver() {
-		if (getTimeLeft() < 0)
-			state = GameState.LOST;
-	}
-
-	public long getGameTime() {
-		return gameTime;
-	}
+	
 	/**
 	 * Get the player number corresponding to your own macAddress.
 	 * @return
@@ -184,5 +186,14 @@ public abstract class MiniGame {
 	 */
 	public int getNumberOfPlayers() {
 		return players.size();
+	}
+	
+	/**
+	 * Returns the results of the game
+	 */
+	public abstract GameResult getGameResult();
+	
+	protected GameState getGameState() {
+		return state;
 	}
 }

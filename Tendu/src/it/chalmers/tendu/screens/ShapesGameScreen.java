@@ -126,7 +126,6 @@ public class ShapesGameScreen extends GameScreen {
 
 				}
 			}
-			model.checkGameOver();
 		} else {
 			showGameResult();
 		}
@@ -135,6 +134,7 @@ public class ShapesGameScreen extends GameScreen {
 	/** All game logic goes here (within the model...) */
 	@Override
 	public void tick(InputController input) {
+		super.tick();
 		// TODO Auto-generated method stub
 
 	}
