@@ -75,13 +75,19 @@ public class Lock {
 		return true;
 	}
 
+	
+	public boolean fitsIntoSlot(Shape shape, Shape lockShape){
+		if(this.lockSequence.contains(lockShape))
+			return true;
+		return false;
+	}
 	/**
 	 * @param shape
 	 *            to fill the lock with
 	 * @return true if the slot was empty and the shape fits.
 	 */
 	public boolean fillSlot(Shape shape, Shape lockShape) {
-		if (!this.lockSequence.contains(lockShape)) {
+		if (!fitsIntoSlot(shape, lockShape)) {
 			return false;
 		}
 		boolean curState = slotLock.get(lockShape);

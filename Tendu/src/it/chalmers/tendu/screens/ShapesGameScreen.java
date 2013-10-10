@@ -216,7 +216,7 @@ public class ShapesGameScreen extends GameScreen {
 		boolean result = false;
 		updateShapesFromModel();
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			if (controller.getModel().insertShapeIntoSlot(player_num,
+			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
 				result = true;

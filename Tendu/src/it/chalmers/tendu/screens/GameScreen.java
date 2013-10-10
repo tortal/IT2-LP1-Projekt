@@ -54,11 +54,11 @@ public abstract class GameScreen implements Screen {
 
 	/** all rendering goes here **/
 	public void render() {
-		if(model.checkGameState() == GameState.LOADING) {
+		if (model.checkGameState() == GameState.LOADING) {
 			// TODO drawLoading();
 			return;
 		}
-		
+
 		model.checkGame();
 
 		if (model.checkGameState() == GameState.RUNNING) {
@@ -82,13 +82,11 @@ public abstract class GameScreen implements Screen {
 
 	/** All game logic goes here */
 	public abstract void tick(InputController input);
-	
 
 	/**
 	 * clean up goes here make sure to call super() if overriden
 	 */
 	public void removed() {
-		
 	}
 
 	private int calculateTimerWidth() {
@@ -141,8 +139,7 @@ public abstract class GameScreen implements Screen {
 		shapeRenderer.end();
 
 		font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-		font.draw(tendu.spriteBatch, "2", 10,
-				Constants.SCREEN_HEIGHT / 2 + 5);
+		font.draw(tendu.spriteBatch, "2", 10, Constants.SCREEN_HEIGHT / 2 + 5);
 
 		// Player 3
 		shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -175,5 +172,5 @@ public abstract class GameScreen implements Screen {
 			font.scale(-2);
 		}
 	}
-	
+
 }
