@@ -26,8 +26,6 @@ import com.badlogic.gdx.math.Vector3;
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private BitmapFont numberFont; // for rendering fonts
-
 	private ArrayList<Color> colors; // list with colors for all numbers
 
 	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
@@ -39,7 +37,6 @@ public class NumberGameScreen extends GameScreen {
 	private int time; // used to time certain "events" during the game.
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
-
 	private NumberGameController controller;
 
 	/**
@@ -53,7 +50,6 @@ public class NumberGameScreen extends GameScreen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		numberFont = new BitmapFont();
 		touchPos = new Vector3();
 		controller = new NumberGameController((NumberGame) model);
 
@@ -65,7 +61,7 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void setUpGame() {
 		time = 0;
-		numberFont.scale(2); // scale up font relative to the previous scale, -2
+		font.scale(2); // scale up font relative to the previous scale, -2
 								// scales it back
 
 		numberCircles = new ArrayList<NumberCircle>();
@@ -106,24 +102,24 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		numberFont.scale(1.6f);
+		font.scale(1.6f);
 
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
-				numberFont.setColor(colors.get(i));
-				numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
+				font.setColor(colors.get(i));
+				font.draw(tendu.spriteBatch, "" + numbers.get(i),
 						numberAlignment + i * 105, 300);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberFont.setColor(colors.get(i));
-					numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
+					font.setColor(colors.get(i));
+					font.draw(tendu.spriteBatch, "" + numbers.get(i),
 							numberAlignment + i * 105, 300);
 				}
 			}
 		}
-		numberFont.scale(-1.6f);
+		font.scale(-1.6f);
 	}
 
 	/**
@@ -134,13 +130,13 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void drawNumberCircle(NumberCircle circle) {
 		shapeRenderer.setColor(circle.color);
-		numberFont.setColor(circle.color);
+		font.setColor(circle.color);
 
 		for (int i = 0; i < 5; i++) {
 			shapeRenderer.circle(circle.getX(), circle.getY(),
 					(circle.getRadius() - i) * circle.scale);
 		}
-		numberFont.draw(tendu.spriteBatch, "" + circle.getNumber(),
+		font.draw(tendu.spriteBatch, "" + circle.getNumber(),
 				circle.getNumberX(), circle.getNumberY());
 	}
 
@@ -150,11 +146,11 @@ public class NumberGameScreen extends GameScreen {
 	private void drawNumberCircles() {
 		shapeRenderer.begin(ShapeType.Circle);
 		
-		numberFont.scale(-0.8f);
+		font.scale(-0.8f);
 		for (int i = 0; i < numberCircles.size(); i++) {
 			drawNumberCircle(numberCircles.get(i));
 		}
-		numberFont.scale(0.8f);
+		font.scale(0.8f);
 		
 		shapeRenderer.end();
 	}
@@ -166,15 +162,15 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
 		if (time < 240) {
-			numberFont.setColor(Color.BLUE);
-			numberFont
+			font.setColor(Color.BLUE);
+			font
 					.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
 			drawNumbers(true);
 
 		} else {
 			if (model.checkGameState() == GameState.RUNNING) {
-				numberFont.setColor(Color.BLUE);
-				numberFont.draw(tendu.spriteBatch,
+				font.setColor(Color.BLUE);
+				font.draw(tendu.spriteBatch,
 						"Enter the numbers in the correct order", 60, 400);
 
 				drawNumbers(false);
@@ -249,7 +245,7 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		numberFont.dispose();
+		font.dispose();
 		controller.unregister();
 		shapeRenderer.dispose();
 	}

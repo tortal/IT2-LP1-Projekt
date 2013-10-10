@@ -15,11 +15,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /** Abstract screen class that can be extended by all minigame screens */
 public abstract class GameScreen implements Screen {
-	public Tendu tendu; // reference to the main Tendu object
+	protected Tendu tendu; // reference to the main Tendu object
 	protected MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
-	private BitmapFont font;
+	protected BitmapFont font;
 
 	private Sound completedGameSound;
 	private Sound lostGameSound;
@@ -126,6 +126,7 @@ public abstract class GameScreen implements Screen {
 	 * Renders a visual indicator for respective player
 	 */
 	public void renderPlayerIndicators() {
+		font.scale(-2);
 		// Player 1
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.BLUE);
@@ -174,6 +175,8 @@ public abstract class GameScreen implements Screen {
 		font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
 		font.draw(tendu.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
 				Constants.SCREEN_HEIGHT / 2 + 5);
+		
+		font.scale(2);
 
 	}
 

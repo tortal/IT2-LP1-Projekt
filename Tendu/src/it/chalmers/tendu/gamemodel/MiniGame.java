@@ -32,11 +32,11 @@ public abstract class MiniGame {
 	 *            the game's difficulty
 	 * @param gameId
 	 */
-	public MiniGame(int time, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
+	public MiniGame(int addTime, Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.WAITING;
-		gameTime = 30000 + time;
+		gameTime = 30000 + addTime;
 		setEndTime(gameTime);
 		this.players = players;
 	}
