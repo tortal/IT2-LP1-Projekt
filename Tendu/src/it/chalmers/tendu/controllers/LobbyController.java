@@ -64,8 +64,9 @@ public class LobbyController implements Listener {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
-					// MiniGame miniGame = gameSession.getNextMiniGame();
-					// gameSession.setCurrentMiniGame(miniGame);
+					Gdx.app.log(TAG, "game session created");
+//					MiniGame miniGame = gameSession.getNextMiniGame();
+//					gameSession.setCurrentMiniGame(miniGame);
 					new GameSessionController(gameSession);
 
 					EventMessage newGameSession = new EventMessage(

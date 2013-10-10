@@ -12,8 +12,10 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 
 public class GameSession {
+	
+	public static final String TAG = "GameSession";
 
-	public MiniGame currentMiniGame;;
+	public MiniGame currentMiniGame;
 	private int currentLvl;
 	private Difficulty difficulty;
 	
@@ -33,11 +35,12 @@ public class GameSession {
 	}
 
 	public GameSession(Map<String, Integer> players) {
-		currentMiniGame = getNextMiniGame();
-		currentLvl = 1;
-		
 		this.players = players;
+		currentLvl = 1;
 		playerIsReady = new HashMap<String, Boolean>();
+		currentMiniGame = getNextMiniGame();
+		Gdx.app.log(TAG, "LOBBY MEMBERS BEFORE:" + players);
+		Gdx.app.log(TAG, "LOBBY MEMBERS:" + this.players);
 	}
 
 	public Map<String, Integer> getPlayers() {

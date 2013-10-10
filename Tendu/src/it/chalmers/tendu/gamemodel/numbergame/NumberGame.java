@@ -43,12 +43,15 @@ public class NumberGame extends MiniGame {
 		case FOUR:
 			this.setEndTime(15000);
 			answerList = createAnswer(playerCount*2);
+			break;
 		case FIVE:
 			this.setEndTime(0);
 			answerList = createAnswer(playerCount*2);
+			break;
 		default:
 			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
+			break;
 		}
 		playerLists = divideAndConquer(answerList);
 
