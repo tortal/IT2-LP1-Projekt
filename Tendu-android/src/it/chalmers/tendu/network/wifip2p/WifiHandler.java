@@ -200,14 +200,13 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
 				if (networkInfo.isConnected()) {
-
 					Log.d(TAG, "Connected to: " + networkInfo.getExtraInfo());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-				Log.d(TAG, "This device changed");
+				Log.d(TAG, "This device's wifi state changed");
 				// Respond to this device's wifi state changing
 			}
 		}
@@ -234,6 +233,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
 			//new StartKryoNetServerTask().execute(); 
 			startKryoNetServer();
+			// Let unit know it's host
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 
 		} else if (info.groupFormed) {
@@ -244,6 +244,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
 			//startKryoNetClient(groupOwnerAddress);
 			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
+			// Let unit know it's a client
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		}
 	}
 
