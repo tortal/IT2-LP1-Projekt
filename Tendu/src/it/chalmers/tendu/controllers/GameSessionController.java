@@ -51,16 +51,14 @@ public class GameSessionController implements Listener {
 					msg.tag = C.Tag.TO_SELF;
 					EventBus.INSTANCE.broadcast(msg);
 				}
-			}
-			if (message.msg == C.Msg.GAME_WON) {
+			} else if (message.msg == C.Msg.GAME_WON) {
 				gameSession.miniGameWon();
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
 				EventMessage eventMessage = new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventBus.INSTANCE.broadcast(eventMessage);
-			}
-			if (message.msg == C.Msg.GAME_LOST) {
+			} else if (message.msg == C.Msg.GAME_LOST) {
 				gameSession.miniGameLost();
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
@@ -77,12 +75,10 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
-			}
-			if (message.msg == C.Msg.GAME_WON) {
+			} else if (message.msg == C.Msg.GAME_WON) {
 				gameSession.miniGameWon();
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
-			}
-			if (message.msg == C.Msg.GAME_LOST) {
+			} else if (message.msg == C.Msg.GAME_LOST) {
 				gameSession.miniGameLost();
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 			}
@@ -92,11 +88,16 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.LOAD_THIS_GAME) {
 				MiniGame miniGame = (MiniGame) message.content;
 				gameSession.setCurrentMiniGame(miniGame);
-			}
-			if (message.msg == C.Msg.START_MINI_GAME) {
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);
 			}
 		}
+	}
+
+	@Override
+	public void unregister() {
+		// TODO Auto-generated method stub
+
 	}
 }

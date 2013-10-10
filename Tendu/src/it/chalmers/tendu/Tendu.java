@@ -149,4 +149,11 @@ public class Tendu implements ApplicationListener, Listener {
 			EventBus.INSTANCE.broadcast(msg);
 		}
 	}
+
+	//TODO: needed? will this method be called?
+	@Override
+	public void unregister() {
+		screen.removed(); 
+		EventBus.INSTANCE.removeListener(this);
+	}
 }
