@@ -39,7 +39,7 @@ public class Tendu implements ApplicationListener, Listener {
 											// stuff (Android specific, at least
 											// for now)
 	public SpriteBatch spriteBatch; // used for drawing of graphics
-
+	
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
 		EventBus.INSTANCE.addListener(this);
