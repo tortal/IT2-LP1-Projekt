@@ -16,7 +16,14 @@ public class Shape {
 		this.color = color;
 		this.geometricShape = geometricShape;
 	}
-
+	
+	/**
+	 * No args constructor for reflection use
+	 */
+	private Shape(){
+		this.color = Color.BLUE;
+		this.geometricShape = GeometricShape.CIRCLE;
+	}
 	/**
 	 * @return a list containing all combinations possible with the enumerators
 	 *         Color and GeometricShape.

@@ -27,7 +27,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class ShapesGame extends MiniGame {
 
-	private final static int PLAYER_COUNT = 2;
+	private int playerCount; 
 	private final static int LOCK_SIZE = 4;
 
 	/**
@@ -57,15 +57,17 @@ public class ShapesGame extends MiniGame {
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
+		
+		playerCount = players.size();
 
-		allInventory = new HashMap<Integer, List<Shape>>(PLAYER_COUNT);
-		allLocks = new HashMap<Integer, Lock>(PLAYER_COUNT);
+		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
+		allLocks = new HashMap<Integer, Lock>(playerCount);
 
 		// Every player only has an explicit number of slots to fill, so let's
 		// grab the need amount of shapes from our allShapes list
-		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * PLAYER_COUNT);
+		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * playerCount);
 
-		for (int i = 0; i < LOCK_SIZE * PLAYER_COUNT; i++) {
+		for (int i = 0; i < LOCK_SIZE * playerCount; i++) {
 			Shape randomShape = allShapes.remove(0);
 			gameShapes.add(randomShape);
 		}
@@ -77,7 +79,7 @@ public class ShapesGame extends MiniGame {
 		Collections.shuffle(copyOfShapes);
 
 		// Create inventory and slots lists for all players.
-		for (int p = 0; p < PLAYER_COUNT; p++) {
+		for (int p = 0; p < playerCount; p++) {
 			List<Shape> playerInventory = new ArrayList<Shape>();
 			Lock playerLock = new Lock();
 

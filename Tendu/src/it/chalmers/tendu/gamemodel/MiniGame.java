@@ -37,6 +37,7 @@ public abstract class MiniGame {
 		this.setGameId(gameId);
 		this.state = GameState.LOADING;
 		gameTime = 30000 + time;
+		setEndTime(gameTime);
 		this.players = players;
 	}
 
