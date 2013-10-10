@@ -99,14 +99,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		//removeWifiGroup();
 		//createNewWifiGroup();
 
-		//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-		//			
-		//			@Override
-		//			public void onGroupInfoAvailable(WifiP2pGroup group) {
-		//				
-		//				
-		//			}
-		//		});
 		discoverPeers();
 
 	}
@@ -114,7 +106,22 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void joinGame() {
 		//removeWifiGroup();
+//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+//
+//			@Override
+//			public void onGroupInfoAvailable(WifiP2pGroup group) {
+//				
+//					
+//			
+//
+//			}
+//		});
+
 		discoverPeers();
+
+		// TODO Check if already connected by wifi and if so start kryo connection
+		
+		// Wait a minute while available units are discovered
 		mHandler.postDelayed(new Runnable() {
 
 			@Override
