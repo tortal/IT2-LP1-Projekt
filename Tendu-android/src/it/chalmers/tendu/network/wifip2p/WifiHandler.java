@@ -390,7 +390,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			public void disconnected(Connection connection) {
 				connection.close();
 				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
-				resetNetwork();
+				//resetNetwork();
 				//server.close();
 			}
 		});
