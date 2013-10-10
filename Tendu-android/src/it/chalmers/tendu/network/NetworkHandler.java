@@ -1,6 +1,7 @@
 package it.chalmers.tendu.network;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -54,15 +55,24 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	}
 
 	protected void toastMessage(final EventMessage message) {
-		//Gdx.app.postRunnable(new Runnable() {
-
-			//@Override
-			//public void run() {
-				Toast toast = Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT);
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+				Toast toast = Toast.makeText(context, message.toString(),
+						Toast.LENGTH_SHORT); 
 				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
 				toast.show();
-		//	}
-	//	});
+			}
+		});
+		
+//		Gdx.app.postRunnable(new Runnable() {
+//		
+//			@Override
+//			public void run() {
+//				Toast toast = Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT);
+//				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+//				toast.show();
+//			}
+//		});
 	}
 
 	/** Translates the network error codes into something interpretable */
