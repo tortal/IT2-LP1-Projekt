@@ -98,7 +98,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void hostSession() {
 		//removeWifiGroup();
 		//createNewWifiGroup();
-		
+
 		//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
 		//			
 		//			@Override
@@ -201,11 +201,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (mManager == null) {
 					return;
 				}
-				
+
 
 				NetworkInfo networkInfo = (NetworkInfo) intent
 						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-				
+
 				if (networkInfo.isConnected()) {
 					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
 					// We are connected with the other device, request connection
@@ -235,7 +235,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		// InetAddress from WifiP2pInfo struct.
 		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 
-		
+
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
 			// Do whatever tasks are specific to the group owner.
@@ -244,7 +244,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
 			//new StartKryoNetServerTask().execute(); 
-			startKryoNetServer();
+			if (server == null) {
+				startKryoNetServer();
+			}
 			// Let unit know it's host
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 		} else if (info.groupFormed) {
@@ -254,7 +256,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Log.d(TAG, "Acting as client");
 			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
 			//startKryoNetClient(groupOwnerAddress);
+
 			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
+
 			// Let unit know it's a client
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		}
