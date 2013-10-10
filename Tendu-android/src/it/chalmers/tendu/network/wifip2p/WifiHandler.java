@@ -3,6 +3,9 @@ package it.chalmers.tendu.network.wifip2p;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
+import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
@@ -195,12 +198,13 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (mManager == null) {
 					return;
 				}
+				
 
 				NetworkInfo networkInfo = (NetworkInfo) intent
 						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
+				
 				if (networkInfo.isConnected()) {
-					Log.d(TAG, "Connected to: " + networkInfo.getExtraInfo());
+					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
@@ -224,6 +228,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		// InetAddress from WifiP2pInfo struct.
 		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 
+		
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
 			// Do whatever tasks are specific to the group owner.
@@ -235,7 +240,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			startKryoNetServer();
 			// Let unit know it's host
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
-
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case,
 			// you'll want to create a client thread that connects to the group
@@ -294,7 +298,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 
 	private void connectToDevice(final WifiP2pDevice device) {
-		//obtain a peer from the WifiP2pDeviceList
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
 		//config.wps.setup = WpsInfo.PBC;
@@ -304,6 +307,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			public void onSuccess() {
 				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 				Log.d(TAG, "Connection initiated to: " + device.deviceName);
+				// TODO It may be too early to broadcast mac-address here
+				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_CONNECTED, device.deviceAddress));
 			}
 
 			@Override
