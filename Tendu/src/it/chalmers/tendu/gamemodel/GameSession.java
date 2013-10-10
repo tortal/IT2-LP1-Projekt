@@ -24,13 +24,9 @@ public class GameSession {
 	private Map<String, Boolean> playersWaitingToStart;
 
 	private GameSession() {
-		// TODO Auto-generated constructor stub
+		// For reflection.
 	}
 
-	// public GameSession(Map<String, Integer> players, String hostMac) {
-	// this.players = players;
-	// hostMacAddress = hostMac;
-	// }
 	public GameSession(Map<String, Integer> players) {
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
