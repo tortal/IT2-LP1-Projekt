@@ -177,4 +177,12 @@ public abstract class MiniGame {
 		int playerNbr = players.get(myMac);
 		return playerNbr;
 	}
+	
+	/**
+	 * Get the number of players currently playing the game
+	 * @return
+	 */
+	public int getNumberOfPlayers() {
+		return players.size();
+	}
 }
