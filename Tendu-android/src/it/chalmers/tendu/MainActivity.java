@@ -10,6 +10,8 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 public class MainActivity extends AndroidApplication {
 
+	private INetworkHandler networkHandler;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +19,14 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        INetworkHandler netHandler = new WifiHandler(this);
-        initialize(new Tendu(netHandler), cfg);
+        networkHandler = new WifiHandler(this);
+        Tendu tendu = new Tendu(networkHandler);
+        initialize(tendu, cfg);
     }
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		networkHandler.destroy();
+	}
 }
