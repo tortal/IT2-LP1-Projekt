@@ -43,7 +43,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final int MAX_NUMBER_OF_PLAYERS = 3;
+	private static final int MAX_NUMBER_OF_PLAYERS = 3; // Not including host
 	private static final int CONNECTION_DELAY = 5000;
 
 	// Handles the bluetooth connections
@@ -95,8 +95,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			((AndroidApplication) context).runOnUiThread(new Runnable() {
 				public void run() {
 					Toast toast = Toast.makeText(context, message.toString(),
-							Toast.LENGTH_SHORT); 
-					toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 					toast.show();
 				}
 			});
@@ -129,14 +129,16 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				}
 			});
 			connectedDevices.add(device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getName()));
+			sendToEventBus(new EventMessage(C.Tag.CLIENT_REQUESTED,
+					C.Msg.PLAYER_CONNECTED, device.getAddress()));
 		}
 	};
 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.CONNECTION_LOST, device.getName()));
+			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION,
+					C.Msg.CONNECTION_LOST, device.getName()));
 			// Show a dialogue notifying user it got disconnected
 			class displayConnectionLostAlert implements Runnable {
 				public void run() {
@@ -144,16 +146,16 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 					connectionLostAlert.setTitle("Connection lost");
 					connectionLostAlert
-					.setMessage("Your connection with the other players has been lost.");
+							.setMessage("Your connection with the other players has been lost.");
 
 					connectionLostAlert.setPositiveButton("Ok",
 							new OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int which) {
-							// TODO Let app terminate itself?
-							// finish();
-						}
-					});
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Let app terminate itself?
+									// finish();
+								}
+							});
 					connectionLostAlert.setCancelable(false);
 					try {
 						connectionLostAlert.show();
@@ -169,7 +171,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 			// Display on UI-thread
 			((AndroidApplication) context)
-			.runOnUiThread(new displayConnectionLostAlert());
+					.runOnUiThread(new displayConnectionLostAlert());
 
 			// shutdown EVERYTHING!
 			destroy();
@@ -198,7 +200,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)
-				.show();
+						.show();
 			}
 		});
 		if (D)
@@ -279,7 +281,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
 	}
 
-
 	/**
 	 * Checks if device is a valid server by looking for the proper name suffix
 	 * 
@@ -298,7 +299,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		context.registerReceiver(mReceiver, filter); 
+		context.registerReceiver(mReceiver, filter);
 		// Don't forget to
 		// unregister during
 		// onDestroy
@@ -358,8 +359,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	// Test Method
 	public void testStuff() {
-		connection.broadcastMessage(new EventMessage(C.Tag.TEST,
-				C.Msg.TEST));
+		connection.broadcastMessage(new EventMessage(C.Tag.TEST, C.Msg.TEST));
 	}
 
 	// Message handler
@@ -381,18 +381,18 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	public String getMacAddress() {
 		return connection.getAddress();
 	}
-	
+
 	@Override
 	public void onBroadcast(final EventMessage message) {
 		switch (message.tag) {
-		case COMMAND_AS_HOST: 
-			message.setTag(C.Tag.HOST_COMMANDED); 	// Set new tag to prevent
+		case COMMAND_AS_HOST:
+			message.setTag(C.Tag.HOST_COMMANDED); // Set new tag to prevent
 													// feedback loop
 			broadcastMessageOverNetwork(message);
 			break;
-		case REQUEST_AS_CLIENT: 
-				message.setTag(C.Tag.CLIENT_REQUESTED);
-				broadcastMessageOverNetwork(message);
+		case REQUEST_AS_CLIENT:
+			message.setTag(C.Tag.CLIENT_REQUESTED);
+			broadcastMessageOverNetwork(message);
 			break;
 		default:
 			break;
@@ -412,7 +412,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.ALL_PLAYERS_CONNECTED, addresses);
+		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST,
+				C.Msg.ALL_PLAYERS_CONNECTED, addresses);
 		sendToEventBus(message);
 	}
 
@@ -424,7 +425,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	public void broadcastMessageOverNetwork(EventMessage message) {
 		connection.broadcastMessage(message);
 	}
-	
+
 	public void sendMessageToPlayer(BluetoothDevice device, EventMessage message) {
 		connection.sendMessage(device, message);
 	}

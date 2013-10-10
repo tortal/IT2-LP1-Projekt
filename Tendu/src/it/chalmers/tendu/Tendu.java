@@ -2,24 +2,17 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.ModelController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameLobby;
-import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.MiniGameFactory;
-import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
-import it.chalmers.tendu.screens.NumberGameScreen;
+import it.chalmers.tendu.screens.Screen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.Listener;
 import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.tbd.Listener;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -28,9 +21,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Tendu implements ApplicationListener, Listener {
-	private GameScreen screen; // contains whats shown on device screen in any
-								// given moment. Changes depending current
-								// minigame or if in a menu etc
+
+	public static final String TAG = "Tendu"; // Tag for logging
+
+	private Screen screen; // contains whats shown on device screen in any
+							// given moment. Changes depending current
+							// minigame or if in a menu etc
 	private float accum = 0; // used to help lock frame rate in 60 frames per
 								// second
 	private InputController input; // used for handling input (obviously)
@@ -44,34 +40,22 @@ public class Tendu implements ApplicationListener, Listener {
 											// for now)
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
-	private GameLobby gameLobby;
-	public GameSession gameSession;
-	private boolean host = false;
-	private ModelController modelController;
-
-	private String TAG = "Tendu"; // Tag for logging
-	
-	public Tendu(INetworkHandler netCom) {
-		setNetworkHandler(netCom);
+	public Tendu(INetworkHandler networkHandler) {
+		setNetworkHandler(networkHandler);
+		EventBus.INSTANCE.addListener(this);
 	}
 
 	@Override
 	public void create() {
+		String mac = networkHandler.getMacAddress();
+		Player.getInstance().setMac(mac);
+		Gdx.app.log(TAG, Player.getInstance().getMac());
 
-		//here we should load the start screen of the game
-		//setScreenByNetworkState();
-		setScreen(new MainMenuScreen(this, null));
-		//setScreen(new NumberGameScreen(this, new NumberGame(0, Constants.Difficulty.ONE)));
+		spriteBatch = new SpriteBatch();
 
-		//setScreen(new NumberGameScreen(this, new NumberGame(30000, Constants.Difficulty.ONE)));
+		setScreen(new MainMenuScreen(this));
 
-		//setScreen(new ShapesGameScreen(this, new ShapesGame(30000, Constants.Difficulty.ONE)));
-		
-		//create an inputController and register it with Gdx
-		EventBus.INSTANCE.addListener(this); // register with event bus
-		// here we should load the start screen of the game
-		//setScreen(new MainMenuScreen(this, null));
-		// setScreen(new NumberGameScreen(this, new NumberGame(0,
+		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
 		// Constants.Difficulty.ONE)));
 
 		// create an inputController and register it with Gdx
@@ -82,17 +66,6 @@ public class Tendu implements ApplicationListener, Listener {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
-
-		// create a gamelobby
-		gameLobby = new GameLobby();
-
-		spriteBatch = new SpriteBatch();
-		
-		//temp code
-//		gameSession = new GameSession();
-//		modelController = new ModelController(this, gameSession);
-//		setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.getMiniGame(gameSession.getNextGameId())));
-		//end temp
 	}
 
 	// clean up
@@ -106,7 +79,7 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void render() {
 
-		//clear the entire screen
+		// clear the entire screen
 		// setScreenByNetworkState(); //changes to some error screen if
 		// connections is lost?
 		// clear the entire screen
@@ -143,7 +116,7 @@ public class Tendu implements ApplicationListener, Listener {
 	}
 
 	// sets a new screen and cleans up the previous one
-	public void setScreen(GameScreen newScreen) {
+	public void setScreen(Screen newScreen) {
 		if (screen != null) {
 			screen.removed();
 		}
@@ -160,52 +133,20 @@ public class Tendu implements ApplicationListener, Listener {
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
+
 	private void setNetworkHandler(INetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
 	}
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		// TODO Auto-generated method stub
-		switch (message.msg) {
-		case ALL_PLAYERS_CONNECTED: 
-			Gdx.app.log(TAG, "PLAYERS_CONNECTED");
-		case LOBBY_READY:
-			Gdx.app.log(TAG, "LOBBY_READY");
-			gameSession = gameLobby.getGameSession();
-			modelController = new ModelController(this, gameSession);
-			if (host) {
-//				GameId gameId = gameSession.getNextGameId();
-//				MiniGame game = gameSession.getMiniGame(gameId);
-//				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, game);
-//				EventBus.INSTANCE.broadcast(evMsg);
-//				
-//				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
-				
-				GameId gameId = gameSession.getNextGameId();
-				MiniGame nextGame = MiniGameFactory.createMiniGame(0, gameId, Difficulty.ONE);
-				EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, nextGame);
-				EventBus.INSTANCE.broadcast(evMsg);
-			}
-			break;
-		case LOAD_THIS_GAME:
-			//if(!host) {
-				Gdx.app.log(TAG, "LOAD_THIS_GAME");
-				gameSession.setCurrentMiniGame((MiniGame)message.content);
-				setScreen(MiniGameScreenFactory.createMiniGameScreen(this, gameSession.currentMiniGame));
-			//}
-			break;
+		if(message.msg == C.Msg.CREATE_SCREEN) {
+			MiniGame game = (MiniGame)message.content;
+			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this, game);
+			setScreen(screen);
 			
-		default:
-			break;
+			EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
+			EventBus.INSTANCE.broadcast(msg);
 		}
 	}
-
-	public void setHost(boolean isHost) {
-		this.host = isHost;
-	}
-	
-	public boolean isHost() {
-		return host;
-	}	 
 }
