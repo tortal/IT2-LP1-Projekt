@@ -23,6 +23,7 @@ public class Shape {
 	private Shape(){
 		this.color = Color.BLUE;
 		this.geometricShape = GeometricShape.CIRCLE;
+		this.locked = true;
 	}
 	/**
 	 * @return a list containing all combinations possible with the enumerators
