@@ -23,7 +23,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 
 public class ShapesGameScreen extends GameScreen {
+	
+	public final String TAG = this.getClass().getName();
 
+	
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	// private ShapesGame model;
@@ -82,6 +85,7 @@ public class ShapesGameScreen extends GameScreen {
 				sgs.renderShape(shapeRenderer);
 			}
 
+			
 			// if (Gdx.input.isTouched()) {
 			// Vector3 touchPos = new Vector3(Gdx.input.getX(),
 			// Gdx.input.getY(), +0);
@@ -188,6 +192,8 @@ public class ShapesGameScreen extends GameScreen {
 		super.removed();
 	}
 
+	
+	//TODO : Adds a new shape if any shape has changed color. 
 	private void updateShapesFromModel() {
 		// Adds shapes to the gui that are no longer part
 		// of the model.
@@ -220,6 +226,8 @@ public class ShapesGameScreen extends GameScreen {
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
 				result = true;
+				Gdx.app.log(TAG, "Animated" +"x=" + lock.getBounds().x + "y=" + lock.getBounds().getY());
+				
 			}
 			List<Object> content = new ArrayList<Object>();
 			content.add(player_num);

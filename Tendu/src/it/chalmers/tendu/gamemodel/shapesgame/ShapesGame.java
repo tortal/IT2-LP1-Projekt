@@ -26,6 +26,8 @@ import com.badlogic.gdx.Gdx;
  * 
  */
 public class ShapesGame extends MiniGame {
+	
+	public final String TAG = this.getClass().getName();
 
 	private int playerCount;
 	private final static int LOCK_SIZE = 4;
@@ -137,11 +139,13 @@ public class ShapesGame extends MiniGame {
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
+		Gdx.app.log(TAG, "In model");
 		Lock lock = this.allLocks.get(player);
 		if (lock.fillSlot(shape, lockShape))
 			return true;
 
 		super.changeTimeWith(-3000);
+		
 		return false;
 	}
 

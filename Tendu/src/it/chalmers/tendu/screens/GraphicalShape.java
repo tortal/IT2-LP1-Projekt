@@ -96,8 +96,8 @@ public class GraphicalShape {
 	}
 
 	public static Color determineColor(Shape s) {
-		if(s.isLocked())
-			return com.badlogic.gdx.graphics.Color.GRAY;
+//		if(s.isLocked())
+//			return com.badlogic.gdx.graphics.Color.GRAY;
 		switch (s.color) {
 		case BLUE:
 			return com.badlogic.gdx.graphics.Color.BLUE;
