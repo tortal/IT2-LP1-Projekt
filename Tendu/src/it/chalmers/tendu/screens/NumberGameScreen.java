@@ -9,6 +9,7 @@ import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGameSound;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
@@ -42,6 +43,8 @@ public class NumberGameScreen extends GameScreen {
 									// on the screen
 
 	private NumberGameController controller;
+	
+	private NumberGameSound sound;
 
 	/**
 	 * @param tendu
@@ -58,6 +61,8 @@ public class NumberGameScreen extends GameScreen {
 		touchPos = new Vector3();
 		controller = new NumberGameController((NumberGame) model);
 
+		sound = new NumberGameSound();
+		
 		setUpGame();
 	}
 
@@ -239,5 +244,6 @@ public class NumberGameScreen extends GameScreen {
 		super.removed();
 		shapeRenderer.dispose();
 		numberFont.dispose();
+		sound.unRegister();
 	}
 }
