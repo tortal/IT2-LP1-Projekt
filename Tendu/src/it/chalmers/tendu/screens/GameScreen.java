@@ -34,6 +34,8 @@ public abstract class GameScreen implements Screen {
 		this.tendu = tendu;
 		this.model = model;
 		
+		
+		
 		if (model != null) {
 			model.startGame();
 		}
