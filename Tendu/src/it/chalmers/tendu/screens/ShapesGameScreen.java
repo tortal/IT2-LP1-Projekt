@@ -3,7 +3,6 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.ShapeGameModelController;
-import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
@@ -15,11 +14,9 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 
@@ -159,7 +156,7 @@ public class ShapesGameScreen extends GameScreen {
 	public void tick(InputController input) {
 
 		updateShapesFromModel();
-		
+
 		Vector3 touchPos = new Vector3(input.x, input.y, +0);
 		tendu.getCamera().unproject(touchPos);
 
@@ -184,8 +181,6 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				//Gdx.app.log(TAG, "Locked in screen: " + movingShape.getShape().isLocked());
-				Gdx.app.log(TAG, movingShape.getShape().geometricShape + " " + movingShape.getShape().color);
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
@@ -225,7 +220,6 @@ public class ShapesGameScreen extends GameScreen {
 
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
-		
 
 
 	}
