@@ -109,19 +109,19 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		
 		
 		// Wait a minute while available units are discovered
-		mHandler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				WifiP2pDevice device = findFirstEligibleDevice(peers);
-				if (device != null) {
-					Log.d(TAG, "Will now try and connect to: " + device.deviceName);
-					connectToDevice(device);
-				} else {
-					Log.d(TAG, "No device to connect to");
-				}
-			}
-		}, CONNECTION_DELAY);
+//		mHandler.postDelayed(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				WifiP2pDevice device = findFirstEligibleDevice(peers);
+//				if (device != null) {
+//					Log.d(TAG, "Will now try and connect to: " + device.deviceName);
+//					connectToDevice(device);
+//				} else {
+//					Log.d(TAG, "No device to connect to");
+//				}
+//			}
+//		}, CONNECTION_DELAY);
 
 	}
 
@@ -255,6 +255,22 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			// Let unit know it's a client
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
+		} else { 
+			// No group is formed, wait a while and then connect to the first unit available
+			mHandler.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					WifiP2pDevice device = findFirstEligibleDevice(peers);
+					if (device != null) {
+						Log.d(TAG, "Will now try and connect to: " + device.deviceName);
+						connectToDevice(device);
+					} else {
+						Log.d(TAG, "No device to connect to");
+					}
+				}
+			}, CONNECTION_DELAY);
+			
 		}
 	}
 	
@@ -298,7 +314,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			@Override
 			public void onFailure(int reasonCode) {
-				Log.d(TAG, "Error in discovery: " + translateErrorCodeToMessage(reasonCode));
+				Log.d(TAG, "Discovery failed: " + translateErrorCodeToMessage(reasonCode));
 			}
 		}); 
 	}
