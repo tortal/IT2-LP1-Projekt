@@ -59,8 +59,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	//BroadcastReceiver mReceiver;
 
 	IntentFilter mIntentFilter;
-	PeerListListener myPeerListListener;
-	private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
 
 	private Handler mHandler = new Handler();
 
@@ -79,19 +77,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 		context.registerReceiver(mReceiver, mIntentFilter); // Not necessary when we start calling onResume()
 
-		myPeerListListener = new PeerListListener() {
-
-			@Override
-			public void onPeersAvailable(WifiP2pDeviceList peerList) {
-				peers.clear();
-				peers.addAll(peerList.getDeviceList());
-				// Log.d(TAG, peers.toString());			
-				if (peers.size() == 0) {
-					Log.d(TAG, "No devices found");
-					return;
-				}
-			}
-		};
+		
 	}
 
 	@Override
@@ -271,6 +257,21 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		}
 	}
+	
+	private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+	private PeerListListener myPeerListListener = new PeerListListener() {
+
+		@Override
+		public void onPeersAvailable(WifiP2pDeviceList peerList) {
+			peers.clear();
+			peers.addAll(peerList.getDeviceList());
+			// Log.d(TAG, peers.toString());			
+			if (peers.size() == 0) {
+				Log.d(TAG, "No devices found");
+				return;
+			}
+		}
+	};
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void resetConnection() {
