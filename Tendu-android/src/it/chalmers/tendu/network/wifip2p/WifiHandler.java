@@ -53,6 +53,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private static final int TCP_PORT = 54555;
 	private Client client;
 	private Server server;
+	
+	// Android flag: Desire to be a wifip2p-host from 1 to 15
+	private static final int WANT_TO_BE_CLIENT = 15 ;
+	private static final int WANT_TO_BE_HOST = 0;
+	private boolean isHost;
 
 	WifiP2pManager mManager;
 	Channel mChannel;
@@ -83,44 +88,60 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void hostSession() {
+		isHost = true;
 		//createNewWifiGroup();
-		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
-
-			@Override
-			public void onSuccess() {
-				Log.d(TAG, "Group initiated");
-
-			}
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Group creation failed: " + translateErrorCodeToMessage(reason));
-//				if (reason == WifiP2pManager.BUSY) {
-//							createNewWifiGroup();
+//		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+//
+//			@Override
+//			public void onSuccess() {
+//				Log.d(TAG, "Group initiated");
+//
+//			}
+//			@Override
+//			public void onFailure(int reason) {
+//				Log.d(TAG, "Group creation failed: " + translateErrorCodeToMessage(reason));
+////				if (reason == WifiP2pManager.BUSY) {
+////							createNewWifiGroup();
+////				}
+//			}
+//		});
+//		
+//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+//			
+//			@Override
+//			public void onGroupInfoAvailable(WifiP2pGroup group) {
+//				if (group.isGroupOwner()) {
+//					startKryoNetServer();
+//				} else {
+//					Log.d(TAG, "You are not group owner and can't start server");
 //				}
-			}
-		});
-		
-		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-			
-			@Override
-			public void onGroupInfoAvailable(WifiP2pGroup group) {
-				if (group.isGroupOwner()) {
-					startKryoNetServer();
-				} else {
-					Log.d(TAG, "You are not group owner and can't start server");
-				}
-			}
-		});
+//			}
+//		});
 		
 		//mManager.requestConnectionInfo(mChannel, this);
 		
-		//discoverPeers();
+		discoverPeers();
 		//mManager.requestConnectionInfo(mChannel, this);
 		
+		// Wait a minute while available units are discovered
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						WifiP2pDevice device = findFirstEligibleDevice(peers);
+						if (device != null) {
+							Log.d(TAG, "Will now try and connect to: " + device.deviceName);
+							connectToDevice(device, isHost);
+						} else {
+							Log.d(TAG, "No device to connect to");
+						}
+					}
+				}, CONNECTION_DELAY);
 	}
 
 	@Override
 	public void joinGame() {
+		isHost = false;
 		//removeWifiGroup();
 		//resetConnection();
 		discoverPeers();
@@ -133,7 +154,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				WifiP2pDevice device = findFirstEligibleDevice(peers);
 				if (device != null) {
 					Log.d(TAG, "Will now try and connect to: " + device.deviceName);
-					connectToDevice(device);
+					connectToDevice(device, isHost);
 				} else {
 					Log.d(TAG, "No device to connect to");
 				}
@@ -315,7 +336,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					WifiP2pDevice device = findFirstEligibleDevice(peers);
 					if (device != null) {
 						Log.d(TAG, "Will now try and connect to: " + device.deviceName);
-						connectToDevice(device);
+						connectToDevice(device, isHost);
 					} else {
 						Log.d(TAG, "No device to connect to");
 					}
@@ -388,11 +409,16 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	}
 
 
-	private void connectToDevice(final WifiP2pDevice device) {
+	private void connectToDevice(final WifiP2pDevice device, boolean isHost) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
-		config.groupOwnerIntent = 0; // Makes the clients desire to be a group owner nonexistent, client should therefore stay as a client
+		if (isHost) {
+			config.groupOwnerIntent = WANT_TO_BE_HOST; // Makes the hosts desire to be a group owner all powerful
+		} else {
+			config.groupOwnerIntent = WANT_TO_BE_CLIENT; // Makes the clients desire to be a group owner nonexistent
+		}
 		//config.wps.setup = WpsInfo.PBC;
+		
 		mManager.connect(mChannel, config, new ActionListener() {
 
 			@Override
