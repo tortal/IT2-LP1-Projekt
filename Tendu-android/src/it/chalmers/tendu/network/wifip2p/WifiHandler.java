@@ -101,7 +101,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 //
 //			}
 //		});
-
+		resetConnection();
 		discoverPeers();
 
 		// TODO Check if already connected by wifi and if so start kryo connection
@@ -227,7 +227,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void onConnectionInfoAvailable(WifiP2pInfo info) {
 		// InetAddress from WifiP2pInfo struct.
-		String groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
+		String groupOwnerAddress = null;
+		if (info.groupOwnerAddress != null) {
+			 groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
+		}
 
 
 		// After the group negotiation, we can determine the group owner.
@@ -291,18 +294,21 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void resetConnection() {
-		mManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
-
-			@Override
-			public void onSuccess() {
-				// do nothing
-			}
-
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Couldn't stop peer deiscovery: " + translateErrorCodeToMessage(reason));
-			}
-		});
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			mManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
+				
+				@Override
+				public void onSuccess() {
+					// do nothing
+				}
+				
+				@Override
+				public void onFailure(int reason) {
+					Log.d(TAG, "Couldn't stop peer deiscovery: " + translateErrorCodeToMessage(reason));
+				}
+			});
+	        
+	    }
 	}
 
 	private void discoverPeers() { 
