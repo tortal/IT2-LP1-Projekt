@@ -145,7 +145,6 @@ public class ShapesGame extends MiniGame {
 			return true;
 
 		super.changeTimeWith(-3000);
-		
 		return false;
 	}
 
