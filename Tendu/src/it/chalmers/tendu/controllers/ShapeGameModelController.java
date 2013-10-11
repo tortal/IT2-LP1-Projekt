@@ -26,7 +26,9 @@ public class ShapeGameModelController implements Listener {
 	private final String TAG = "ShapeGameModelController";
 	private GameSession gameSession;
 	private Tendu tendu;
-	// TODO: not sure if all controllers need tendu, perhaps only gamesessioncontroller.
+
+	// TODO: not sure if all controllers need tendu, perhaps only
+	// gamesessioncontroller.
 
 	public ShapeGameModelController(Tendu tendu, GameSession gameSession) {
 		this.tendu = tendu;
@@ -89,6 +91,11 @@ public class ShapeGameModelController implements Listener {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 
 }

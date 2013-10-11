@@ -2,7 +2,6 @@ package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
-import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -106,5 +105,10 @@ public class LobbyController implements Listener {
 
 	public LobbyModel getModel() {
 		return model;
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 }
