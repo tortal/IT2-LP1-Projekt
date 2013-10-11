@@ -391,6 +391,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
+		config.groupOwnerIntent = 0; // Makes the clients desire to be a group owner nonexistent, client should therefore stay as a client
 		//config.wps.setup = WpsInfo.PBC;
 		mManager.connect(mChannel, config, new ActionListener() {
 
