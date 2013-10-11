@@ -87,9 +87,16 @@ public class NumberGameScreen extends GameScreen {
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
+		//TODO check number of numbers instead
 		if (model.getDifficulty() == Constants.Difficulty.ONE) {
 			numberAlignment = 240;
-		} else {
+		} else if(model.getDifficulty() == Constants.Difficulty.TWO){
+			numberAlignment = 25;
+		} else if(model.getDifficulty() == Constants.Difficulty.THREE){
+			numberAlignment = 240;
+		} else if(model.getDifficulty() == Constants.Difficulty.FOUR){
+			numberAlignment = 25;
+		} else if(model.getDifficulty() == Constants.Difficulty.FIVE){
 			numberAlignment = 25;
 		}
 	}

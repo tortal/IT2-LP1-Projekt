@@ -42,12 +42,14 @@ public abstract class MiniGame {
 	}
 
 	/**
-	 * updates the remaining time
+	 * updates the remaining time if GameState = RUNNING
 	 */
 	private void updateTime() {
-		remainingTime = endTime - System.currentTimeMillis();
-		if (remainingTime <= 0) {
-			gameLost();
+		if(state == GameState.RUNNING) {
+			remainingTime = endTime - System.currentTimeMillis();
+			if (remainingTime <= 0) {
+				gameLost();
+			}
 		}
 	}
 

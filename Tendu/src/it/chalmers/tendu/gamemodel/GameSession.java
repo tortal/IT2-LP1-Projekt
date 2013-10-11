@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 public class GameSession {
 
 	// public String hostMacAddress;
@@ -99,6 +101,9 @@ public class GameSession {
 	}
 
 	public void miniGameEnded(GameResult gameResult) {
+		Gdx.app.log(this.getClass().getSimpleName(), " Time left = " + gameResult.getRemainingTime());
+		Gdx.app.log(this.getClass().getSimpleName(), " GameState = " + gameResult.getGameState());
+		
 		if (gameResult.getGameState() == GameState.WON) {
 			gameResults.add(gameResult);
 		} else {
