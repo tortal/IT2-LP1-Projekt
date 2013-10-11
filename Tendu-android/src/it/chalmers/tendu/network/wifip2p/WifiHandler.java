@@ -77,6 +77,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 		context.registerReceiver(mReceiver, mIntentFilter); // Not necessary when we start calling onResume()
 
+		forgetAnyExistingWifiGroup();
 		
 	}
 
@@ -457,6 +458,17 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	private void forgetAnyExistingWifiGroup() {
+		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+			
+			@Override
+			public void onGroupInfoAvailable(WifiP2pGroup group) {
+				
+				
+			}
+		});
+	}
+	
 	// ********************** Kryo *********************************
 
 	private void startKryoNetServer() {
