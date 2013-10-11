@@ -106,7 +106,7 @@ public abstract class GameScreen implements Screen {
 //		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 //		return (int) timerWitdth;
 		double quota = (double) model.getRemainingTime()
-				/ (double) model.getStartTime();
+				/ (double) model.getTotalTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
 		//return (int)model.getRemainingTime();
@@ -208,8 +208,6 @@ public abstract class GameScreen implements Screen {
 	 * Make sure to call super() from subclass
 	 */
 	public void tick() {
-		if(model.checkGameState() == GameState.RUNNING) {
-			model.decreaseTime(Gdx.graphics.getDeltaTime());
-		}
+		model.checkGameState();
 	}
 }

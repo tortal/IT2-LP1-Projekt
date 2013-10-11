@@ -25,17 +25,17 @@ public class NumberGame extends MiniGame {
 		super();
 	};
 
-	public NumberGame(float extraTime, Difficulty difficulty, Map<String, Integer> players) {
+	public NumberGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
 		super(difficulty, GameId.NUMBER_GAME, players);
 		nbrCorrectAnswer = 0;
 		playerCount = players.size();
 		switch (difficulty) {
 		case ONE:
-			this.setStartTime(30, extraTime);
+			this.setStartTime(30000, extraTime);
 			answerList = createAnswer(playerCount);
 			break;
 		case TWO:
-			this.setStartTime(30, extraTime);
+			this.setStartTime(30000, extraTime);
 			answerList = createAnswer(playerCount*2);
 			break;
 		default:
@@ -44,7 +44,7 @@ public class NumberGame extends MiniGame {
 		}
 		playerLists = divideAndConquer(answerList);
 
-		Gdx.app.log("NumberGame", "Starttid = " + getStartTime());
+		Gdx.app.log("NumberGame", "Starttid = " + getTotalTime());
 
 	}
 
@@ -66,7 +66,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
-				this.decreaseTime(3);
+				this.changeTime(-3000);
 				return false;
 			}
 		}
@@ -173,7 +173,7 @@ public class NumberGame extends MiniGame {
 	@Override
 	public GameResult getGameResult() {
 		if(checkGameState() == GameState.WON || checkGameState() == GameState.LOST) {
-			float spentTime = (getStartTime()-getRemainingTime());
+			long spentTime = (getTotalTime()-getRemainingTime());
 			GameResult result = new GameResult(getGameId(), spentTime, getRemainingTime(), getGameState());
 			return result;
 		}

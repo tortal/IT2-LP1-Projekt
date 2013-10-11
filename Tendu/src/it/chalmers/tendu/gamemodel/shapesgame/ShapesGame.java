@@ -52,7 +52,7 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
+	public ShapesGame(long addTime, Difficulty difficulty, Map<String, Integer> players) {
 		super(difficulty, GameId.SHAPES_GAME, players);
 
 		// Get list of all combinations of shapes and colors then shuffle

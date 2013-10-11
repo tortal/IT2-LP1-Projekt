@@ -182,9 +182,10 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
+		model = getModel(); //make sure we have to new model (the host maybe changed it)
 		super.tick();
+		
 		// TODO maybe not the best solution...
-		model = getModel();
 		if (model.checkGameState() != GameState.RUNNING) {
 			// TODO refactor
 			if (model.checkGameState() == GameState.WON

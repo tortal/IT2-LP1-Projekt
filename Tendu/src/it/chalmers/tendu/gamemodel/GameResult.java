@@ -2,12 +2,12 @@ package it.chalmers.tendu.gamemodel;
 
 public class GameResult {
 	
-	private final float timeSpent;
-	private final float remainingTime;
+	private final long timeSpent;
+	private final long remainingTime;
 	private final GameId gameId;
 	private final GameState gameState;
 	
-	public GameResult(GameId gameId, float timeSpent, float remainingTime, GameState gameState) {
+	public GameResult(GameId gameId, long timeSpent, long remainingTime, GameState gameState) {
 		this.gameId = gameId;
 		this.timeSpent = timeSpent;
 		this.remainingTime = remainingTime;
@@ -23,11 +23,11 @@ public class GameResult {
 		gameState = null;
 	}
 
-	public float getTimeSpent() {
+	public long getTimeSpent() {
 		return timeSpent;
 	}
 
-	public float getRemainingTime() {
+	public long getRemainingTime() {
 		return remainingTime;
 	}
 	

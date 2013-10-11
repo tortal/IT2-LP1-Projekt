@@ -79,7 +79,7 @@ public class NumberGameController implements MiniGameController {
 					// Gdx.app.log(TAG, " Time left = " +
 					// gameSession.currentMiniGame.getTimeLeft());
 				} else if (message.msg == Msg.REMOVE_TIME) {
-					numberGame.decreaseTime(3);
+					numberGame.changeTime(-3000);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
 					numberGame.checkNbr((Integer) message.content);
 				}

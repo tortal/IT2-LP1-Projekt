@@ -5,14 +5,72 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 //TODO make none dependent of internal clock
 
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
 	private GameId gameId;
-	private float remainingTime;
-	private float startTime;
+	private long totalTime; // never changes once set
+	private long remainingTime;
+	private long endTime;
+
+	public void setStartTime(long gameTime, long extraTime) {
+		totalTime = gameTime + extraTime;
+	}
+
+	/**
+	 * sets the actual time for the minigame to end do once in startGame and in
+	 * reInit if new model pushed from server
+	 * 
+	 * @param time
+	 */
+	private void setEndTime(long time) {
+		this.endTime = time + System.currentTimeMillis();
+	}
+
+	/**
+	 * Gets the remaining time
+	 * 
+	 * @return time left in millis seconds
+	 */
+	public long getRemainingTime() {
+		updateTime();
+		return remainingTime;
+	}
+
+	/**
+	 * updates the remaining time
+	 */
+	private void updateTime() {
+		remainingTime = endTime - System.currentTimeMillis();
+		if (remainingTime <= 0) {
+			gameLost();
+		}
+	}
+
+	/**
+	 * Call if host pushed new model
+	 */
+	public void reInit() {
+		setEndTime(remainingTime);
+	}
+
+	/**
+	 * @param time
+	 * 			the change in milliseconds, can be positive or negative;
+	 */
+	public void changeTime(long time) {
+		endTime = endTime + time;
+		updateTime();
+	}
+
+	public long getTotalTime() {
+		return totalTime;
+	}
+
 	/**
 	 * Integer = player id String = player MacAddress
 	 */
@@ -31,7 +89,8 @@ public abstract class MiniGame {
 	 *            the game's difficulty
 	 * @param gameId
 	 */
-	public MiniGame(Difficulty difficulty, GameId gameId, Map<String, Integer> players) {
+	public MiniGame(Difficulty difficulty, GameId gameId,
+			Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
 		this.state = GameState.WAITING;
@@ -56,57 +115,6 @@ public abstract class MiniGame {
 	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
 	}
-	
-	/**
-	 * Sets total amount of time when game starts 
-	 */
-	public void setStartTime(float gameTime, float extraTime) {
-		startTime = gameTime+extraTime;
-		setRemainingTime(startTime);
-	}
-	
-	public float getStartTime() {
-		return startTime;
-	}
-
-	/**
-	 * Gets the time left.
-	 * 
-	 * @return the time in milliseconds.
-	 */
-	public float getRemainingTime() {
-		return remainingTime;
-	}
-	
-	private void setRemainingTime(float gameTime) {
-		this.remainingTime = gameTime;
-	}
-
-	/**
-	 * Decreases the time.
-	 * 
-	 * @param time
-	 *            Decrease the time with requested amounts (positive number) of seconds.
-	 *            
-	 */
-	public void decreaseTime(float time) {
-		if(time < 0) return;
-		setRemainingTime(getRemainingTime()-time);
-	}
-	
-	/**
-	 * Increases the time.
-	 * 
-	 * @param time
-	 *            Increase the time with requested amounts (positive number) of seconds.
-	 *            
-	 */
-	public void increaseTime(float time) {
-		if(time < 0)
-		setRemainingTime(getRemainingTime()+time);
-	}
-	
-	
 
 	/**
 	 * Checks and returns the state of the game.
@@ -114,9 +122,7 @@ public abstract class MiniGame {
 	 * @return the game's state
 	 */
 	public GameState checkGameState() {
-		if(getRemainingTime() <= 0) {
-			gameLost();
-		}
+		updateTime();
 		return state;
 	}
 
@@ -156,6 +162,7 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		state = GameState.RUNNING;
+		setEndTime(totalTime);
 	}
 
 	/**
@@ -169,9 +176,10 @@ public abstract class MiniGame {
 	 */
 	public void resumeGame() {
 	}
-	
+
 	/**
 	 * Get the player number corresponding to your own macAddress.
+	 * 
 	 * @return
 	 */
 	public int getplayerNbr() {
@@ -179,20 +187,21 @@ public abstract class MiniGame {
 		int playerNbr = players.get(myMac);
 		return playerNbr;
 	}
-	
+
 	/**
 	 * Get the number of players currently playing the game
+	 * 
 	 * @return
 	 */
 	public int getNumberOfPlayers() {
 		return players.size();
 	}
-	
+
 	/**
 	 * Returns the results of the game
 	 */
 	public abstract GameResult getGameResult();
-	
+
 	protected GameState getGameState() {
 		return state;
 	}

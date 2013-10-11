@@ -38,8 +38,9 @@ public class GameSession {
 		gameResults = new ArrayList<GameResult>();
 	}
 
+	//for reflection
+	@SuppressWarnings("unused")
 	private GameSession() {
-		// TODO Auto-generated constructor stub
 	}
 
 	private GameId getNextGameId() {
@@ -56,7 +57,7 @@ public class GameSession {
 	}
 
 	private MiniGame getMiniGame(GameId gameId) {
-		int extraTime = 0;
+		long extraTime = 0;
 
 //		if (gameResults.size() > 0) {
 //			extraTime = gameResults.get(gameResults.size()-1).getRemainingTime();
