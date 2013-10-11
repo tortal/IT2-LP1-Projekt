@@ -86,17 +86,26 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		//createNewWifiGroup();
 
 		discoverPeers();
-		//mManager.requestConnectionInfo(mChannel, this);
 	}
 
 	@Override
 	public void joinGame() {
-		
-		//resetConnection();
+		//removeWifiGroup();
+//		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+//
+//			@Override
+//			public void onGroupInfoAvailable(WifiP2pGroup group) {
+//				
+//					
+//			
+//
+//			}
+//		});
+		resetConnection();
 		discoverPeers();
 
 		// TODO Check if already connected by wifi and if so start kryo connection
-		//mManager.requestConnectionInfo(mChannel, this);
+		mManager.requestConnectionInfo(mChannel, this);
 		
 		
 		// Wait a minute while available units are discovered
@@ -402,7 +411,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		registerKryoClasses(kryo);
 		server.start();
 		try {
-			Log.d(TAG, "Starting KryoNet server");
 			server.bind(TCP_PORT); //, 54777); // other figure is for UDP
 		} catch (IOException e) {
 			Log.d(TAG, "KryoNet Server creation failure");
