@@ -70,6 +70,7 @@ public class NumberGame extends MiniGame {
 		default:
 			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
+			break;
 		}
 
 		// Populate the player lists with their own correct numbers and then

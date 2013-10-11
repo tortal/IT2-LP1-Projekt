@@ -11,13 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-
 public class GameSession {
 
 	// public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
-	private int currentLvl;
+	private int completedLvls;
 	private Difficulty difficulty = Difficulty.ONE;
 	/**
 	 * Integer = player id String = player MacAddress
@@ -31,27 +29,29 @@ public class GameSession {
 	// hostMacAddress = hostMac;
 	// }
 	public GameSession(Map<String, Integer> players) {
-		currentLvl = 1;
+		completedLvls = 0;
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
 		gameResults = new ArrayList<GameResult>();
 	}
 
-	//for reflection
+	// for reflection
 	@SuppressWarnings("unused")
 	private GameSession() {
 	}
 
 	private GameId getNextGameId() {
-		if (currentLvl < 5) {
+		if (completedLvls < 2) {
 			difficulty = Difficulty.ONE;
-		} // TODO add more lvls
-		// } else if (currentLvl < 10) {
-		// difficulty = Difficulty.TWO;
-		// }
-		else {
+		} else if (completedLvls < 4) {
 			difficulty = Difficulty.TWO;
+		} else if (completedLvls < 6) {
+			difficulty = Difficulty.THREE;
+		} else if (completedLvls < 8) {
+			difficulty = Difficulty.FOUR;
+		} else {
+			difficulty = Difficulty.FIVE;
 		}
 		return MiniGameFactory.createGameId(difficulty);
 	}
@@ -60,14 +60,15 @@ public class GameSession {
 		long extraTime = 0;
 
 		if (gameResults != null) {
-			if(gameResults.size() > 0) {
-				extraTime = gameResults.get(gameResults.size()-1).getRemainingTime();
+			if (gameResults.size() > 0) {
+				extraTime = gameResults.get(gameResults.size() - 1)
+						.getRemainingTime();
 			}
 		}
 
-		return MiniGameFactory.createMiniGame(extraTime, gameId,
-				difficulty, players);
-		
+		return MiniGameFactory.createMiniGame(extraTime, gameId, difficulty,
+				players);
+
 	}
 
 	public MiniGame getNextMiniGame() {
@@ -96,17 +97,17 @@ public class GameSession {
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
 	}
-	
+
 	public void miniGameEnded(GameResult gameResult) {
-		if(gameResult.getGameState() == GameState.WON) {
+		if (gameResult.getGameState() == GameState.WON) {
 			gameResults.add(gameResult);
 		} else {
-			//TODO do something with the results (present to user...)
-			
-			//empty the results list
+			// TODO do something with the results (present to user...)
+
+			// empty the results list
 			gameResults.clear();
 		}
-		
-		currentLvl = (gameResults.size()+1);
+
+		completedLvls = (gameResults.size() + 1);
 	}
 }
