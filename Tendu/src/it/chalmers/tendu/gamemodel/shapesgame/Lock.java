@@ -77,7 +77,7 @@ public class Lock {
 
 	public boolean fitsIntoSlot(Shape shape, Shape lockShape) {
 		if (this.lockSequence.contains(lockShape)) {
-			if (shape.geometricShape == shape.geometricShape
+			if (shape.geometricShape == lockShape.geometricShape
 					&& lockShape.color == shape.color) {
 				return true;
 			}
