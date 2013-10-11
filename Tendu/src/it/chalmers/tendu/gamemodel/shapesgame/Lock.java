@@ -75,12 +75,16 @@ public class Lock {
 		return true;
 	}
 
-	
-	public boolean fitsIntoSlot(Shape shape, Shape lockShape){
-		if(this.lockSequence.contains(lockShape))
-			return true;
+	public boolean fitsIntoSlot(Shape shape, Shape lockShape) {
+		if (this.lockSequence.contains(lockShape)) {
+			if (shape.geometricShape == shape.geometricShape
+					&& lockShape.color == shape.color) {
+				return true;
+			}
+		}
 		return false;
 	}
+
 	/**
 	 * @param shape
 	 *            to fill the lock with

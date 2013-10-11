@@ -27,7 +27,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class ShapesGame extends MiniGame {
 
-	private int playerCount; 
+	private int playerCount;
 	private final static int LOCK_SIZE = 4;
 
 	/**
@@ -51,13 +51,14 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
+	public ShapesGame(int addTime, Difficulty difficulty,
+			Map<String, Integer> players) {
 		super(addTime, difficulty, GameId.SHAPES_GAME, players);
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
-		
+
 		playerCount = players.size();
 
 		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
@@ -122,16 +123,16 @@ public class ShapesGame extends MiniGame {
 		}
 	}
 
-	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape){
+	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape) {
 		return allLocks.get(player).fitsIntoSlot(shape, lockShape);
 	}
-	
+
 	/**
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
-	 *            be inserted into the players slot. >>>>>>>
+	 *            <<<<<<< HEAD to be inserted into the players ���.
+	 *            ======= to be inserted into the players slot. >>>>>>>
 	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
