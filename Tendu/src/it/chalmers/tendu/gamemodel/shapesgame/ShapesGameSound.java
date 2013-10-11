@@ -1,20 +1,32 @@
 package it.chalmers.tendu.gamemodel.shapesgame;
 
 import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.audio.Sound;
 
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
 
+/**
+ * Class for sounds in ShapesGame
+ * @author johannahartman
+ * 
+ */
 public class ShapesGameSound implements Listener {
-	
+
 	private Sound completedGameSound;
 	private Sound lostGameSound;
 	private Sound succeededSound;
 	private Sound failSound;
-	
-	public ShapesGameSound(){
-		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
+
+	public ShapesGameSound() {
+
+		EventBus.INSTANCE.addListener(this);
+
+		completedGameSound = Gdx.audio.newSound(Gdx.files
+				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
 		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
@@ -22,24 +34,39 @@ public class ShapesGameSound implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		// TODO Auto-generated method stub
+		
+		if (message.tag == C.Tag.TO_SELF) {
+			if (message.msg == C.Msg.SOUND_WIN) {
+				playSoundGameWon();
+			}else if(message.msg == C.Msg.SOUND_LOST){
+				playSoundGameLost();
+			}else if(message.msg == C.Msg.SOUND_SUCCEED){
+				playSoundSuccess();
+			}else if(message.msg == C.Msg.SOUND_FAIL){
+				playSoundFail();
+			}
+		}
 
 	}
-	
-	public void playSoundSuccess(){
+
+	public void playSoundSuccess() {
 		succeededSound.play();
 	}
-	
-	public void playSoundFail(){
+
+	public void playSoundFail() {
 		failSound.play();
 	}
-	
-	public void playSoundGameWon(){
+
+	public void playSoundGameWon() {
 		completedGameSound.play();
 	}
-	
-	public void playSoundGameLost(){
+
+	public void playSoundGameLost() {
 		lostGameSound.play();
+	}
+
+	public void unRegister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 
 }

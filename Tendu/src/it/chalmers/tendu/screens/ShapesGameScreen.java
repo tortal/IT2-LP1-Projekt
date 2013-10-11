@@ -8,6 +8,7 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapesGameSound;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -32,6 +33,8 @@ public class ShapesGameScreen extends GameScreen {
 	private GraphicalShape movingShape;
 
 	private ShapeGameModelController controller;
+	
+	private ShapesGameSound sound;
 
 	// For debug
 	int count = 0;
@@ -40,9 +43,10 @@ public class ShapesGameScreen extends GameScreen {
 		super(game, model);
 		controller = new ShapeGameModelController((ShapesGame) model);
 		this.shapeRenderer = new ShapeRenderer();
-
+		
 		player_num = controller.getModel().getplayerNbr();
-
+		sound = new ShapesGameSound();
+		
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
@@ -177,8 +181,6 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				// Gdx.app.log(TAG, "Locked in screen: " +
-				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
@@ -191,6 +193,7 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
+		sound.unRegister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.

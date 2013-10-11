@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 public class NumberGame extends MiniGame {
 
@@ -17,7 +18,6 @@ public class NumberGame extends MiniGame {
 	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
-	private boolean sound;  
 
 	/** No args constructor for reflection use */
 	protected NumberGame() {
@@ -28,7 +28,7 @@ public class NumberGame extends MiniGame {
 		super(addTime, difficulty, GameId.NUMBER_GAME, players);
 		nbrCorrectAnswer = 0;
 		playerCount = players.size();
-		sound = false;
+		
 		switch (difficulty) {
 		case ONE:
 			this.setEndTime(30000);

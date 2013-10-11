@@ -3,8 +3,16 @@ package it.chalmers.tendu.gamemodel.numbergame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
+
+/**
+ * Class for sounds in NumberGame
+ * @author johannahartman
+ *
+ */
 
 public class NumberGameSound implements Listener {
 	
@@ -15,6 +23,8 @@ public class NumberGameSound implements Listener {
 	
 	public NumberGameSound(){
 		
+		EventBus.INSTANCE.addListener(this);
+		
 		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
@@ -23,8 +33,19 @@ public class NumberGameSound implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		//TODO
-
+		
+		if (message.tag == C.Tag.TO_SELF) {
+			if (message.msg == C.Msg.SOUND_WIN) {
+				playSoundGameWon();
+			}else if(message.msg == C.Msg.SOUND_LOST){
+				playSoundGameLost();
+			}else if(message.msg == C.Msg.SOUND_SUCCEED){
+				playSoundSuccess();
+			}else if(message.msg == C.Msg.SOUND_FAIL){
+				playSoundFail();
+			}
+		}
+		
 	}
 	
 	public void playSoundSuccess(){
@@ -42,6 +63,9 @@ public class NumberGameSound implements Listener {
 	public void playSoundGameLost(){
 		lostGameSound.play();
 	}
-
+	
+	public void unRegister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
 
 }
