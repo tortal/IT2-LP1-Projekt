@@ -59,9 +59,11 @@ public class GameSession {
 	private MiniGame getMiniGame(GameId gameId) {
 		long extraTime = 0;
 
-//		if (gameResults.size() > 0) {
-//			extraTime = gameResults.get(gameResults.size()-1).getRemainingTime();
-//		}
+		if (gameResults != null) {
+			if(gameResults.size() > 0) {
+				extraTime = gameResults.get(gameResults.size()-1).getRemainingTime();
+			}
+		}
 
 		return MiniGameFactory.createMiniGame(extraTime, gameId,
 				difficulty, players);
