@@ -82,10 +82,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void hostSession() {
-		//removeWifiGroup();
-		//createNewWifiGroup();
+		removeWifiGroup();
+		createNewWifiGroup();
 
-		discoverPeers();
+		//discoverPeers();
+		//mManager.requestConnectionInfo(mChannel, this);
 		
 	}
 
@@ -322,6 +323,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onFailure(int reasonCode) {
 				Log.d(TAG, "Discovery failed: " + translateErrorCodeToMessage(reasonCode));
+				
 			}
 		}); 
 	}
@@ -379,7 +381,17 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));				
+				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));
+				if (reason == WifiP2pManager.BUSY) {
+					// Wait a while and do it again
+					mHandler.postDelayed(new Runnable() {
+
+						@Override
+						public void run() {
+							removeWifiGroup();
+						}
+					}, 100);
+				}
 			}
 
 			@Override
@@ -399,7 +411,17 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			}
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "Group creation failed: " + reason);				
+				Log.d(TAG, "Group creation failed: " + translateErrorCodeToMessage(reason));
+				if (reason == WifiP2pManager.BUSY) {
+					// Wait a while and do it again
+					mHandler.postDelayed(new Runnable() {
+
+						@Override
+						public void run() {
+							createNewWifiGroup();
+						}
+					}, 100);
+				}
 			}
 		});
 	}
