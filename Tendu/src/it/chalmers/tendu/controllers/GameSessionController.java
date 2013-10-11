@@ -59,10 +59,12 @@ public class GameSessionController implements Listener {
 		
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
+//				EventMessage eventMessage = new EventMessage(
+//						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventMessage eventMessage = new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL, gameSession);
 				EventBus.INSTANCE.broadcast(eventMessage);
-				gameSession.nextScreen();
+				//gameSession.nextScreen();
 
 			}
 		}
@@ -87,10 +89,12 @@ public class GameSessionController implements Listener {
 				MiniGame miniGame = (MiniGame) message.content;
 				gameSession.setCurrentMiniGame(miniGame);
 				gameSession.nextScreen();
-			}
-			if (message.msg == C.Msg.START_MINI_GAME) {
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);
+			} else if(message.msg == C.Msg.GAME_SESSION_MODEL) {
+				this.gameSession = (GameSession)message.content;
+				
 			}
 		}
 	}
