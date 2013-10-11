@@ -86,6 +86,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		//createNewWifiGroup();
 
 		discoverPeers();
+		
 	}
 
 	@Override
@@ -412,6 +413,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		server.start();
 		try {
 			server.bind(TCP_PORT); //, 54777); // other figure is for UDP
+			Log.d(TAG, "Kryonet server started");
 		} catch (IOException e) {
 			Log.d(TAG, "KryoNet Server creation failure");
 			e.printStackTrace();
