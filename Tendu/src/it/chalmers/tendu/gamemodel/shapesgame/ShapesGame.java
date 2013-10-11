@@ -139,7 +139,6 @@ public class ShapesGame extends MiniGame {
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
-		Gdx.app.log(TAG, "In model");
 		Lock lock = this.allLocks.get(player);
 		if (lock.fillSlot(shape, lockShape))
 			return true;

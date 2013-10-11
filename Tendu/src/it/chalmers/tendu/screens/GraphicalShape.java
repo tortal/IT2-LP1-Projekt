@@ -4,6 +4,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public class GraphicalShape {
 
+	public final String TAG = this.getClass().getName();
 	private Rectangle bounds;
 	private ShapeType shapeType;
 	private Color color;
@@ -29,6 +31,7 @@ public class GraphicalShape {
 		bounds.height = 100;
 		bounds.width = 100;
 		this.shapeType = determineGeometricShape(shape);
+		Gdx.app.log(TAG, "Shape created");
 		this.color = determineColor(shape);
 
 	}

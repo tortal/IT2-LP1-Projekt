@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * The puzzle to be solved. Every player has a lock which represents n numbers
  * of slots to be fitted with the given shapes. Every player should have one of
@@ -101,6 +103,7 @@ public class Lock {
 		if (shape.equals(lockShape)) {
 			slotLock.put(shape, true);
 			shape.setLocked(true);
+			Gdx.app.log("Locked", "" + shape.isLocked());
 			return true;
 		}
 		return false;

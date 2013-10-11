@@ -158,6 +158,8 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 
+		updateShapesFromModel();
+		
 		Vector3 touchPos = new Vector3(input.x, input.y, +0);
 		tendu.getCamera().unproject(touchPos);
 
@@ -182,6 +184,7 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
+				//Gdx.app.log(TAG, "Locked in screen: " + movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
@@ -204,6 +207,7 @@ public class ShapesGameScreen extends GameScreen {
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			if (!shapes.contains(new GraphicalShape(s))) {
 				shapes.add(new GraphicalShape(s));
+				Gdx.app.log(TAG, "new Shape!");
 			}
 		}
 
@@ -214,17 +218,18 @@ public class ShapesGameScreen extends GameScreen {
 			if (!controller.getModel().getAllInventory().get(player_num)
 					.contains(gs.getShape())) {
 				removeList.add(gs);
+				Gdx.app.log(TAG, "Shape removed!");
 			}
 		}
 
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
+		
 
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		boolean result = false;
-		updateShapesFromModel();
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
