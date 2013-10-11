@@ -31,7 +31,7 @@ public class GraphicalShape {
 		bounds.height = 100;
 		bounds.width = 100;
 		this.shapeType = determineGeometricShape(shape);
-		Gdx.app.log(TAG, "Shape created");
+		//Gdx.app.log(TAG, "Shape created");
 		this.color = determineColor(shape);
 
 	}

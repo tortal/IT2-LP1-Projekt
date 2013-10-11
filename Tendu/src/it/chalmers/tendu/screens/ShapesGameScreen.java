@@ -43,7 +43,7 @@ public class ShapesGameScreen extends GameScreen {
 		super(game, model);
 		controller = new ShapeGameModelController((ShapesGame) model);
 		this.shapeRenderer = new ShapeRenderer();
-
+		
 		player_num = controller.getModel().getplayerNbr();
 
 		shapes = new ArrayList<GraphicalShape>();
@@ -181,6 +181,7 @@ public class ShapesGameScreen extends GameScreen {
 		if (input.isDragged()) {
 			if (movingShape != null) {
 				//Gdx.app.log(TAG, "Locked in screen: " + movingShape.getShape().isLocked());
+				Gdx.app.log(TAG, movingShape.getShape().geometricShape + " " + movingShape.getShape().color);
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
