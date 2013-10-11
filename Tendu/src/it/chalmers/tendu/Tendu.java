@@ -39,7 +39,7 @@ public class Tendu implements ApplicationListener, Listener {
 											// stuff (Android specific, at least
 											// for now)
 	public SpriteBatch spriteBatch; // used for drawing of graphics
-	
+
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
 		EventBus.INSTANCE.addListener(this);
@@ -140,13 +140,20 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if(message.msg == C.Msg.CREATE_SCREEN) {
-			MiniGame game = (MiniGame)message.content;
-			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this, game);
+		if (message.msg == C.Msg.CREATE_SCREEN) {
+			MiniGame game = (MiniGame) message.content;
+			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this,
+					game);
 			setScreen(screen);
-			
-			EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
+
+			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
 			EventBus.INSTANCE.broadcast(msg);
 		}
+	}
+
+	@Override
+	public void unregister() {
+		// TODO: Will this ever be called? ( maybe on dispose() )
 	}
 }

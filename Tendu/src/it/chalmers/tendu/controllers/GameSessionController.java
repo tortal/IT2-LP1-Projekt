@@ -54,9 +54,9 @@ public class GameSessionController implements Listener {
 				}
 			}
 			if (message.msg == C.Msg.GAME_RESULT) {
-				GameResult result = (GameResult)message.content;
+				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
-		
+
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
 //				EventMessage eventMessage = new EventMessage(
@@ -78,7 +78,7 @@ public class GameSessionController implements Listener {
 				EventBus.INSTANCE.broadcast(message);
 			}
 			if (message.msg == C.Msg.GAME_RESULT) {
-				GameResult result = (GameResult)message.content;
+				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
 
 			}
@@ -97,5 +97,10 @@ public class GameSessionController implements Listener {
 				
 			}
 		}
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 }
