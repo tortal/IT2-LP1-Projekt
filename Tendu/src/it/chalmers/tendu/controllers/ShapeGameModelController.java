@@ -91,4 +91,9 @@ public class ShapeGameModelController implements Listener {
 		}
 	}
 
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
+
 }

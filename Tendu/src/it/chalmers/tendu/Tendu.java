@@ -149,4 +149,9 @@ public class Tendu implements ApplicationListener, Listener {
 			EventBus.INSTANCE.broadcast(msg);
 		}
 	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
 }

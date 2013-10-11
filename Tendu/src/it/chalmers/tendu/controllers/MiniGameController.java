@@ -6,11 +6,9 @@ import it.chalmers.tendu.tbd.Listener;
 
 public interface MiniGameController extends Listener {
 	
-	public void handleAsClient(EventMessage message);
+	void handleAsClient(EventMessage message);
 	
-	public void handleAsHost(EventMessage message);
+	void handleAsHost(EventMessage message);
 	
-	public void unregister();
-	
-	public MiniGame getModel();
+	MiniGame getModel();
 }
