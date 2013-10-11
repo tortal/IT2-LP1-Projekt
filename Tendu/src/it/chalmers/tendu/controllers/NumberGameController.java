@@ -64,9 +64,7 @@ public class NumberGameController implements MiniGameController {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
-			} 
-			
-			if (message.msg == C.Msg.START_MINI_GAME) {
+			}else if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
 		}

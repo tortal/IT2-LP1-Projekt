@@ -56,13 +56,14 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult)message.content;
 				gameSession.miniGameEnded(result);
-				
+		
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
 				EventMessage eventMessage = new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventBus.INSTANCE.broadcast(eventMessage);
 				gameSession.nextScreen();
+
 			}
 		}
 	}
@@ -77,6 +78,7 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult)message.content;
 				gameSession.miniGameEnded(result);
+
 			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
