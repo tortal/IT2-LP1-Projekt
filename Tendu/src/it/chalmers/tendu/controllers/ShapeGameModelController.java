@@ -44,11 +44,11 @@ public class ShapeGameModelController implements Listener {
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					if (insertIntoSlot(message.content)) {
-						message.tag = C.Tag.COMMAND_AS_HOST;
-						Gdx.app.log(TAG, "Sent from server");
-						EventBus.INSTANCE.broadcast(message);
-					}
+					insertIntoSlot(message.content);
+					message.tag = C.Tag.COMMAND_AS_HOST;
+					Gdx.app.log(TAG, "Sent from server");
+					EventBus.INSTANCE.broadcast(message);
+
 				}
 			}
 		}
@@ -68,6 +68,7 @@ public class ShapeGameModelController implements Listener {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPES_GAME) {
+				Gdx.app.log(TAG, "Recived from host");
 				insertIntoSlot(message.content);
 			}
 		}
