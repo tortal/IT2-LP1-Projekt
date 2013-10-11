@@ -9,13 +9,14 @@ import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
 
 public class InterimScreen implements Screen {
 	private Tendu tendu;
 	private List<GameResult> gameResults;
 	private BitmapFont font;
 	private final int level;
-	private final float time;
+	private float time;
 	private float totalTime;
 	private int timer = 0;
 	
@@ -23,34 +24,35 @@ public class InterimScreen implements Screen {
 		this.tendu = tendu;
 		this.gameResults = gameResults;
 		font = new BitmapFont();
+		font.scale(2.5f);
 		level = gameResults.size();
-		time = gameResults.get(level-1).getTimeSpent()/1000;
+		time = gameResults.get(level-1).getTimeSpent();
+		time = time/1000;
 		
 		for(GameResult result: gameResults) {
 			totalTime = totalTime + result.getTimeSpent();
-		}
+		}	
 		
 		totalTime = totalTime/1000;
-		
 	}
 
 	@Override
 	public void render() {
 		// TODO Auto-generated method stub
 		font.draw(tendu.spriteBatch, "Level: " + level, 105, 400);
-		font.draw(tendu.spriteBatch, "Time: " + gameResults.size(), 105, 300);
-		font.draw(tendu.spriteBatch, "Total time: " + gameResults.size(), 105, 200);
+		font.draw(tendu.spriteBatch, "Time: " + time, 105, 300);
+		font.draw(tendu.spriteBatch, "Total time: " + totalTime, 105, 200);
 
 	}
 
 	@Override
 	public void tick(InputController input) {
-//		time++;
-//		
-//		if(time == 240) {
-//			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.)
-//			EventBus.INSTANCE.broadcast(message);
-//		}
+		timer++;
+		
+		if(timer == 180) {
+			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.INTERIM_FINISHED);
+			EventBus.INSTANCE.broadcast(message);
+		}
 	}
 
 	@Override

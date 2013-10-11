@@ -99,6 +99,12 @@ public class GameSession {
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
 	}
+	
+	public void interimScreen() {
+		EventMessage message = new EventMessage(C.Tag.TO_SELF,
+				C.Msg.SHOW_INTERIM_SCREEN, gameResults);
+		EventBus.INSTANCE.broadcast(message);
+	}
 
 	public void miniGameEnded(GameResult gameResult) {
 		Gdx.app.log(this.getClass().getSimpleName(), " Time left = " + gameResult.getRemainingTime());

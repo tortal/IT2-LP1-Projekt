@@ -87,16 +87,16 @@ public class NumberGameScreen extends GameScreen {
 					(90 + 95 * i), 120, 35, colors.get(i)));
 		}
 
-		//TODO check number of numbers instead
+		// TODO check number of numbers instead
 		if (model.getDifficulty() == Constants.Difficulty.ONE) {
 			numberAlignment = 240;
-		} else if(model.getDifficulty() == Constants.Difficulty.TWO){
+		} else if (model.getDifficulty() == Constants.Difficulty.TWO) {
 			numberAlignment = 25;
-		} else if(model.getDifficulty() == Constants.Difficulty.THREE){
+		} else if (model.getDifficulty() == Constants.Difficulty.THREE) {
 			numberAlignment = 240;
-		} else if(model.getDifficulty() == Constants.Difficulty.FOUR){
+		} else if (model.getDifficulty() == Constants.Difficulty.FOUR) {
 			numberAlignment = 25;
-		} else if(model.getDifficulty() == Constants.Difficulty.FIVE){
+		} else if (model.getDifficulty() == Constants.Difficulty.FIVE) {
 			numberAlignment = 25;
 		}
 	}
@@ -189,22 +189,19 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		model = getModel(); //make sure we have to new model (the host maybe changed it)
+		model = getModel(); // make sure we have to new model (the host maybe
+							// changed it)
 		super.tick();
-		
+
 		// TODO maybe not the best solution...
 		if (model.checkGameState() != GameState.RUNNING) {
 			// TODO refactor
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
-				time++;
-				
-				//Game is done, broadcast results
-				if (time == 360) {
-						EventMessage message = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.GAME_RESULT, model.getGameResult());
-						EventBus.INSTANCE.broadcast(message);
-				}
+
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, model.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
 			}
 			return;
 		}

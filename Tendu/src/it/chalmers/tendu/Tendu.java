@@ -1,11 +1,15 @@
 //***Main entry of the libgdx-project****
 package it.chalmers.tendu;
 
+import java.util.List;
+
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.screens.InterimScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
@@ -149,6 +153,11 @@ public class Tendu implements ApplicationListener, Listener {
 			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
 					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
 			EventBus.INSTANCE.broadcast(msg);
+		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+			@SuppressWarnings("unchecked")
+			List<GameResult> gameResults = (List<GameResult>)message.content;
+			Screen screen = new InterimScreen(this, gameResults);
+			setScreen(screen);
 		}
 	}
 

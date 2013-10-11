@@ -127,7 +127,7 @@ public class ShapesGameScreen extends GameScreen {
 				}
 			}
 		} else {
-			showGameResult();
+			//showGameResult();
 		}
 	}
 

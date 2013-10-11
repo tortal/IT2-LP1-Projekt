@@ -74,7 +74,7 @@ public class LobbyScreen implements Screen {
 	@Override
 	public void render() {
 
-		bigFont.draw(tendu.spriteBatch, "HOSTING", 20, 460);
+		bigFont.draw(tendu.spriteBatch, "Lobby", 20, 460);
 
 		float x = 40f;
 		float y = 410f;

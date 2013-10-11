@@ -78,7 +78,7 @@ public abstract class GameScreen implements Screen {
 			}
 			
 		} else {
-			showGameResult();
+			//showGameResult();
 		}
 
 	}
@@ -177,31 +177,31 @@ public abstract class GameScreen implements Screen {
 
 	}
 
-	/**
-	 * Call when game ends shows either a success or a failure message and plays
-	 * the corresponding sound
-	 */
-	public void showGameResult() {
-		if (model.checkGameState() == GameState.WON) {
-			font.setColor(Color.GREEN);
-			font.scale(2);
-			font.draw(tendu.spriteBatch, "You won!", 300, 300);
-			font.scale(-2);
-			if (playCompletedSound) {
-				completedGameSound.play();
-				playCompletedSound = false;
-			}
-		} else if (model.checkGameState() == GameState.LOST) {
-			font.setColor(Color.RED);
-			font.scale(2);
-			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-			font.scale(-2);
-			if (playCompletedSound) {
-				lostGameSound.play();
-				playCompletedSound = false;
-			}
-		}
-	}
+//	/**
+//	 * Call when game ends shows either a success or a failure message and plays
+//	 * the corresponding sound
+//	 */
+//	public void showGameResult() {
+//		if (model.checkGameState() == GameState.WON) {
+//			font.setColor(Color.GREEN);
+//			font.scale(2);
+//			font.draw(tendu.spriteBatch, "You won!", 300, 300);
+//			font.scale(-2);
+//			if (playCompletedSound) {
+//				completedGameSound.play();
+//				playCompletedSound = false;
+//			}
+//		} else if (model.checkGameState() == GameState.LOST) {
+//			font.setColor(Color.RED);
+//			font.scale(2);
+//			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
+//			font.scale(-2);
+//			if (playCompletedSound) {
+//				lostGameSound.play();
+//				playCompletedSound = false;
+//			}
+//		}
+//	}
 	
 	/**
 	 * Called every frame.

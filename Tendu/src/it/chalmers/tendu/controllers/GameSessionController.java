@@ -52,8 +52,7 @@ public class GameSessionController implements Listener {
 					msg.tag = C.Tag.TO_SELF;
 					EventBus.INSTANCE.broadcast(msg);
 				}
-			}
-			if (message.msg == C.Msg.GAME_RESULT) {
+			} else if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
 
@@ -64,8 +63,12 @@ public class GameSessionController implements Listener {
 				EventMessage eventMessage = new EventMessage(
 				C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL, gameSession);
 				EventBus.INSTANCE.broadcast(eventMessage);
-				//gameSession.nextScreen();
+				gameSession.interimScreen();
 
+			} else if(message.msg == C.Msg.INTERIM_FINISHED) {
+				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_GAME);
+				EventBus.INSTANCE.broadcast(msg);
+				gameSession.nextScreen();
 			}
 		}
 	}
@@ -85,16 +88,15 @@ public class GameSessionController implements Listener {
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 
-			if (message.msg == C.Msg.LOAD_THIS_GAME) {
-				MiniGame miniGame = (MiniGame) message.content;
-				gameSession.setCurrentMiniGame(miniGame);
+			if (message.msg == C.Msg.LOAD_GAME) {
 				gameSession.nextScreen();
-			} else if (message.msg == C.Msg.START_MINI_GAME) {
+			}
+			if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);
 			} else if(message.msg == C.Msg.GAME_SESSION_MODEL) {
 				this.gameSession = (GameSession)message.content;
-				
+				gameSession.interimScreen();
 			}
 		}
 	}
