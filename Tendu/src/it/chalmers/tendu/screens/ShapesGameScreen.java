@@ -152,7 +152,7 @@ public class ShapesGameScreen extends GameScreen {
 	public void tick(InputController input) {
 
 		updateShapesFromModel();
-		
+
 		Vector3 touchPos = new Vector3(input.x, input.y, +0);
 		tendu.getCamera().unproject(touchPos);
 
@@ -177,7 +177,8 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				//Gdx.app.log(TAG, "Locked in screen: " + movingShape.getShape().isLocked());
+				// Gdx.app.log(TAG, "Locked in screen: " +
+				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
@@ -216,7 +217,6 @@ public class ShapesGameScreen extends GameScreen {
 
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
-		
 
 	}
 
