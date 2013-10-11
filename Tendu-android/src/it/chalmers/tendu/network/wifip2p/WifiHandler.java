@@ -100,7 +100,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		//createNewWifiGroup();
 
 		discoverPeers();
-
 	}
 
 	@Override
@@ -120,6 +119,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		discoverPeers();
 
 		// TODO Check if already connected by wifi and if so start kryo connection
+		mManager.requestConnectionInfo(mChannel, this);
+		
 		
 		// Wait a minute while available units are discovered
 		mHandler.postDelayed(new Runnable() {
@@ -217,7 +218,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
-					mManager.requestConnectionInfo(mChannel, WifiHandler.this);
+					mManager.requestConnectionInfo(mChannel, WifiHandler.this); // (This is done once in join() already)
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 				Log.d(TAG, "This device's wifi state changed");
