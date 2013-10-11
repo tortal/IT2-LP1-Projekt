@@ -226,6 +226,12 @@ public class ShapesGameScreen extends GameScreen {
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
 		
+		Gdx.app.log(TAG, "form 0 " + controller.getModel().getAllInventory().get(player_num).get(0).isLocked());
+		Gdx.app.log(TAG, "form 1 " + controller.getModel().getAllInventory().get(player_num).get(1).isLocked());
+		Gdx.app.log(TAG, "form 2 " + controller.getModel().getAllInventory().get(player_num).get(2).isLocked());
+		Gdx.app.log(TAG, "form 3 " + controller.getModel().getAllInventory().get(player_num).get(3).isLocked());
+		
+		Gdx.app.log(TAG, "moving shape " +movingShape.getShape().isLocked());
 
 	}
 
