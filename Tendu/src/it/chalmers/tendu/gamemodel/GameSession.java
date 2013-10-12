@@ -24,7 +24,8 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
-	private List<GameResult> gameResults;
+	//private List<GameResult> gameResults;
+	private SessionResult sessionResult;
 
 	// public GameSession(Map<String, Integer> players, String hostMac) {
 	// this.players = players;
@@ -35,7 +36,9 @@ public class GameSession {
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
-		gameResults = new ArrayList<GameResult>();
+		//gameResults = new ArrayList<GameResult>();
+		sessionResult = new SessionResult();
+		
 	}
 
 	// for reflection
@@ -60,14 +63,11 @@ public class GameSession {
 
 	private MiniGame getMiniGame(GameId gameId) {
 		long extraTime = 0;
-
-		if (gameResults != null) {
-			if (gameResults.size() > 0) {
-				extraTime = gameResults.get(gameResults.size() - 1)
-						.getRemainingTime();
-			}
+		
+		if(sessionResult != null) {
+			extraTime = sessionResult.timePlayedLastGame();
 		}
-
+		
 		return MiniGameFactory.createMiniGame(extraTime, gameId, difficulty,
 				players);
 
@@ -102,7 +102,7 @@ public class GameSession {
 	
 	public void interimScreen() {
 		EventMessage message = new EventMessage(C.Tag.TO_SELF,
-				C.Msg.SHOW_INTERIM_SCREEN, gameResults);
+				C.Msg.SHOW_INTERIM_SCREEN, sessionResult);
 		EventBus.INSTANCE.broadcast(message);
 	}
 
@@ -111,14 +111,14 @@ public class GameSession {
 		Gdx.app.log(this.getClass().getSimpleName(), " GameState = " + gameResult.getGameState());
 		
 		if (gameResult.getGameState() == GameState.WON) {
-			gameResults.add(gameResult);
+			sessionResult.addResult(gameResult);
 		} else {
 			// TODO do something with the results (present to user...)
 
 			// empty the results list
-			gameResults.clear();
+			sessionResult.clear();
 		}
 
-		completedLvls = (gameResults.size() + 1);
+		completedLvls = (sessionResult.gamesPlayed());
 	}
 }

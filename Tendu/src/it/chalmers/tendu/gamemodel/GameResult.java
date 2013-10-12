@@ -2,14 +2,14 @@ package it.chalmers.tendu.gamemodel;
 
 public class GameResult {
 	
-	private final long timeSpent;
+	private final long timePlayed;
 	private final long remainingTime;
 	private final GameId gameId;
 	private final GameState gameState;
 	
 	public GameResult(GameId gameId, long timeSpent, long remainingTime, GameState gameState) {
 		this.gameId = gameId;
-		this.timeSpent = timeSpent;
+		this.timePlayed = timeSpent;
 		this.remainingTime = remainingTime;
 		this.gameState = gameState;
 	}
@@ -17,14 +17,14 @@ public class GameResult {
 	//for reflection
 	@SuppressWarnings("unused")
 	private GameResult() {
-		timeSpent = 0;
+		timePlayed = 0;
 		remainingTime = 0;
 		gameId = null;
 		gameState = null;
 	}
 
-	public long getTimeSpent() {
-		return timeSpent;
+	public long getTimePlayed() {
+		return timePlayed;
 	}
 
 	public long getRemainingTime() {

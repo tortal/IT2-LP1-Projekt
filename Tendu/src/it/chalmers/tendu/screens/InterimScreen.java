@@ -7,33 +7,31 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 public class InterimScreen implements Screen {
 	private Tendu tendu;
-	private List<GameResult> gameResults;
 	private BitmapFont font;
 	private final int level;
 	private float time;
 	private float totalTime;
 	private int timer = 0;
 	
-	public InterimScreen(Tendu tendu,  List<GameResult> gameResults) {
+	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
 		this.tendu = tendu;
-		this.gameResults = gameResults;
 		font = new BitmapFont();
 		font.scale(2.5f);
-		level = gameResults.size();
-		time = gameResults.get(level-1).getTimeSpent();
+		time = sessionResult.timePlayedLastGame();
 		time = time/1000;
 		
-		for(GameResult result: gameResults) {
-			totalTime = totalTime + result.getTimeSpent();
-		}	
-		
+		totalTime = sessionResult.totalTimePlayed();
 		totalTime = totalTime/1000;
+		
+		level = sessionResult.gamesPlayed();
+		
 	}
 
 	@Override
