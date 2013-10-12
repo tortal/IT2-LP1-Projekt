@@ -59,15 +59,15 @@ public class Tendu implements ApplicationListener, Listener {
 
 		// setScreen(new ShapesGameScreen(this, new ShapesGame(0,
 		// Constants.Difficulty.ONE)));
-
-		// create an inputController and register it with Gdx
-		input = new InputController();
-		Gdx.input.setInputProcessor(input);
-
+		
 		// setup the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
+
+		// create an inputController and register it with Gdx
+		input = new InputController(camera);
+		Gdx.input.setInputProcessor(input);
 	}
 
 	// clean up
