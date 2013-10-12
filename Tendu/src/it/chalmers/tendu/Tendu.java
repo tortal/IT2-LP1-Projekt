@@ -86,6 +86,7 @@ public class Tendu implements ApplicationListener, Listener {
 		// connections is lost?
 		// clear the entire screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	    Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
 
 		// makes sure the game runs in 60 fps
 		accum += Gdx.graphics.getDeltaTime();
