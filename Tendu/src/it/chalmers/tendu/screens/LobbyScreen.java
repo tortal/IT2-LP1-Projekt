@@ -12,32 +12,30 @@ import it.chalmers.tendu.tbd.EventMessage;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 public class LobbyScreen implements Screen {
-
-	private BitmapFont bigFont;
-	private BitmapFont smallFont;
-	private Vector3 touchPos = new Vector3();
 	private LobbyController lobbyController;
 	private Tendu tendu;
+	private OnScreenText status;
+	private OnScreenText ready;
+	private BitmapFont font;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
 		this.tendu = tendu;
 		LobbyModel model = new LobbyModel(4);
 		lobbyController = new LobbyController(model);
 
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+		ready = new OnScreenText("Ready", new Vector2(65, 130));
+		
 		if (isHost)
 			initHost();
 		else
 			initClient();
-
-		bigFont = new BitmapFont();
-		bigFont.scale(2);
-
-		smallFont = new BitmapFont();
-		smallFont.scale(1);
 	}
 
 	private void initHost() {
@@ -46,45 +44,48 @@ public class LobbyScreen implements Screen {
 		
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
+		
+		status = new OnScreenText("Waiting for connections...", new Vector2(20, 460));
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
+		status = new OnScreenText("Searching for game session...", new Vector2(20, 460));
 	}
 
 	public void tick(InputController input) {
 
-		// TODO Get a ready button
-		if (Gdx.input.justTouched()) {
-
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			tendu.getCamera().unproject(touchPos);
-
-			if (touchPos.x > 35 && touchPos.x < 435) {
-				if (touchPos.y >= 80 && touchPos.y < 150) {
-					Gdx.app.log("Testing", "Ready"); // Testing
-					EventBus.INSTANCE.broadcast(new EventMessage(
-							C.Tag.TO_SELF, C.Msg.PLAYER_READY, Player
-									.getInstance().getMac()));
-				}
+		if (input.isTouchedDown()) {
+			if(ready.collided(input.getCoordinates())) {
+				Gdx.input.vibrate(25);
+				ready.setColor(Color.LIGHT_GRAY);
 			}
+		} else if(input.isTouchedUp()) {
+			if(ready.collided(input.getCoordinates())) {
+				EventBus.INSTANCE.broadcast(new EventMessage(
+						C.Tag.TO_SELF, C.Msg.PLAYER_READY, Player
+								.getInstance().getMac()));
+			}
+			
+			ready.setColor(Color.WHITE);
 		}
 	}
 
 	@Override
 	public void render() {
-
-		bigFont.draw(tendu.spriteBatch, "Lobby", 20, 460);
-
+		
+		status.draw(tendu.spriteBatch, font);
+		
 		float x = 40f;
 		float y = 410f;
 		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {
-			bigFont.draw(tendu.spriteBatch,
+			font.draw(tendu.spriteBatch,
 					"Player: " + p.getValue() + ":" + p.getKey(), x, y);
 			y -= 50;
 		}
-		smallFont.draw(tendu.spriteBatch, "Ready", 47, 150);
+		
+		ready.draw(tendu.spriteBatch, font);
 
 	}
 
@@ -94,8 +95,7 @@ public class LobbyScreen implements Screen {
 
 	@Override
 	public void removed() {
-		// TODO Auto-generated method stub
-
+		font.dispose();
 	}
 
 }

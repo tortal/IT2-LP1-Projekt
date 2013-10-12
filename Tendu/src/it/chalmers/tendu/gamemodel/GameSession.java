@@ -64,8 +64,8 @@ public class GameSession {
 	private MiniGame getMiniGame(GameId gameId) {
 		long extraTime = 0;
 		
-		if(sessionResult != null) {
-			extraTime = sessionResult.timePlayedLastGame();
+		if(sessionResult != null && sessionResult.gamesPlayed() > 0) {
+			extraTime = sessionResult.getLastResult().getRemainingTime();
 		}
 		
 		return MiniGameFactory.createMiniGame(extraTime, gameId, difficulty,

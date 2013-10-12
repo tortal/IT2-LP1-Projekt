@@ -2,6 +2,7 @@ package it.chalmers.tendu.screens;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import it.chalmers.tendu.Tendu;
@@ -18,12 +19,12 @@ public class InterimScreen implements Screen {
 	private final int level;
 	private float time;
 	private float totalTime;
-	private int timer = 0;
+	private long endTime;
 	
 	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
 		this.tendu = tendu;
-		font = new BitmapFont();
-		font.scale(2.5f);
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
 		time = sessionResult.timePlayedLastGame();
 		time = time/1000;
 		
@@ -31,23 +32,21 @@ public class InterimScreen implements Screen {
 		totalTime = totalTime/1000;
 		
 		level = sessionResult.gamesPlayed();
+		endTime = System.currentTimeMillis() + 3000;
 		
 	}
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-		font.draw(tendu.spriteBatch, "Level: " + level, 105, 400);
-		font.draw(tendu.spriteBatch, "Time: " + time, 105, 300);
-		font.draw(tendu.spriteBatch, "Total time: " + totalTime, 105, 200);
+		font.draw(tendu.spriteBatch, "Level: " + level, 120, 380);
+		font.draw(tendu.spriteBatch, "Time: " + time, 120, 280);
+		font.draw(tendu.spriteBatch, "Total time: " + totalTime, 120, 180);
 
 	}
 
 	@Override
-	public void tick(InputController input) {
-		timer++;
-		
-		if(timer == 180) {
+	public void tick(InputController input) {		
+		if(endTime - System.currentTimeMillis() <= 0) {
 			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.INTERIM_FINISHED);
 			EventBus.INSTANCE.broadcast(message);
 		}
@@ -55,7 +54,6 @@ public class InterimScreen implements Screen {
 
 	@Override
 	public void removed() {
-		// TODO Auto-generated method stub
 		font.dispose();
 	}
 

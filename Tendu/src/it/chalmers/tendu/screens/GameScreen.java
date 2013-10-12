@@ -21,12 +21,6 @@ public abstract class GameScreen implements Screen {
 	private int count; // used to count renders for events that should be
 	protected BitmapFont font;
 
-	private Sound completedGameSound;
-	private Sound lostGameSound;
-
-	// makes sure end sounds only plays once
-	private boolean playCompletedSound = true;
-
 	/**
 	 * @param game
 	 *            Tendu object that creates the screen
@@ -37,10 +31,6 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-
-		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 
 		if (model != null) {
 			model.startGame();
@@ -68,19 +58,14 @@ public abstract class GameScreen implements Screen {
 				count--;
 
 			}
-			// Gdx.app.log("Quota", calculateTimerWidth() + "");
 			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 			shapeRenderer.end();
-			//TODO refactor
 			
 			for(int i = 1; i < model.getNumberOfPlayers(); i++) {
 				renderPlayerIndicator(i);
 			}
 			
-		} else {
-			//showGameResult();
 		}
-
 	}
 
 	/** All game logic goes here */
@@ -91,9 +76,7 @@ public abstract class GameScreen implements Screen {
 	 */
 	public void removed() {
 		shapeRenderer.dispose();
-		completedGameSound.dispose();
 		font.dispose();
-		lostGameSound.dispose();
 	}
 
 	/**
@@ -101,20 +84,14 @@ public abstract class GameScreen implements Screen {
 	 * of time
 	 */
 	private int calculateTimerWidth() {
-//		double quota = (double) model.getTimeLeft()
-//				/ (double) model.getGameTime();
-//		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
-//		return (int) timerWitdth;
 		double quota = (double) model.getRemainingTime()
 				/ (double) model.getTotalTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
-		//return (int)model.getRemainingTime();
 	}
 
 
 	// TODO: could probably look better.
-	// TODO: show only connected players
 	/**
 	 * Renders a visual indicator for respective player
 	 */
@@ -176,32 +153,6 @@ public abstract class GameScreen implements Screen {
 		font.scale(2);
 
 	}
-
-//	/**
-//	 * Call when game ends shows either a success or a failure message and plays
-//	 * the corresponding sound
-//	 */
-//	public void showGameResult() {
-//		if (model.checkGameState() == GameState.WON) {
-//			font.setColor(Color.GREEN);
-//			font.scale(2);
-//			font.draw(tendu.spriteBatch, "You won!", 300, 300);
-//			font.scale(-2);
-//			if (playCompletedSound) {
-//				completedGameSound.play();
-//				playCompletedSound = false;
-//			}
-//		} else if (model.checkGameState() == GameState.LOST) {
-//			font.setColor(Color.RED);
-//			font.scale(2);
-//			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-//			font.scale(-2);
-//			if (playCompletedSound) {
-//				lostGameSound.play();
-//				playCompletedSound = false;
-//			}
-//		}
-//	}
 	
 	/**
 	 * Called every frame.
