@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector3;
 
@@ -17,9 +18,10 @@ public class MainMenuScreen implements Screen {
 	public MainMenuScreen(Tendu tendu) {
 
 		this.tendu = tendu;
+		//font = new BitmapFont(Gdx.files.internal("fontTest1.fnt"), Gdx.files.internal("fontTest1.png"), false);
 		font = new BitmapFont();
 		font.scale(5);
-
+		
 		smallFont = new BitmapFont();
 		smallFont.scale(2);
 
@@ -51,7 +53,6 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render() {
-
 		font.draw(tendu.spriteBatch, "Host game", 35, 250);
 		font.draw(tendu.spriteBatch, "Join game", 47, 150);
 
