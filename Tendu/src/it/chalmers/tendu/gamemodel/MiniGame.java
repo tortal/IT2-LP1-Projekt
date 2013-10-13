@@ -16,9 +16,11 @@ public abstract class MiniGame {
 	private long totalTime; // never changes once set
 	private long remainingTime;
 	private long endTime;
+	private GameState stateBeforePause;
 
 	public void setStartTime(long gameTime, long extraTime) {
 		totalTime = gameTime + extraTime;
+		remainingTime = totalTime;
 	}
 
 	/**
@@ -37,7 +39,9 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		updateTime();
+		if(getGameState() == GameState.RUNNING) {
+			updateTime();
+		}
 		return remainingTime;
 	}
 
@@ -45,11 +49,9 @@ public abstract class MiniGame {
 	 * updates the remaining time if GameState = RUNNING
 	 */
 	private void updateTime() {
-		if(state == GameState.RUNNING) {
-			remainingTime = endTime - System.currentTimeMillis();
-			if (remainingTime <= 0) {
-				gameLost();
-			}
+		remainingTime = endTime - System.currentTimeMillis();
+		if (remainingTime <= 0) {
+			gameLost();
 		}
 	}
 
@@ -95,7 +97,7 @@ public abstract class MiniGame {
 			Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.setGameId(gameId);
-		this.state = GameState.WAITING;
+		this.setState(GameState.WAITING);
 		this.players = players;
 	}
 
@@ -124,20 +126,19 @@ public abstract class MiniGame {
 	 * @return the game's state
 	 */
 	public GameState checkGameState() {
-		updateTime();
-		return state;
+		return getGameState();
 	}
 
 	private void gameLost() {
-		state = GameState.LOST;
+		setState(GameState.LOST);
 	}
 
 	protected void gameWon() {
-		state = GameState.WON;
+		setState(GameState.WON);
 	}
 
 	public void setGameState(GameState g) {
-		state = g;
+		setState(g);
 	}
 
 	/**
@@ -163,7 +164,7 @@ public abstract class MiniGame {
 	 * Starts the game
 	 */
 	public void startGame() {
-		state = GameState.RUNNING;
+		setState(GameState.RUNNING);
 		setEndTime(totalTime);
 	}
 
@@ -171,12 +172,16 @@ public abstract class MiniGame {
 	 * Pauses the game
 	 */
 	public void pauseGame() {
+		stateBeforePause = getGameState();
+		setState(GameState.PAUSED);
 	}
 
 	/**
 	 * Resume the game
 	 */
 	public void resumeGame() {
+		setEndTime(remainingTime);
+		setState(stateBeforePause);
 	}
 
 	/**
@@ -206,5 +211,9 @@ public abstract class MiniGame {
 
 	protected GameState getGameState() {
 		return state;
+	}
+
+	public void setState(GameState state) {
+		this.state = state;
 	}
 }

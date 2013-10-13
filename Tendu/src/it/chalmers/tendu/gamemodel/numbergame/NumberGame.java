@@ -80,6 +80,16 @@ public class NumberGame extends MiniGame {
 		Gdx.app.log("NumberGame", "Starttid = " + getTotalTime());
 
 	}
+	
+	/**
+	 * Changes the state of the game to running
+	 * However it does not start the timer
+	 */
+	@Override
+	public void startGame() {
+		super.startGame();;
+		//setState(GameState.INSTRUCTING);
+	}
 
 	/**
 	 * Check if the number chosen is the right one according to the answerList

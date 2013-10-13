@@ -159,6 +159,5 @@ public abstract class GameScreen implements Screen {
 	 * Make sure to call super() from subclass
 	 */
 	public void tick() {
-		model.checkGameState();
 	}
 }

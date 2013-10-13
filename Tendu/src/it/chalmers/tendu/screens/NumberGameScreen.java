@@ -39,6 +39,7 @@ public class NumberGameScreen extends GameScreen {
 	
 	private OnScreenText memorizeText;
 	private OnScreenText instructionText;
+	private OnScreenText numberText;
 
 	/**
 	 * @param tendu
@@ -209,6 +210,10 @@ public class NumberGameScreen extends GameScreen {
 		if (time < 240) {
 			time++;
 			return;
+		}
+		
+		if(time == 239) {
+			//model.startTimer();
 		}
 
 		if (time == 240) {
