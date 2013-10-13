@@ -19,24 +19,29 @@ import com.badlogic.gdx.math.Vector2;
 public class LobbyScreen implements Screen {
 	private LobbyController lobbyController;
 	private Tendu tendu;
-	private OnScreenText status;
-	private OnScreenText ready;
+	private OnScreenText statusText;
+	private OnScreenText readyText;
+	private OnScreenText playerText;
+	private OnScreenText waitingText;
 	private BitmapFont font;
 	private int playersConnected;
 	private final int maximumPlayers;
-	private OnScreenText playerText;
+	private boolean ready;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
-		maximumPlayers = 4;
+		maximumPlayers = 2;
 		this.tendu = tendu;
 		LobbyModel model = new LobbyModel(maximumPlayers);
 		lobbyController = new LobbyController(model);
-
+		
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		ready = new OnScreenText("Ready", new Vector2(65, 130));
 		
+		readyText = new OnScreenText("I'm ready", new Vector2(65, 130));
+		waitingText = new OnScreenText("Waiting for other players...", new Vector2(65, 130), -0.25f);		
 		playerText = new OnScreenText("Players", new Vector2(65, 450), -0.25f);
+		
+		ready = false;
 
 		if (isHost)
 			initHost();
@@ -51,13 +56,13 @@ public class LobbyScreen implements Screen {
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
 
-		status = new OnScreenText("Waiting for connections...", new Vector2(40,
+		statusText = new OnScreenText("Waiting for connections...", new Vector2(40,
 				460), -0.25f);
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
-		status = new OnScreenText("Searching for game session...", new Vector2(
+		statusText = new OnScreenText("Searching for game session...", new Vector2(
 				40, 460), -0.25f);
 	}
 
@@ -65,30 +70,31 @@ public class LobbyScreen implements Screen {
 		playersConnected = getModel().getLobbyMembers().entrySet().size();
 
 		if (!Player.getInstance().isHost() && playersConnected > 0) {
-			status.setText("Connected to game session");
+			statusText.setText("Connected to game session");
 		} else if (Player.getInstance().isHost() && playersConnected == maximumPlayers) {
-			status.setText("Maximum players connected");
+			statusText.setText("Maximum players connected");
 		}
 
 		if (input.isTouchedDown()) {
-			if (ready.collided(input.getCoordinates())) {
+			if (readyText.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				ready.setColor(Color.LIGHT_GRAY);
+				readyText.setColor(Color.LIGHT_GRAY);
 			}
 		} else if (input.isTouchedUp()) {
-			if (ready.collided(input.getCoordinates())) {
+			if (readyText.collided(input.getCoordinates())) {
+				ready = true;
 				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
 			}
 
-			ready.setColor(Color.WHITE);
+			readyText.setColor(Color.WHITE);
 		}
 	}
 
 	@Override
 	public void render() {
 
-		status.draw(tendu.spriteBatch, font);
+		statusText.draw(tendu.spriteBatch, font);
 		
 		playerText.setY(450);
 
@@ -99,8 +105,10 @@ public class LobbyScreen implements Screen {
 			playerText.draw(tendu.spriteBatch, font);
 		}
 		
-		if (playersConnected > 0) {
-			ready.draw(tendu.spriteBatch, font);
+		if (playersConnected > 0 && !ready) {
+			readyText.draw(tendu.spriteBatch, font);
+		} else if(playersConnected > 0 && ready) {
+			waitingText.draw(tendu.spriteBatch, font);
 		}
 	}
 
