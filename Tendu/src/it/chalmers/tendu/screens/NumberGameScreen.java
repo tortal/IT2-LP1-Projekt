@@ -16,12 +16,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
@@ -31,13 +30,15 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
 													// with (guess)
 	private ArrayList<Integer> numbers; // the correct numbers
-
-	private Vector3 touchPos; // used to store coordinates for on screen touches
-
 	private int time; // used to time certain "events" during the game.
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	private NumberGameController controller;
+	
+	private BitmapFont font;
+	
+	private OnScreenText memorizeText;
+	private OnScreenText instructionText;
 
 	/**
 	 * @param tendu
@@ -49,10 +50,10 @@ public class NumberGameScreen extends GameScreen {
 		super(tendu, model);
 
 		shapeRenderer = new ShapeRenderer();
-
-		touchPos = new Vector3();
 		controller = new NumberGameController((NumberGame) model);
-
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+		
 		setUpGame();
 	}
 
@@ -61,8 +62,9 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void setUpGame() {
 		time = 0;
-		font.scale(2); // scale up font relative to the previous scale, -2
-						// scales it back
+		
+		memorizeText = new OnScreenText("Memorize the numbers", new Vector2(145, 400), -0.2f);
+		instructionText = new OnScreenText("Enter the numbers in the correct order", new Vector2(50, 400), -0.35f);
 
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Integer>();
@@ -78,10 +80,12 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
+		//add the correct number from the answerlist
 		for (Integer number : getModel().getAnswerList()) {
 			numbers.add(number.intValue());
 		}
 
+		//setup the guess list
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
 			numberCircles.add(new NumberCircle(getModel().getMyList().get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
@@ -109,8 +113,7 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		font.scale(1.6f);
-
+		//TODO redo properly so number always centered
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
 				font.setColor(colors.get(i));
@@ -126,7 +129,6 @@ public class NumberGameScreen extends GameScreen {
 				}
 			}
 		}
-		font.scale(-1.6f);
 	}
 
 	/**
@@ -169,16 +171,14 @@ public class NumberGameScreen extends GameScreen {
 		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
 		if (time < 240) {
-			font.setColor(Color.BLUE);
-			font.draw(tendu.spriteBatch, "Memorize the numbers", 200, 400);
+			memorizeText.draw(tendu.spriteBatch, font);
 			drawNumbers(true);
 
 		} else {
 			if (model.checkGameState() == GameState.RUNNING) {
 				font.setColor(Color.BLUE);
-				font.draw(tendu.spriteBatch,
-						"Enter the numbers in the correct order", 60, 400);
-
+				instructionText.draw(tendu.spriteBatch, font);
+				
 				drawNumbers(false);
 				drawNumberCircles();
 			}
@@ -213,11 +213,8 @@ public class NumberGameScreen extends GameScreen {
 
 		if (time == 240) {
 			if (input.isTouchedUp()) {
-				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-				tendu.getCamera().unproject(touchPos);
-
 				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(touchPos)) {
+					if (circle.collided(input.getCoordinates())) {
 						Gdx.input.vibrate(25);
 						EventBus.INSTANCE.broadcast(new EventMessage(
 								C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
@@ -228,11 +225,8 @@ public class NumberGameScreen extends GameScreen {
 			}
 
 			if (input.isTouchedDown()) {
-				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-				tendu.getCamera().unproject(touchPos);
-
 				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(touchPos)) {
+					if (circle.collided(input.getCoordinates())) {
 						circle.scale = 1.5f;
 					}
 				}
