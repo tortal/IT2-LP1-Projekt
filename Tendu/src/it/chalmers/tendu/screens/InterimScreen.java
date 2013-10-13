@@ -1,17 +1,15 @@
 package it.chalmers.tendu.screens;
 
-import java.util.List;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 
 public class InterimScreen implements Screen {
 	private Tendu tendu;
@@ -20,6 +18,9 @@ public class InterimScreen implements Screen {
 	private float time;
 	private float totalTime;
 	private long endTime;
+	private OnScreenText levelText;
+	private OnScreenText timeText;
+	private OnScreenText totalTimeText;
 	
 	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
 		this.tendu = tendu;
@@ -34,13 +35,18 @@ public class InterimScreen implements Screen {
 		level = sessionResult.gamesPlayed();
 		endTime = System.currentTimeMillis() + 3000;
 		
+		levelText = new OnScreenText("Level: " + level, new Vector2(120, 380));
+		timeText = new OnScreenText("Time: " + time, new Vector2(120, 280));
+		totalTimeText = new OnScreenText("Total time: " + totalTime, new Vector2(120, 180));
+		
 	}
 
 	@Override
 	public void render() {
-		font.draw(tendu.spriteBatch, "Level: " + level, 120, 380);
-		font.draw(tendu.spriteBatch, "Time: " + time, 120, 280);
-		font.draw(tendu.spriteBatch, "Total time: " + totalTime, 120, 180);
+		levelText.draw(tendu.spriteBatch, font);
+		timeText.draw(tendu.spriteBatch, font);
+		totalTimeText.draw(tendu.spriteBatch, font);
+
 
 	}
 
