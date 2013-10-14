@@ -134,6 +134,12 @@ public class ShapesGameScreen extends GameScreen {
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(1, s.getShape())));
 		}
+		
+		if (s.getBounds().y <= 60) {
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(0, s.getShape())));
+		}
 	}
 
 	/**
