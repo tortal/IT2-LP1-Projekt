@@ -35,6 +35,12 @@ public class GraphicalShape {
 		this.color = determineColor(shape);
 
 	}
+	
+	public GraphicalShape(Shape shape, int x, int y){
+		this(shape);
+		moveShape(x, y);
+		
+	}
 
 	public void renderShape(ShapeRenderer sr) {
 		switch (shapeType) {

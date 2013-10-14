@@ -9,7 +9,7 @@ public enum GameId {
 	
 
 
-	NUMBER_GAME(Difficulty.ONE, Difficulty.TWO, Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE), SHAPES_GAME();
+	NUMBER_GAME(/*Difficulty.ONE, Difficulty.TWO, Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE*/), SHAPES_GAME(Difficulty.ONE);
 
 
 	/**
