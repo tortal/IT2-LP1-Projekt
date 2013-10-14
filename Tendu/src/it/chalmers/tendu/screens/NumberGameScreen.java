@@ -41,6 +41,8 @@ public class NumberGameScreen extends GameScreen {
 
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
+	
+	private TextWidget smallNumbers;
 
 	/**
 	 * @param tendu
@@ -72,6 +74,10 @@ public class NumberGameScreen extends GameScreen {
 		instructionText = new TextWidget(
 				"Enter the numbers in the correct order", new Vector2(50, 400),
 				-0.35f);
+		
+		smallNumbers = new TextWidget(
+				"1", new Vector2(50, 400),
+				-0.4f);
 
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Integer>();
@@ -152,8 +158,14 @@ public class NumberGameScreen extends GameScreen {
 			shapeRenderer.circle(circle.getX(), circle.getY(),
 					(circle.getRadius() - i) * circle.scale);
 		}
-		font.draw(tendu.spriteBatch, "" + circle.getNumber(),
-				circle.getNumberX(), circle.getNumberY());
+		smallNumbers.setText("" + circle.getNumber());
+		smallNumbers.setX(circle.getNumberX());
+		smallNumbers.setY(circle.getNumberY());
+		smallNumbers.setColor(circle.color);
+		smallNumbers.draw(tendu.spriteBatch, numberFont);
+		
+//		font.draw(tendu.spriteBatch, "" + circle.getNumber(),
+//				circle.getNumberX(), circle.getNumberY());
 	}
 
 	/**
@@ -213,7 +225,6 @@ public class NumberGameScreen extends GameScreen {
 			return;
 		} else if (model.checkGameState() == GameState.RUNNING) {
 			instructionsTimer.start(4000);
-//			Gdx.app.log(this.getClass().getSimpleName(), "time left = " + instructionsTimer.getRemainingTime());
 			if (instructionsTimer.getRemainingTime() < 0) {
 				model.startGameTimer();
 				if (input.isTouchedUp()) {
