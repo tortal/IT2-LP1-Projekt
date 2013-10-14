@@ -7,6 +7,7 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.screens.GameOverScreen;
 import it.chalmers.tendu.screens.InterimScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
@@ -156,6 +157,10 @@ public class Tendu implements ApplicationListener, Listener {
 		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 			SessionResult sessionResult = (SessionResult)message.content;
 			Screen screen = new InterimScreen(this, sessionResult);
+			setScreen(screen);
+		} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN){
+			SessionResult sessionResult = (SessionResult)message.content;
+			Screen screen = new GameOverScreen(this, sessionResult);
 			setScreen(screen);
 		}
 	}
