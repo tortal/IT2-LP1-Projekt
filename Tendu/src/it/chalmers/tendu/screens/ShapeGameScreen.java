@@ -93,32 +93,35 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10) {
+		if (s.getBounds().x <= 10 &&
+				getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(2,
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
 					s.getShape())));
 		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
+				getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(3,
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
 					s.getShape())));
 
 		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60 &&
+				getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(1,
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
 					s.getShape())));
 		}
 
-		if (s.getBounds().y <= 60) {
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(0,
-					s.getShape())));
-		}
+//		if (s.getBounds().y <= 60) {
+//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+//					.getModel().getGameId(), messageContentFactory(0,
+//					s.getShape())));
+//		}
 
 	}
 
@@ -232,8 +235,7 @@ public class ShapeGameScreen extends GameScreen {
 					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));
 		}
-		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
-		}
+
 		return result;
 
 	}
