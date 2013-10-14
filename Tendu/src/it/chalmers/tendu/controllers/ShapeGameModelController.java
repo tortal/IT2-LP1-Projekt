@@ -42,6 +42,7 @@ public class ShapeGameModelController implements Listener {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
+				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
@@ -56,6 +57,14 @@ public class ShapeGameModelController implements Listener {
 					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
+				// Send object
+				if (message.msg == C.Msg.SHAPE_SENT) {
+					sendShape(message.content);
+					message.tag = C.Tag.COMMAND_AS_HOST;
+					Gdx.app.log(TAG, "Sent from server");
+					EventBus.INSTANCE.broadcast(message);
+				}
+
 			}
 		}
 
@@ -75,14 +84,20 @@ public class ShapeGameModelController implements Listener {
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				Gdx.app.log(TAG, "Recived from host");
-				if (insertIntoSlot(message.content)) {
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.SOUND_SUCCEED);
-					EventBus.INSTANCE.broadcast(soundMsg);
-				} else {
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.SOUND_FAIL);
-					EventBus.INSTANCE.broadcast(soundMsg);
+				// Lock attempt
+				if (message.msg == C.Msg.LOCK_ATTEMPT) {
+					if (insertIntoSlot(message.content)) {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					} else {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
+				}
+				if (message.msg == C.Msg.SHAPE_SENT) {
+					sendShape(message.content);
 				}
 			}
 		}
@@ -111,4 +126,10 @@ public class ShapeGameModelController implements Listener {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
+	private void sendShape(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape shape = (Shape) messageContent.get(1);
+		model.move(shape, player);
+	}
 }
