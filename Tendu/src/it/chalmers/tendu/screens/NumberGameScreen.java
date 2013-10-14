@@ -26,7 +26,6 @@ import com.badlogic.gdx.math.Vector2;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
-	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private ArrayList<Color> colors; // list with colors for all numbers
 
 	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
@@ -44,6 +43,7 @@ public class NumberGameScreen extends GameScreen {
 
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
+	private TextWidget smallNumbers;
 
 	/**
 	 * @param tendu
@@ -54,7 +54,6 @@ public class NumberGameScreen extends GameScreen {
 	public NumberGameScreen(Tendu tendu, MiniGame model) {
 		super(tendu, model);
 
-		shapeRenderer = new ShapeRenderer();
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
@@ -76,6 +75,8 @@ public class NumberGameScreen extends GameScreen {
 		instructionText = new TextWidget(
 				"Enter the numbers in the correct order", new Vector2(50, 400),
 				-0.35f);
+
+		smallNumbers = new TextWidget("1", new Vector2(0, 0), -0.4f);
 
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Integer>();
@@ -149,30 +150,21 @@ public class NumberGameScreen extends GameScreen {
 	 *            circle to draw
 	 */
 	private void drawNumberCircle(NumberCircle circle) {
-		shapeRenderer.setColor(circle.color);
 		font.setColor(circle.color);
-
-		for (int i = 0; i < 5; i++) {
-			shapeRenderer.circle(circle.getX(), circle.getY(),
-					(circle.getRadius() - i) * circle.scale);
-		}
-		font.draw(tendu.spriteBatch, "" + circle.getNumber(),
-				circle.getNumberX(), circle.getNumberY());
+		smallNumbers.setText("" + circle.getNumber());
+		smallNumbers.setX(circle.getNumberX());
+		smallNumbers.setY(circle.getNumberY());
+		smallNumbers.setColor(circle.color);
+		smallNumbers.draw(tendu.spriteBatch, numberFont);
 	}
 
 	/**
 	 * Draws all NumberCircles
 	 */
 	private void drawNumberCircles() {
-		shapeRenderer.begin(ShapeType.Circle);
-
-		font.scale(-0.8f);
 		for (int i = 0; i < numberCircles.size(); i++) {
 			drawNumberCircle(numberCircles.get(i));
 		}
-		font.scale(0.8f);
-
-		shapeRenderer.end();
 	}
 
 	/** Draw all graphics from here */
@@ -180,9 +172,8 @@ public class NumberGameScreen extends GameScreen {
 	public void render() {
 		if (model.checkGameState() == GameState.RUNNING) {
 			super.render(); // draws common ui-stuff
-			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
-			if (instructionsTimer.getRemainingTime() >= 0) {
+			if (!instructionsTimer.isDone()) {
 				memorizeText.draw(tendu.spriteBatch, font);
 				drawNumbers(true);
 
@@ -217,11 +208,12 @@ public class NumberGameScreen extends GameScreen {
 			}
 
 			return;
+			
 		} else if (model.checkGameState() == GameState.RUNNING) {
 			instructionsTimer.start(4000);
 			// Gdx.app.log(this.getClass().getSimpleName(), "time left = " +
 			// instructionsTimer.getRemainingTime());
-			if (instructionsTimer.getRemainingTime() < 0) {
+			if (instructionsTimer.isDone()) {
 				model.startGameTimer();
 				if (input.isTouchedUp()) {
 					for (NumberCircle circle : numberCircles) {
@@ -258,7 +250,5 @@ public class NumberGameScreen extends GameScreen {
 		numberFont.dispose();
 		sound.unregister();
 		controller.unregister();
-		shapeRenderer.dispose();
-
 	}
 }
