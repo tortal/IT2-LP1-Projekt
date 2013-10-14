@@ -62,6 +62,7 @@ public class ShapeGameModelController implements Listener {
 				if (message.msg == C.Msg.SHAPE_SENT) {
 					sendShape(message.content);
 					message.tag = C.Tag.COMMAND_AS_HOST;
+					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
 
