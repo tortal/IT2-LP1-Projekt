@@ -97,7 +97,7 @@ public class ShapeGameModelController implements Listener {
 					}
 				}
 				if (message.msg == C.Msg.SHAPE_SENT) {
-					sendShape(message.msg);
+					sendShape(message.content);
 				}
 			}
 		}

@@ -183,7 +183,7 @@ public class ShapesGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				Gdx.app.log(TAG, "Shape: " + movingShape.getShape().isLocked());
+				//Gdx.app.log(TAG, "Shape: " + movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(touchPos.x
 							- movingShape.getBounds().width / 2, touchPos.y
