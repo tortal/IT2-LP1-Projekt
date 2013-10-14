@@ -16,18 +16,18 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 
-public class ShapeGameModelController implements Listener {
+public class ShapeGameModelController implements MiniGameController {
 
 	private final String TAG = "ShapeGameModelController";
-	private ShapesGame model;
+	private ShapesGame shapeGame;
 
 	public ShapeGameModelController(ShapesGame model) {
-		this.model = model;
+		this.shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
 	public ShapesGame getModel() {
-		return model;
+		return shapeGame;
 	}
 
 	@Override
@@ -40,10 +40,16 @@ public class ShapeGameModelController implements Listener {
 		}
 	}
 
-	private void handleAsHost(EventMessage message) {
+	@Override
+	public void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
-			if (message.gameId == GameId.SHAPES_GAME) {
+			if (message.msg == C.Msg.START_MINI_GAME) {
+				shapeGame.startGame();
+				shapeGame.startGameTimer();
+			}
+
+			if (message.gameId == GameId.SHAPE_GAME) {
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
@@ -66,25 +72,28 @@ public class ShapeGameModelController implements Listener {
 					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
-
 			}
-		}
 
+		}
 	}
 
-	private void handleAsClient(EventMessage message) {
+	@Override
+	public void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
-			if (message.gameId == GameId.SHAPES_GAME) {
+			if (message.gameId == GameId.SHAPE_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT
 						|| message.msg == C.Msg.SHAPE_SENT) {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
+				shapeGame.startGame();
+				shapeGame.startGameTimer();
 			}
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
-			if (message.gameId == GameId.SHAPES_GAME) {
+			if (message.gameId == GameId.SHAPE_GAME) {
 				Gdx.app.log(TAG, "Recived from host");
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
@@ -92,6 +101,7 @@ public class ShapeGameModelController implements Listener {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
+						Gdx.app.log(TAG, "Client changed model");
 					} else {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_FAIL);
@@ -111,7 +121,7 @@ public class ShapeGameModelController implements Listener {
 		Shape lockShape = (Shape) messageContent.get(1);
 		Shape shape = (Shape) messageContent.get(2);
 
-		return model.shapeFitIntoLock(player, shape, lockShape);
+		return shapeGame.shapeFitIntoLock(player, shape, lockShape);
 	}
 
 	private boolean insertIntoSlot(Object content) {
@@ -120,7 +130,7 @@ public class ShapeGameModelController implements Listener {
 		Shape lockShape = (Shape) messageContent.get(1);
 		Shape shape = (Shape) messageContent.get(2);
 
-		return model.insertShapeIntoSlot(player, shape, lockShape);
+		return shapeGame.insertShapeIntoSlot(player, shape, lockShape);
 	}
 
 	@Override
@@ -132,6 +142,6 @@ public class ShapeGameModelController implements Listener {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape shape = (Shape) messageContent.get(1);
-		model.move(shape, player);
+		shapeGame.move(shape, player);
 	}
 }
