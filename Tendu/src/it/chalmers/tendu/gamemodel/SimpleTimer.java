@@ -27,7 +27,7 @@ public class SimpleTimer {
 	 * @param time
 	 *            time in milliseconds
 	 */
-	public void startTimer(long time) {
+	public void start(long time) {
 		if (state == STATE.RUNNING || state == STATE.DONE) {
 			return;
 		}
@@ -45,22 +45,22 @@ public class SimpleTimer {
 	 * @param time
 	 *            time in milliseconds
 	 */
-	public void restartTimer(long time) {
+	public void restart(long time) {
 		state = STATE.PAUSED; //start timer will change this to running
-		startTimer(time);
+		start(time);
 	}
 
 	/**
 	 * Pause the timer
 	 */
-	public void pauseTimer() {
+	public void pause() {
 		state = STATE.PAUSED;
 	}
 
 	/**
 	 * Resume the timer
 	 */
-	public void resumeTime() {
+	public void resume() {
 		setEndTime(getRemainingTime());
 		state = STATE.RUNNING;
 	}
@@ -69,7 +69,7 @@ public class SimpleTimer {
 	 * @param time
 	 *            the change in milliseconds, can be positive or negative;
 	 */
-	public void changeTimer(long time) {
+	public void change(long time) {
 		endTime = endTime + time;
 	}
 

@@ -213,7 +213,7 @@ public class NumberGameScreen extends GameScreen {
 			}
 			return;
 		} else if (model.checkGameState() == GameState.RUNNING) {
-			instructionsTimer.startTimer(4000);
+			instructionsTimer.start(4000);
 //			Gdx.app.log(this.getClass().getSimpleName(), "time left = " + instructionsTimer.getRemainingTime());
 			if (instructionsTimer.getRemainingTime() <= 0) {
 				if (input.isTouchedUp()) {

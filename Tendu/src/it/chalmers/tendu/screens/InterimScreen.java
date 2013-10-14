@@ -40,7 +40,7 @@ public class InterimScreen implements Screen {
 		totalTimeText = new TextWidget("Total time: " + totalTime, new Vector2(120, 180));
 		
 		timer = new SimpleTimer();
-		timer.startTimer(3000);
+		timer.start(3000);
 	}
 
 	@Override

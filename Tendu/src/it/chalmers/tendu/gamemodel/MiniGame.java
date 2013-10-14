@@ -41,7 +41,7 @@ public abstract class MiniGame {
 	 */
 	public long getRemainingTime() {
 		if(timer.getRemainingTime() <= 0) { 
-			this.setState(GameState.LOST);
+			gameLost();
 		}
 		
 		return timer.getRemainingTime();
@@ -61,7 +61,7 @@ public abstract class MiniGame {
 	 * Call if host pushed new model
 	 */
 	public void reInit() {
-		timer.restartTimer(timer.getRemainingTime());
+		timer.restart(timer.getRemainingTime());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public abstract class MiniGame {
 	 * 			the change in milliseconds, can be positive or negative;
 	 */
 	public void changeTime(long time) {
-		timer.changeTimer(time);
+		timer.change(time);
 	}
 
 	public long getGameTime() {
@@ -166,7 +166,7 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		setState(GameState.RUNNING);
-		timer.startTimer(gameTime);
+		timer.start(gameTime);
 //		setEndTime(totalTime);
 	}
 
@@ -174,6 +174,7 @@ public abstract class MiniGame {
 	 * Pauses the game
 	 */
 	public void pauseGame() {
+		timer.pause();
 		stateBeforePause = getGameState();
 		setState(GameState.PAUSED);
 	}
@@ -183,7 +184,7 @@ public abstract class MiniGame {
 	 */
 	public void resumeGame() {
 //		setEndTime(remainingTime);
-		timer.resumeTime();
+		timer.resume();
 		setState(stateBeforePause);
 	}
 
