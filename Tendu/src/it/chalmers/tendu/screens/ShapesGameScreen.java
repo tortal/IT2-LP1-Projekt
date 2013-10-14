@@ -144,8 +144,8 @@ public class ShapesGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-//		Vector3 touchPos = new Vector3(input.x, input.y, +0);
-//		tendu.getCamera().unproject(touchPos);
+		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
+		// tendu.getCamera().unproject(touchPos);
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
@@ -218,6 +218,7 @@ public class ShapesGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
@@ -231,8 +232,9 @@ public class ShapesGameScreen extends GameScreen {
 					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));
 		}
+		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
+		}
 		return result;
 
 	}
-
 }
