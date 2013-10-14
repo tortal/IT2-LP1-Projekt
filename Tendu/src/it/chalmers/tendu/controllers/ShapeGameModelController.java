@@ -101,6 +101,7 @@ public class ShapeGameModelController implements MiniGameController {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
+						Gdx.app.log(TAG, "Client changed model");
 					} else {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_FAIL);
