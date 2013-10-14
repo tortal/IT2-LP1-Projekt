@@ -83,7 +83,7 @@ public abstract class GameScreen implements Screen {
 	 */
 	private int calculateTimerWidth() {
 		double quota = (double) model.getRemainingTime()
-				/ (double) model.getTotalTime();
+				/ (double) model.getGameTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
 	}

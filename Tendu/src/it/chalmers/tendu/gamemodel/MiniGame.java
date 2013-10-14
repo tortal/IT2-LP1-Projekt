@@ -10,14 +10,18 @@ public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
 	private GameId gameId;
-	private long totalTime; // never changes once set
-	private long remainingTime;
-	private long endTime;
+//	private long totalTime; // never changes once set
+//	private long remainingTime;
+//	private long endTime;
+	private long gameTime;
+	private SimpleTimer timer;
 	private GameState stateBeforePause;
 
 	public void setStartTime(long gameTime, long extraTime) {
-		totalTime = gameTime + extraTime;
-		remainingTime = totalTime;
+//		totalTime = gameTime + extraTime;
+//		remainingTime = totalTime;
+		this.gameTime = gameTime + extraTime;
+		timer = new SimpleTimer();
 	}
 
 	/**
@@ -26,9 +30,9 @@ public abstract class MiniGame {
 	 * 
 	 * @param time
 	 */
-	private void setEndTime(long time) {
-		this.endTime = time + System.currentTimeMillis();
-	}
+//	private void setEndTime(long time) {
+//		this.endTime = time + System.currentTimeMillis();
+//	}
 
 	/**
 	 * Gets the remaining time
@@ -36,27 +40,28 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		if(getGameState() == GameState.RUNNING) {
-			updateTime();
+		if(timer.getRemainingTime() <= 0) { 
+			this.setState(GameState.LOST);
 		}
-		return remainingTime;
+		
+		return timer.getRemainingTime();
 	}
 
 	/**
 	 * updates the remaining time if GameState = RUNNING
 	 */
-	private void updateTime() {
-		remainingTime = endTime - System.currentTimeMillis();
-		if (remainingTime <= 0) {
-			gameLost();
-		}
-	}
+//	private void updateTime() {
+//		remainingTime = endTime - System.currentTimeMillis();
+//		if (remainingTime <= 0) {
+//			gameLost();
+//		}
+//	}
 
 	/**
 	 * Call if host pushed new model
 	 */
 	public void reInit() {
-		setEndTime(remainingTime);
+		timer.restartTimer(timer.getRemainingTime());
 	}
 
 	/**
@@ -64,12 +69,11 @@ public abstract class MiniGame {
 	 * 			the change in milliseconds, can be positive or negative;
 	 */
 	public void changeTime(long time) {
-		endTime = endTime + time;
-		updateTime();
+		timer.changeTimer(time);
 	}
 
-	public long getTotalTime() {
-		return totalTime;
+	public long getGameTime() {
+		return gameTime;
 	}
 
 	/**
@@ -162,7 +166,8 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		setState(GameState.RUNNING);
-		setEndTime(totalTime);
+		timer.startTimer(gameTime);
+//		setEndTime(totalTime);
 	}
 
 	/**
@@ -177,7 +182,8 @@ public abstract class MiniGame {
 	 * Resume the game
 	 */
 	public void resumeGame() {
-		setEndTime(remainingTime);
+//		setEndTime(remainingTime);
+		timer.resumeTime();
 		setState(stateBeforePause);
 	}
 

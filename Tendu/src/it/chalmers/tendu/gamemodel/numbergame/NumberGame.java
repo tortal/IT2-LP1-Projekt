@@ -76,7 +76,7 @@ public class NumberGame extends MiniGame {
 		// fill it up with dummy numbers.
 		playerLists = divideAndConquer(answerList);
 
-		Gdx.app.log("NumberGame", "Starttid = " + getTotalTime());
+		Gdx.app.log("NumberGame", "Starttid = " + getGameTime());
 
 	}
 	
@@ -205,7 +205,7 @@ public class NumberGame extends MiniGame {
 	@Override
 	public GameResult getGameResult() {
 		if(checkGameState() == GameState.WON || checkGameState() == GameState.LOST) {
-			long spentTime = (getTotalTime()-getRemainingTime());
+			long spentTime = (getGameTime()-getRemainingTime());
 			GameResult result = new GameResult(getGameId(), spentTime, getRemainingTime(), getGameState());
 			return result;
 		}
