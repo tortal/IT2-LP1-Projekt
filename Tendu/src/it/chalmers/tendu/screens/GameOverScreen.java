@@ -3,6 +3,9 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.SessionResult;
+import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.EventBus;
+import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -51,7 +54,8 @@ public class GameOverScreen implements Screen {
 			}
 
 			if (replay.collided(input.getCoordinates())) {
-				// TODO: Start game from level one.
+				EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.PLAYER_READY);
+				EventBus.INSTANCE.broadcast(message);
 			}
 
 			mainMenu.setColor(Color.WHITE);

@@ -63,7 +63,7 @@ public class GameSessionController implements Listener {
 				EventMessage eventMessage = new EventMessage(
 				C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL, gameSession);
 				EventBus.INSTANCE.broadcast(eventMessage);
-				gameSession.interimScreen();
+//				gameSession.interimScreen();
 
 			} else if(message.msg == C.Msg.INTERIM_FINISHED) {
 				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_GAME);
@@ -84,6 +84,10 @@ public class GameSessionController implements Listener {
 				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
 
+			}
+			if (message.msg == C.Msg.PLAYER_READY){
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+				EventBus.INSTANCE.broadcast(message);
 			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {

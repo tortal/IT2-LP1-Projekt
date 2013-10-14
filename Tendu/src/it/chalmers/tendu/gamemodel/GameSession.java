@@ -116,8 +116,9 @@ public class GameSession {
 		
 		if (gameResult.getGameState() == GameState.WON) {
 			sessionResult.addResult(gameResult);
+			interimScreen();
 		} else {
-			// TODO do something with the results (present to user...)
+			gameOverScreen();
 
 			// empty the results list
 			sessionResult.clear();
