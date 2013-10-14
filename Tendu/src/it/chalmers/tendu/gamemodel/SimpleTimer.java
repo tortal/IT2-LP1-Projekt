@@ -92,4 +92,12 @@ public class SimpleTimer {
 	private void setEndTime(long time) {
 		this.endTime = time + System.currentTimeMillis();
 	}
+	
+	public boolean isRunning() {
+		if(state == STATE.RUNNING) {
+			return true;
+		}
+		
+		return false;
+	}
 }

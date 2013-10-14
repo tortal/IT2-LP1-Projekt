@@ -41,7 +41,6 @@ public class NumberGameScreen extends GameScreen {
 
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
-	private TextWidget numberText;
 
 	/**
 	 * @param tendu
@@ -179,7 +178,7 @@ public class NumberGameScreen extends GameScreen {
 			super.render(); // draws common ui-stuff
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
-			if (instructionsTimer.getRemainingTime() > 0) {
+			if (instructionsTimer.getRemainingTime() >= 0) {
 				memorizeText.draw(tendu.spriteBatch, font);
 				drawNumbers(true);
 
@@ -215,7 +214,8 @@ public class NumberGameScreen extends GameScreen {
 		} else if (model.checkGameState() == GameState.RUNNING) {
 			instructionsTimer.start(4000);
 //			Gdx.app.log(this.getClass().getSimpleName(), "time left = " + instructionsTimer.getRemainingTime());
-			if (instructionsTimer.getRemainingTime() <= 0) {
+			if (instructionsTimer.getRemainingTime() < 0) {
+				model.startGameTimer();
 				if (input.isTouchedUp()) {
 					for (NumberCircle circle : numberCircles) {
 						if (circle.collided(input.getCoordinates())) {

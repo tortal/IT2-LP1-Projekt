@@ -10,29 +10,35 @@ public abstract class MiniGame {
 	private Difficulty difficulty;
 	private GameState state;
 	private GameId gameId;
-//	private long totalTime; // never changes once set
-//	private long remainingTime;
-//	private long endTime;
 	private long gameTime;
 	private SimpleTimer timer;
 	private GameState stateBeforePause;
 
-	public void setStartTime(long gameTime, long extraTime) {
-//		totalTime = gameTime + extraTime;
-//		remainingTime = totalTime;
-		this.gameTime = gameTime + extraTime;
+	/**
+	 * Creates a new minigame.
+	 * 
+	 * @param addTime
+	 *            > 0 if extra time should be added
+	 * @param difficulty
+	 *            the game's difficulty
+	 * @param gameId
+	 */
+	public MiniGame(Difficulty difficulty, GameId gameId,
+			Map<String, Integer> players) {
+		this.difficulty = difficulty;
+		this.setGameId(gameId);
+		this.setState(GameState.WAITING);
+		this.players = players;
 		timer = new SimpleTimer();
 	}
 
-	/**
-	 * sets the actual time for the minigame to end do once in startGame and in
-	 * reInit if new model pushed from server
-	 * 
-	 * @param time
-	 */
-//	private void setEndTime(long time) {
-//		this.endTime = time + System.currentTimeMillis();
-//	}
+	/** No args constructor for reflection use */
+	protected MiniGame() {
+	}
+
+	public void setGameTime(long gameTime, long extraTime) {
+		this.gameTime = gameTime + extraTime;
+	}
 
 	/**
 	 * Gets the remaining time
@@ -40,23 +46,13 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		if(timer.getRemainingTime() <= 0) { 
+		if(timer.getRemainingTime() <= 0 && timer.isRunning()) { 
 			gameLost();
 		}
 		
 		return timer.getRemainingTime();
 	}
-
-	/**
-	 * updates the remaining time if GameState = RUNNING
-	 */
-//	private void updateTime() {
-//		remainingTime = endTime - System.currentTimeMillis();
-//		if (remainingTime <= 0) {
-//			gameLost();
-//		}
-//	}
-
+	
 	/**
 	 * Call if host pushed new model
 	 */
@@ -80,27 +76,6 @@ public abstract class MiniGame {
 	 * Integer = player id String = player MacAddress
 	 */
 	private Map<String, Integer> players;
-
-	/** No args constructor for reflection use */
-	protected MiniGame() {
-	}
-
-	/**
-	 * Creates a new minigame.
-	 * 
-	 * @param addTime
-	 *            > 0 if extra time should be added
-	 * @param difficulty
-	 *            the game's difficulty
-	 * @param gameId
-	 */
-	public MiniGame(Difficulty difficulty, GameId gameId,
-			Map<String, Integer> players) {
-		this.difficulty = difficulty;
-		this.setGameId(gameId);
-		this.setState(GameState.WAITING);
-		this.players = players;
-	}
 
 	/**
 	 * Gets the difficulty of the game
@@ -166,8 +141,10 @@ public abstract class MiniGame {
 	 */
 	public void startGame() {
 		setState(GameState.RUNNING);
+	}
+	
+	public void startGameTimer() {
 		timer.start(gameTime);
-//		setEndTime(totalTime);
 	}
 
 	/**
@@ -183,7 +160,6 @@ public abstract class MiniGame {
 	 * Resume the game
 	 */
 	public void resumeGame() {
-//		setEndTime(remainingTime);
 		timer.resume();
 		setState(stateBeforePause);
 	}
