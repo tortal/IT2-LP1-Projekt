@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screens;
 
-//TODO needs major refactoring
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.NumberGameController;
@@ -20,18 +19,15 @@ import java.util.Collections;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
 	private ArrayList<Color> colors; // list with colors for all numbers
-
-	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
-													// with (guess)
+	private ArrayList<Integer> guessNumbers; // the correct numbers
+	
 	private ArrayList<Integer> numbers; // the correct numbers
-	private SimpleTimer instructionsTimer;
+	private SimpleTimer instructionsTimer; //used to time how long the instructions should be displayed
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	private NumberGameController controller;
@@ -43,7 +39,7 @@ public class NumberGameScreen extends GameScreen {
 
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
-	private TextWidget smallNumbers;
+	private ArrayList<TextWidget> guessNumbersWidgets;
 
 	/**
 	 * @param tendu
@@ -76,11 +72,12 @@ public class NumberGameScreen extends GameScreen {
 				"Enter the numbers in the correct order", new Vector2(50, 400),
 				-0.35f);
 
-		smallNumbers = new TextWidget("1", new Vector2(0, 0), -0.4f);
-
-		numberCircles = new ArrayList<NumberCircle>();
+		
+		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
+		guessNumbersWidgets = new ArrayList<TextWidget>();
 
+		//TODO more natural colors
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -99,8 +96,8 @@ public class NumberGameScreen extends GameScreen {
 
 		// setup the guess list
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
-			numberCircles.add(new NumberCircle(getModel().getMyList().get(i),
-					(90 + 95 * i), 120, 35, colors.get(i)));
+			guessNumbers.add(getModel().getMyList().get(i));
+			guessNumbersWidgets.add(new TextWidget(getModel().getMyList().get(i).toString(), new Vector2(72+95*i, 120), colors.get(i), -0.3f));
 		}
 
 		// TODO check number of numbers instead
@@ -144,26 +141,11 @@ public class NumberGameScreen extends GameScreen {
 	}
 
 	/**
-	 * Draws one NumberCircle
-	 * 
-	 * @param circle
-	 *            circle to draw
+	 * Draws all guess numbers
 	 */
-	private void drawNumberCircle(NumberCircle circle) {
-		font.setColor(circle.color);
-		smallNumbers.setText("" + circle.getNumber());
-		smallNumbers.setX(circle.getNumberX());
-		smallNumbers.setY(circle.getNumberY());
-		smallNumbers.setColor(circle.color);
-		smallNumbers.draw(tendu.spriteBatch, numberFont);
-	}
-
-	/**
-	 * Draws all NumberCircles
-	 */
-	private void drawNumberCircles() {
-		for (int i = 0; i < numberCircles.size(); i++) {
-			drawNumberCircle(numberCircles.get(i));
+	private void drawGuessNumbers() {
+		for (int i = 0; i < guessNumbers.size(); i++) {
+			guessNumbersWidgets.get(i).draw(tendu.spriteBatch, numberFont);
 		}
 	}
 
@@ -172,6 +154,8 @@ public class NumberGameScreen extends GameScreen {
 	public void render() {
 		if (model.checkGameState() == GameState.RUNNING) {
 			super.render(); // draws common ui-stuff
+			
+			instructionsTimer.start(4000); //only starts once
 
 			if (!instructionsTimer.isDone()) {
 				memorizeText.draw(tendu.spriteBatch, font);
@@ -182,7 +166,7 @@ public class NumberGameScreen extends GameScreen {
 				instructionText.draw(tendu.spriteBatch, font);
 
 				drawNumbers(false);
-				drawNumberCircles();
+				drawGuessNumbers();
 			}
 		}
 
@@ -191,14 +175,9 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		model = getModel(); // make sure we have to new model (the host maybe
-							// changed it)
-		// super.tick(); not used
-
-		// TODO maybe not the best solution...
+		model = getModel(); // make sure we have the new model (the host might have changed it)
 
 		if (model.checkGameState() != GameState.RUNNING) {
-			// TODO refactor
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
 
@@ -210,27 +189,26 @@ public class NumberGameScreen extends GameScreen {
 			return;
 			
 		} else if (model.checkGameState() == GameState.RUNNING) {
-			instructionsTimer.start(4000);
-			// Gdx.app.log(this.getClass().getSimpleName(), "time left = " +
-			// instructionsTimer.getRemainingTime());
 			if (instructionsTimer.isDone()) {
 				model.startGameTimer();
 				if (input.isTouchedUp()) {
-					for (NumberCircle circle : numberCircles) {
-						if (circle.collided(input.getCoordinates())) {
-							Gdx.input.vibrate(25);
+					for (int i = 0; i < guessNumbers.size(); i++) {
+						if (guessNumbersWidgets.get(i).collided(input.getCoordinates())) {
 							EventBus.INSTANCE.broadcast(new EventMessage(
 									C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
-											.getGameId(), circle.getNumber()));
-						}
-						circle.scale = 1;
+											.getGameId(), guessNumbers.get(i)));
+						}			
+						guessNumbersWidgets.get(i).setScale(-0.3f);
+						guessNumbersWidgets.get(i).setY(120);;
 					}
 				}
 
 				if (input.isTouchedDown()) {
-					for (NumberCircle circle : numberCircles) {
-						if (circle.collided(input.getCoordinates())) {
-							circle.scale = 1.5f;
+					for (int i = 0; i < guessNumbers.size(); i++) {
+						if (guessNumbersWidgets.get(i).collided(input.getCoordinates())) {
+							Gdx.input.vibrate(25);
+							guessNumbersWidgets.get(i).setScale(0.2f);
+							guessNumbersWidgets.get(i).setY(147);;
 						}
 
 					}
