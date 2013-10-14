@@ -1,5 +1,6 @@
 package it.chalmers.tendu.network.wifip2p;
 
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.tbd.C;
@@ -10,7 +11,9 @@ import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -28,7 +31,12 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdServiceResponseListener;
+import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -53,7 +61,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	private static final int TCP_PORT = 54555;
 	private Client client;
 	private Server server;
-	
+
 	// Client/Server logic gets loaded prematurely when listeners fire on startup
 	// this flag should prevent this
 	private boolean isReadyToConnect = false; 
@@ -104,18 +112,18 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 				//				}
 			}
 		});
-		
+
 	}
 
 	@Override
 	public void joinGame() {
 		isReadyToConnect = true;
-		
+
 		// TODO Check if already connected by wifi and if so start kryo connection
 		mManager.requestConnectionInfo(mChannel, this);
 		//discoverPeers();
 		//connectToFirstAvailable();
-		
+
 	}
 
 	@Override
@@ -229,7 +237,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		if (info.groupOwnerAddress != null) {
 			groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 		}
-		
+
 
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
@@ -238,11 +246,11 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			// incoming connections.
 			Log.d(TAG, "Acting as server");
 			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
-			
+
 			if (server == null) {
 				startKryoNetServer();
 			}
-		
+
 			// Let unit know it's host
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 		} else if (info.groupFormed) {
@@ -259,8 +267,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		} else { 
 			// No group is formed, wait a while and then connect to the first unit available
 			Log.d(TAG, "No group formed, doing discovery/connect");
-			discoverPeers();
-			connectToFirstAvailable();
+			discoverService();
+			//discoverPeers();
+			//connectToFirstAvailable();
 
 		}
 	}
@@ -362,7 +371,8 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 
 	private void resetNetwork() {
 		removeWifiGroup();
-
+		clearServices();
+		
 		if (server != null) {
 			server.stop();
 			server.close();
@@ -380,9 +390,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));
-//				if (reason == WifiP2pManager.BUSY) {
-//					removeWifiGroup();
-//				}
+				//				if (reason == WifiP2pManager.BUSY) {
+				//					removeWifiGroup();
+				//				}
 			}
 
 			@Override
@@ -422,6 +432,136 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 
 			}
 		});
+	}
+
+	// ********************* Service Handling  *********************
+	// This all requires Api level 16 - Jelly Bean
+	// More or less Copy and pasted from developer.android.com 
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void startRegistration() {
+		//  Create a string map containing information about your service.
+		Map<String, String> record = new HashMap<String, String>();
+		record.put("name", Constants.SERVER_NAME);
+
+		// Service information.  Pass it an instance name, service type
+		// _protocol._transportlayer , and the map containing
+		// information other devices will want once they connect to this one.
+		WifiP2pDnsSdServiceInfo serviceInfo =
+				WifiP2pDnsSdServiceInfo.newInstance("Temp instance", "temp protocol name", record);
+		
+		
+		// Add the local service, sending the service info, network channel,
+		// and listener that will be used to indicate success or failure of
+		// the request.
+		mManager.addLocalService(mChannel, serviceInfo, new ActionListener() {
+			@Override
+			public void onSuccess() {
+				// Command successful!
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Service adding failed: " + translateErrorCodeToMessage(reason));
+			}
+		});
+	}
+
+	//final HashMap<String, String> buddies = new HashMap<String, String>();
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void discoverService() {
+		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
+			@Override
+			/* Callback includes:
+			 * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
+			 * record: TXT record dta as a map of key/value pairs.
+			 * device: The device running the advertised service.
+			 */
+
+			public void onDnsSdTxtRecordAvailable(
+					String fullDomain, Map record, WifiP2pDevice device) {
+				Log.d(TAG, "DnsSdTxtRecord available -" + record.toString());
+				//buddies.put(device.deviceAddress, (String) record.get("name"));
+
+				if (record.get("name").equals(Constants.SERVER_NAME)) {
+					// Connect to the service found if eligible 
+					connectToDevice(device);
+				}
+			}
+		};
+
+		DnsSdServiceResponseListener servListener = new DnsSdServiceResponseListener() {
+			@Override
+			public void onDnsSdServiceAvailable(String instanceName, String registrationType,
+					WifiP2pDevice resourceType) {
+
+				
+				
+				// Update the device name with the human-friendly version from
+				// the DnsTxtRecord, assuming one arrived.
+//				resourceType.deviceName = buddies
+//						.containsKey(resourceType.deviceAddress) ? buddies
+//								.get(resourceType.deviceAddress) : resourceType.deviceName;
+//
+//								// Add to the custom adapter defined specifically for showing
+//								// wifi devices.
+//								//	                     WiFiDirectServicesList fragment = (WiFiDirectServicesList) getFragmentManager()
+//								//	                             .findFragmentById(R.id.frag_peerlist);
+//								//	                     WiFiDevicesAdapter adapter = ((WiFiDevicesAdapter) fragment
+//								//	                             .getListAdapter());
+//								//
+//								//	                     adapter.add(resourceType);
+//								//	                     adapter.notifyDataSetChanged();
+//								Log.d(TAG, "onBonjourServiceAvailable " + instanceName);
+			}
+		};
+
+		mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
+
+		WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+		mManager.addServiceRequest(mChannel,
+				serviceRequest,
+				new ActionListener() {
+			@Override
+			public void onSuccess() {
+				// Success!
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Service request failed: " + translateErrorCodeToMessage(reason));
+			}
+		});
+
+		mManager.discoverServices(mChannel, new ActionListener() {
+
+			@Override
+			public void onSuccess() {
+				// Success!
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Service discovery failed: " + translateErrorCodeToMessage(reason));
+			}
+		});
+	}
+	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void clearServices() {
+		mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
+
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Service clearing failed: " + translateErrorCodeToMessage(reason));				
+			}
+
+			@Override
+			public void onSuccess() {
+			}
+		});
+		
 	}
 
 	// ********************** Kryo *********************************
