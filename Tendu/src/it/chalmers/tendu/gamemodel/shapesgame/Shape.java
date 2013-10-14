@@ -10,7 +10,7 @@ public class Shape {
 
 	public final Color color;
 	public final GeometricShape geometricShape;
-	public boolean locked;
+	private boolean locked;
 
 	public Shape(Color color, GeometricShape geometricShape) {
 		this.color = color;
