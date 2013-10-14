@@ -7,6 +7,7 @@ import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.screens.GameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -41,6 +42,7 @@ public class NumberGameController implements Listener {
 			if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
+			
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if (message.msg == C.Msg.NUMBER_GUESS) {

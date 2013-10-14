@@ -176,19 +176,6 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 
-		if (model.checkGameState() == GameState.WON) {
-			numberFont.setColor(Color.GREEN);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You won!", 300, 300);
-			numberFont.scale(-2);
-		} else if (model.checkGameState() == GameState.LOST) {
-			numberFont.setColor(Color.RED);
-			numberFont.scale(2);
-			numberFont.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-			numberFont.scale(-2);
-
-		}
-
 		showGameResult();
 
 		shapeRenderer.end();

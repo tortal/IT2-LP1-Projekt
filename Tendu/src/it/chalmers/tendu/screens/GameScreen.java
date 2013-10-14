@@ -174,5 +174,6 @@ public abstract class GameScreen implements Screen {
 			font.scale(-2);
 		}
 	}
+	
 
 }
