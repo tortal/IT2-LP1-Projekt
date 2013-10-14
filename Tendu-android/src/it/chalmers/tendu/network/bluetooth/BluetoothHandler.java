@@ -370,7 +370,7 @@ public class BluetoothHandler extends NetworkHandler {
 	}
 	
 	// Test Method
-	public void testStuff() {
+	public void testSendMessage() {
 		connection.broadcastMessage(new EventMessage(C.Tag.TEST,
 				C.Msg.TEST));
 	}

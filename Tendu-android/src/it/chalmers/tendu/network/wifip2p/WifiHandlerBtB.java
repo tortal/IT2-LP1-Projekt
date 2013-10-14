@@ -46,14 +46,18 @@ import com.esotericsoftware.kryonet.Server;
  * @author johnpetersson
  *
  */
-public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
+public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
 	private static final int MAX_KRYO_BLOCKING_TIME = 5000;
 	private static final int TCP_PORT = 54555;
 	private Client client;
 	private Server server;
-
+	
+	// Client/Server logic gets loaded prematurely when listeners fire on startup
+	// this flag should prevent this
+	private boolean isReadyToConnect = false; 
+	
 	// Android flag: Desire to be a wifip2p-host from 1 to 15
 	private static final int WANT_TO_BE_CLIENT = 15 ;
 	private static final int WANT_TO_BE_HOST = 0;
@@ -67,7 +71,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	private Handler mHandler = new Handler();
 
-	public WifiHandler(Context ctx) {
+	public WifiHandlerBtB(Context ctx) {
 		super(ctx);
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -88,8 +92,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void hostSession() {
-		isHost = true;
-		//createNewWifiGroup();
+		isReadyToConnect = true;
+		discoverPeers();
 		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 
 			@Override
@@ -105,30 +109,13 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				//				}
 			}
 		});
-
-		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-
-			@Override
-			public void onGroupInfoAvailable(WifiP2pGroup group) {
-				if (group == null) {
-					return;
-				}
-				if (group.isGroupOwner()) {
-					if (server == null) {
-						startKryoNetServer();
-					}
-				} else {
-					Log.d(TAG, "You are not group owner and can't start server");
-				}
-			}
-		});
-		discoverPeers();
+		
 	}
 
 	@Override
 	public void joinGame() {
+		isReadyToConnect = true;
 		// TODO Check if already connected by wifi and if so start kryo connection
-		isHost = false;
 		discoverPeers();
 		connectToFirstAvailable();
 
@@ -214,7 +201,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
-					mManager.requestConnectionInfo(mChannel, WifiHandler.this); // (This is done once in join() already)
+					mManager.requestConnectionInfo(mChannel, WifiHandlerBtB.this); // (This is done once in join() already)
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 				Log.d(TAG, "This device's wifi state changed");
@@ -236,12 +223,16 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		if (!isReadyToConnect) {
+			// Ignore this method call if starting the app 
+			return;
+		}
 		// InetAddress from WifiP2pInfo struct.
 		String groupOwnerAddress = null;
 		if (info.groupOwnerAddress != null) {
 			groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 		}
-
+		
 
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
@@ -269,7 +260,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		} else { 
 			// No group is formed, wait a while and then connect to the first unit available
-			connectToFirstAvailable();
+			//connectToFirstAvailable();
 
 		}
 	}
@@ -393,9 +384,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));
-				if (reason == WifiP2pManager.BUSY) {
-					removeWifiGroup();
-				}
+//				if (reason == WifiP2pManager.BUSY) {
+//					removeWifiGroup();
+//				}
 			}
 
 			@Override

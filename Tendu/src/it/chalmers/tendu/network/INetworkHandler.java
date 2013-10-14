@@ -28,7 +28,7 @@ public interface INetworkHandler {
 	void destroy();
 	
 	/** Test method */
-	void testStuff();
+	void testSendMessage();
 
 	/** Returns the units mac address */
 	public String getMacAddress();
