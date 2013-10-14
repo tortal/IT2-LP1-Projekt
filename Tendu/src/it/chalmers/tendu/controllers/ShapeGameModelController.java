@@ -1,8 +1,6 @@
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
@@ -138,10 +136,13 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
+	//TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape shape = (Shape) messageContent.get(1);
+		//int sender = shapeGame.move(shape, player);
+		//shapeGame.getAllInventory().get(player);
 		shapeGame.move(shape, player);
 	}
 }

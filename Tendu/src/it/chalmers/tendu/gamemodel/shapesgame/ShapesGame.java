@@ -106,23 +106,23 @@ public class ShapesGame extends MiniGame {
 	 * 
 	 * @param shape
 	 *            to move
-	 * @param player
+	 * @param recipiant
 	 *            that should receive the shape-
 	 * @return <code>-1</code> if that player already owned that shape.
-	 *         <code>0</code> on successful move.
+	 *         <code>sender</code> on successful move.
 	 */
-	public int move(Shape shape, int player) {
-		int owner = getOwnerOf(shape);
-		if (owner == player)
+	public int move(Shape shape, int recipiant) {
+		int sender = getOwnerOf(shape);
+		if (sender == recipiant)
 			return -1;
 		else {
-			List<Shape> oldLocation = allInventory.get(owner);
-			List<Shape> newLocation = allInventory.get(player);
+			List<Shape> oldLocation = allInventory.get(sender);
+			List<Shape> newLocation = allInventory.get(recipiant);
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
 			newLocation.add(shape);
-			return 0;
+			return sender;
 		}
 	}
 
