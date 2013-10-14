@@ -46,7 +46,7 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		if (timer.getRemainingTime() <= 0 && timer.isRunning()) {
+		if (timer.isDone()) {
 			gameLost();
 		}
 

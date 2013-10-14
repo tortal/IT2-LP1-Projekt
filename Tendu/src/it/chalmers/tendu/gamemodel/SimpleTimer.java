@@ -94,10 +94,19 @@ public class SimpleTimer {
 	}
 	
 	public boolean isRunning() {
+		getRemainingTime();
 		if(state == STATE.RUNNING) {
 			return true;
 		}
 		
+		return false;
+	}
+	
+	public boolean isDone() {
+		getRemainingTime();
+		if(state == STATE.DONE) {
+			return true;
+		}	
 		return false;
 	}
 }

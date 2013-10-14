@@ -153,7 +153,7 @@ public class ShapeGameScreen extends GameScreen {
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(input.x, input.y)) {
+				if (s.getBounds().contains(input.x, input.y) && !s.getShape().isLocked()) {
 					movingShape = s;
 				}
 			}
