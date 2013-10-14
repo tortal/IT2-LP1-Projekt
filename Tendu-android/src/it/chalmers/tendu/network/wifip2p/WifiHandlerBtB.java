@@ -91,6 +91,8 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 
 		forgetAnyExistingWifiGroup();
 
+		notfiyIfApiLevelTooLow();
+
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		isReadyToConnect = true;
 		//discoverPeers();
 		createNewWifiGroup();
-		
+
 		startRegistration();
 	}
 
@@ -359,7 +361,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	private void resetNetwork() {
 		removeWifiGroup();
 		clearServices();
-		
+
 		if (server != null) {
 			server.stop();
 			server.close();
@@ -436,8 +438,8 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		// information other devices will want once they connect to this one.
 		WifiP2pDnsSdServiceInfo serviceInfo =
 				WifiP2pDnsSdServiceInfo.newInstance("Temp instance", "temp protocol name", record);
-		
-		
+
+
 		// Add the local service, sending the service info, network channel,
 		// and listener that will be used to indicate success or failure of
 		// the request.
@@ -454,14 +456,11 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		});
 	}
 
-	//final HashMap<String, String> buddies = new HashMap<String, String>();
-
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void discoverService() {
 		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
 			@Override
 			/* Callback includes:
-			 * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
 			 * record: TXT record dta as a map of key/value pairs.
 			 * device: The device running the advertised service.
 			 */
@@ -482,25 +481,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			@Override
 			public void onDnsSdServiceAvailable(String instanceName, String registrationType,
 					WifiP2pDevice resourceType) {
-
-				
-				
-				// Update the device name with the human-friendly version from
-				// the DnsTxtRecord, assuming one arrived.
-//				resourceType.deviceName = buddies
-//						.containsKey(resourceType.deviceAddress) ? buddies
-//								.get(resourceType.deviceAddress) : resourceType.deviceName;
-//
-//								// Add to the custom adapter defined specifically for showing
-//								// wifi devices.
-//								//	                     WiFiDirectServicesList fragment = (WiFiDirectServicesList) getFragmentManager()
-//								//	                             .findFragmentById(R.id.frag_peerlist);
-//								//	                     WiFiDevicesAdapter adapter = ((WiFiDevicesAdapter) fragment
-//								//	                             .getListAdapter());
-//								//
-//								//	                     adapter.add(resourceType);
-//								//	                     adapter.notifyDataSetChanged();
-//								Log.d(TAG, "onBonjourServiceAvailable " + instanceName);
+				// Not used
 			}
 		};
 
@@ -534,7 +515,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			}
 		});
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void clearServices() {
 		mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
@@ -548,7 +529,13 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			public void onSuccess() {
 			}
 		});
-		
+
+	}
+
+	private void notfiyIfApiLevelTooLow() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			toastMessage("Api version too low. Need Jelly Bean (Api level 16)");
+		}
 	}
 
 	// ********************** Kryo *********************************
