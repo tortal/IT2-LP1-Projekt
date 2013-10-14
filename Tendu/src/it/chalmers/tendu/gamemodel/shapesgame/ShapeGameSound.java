@@ -14,14 +14,14 @@ import it.chalmers.tendu.tbd.Listener;
  * @author johannahartman
  * 
  */
-public class ShapesGameSound implements Listener {
+public class ShapeGameSound implements Listener {
 
 	private Sound completedGameSound;
 	private Sound lostGameSound;
 	private Sound succeededSound;
 	private Sound failSound;
 
-	public ShapesGameSound() {
+	public ShapeGameSound() {
 
 		EventBus.INSTANCE.addListener(this);
 

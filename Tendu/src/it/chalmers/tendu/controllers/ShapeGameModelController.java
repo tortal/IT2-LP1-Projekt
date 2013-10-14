@@ -3,7 +3,7 @@ package it.chalmers.tendu.controllers;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
@@ -17,14 +17,14 @@ import com.badlogic.gdx.Gdx;
 public class ShapeGameModelController implements MiniGameController {
 
 	private final String TAG = "ShapeGameModelController";
-	private ShapesGame shapeGame;
+	private ShapeGame shapeGame;
 
-	public ShapeGameModelController(ShapesGame model) {
+	public ShapeGameModelController(ShapeGame model) {
 		this.shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
-	public ShapesGame getModel() {
+	public ShapeGame getModel() {
 		return shapeGame;
 	}
 

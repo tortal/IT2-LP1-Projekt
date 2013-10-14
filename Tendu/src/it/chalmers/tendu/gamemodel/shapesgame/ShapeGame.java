@@ -26,7 +26,7 @@ import com.badlogic.gdx.Gdx;
  * players until you will be able to solve YOUR puzzle.
  * 
  */
-public class ShapesGame extends MiniGame {
+public class ShapeGame extends MiniGame {
 	
 	public final String TAG = this.getClass().getName();
 
@@ -44,7 +44,7 @@ public class ShapesGame extends MiniGame {
 	private Map<Integer, Lock> allLocks;
 
 	/** No args constructor for reflection use */
-	protected ShapesGame() {
+	protected ShapeGame() {
 		super();
 	};
 
@@ -54,7 +54,7 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+	public ShapeGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
 		super(difficulty, GameId.SHAPE_GAME, players);
 
 

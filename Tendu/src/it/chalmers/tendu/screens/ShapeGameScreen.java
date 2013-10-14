@@ -8,8 +8,8 @@ import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGameSound;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGameSound;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -35,18 +35,18 @@ public class ShapeGameScreen extends GameScreen {
 
 	private ShapeGameModelController controller;
 
-	private ShapesGameSound sound;
+	private ShapeGameSound sound;
 
 	// For debug
 	int count = 0;
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
-		controller = new ShapeGameModelController((ShapesGame) model);
+		controller = new ShapeGameModelController((ShapeGame) model);
 		this.shapeRenderer = new ShapeRenderer();
 
 		player_num = controller.getModel().getplayerNbr();
-		sound = new ShapesGameSound();
+		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
@@ -144,8 +144,8 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-//		Vector3 touchPos = new Vector3(input.x, input.y, +0);
-//		tendu.getCamera().unproject(touchPos);
+		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
+		// tendu.getCamera().unproject(touchPos);
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
@@ -218,6 +218,7 @@ public class ShapeGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
@@ -231,8 +232,9 @@ public class ShapeGameScreen extends GameScreen {
 					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));
 		}
+		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
+		}
 		return result;
 
 	}
-
 }

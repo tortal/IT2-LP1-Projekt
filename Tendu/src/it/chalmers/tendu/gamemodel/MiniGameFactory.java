@@ -2,7 +2,7 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +31,7 @@ public class MiniGameFactory {
 			miniGame = new NumberGame(bonusTime, difficulty, players);
 			break;
 		case SHAPE_GAME:
-			miniGame = new ShapesGame(bonusTime, difficulty, players);
+			miniGame = new ShapeGame(bonusTime, difficulty, players);
 			break;
 		}
 		return miniGame;
