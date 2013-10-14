@@ -6,7 +6,9 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
+import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.screens.InterimScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
 import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
@@ -58,17 +60,15 @@ public class Tendu implements ApplicationListener, Listener {
 
 		 setScreen(new MainMenuScreen(this));
 
-		 //setScreen(new ShapesGameScreen(this, new ShapesGame(0,
-		 //Constants.Difficulty.ONE, null)));
-
-		// create an inputController and register it with Gdx
-		input = new InputController();
-		Gdx.input.setInputProcessor(input);
 
 		// setup the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
+
+		// create an inputController and register it with Gdx
+		input = new InputController(camera);
+		Gdx.input.setInputProcessor(input);
 	}
 
 	// clean up
@@ -87,6 +87,7 @@ public class Tendu implements ApplicationListener, Listener {
 		// connections is lost?
 		// clear the entire screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	    //Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
 
 		// makes sure the game runs in 60 fps
 		accum += Gdx.graphics.getDeltaTime();
@@ -132,7 +133,7 @@ public class Tendu implements ApplicationListener, Listener {
 		return camera;
 	}
 
-	// TODO (maybe not), screens need access to the network
+	//screens need access to the network
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
@@ -143,13 +144,24 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if(message.msg == C.Msg.CREATE_SCREEN) {
-			MiniGame game = (MiniGame)message.content;
-			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this, game);
+		if (message.msg == C.Msg.CREATE_SCREEN) {
+			MiniGame game = (MiniGame) message.content;
+			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this,
+					game);
 			setScreen(screen);
-			
-			EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
+
+			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
 			EventBus.INSTANCE.broadcast(msg);
+		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+			SessionResult sessionResult = (SessionResult)message.content;
+			Screen screen = new InterimScreen(this, sessionResult);
+			setScreen(screen);
 		}
+	}
+
+	@Override
+	public void unregister() {
+		// TODO: Will this ever be called? ( maybe on dispose() )
 	}
 }

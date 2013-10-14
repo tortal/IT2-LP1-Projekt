@@ -1,6 +1,8 @@
 package it.chalmers.tendu.controllers;
 
+import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
@@ -18,7 +20,13 @@ import com.badlogic.gdx.Gdx;
 public class ShapeGameModelController implements Listener {
 
 	private final String TAG = "ShapeGameModelController";
+
 	private ShapesGame model;
+	private GameSession gameSession;
+	private Tendu tendu;
+
+	// TODO: not sure if all controllers need tendu, perhaps only
+	// gamesessioncontroller.
 
 	public ShapeGameModelController(ShapesGame model) {
 		this.model = model;
@@ -101,6 +109,12 @@ public class ShapeGameModelController implements Listener {
 		Shape shape = (Shape) messageContent.get(2);
 
 		return model.insertShapeIntoSlot(player, shape, lockShape);
+	}	
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+
 	}
 
 }

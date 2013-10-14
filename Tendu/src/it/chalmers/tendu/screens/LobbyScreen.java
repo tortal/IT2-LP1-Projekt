@@ -12,80 +12,104 @@ import it.chalmers.tendu.tbd.EventMessage;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 public class LobbyScreen implements Screen {
-
-	private BitmapFont bigFont;
-	private BitmapFont smallFont;
-	private Vector3 touchPos = new Vector3();
 	private LobbyController lobbyController;
 	private Tendu tendu;
+	private TextWidget statusText;
+	private TextWidget readyText;
+	private TextWidget playerText;
+	private TextWidget waitingText;
+	private BitmapFont font;
+	private int playersConnected;
+	private final int maximumPlayers;
+	private boolean ready;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
+		maximumPlayers = 4;
 		this.tendu = tendu;
-		LobbyModel model = new LobbyModel(2);
+		LobbyModel model = new LobbyModel(maximumPlayers);
 		lobbyController = new LobbyController(model);
+		
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+		
+		readyText = new TextWidget("I'm ready", new Vector2(65, 130));
+		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 130), -0.25f);		
+		playerText = new TextWidget("Players", new Vector2(65, 450), -0.25f);
+		
+		ready = false;
 
 		if (isHost)
 			initHost();
 		else
 			initClient();
-
-		bigFont = new BitmapFont();
-		bigFont.scale(2);
-
-		smallFont = new BitmapFont();
-		smallFont.scale(1);
 	}
 
 	private void initHost() {
 		Player.getInstance().setHost(true);
 		tendu.getNetworkHandler().hostSession();
-		
+
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
+
+		statusText = new TextWidget("Waiting for connections...", new Vector2(40,
+				460), -0.25f);
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
+		statusText = new TextWidget("Searching for game session...", new Vector2(
+				40, 460), -0.25f);
 	}
 
 	public void tick(InputController input) {
+		playersConnected = getModel().getLobbyMembers().entrySet().size();
 
-		// TODO Get a ready button
-		if (Gdx.input.justTouched()) {
+		if (!Player.getInstance().isHost() && playersConnected > 0) {
+			statusText.setText("Connected to game session");
+		} else if (Player.getInstance().isHost() && playersConnected == maximumPlayers) {
+			statusText.setText("Maximum players connected");
+		}
 
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			tendu.getCamera().unproject(touchPos);
-
-			if (touchPos.x > 35 && touchPos.x < 435) {
-				if (touchPos.y >= 80 && touchPos.y < 150) {
-					Gdx.app.log("Testing", "Ready"); // Testing
-					EventBus.INSTANCE.broadcast(new EventMessage(
-							C.Tag.TO_SELF, C.Msg.PLAYER_READY, Player
-									.getInstance().getMac()));
-				}
+		if (input.isTouchedDown()) {
+			if (readyText.collided(input.getCoordinates())) {
+				Gdx.input.vibrate(25);
+				readyText.setColor(Color.LIGHT_GRAY);
 			}
+		} else if (input.isTouchedUp()) {
+			if (readyText.collided(input.getCoordinates())) {
+				ready = true;
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
+						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
+			}
+
+			readyText.setColor(Color.WHITE);
 		}
 	}
 
 	@Override
 	public void render() {
 
-		bigFont.draw(tendu.spriteBatch, "HOSTING", 20, 460);
+		statusText.draw(tendu.spriteBatch, font);
+		
+		playerText.setY(450);
 
-		float x = 40f;
-		float y = 410f;
 		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {
-			bigFont.draw(tendu.spriteBatch,
-					"Player: " + p.getValue() + ":" + p.getKey(), x, y);
-			y -= 50;
+			playerText.setText("Player: " + p.getValue());
+			playerText.addToY(-50);
+			playerText.draw(tendu.spriteBatch, font);
 		}
-		smallFont.draw(tendu.spriteBatch, "Ready", 47, 150);
-
+		
+		if (playersConnected > 0 && !ready) {
+			readyText.draw(tendu.spriteBatch, font);
+		} else if(playersConnected > 0 && ready) {
+			waitingText.draw(tendu.spriteBatch, font);
+		}
 	}
 
 	private LobbyModel getModel() {
@@ -94,8 +118,8 @@ public class LobbyScreen implements Screen {
 
 	@Override
 	public void removed() {
-		// TODO Auto-generated method stub
-
+		font.dispose();
+		lobbyController.unregister();
 	}
 
 }

@@ -85,6 +85,7 @@ public class ShapesGameScreen extends GameScreen {
 				sgs.renderShape(shapeRenderer);
 			}
 
+
 			// if (Gdx.input.isTouched()) {
 			// Vector3 touchPos = new Vector3(Gdx.input.getX(),
 			// Gdx.input.getY(), +0);
@@ -128,10 +129,45 @@ public class ShapesGameScreen extends GameScreen {
 			// }
 			//
 			// }
+
+		/*	if (Gdx.input.isTouched()) {
+				Vector3 touchPos = new Vector3(Gdx.input.getX(),
+						Gdx.input.getY(), +0);
+				tendu.getCamera().unproject(touchPos);
+				for (GraphicalShape s : shapes) {
+					// TODO: Should not prio the shape that is first by index.
+					if (s.getBounds().contains(touchPos.x, touchPos.y)
+							&& !s.isLocked()) {
+						Collections.swap(shapes, 0, shapes.indexOf(s));
+						s.moveShape(touchPos.x - s.getBounds().width / 2,
+								touchPos.y - s.getBounds().height / 2);
+						for (GraphicalShape lock : locks) {
+							if (snapIntoPlace(s, lock)) {
+								// TODO: is game completed?
+							}
+						}
+						if (s.getBounds().x <= 10) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 2");
+						}
+						if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 3");
+						}
+						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
+							Gdx.app.log("SENT!!", s.toString()
+									+ "sent to player 1");
+						}
+						break;
+					}
+
+				}
+			}*/
+
 		} else {
-			showGameResult();
+			//showGameResult();
 		}
-		model.checkGame();
+		model.checkGameState();
 	}
 
 	/**
@@ -193,7 +229,7 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		sound.unRegister();
+		sound.unregister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.

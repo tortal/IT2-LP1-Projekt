@@ -64,8 +64,8 @@ public class ShapesGameSound implements Listener {
 	public void playSoundGameLost() {
 		lostGameSound.play();
 	}
-
-	public void unRegister() {
+	@Override
+	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
 	}
 

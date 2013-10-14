@@ -2,6 +2,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -53,9 +54,10 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(int addTime, Difficulty difficulty,
-			Map<String, Integer> players) {
-		super(addTime, difficulty, GameId.SHAPES_GAME, players);
+
+	public ShapesGame(long addTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(difficulty, GameId.SHAPES_GAME, players);
+
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
@@ -133,8 +135,13 @@ public class ShapesGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD to be inserted into the players ���.
+<<<<<<< HEAD
+	 *            <<<<<<< HEAD to be inserted into the players ���������.
 	 *            ======= to be inserted into the players slot. >>>>>>>
+=======
+	 *            <<<<<<< HEAD to be inserted into the players ���������. ======= to
+	 *            be inserted into the players slot. >>>>>>>
+>>>>>>> refs/heads/FontsAndGraphics
 	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
@@ -143,7 +150,7 @@ public class ShapesGame extends MiniGame {
 		if (lock.fillSlot(shape, lockShape))
 			return true;
 
-		super.changeTimeWith(-3000);
+		super.changeTime(-3000);
 		return false;
 	}
 
@@ -242,6 +249,12 @@ public class ShapesGame extends MiniGame {
 	 */
 	public Map<Integer, List<Shape>> getAllInventory() {
 		return allInventory;
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

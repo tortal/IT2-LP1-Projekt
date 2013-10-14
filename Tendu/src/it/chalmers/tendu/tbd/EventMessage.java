@@ -29,6 +29,10 @@ public class EventMessage {
 	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId) {
 		this(null, tag, msg, gameId, null);
 	}
+	
+	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content){
+		this(null, tag, msg, gameId, content);
+	}
 
 	public EventMessage(C.Tag tag, C.Msg msg) {
 		this(null, tag, msg, null, null);
