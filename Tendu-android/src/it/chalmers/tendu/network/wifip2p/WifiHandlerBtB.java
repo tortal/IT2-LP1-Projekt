@@ -57,11 +57,6 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	// Client/Server logic gets loaded prematurely when listeners fire on startup
 	// this flag should prevent this
 	private boolean isReadyToConnect = false; 
-	
-	// Android flag: Desire to be a wifip2p-host from 1 to 15
-	private static final int WANT_TO_BE_CLIENT = 15 ;
-	private static final int WANT_TO_BE_HOST = 0;
-	private boolean isHost;
 
 	WifiP2pManager mManager;
 	Channel mChannel;
@@ -116,8 +111,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	public void joinGame() {
 		isReadyToConnect = true;
 		// TODO Check if already connected by wifi and if so start kryo connection
-		discoverPeers();
-		connectToFirstAvailable();
+		mManager.requestConnectionInfo(mChannel, this);
+		//discoverPeers();
+		//connectToFirstAvailable();
 
 
 	}
@@ -225,6 +221,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	public void onConnectionInfoAvailable(WifiP2pInfo info) {
 		if (!isReadyToConnect) {
 			// Ignore this method call if starting the app 
+			Log.d(TAG, "Not ready to connect");
 			return;
 		}
 		// InetAddress from WifiP2pInfo struct.
@@ -260,7 +257,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		} else { 
 			// No group is formed, wait a while and then connect to the first unit available
-			//connectToFirstAvailable();
+			Log.d(TAG, "No group formed, doing discovery/connect");
+			discoverPeers();
+			connectToFirstAvailable();
 
 		}
 	}
@@ -330,7 +329,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 				WifiP2pDevice device = findFirstEligibleDevice(peers);
 				if (device != null) {
 					Log.d(TAG, "Will now try and connect to: " + device.deviceName);
-					connectToDevice(device, isHost);
+					connectToDevice(device);
 				} else {
 					Log.d(TAG, "No device to connect to");
 				}
@@ -338,14 +337,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		}, CONNECTION_DELAY);
 	}
 
-	private void connectToDevice(final WifiP2pDevice device, boolean isHost) {
+	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
-		if (isHost) {
-			config.groupOwnerIntent = WANT_TO_BE_HOST; // Makes the hosts desire to be a group owner all powerful
-		} else {
-			config.groupOwnerIntent = WANT_TO_BE_CLIENT; // Makes the clients desire to be a group owner nonexistent
-		}
 
 		mManager.connect(mChannel, config, new ActionListener() {
 
