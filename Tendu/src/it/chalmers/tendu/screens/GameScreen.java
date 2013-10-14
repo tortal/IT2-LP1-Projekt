@@ -49,13 +49,13 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 
 			// currently does nothing
-			if (count == 0) {
-				shapeRenderer.setColor(Color.YELLOW);
-			} else {
-				shapeRenderer.setColor(Color.RED);
-				count--;
-
-			}
+//			if (count == 0) {
+//				shapeRenderer.setColor(Color.YELLOW);
+//			} else {
+//				shapeRenderer.setColor(Color.RED);
+//				count--;
+//			}
+			
 			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 			shapeRenderer.end();
 			

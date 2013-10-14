@@ -29,7 +29,7 @@ public class LobbyScreen implements Screen {
 	private boolean ready;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
-		maximumPlayers = 2;
+		maximumPlayers = 4;
 		this.tendu = tendu;
 		LobbyModel model = new LobbyModel(maximumPlayers);
 		lobbyController = new LobbyController(model);

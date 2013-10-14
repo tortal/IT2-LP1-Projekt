@@ -31,7 +31,6 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<NumberCircle> numberCircles; // numbers we can interact
 													// with (guess)
 	private ArrayList<Integer> numbers; // the correct numbers
-	private int time; // used to time certain "events" during the game.
 	private SimpleTimer instructionsTimer;
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
@@ -67,7 +66,6 @@ public class NumberGameScreen extends GameScreen {
 	 * Initial setup
 	 */
 	private void setUpGame() {
-		time = 0;
 		instructionsTimer = new SimpleTimer();
 
 		memorizeText = new OnScreenText("Memorize the numbers", new Vector2(
@@ -181,7 +179,7 @@ public class NumberGameScreen extends GameScreen {
 			super.render(); // draws common ui-stuff
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
-			if (instructionsTimer.getRemainingTime() >= 0) {
+			if (instructionsTimer.getRemainingTime() > 0) {
 				memorizeText.draw(tendu.spriteBatch, font);
 				drawNumbers(true);
 
@@ -216,7 +214,7 @@ public class NumberGameScreen extends GameScreen {
 			return;
 		} else if (model.checkGameState() == GameState.RUNNING) {
 			instructionsTimer.startTimer(4000);
-
+//			Gdx.app.log(this.getClass().getSimpleName(), "time left = " + instructionsTimer.getRemainingTime());
 			if (instructionsTimer.getRemainingTime() <= 0) {
 				if (input.isTouchedUp()) {
 					for (NumberCircle circle : numberCircles) {
