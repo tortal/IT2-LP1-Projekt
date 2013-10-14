@@ -1,8 +1,6 @@
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
