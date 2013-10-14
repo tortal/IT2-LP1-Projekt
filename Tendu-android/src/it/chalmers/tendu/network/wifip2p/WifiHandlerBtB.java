@@ -553,7 +553,6 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			e.printStackTrace();
 		}
 
-
 		server.addListener(new Listener() {
 			@Override
 			public void received (Connection connection, Object object) {
