@@ -88,7 +88,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	@Override
 	public void hostSession() {
 		isReadyToConnect = true;
-		discoverPeers();
+		//discoverPeers();
 		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 
 			@Override
@@ -110,6 +110,25 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	@Override
 	public void joinGame() {
 		isReadyToConnect = true;
+		
+		//resetConnection();
+		mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "Cancel connect failed: " + translateErrorCodeToMessage(reason));
+				
+			}
+		});
+		
+		
+		
 		// TODO Check if already connected by wifi and if so start kryo connection
 		mManager.requestConnectionInfo(mChannel, this);
 		//discoverPeers();
@@ -242,6 +261,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			if (server == null) {
 				startKryoNetServer();
 			}
+		
 			// Let unit know it's host
 			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 		} else if (info.groupFormed) {
@@ -354,6 +374,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Could not connect to: " + device.deviceName + ": " + translateErrorCodeToMessage(reason));
+				toastMessage("Connection failed. Retry");
 			}
 		});
 	}

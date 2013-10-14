@@ -74,6 +74,17 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 //			}
 //		});
 	}
+	
+	protected void toastMessage(final String message) {
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+				Toast toast = Toast.makeText(context, message,
+						Toast.LENGTH_SHORT); 
+				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+				toast.show();
+			}
+		});
+	}
 
 	/** Translates the network error codes into something interpretable */
 	protected String translateErrorCodeToMessage(int eCode) {
