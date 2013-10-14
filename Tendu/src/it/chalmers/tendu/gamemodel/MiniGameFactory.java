@@ -21,7 +21,7 @@ public class MiniGameFactory {
 		return game;
 	}
 
-	public static MiniGame createMiniGame(int bonusTime, GameId gameId,
+	public static MiniGame createMiniGame(long bonusTime, GameId gameId,
 			Difficulty difficulty, Map<String, Integer> players) {
 
 		MiniGame miniGame = null;

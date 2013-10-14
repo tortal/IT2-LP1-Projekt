@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum GameId {
+	
 
-	NUMBER_GAME(/*Difficulty.ONE,*/ Difficulty.TWO), SHAPES_GAME(Difficulty.ONE);
+
+	NUMBER_GAME(Difficulty.ONE, Difficulty.TWO, Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE), SHAPES_GAME();
+
 
 	/**
 	 * Levels that

@@ -33,7 +33,7 @@ public class ShapesGameScreen extends GameScreen {
 	private GraphicalShape movingShape;
 
 	private ShapeGameModelController controller;
-	
+
 	private ShapesGameSound sound;
 
 	// For debug
@@ -43,10 +43,10 @@ public class ShapesGameScreen extends GameScreen {
 		super(game, model);
 		controller = new ShapeGameModelController((ShapesGame) model);
 		this.shapeRenderer = new ShapeRenderer();
-		
+
 		player_num = controller.getModel().getplayerNbr();
 		sound = new ShapesGameSound();
-		
+
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
@@ -85,53 +85,10 @@ public class ShapesGameScreen extends GameScreen {
 				sgs.renderShape(shapeRenderer);
 			}
 
-			// if (Gdx.input.isTouched()) {
-			// Vector3 touchPos = new Vector3(Gdx.input.getX(),
-			// Gdx.input.getY(), +0);
-			// tendu.getCamera().unproject(touchPos);
-			// for (GraphicalShape s : shapes) {
-			// // TODO: Should not prio the shape that is first by index.
-			// if (s.getBounds().contains(touchPos.x, touchPos.y)
-			// && !s.getShape().isLocked()) {
-			// Collections.swap(shapes, 0, shapes.indexOf(s));
-			// s.moveShape(touchPos.x - s.getBounds().width / 2,
-			// touchPos.y - s.getBounds().height / 2);
-			// for (GraphicalShape lock : locks) {
-			// if (snapIntoPlace(s, lock)) {
-			// // TODO: is game completed?
-			// }
-			// }
-			// if (s.getBounds().x <= 10) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 2");
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(2, s.getShape())));
-			// }
-			// if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 3");
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(3, s.getShape())));
-			//
-			// }
-			// if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 1");
-			//
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(1, s.getShape())));
-			// }
-			// break;
-			// }
-			//
-			// }
 		} else {
-			showGameResult();
+			// showGameResult();
 		}
-		model.checkGame();
+		controller.getModel().checkGameState();
 	}
 
 	/**
@@ -154,7 +111,6 @@ public class ShapesGameScreen extends GameScreen {
 	/** All game logic goes here (within the model...) */
 	@Override
 	public void tick(InputController input) {
-
 		updateShapesFromModel();
 
 		Vector3 touchPos = new Vector3(input.x, input.y, +0);
@@ -193,7 +149,7 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		sound.unRegister();
+		sound.unregister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.
@@ -220,7 +176,6 @@ public class ShapesGameScreen extends GameScreen {
 
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
-
 
 	}
 

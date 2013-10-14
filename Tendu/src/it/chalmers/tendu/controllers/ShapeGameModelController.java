@@ -1,11 +1,12 @@
 package it.chalmers.tendu.controllers;
 
+import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapesGame;
 import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -44,13 +45,15 @@ public class ShapeGameModelController implements Listener {
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					if(insertIntoSlot(message.content)){
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+					if (insertIntoSlot(message.content)) {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
-					}else{
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);	
-					}	
+					} else {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
 					message.tag = C.Tag.COMMAND_AS_HOST;
 					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
@@ -74,11 +77,13 @@ public class ShapeGameModelController implements Listener {
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPES_GAME) {
 				Gdx.app.log(TAG, "Recived from host");
-				if(insertIntoSlot(message.content)){
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+				if (insertIntoSlot(message.content)) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_SUCCEED);
 					EventBus.INSTANCE.broadcast(soundMsg);
-				}else{
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
+				} else {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_FAIL);
 					EventBus.INSTANCE.broadcast(soundMsg);
 				}
 			}
@@ -101,6 +106,11 @@ public class ShapeGameModelController implements Listener {
 		Shape shape = (Shape) messageContent.get(2);
 
 		return model.insertShapeIntoSlot(player, shape, lockShape);
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 
 }
