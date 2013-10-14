@@ -54,8 +54,8 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(long addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(difficulty, GameId.SHAPES_GAME, players);
+	public ShapesGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(difficulty, GameId.SHAPE_GAME, players);
 
 
 		// Get list of all combinations of shapes and colors then shuffle
@@ -96,7 +96,7 @@ public class ShapesGame extends MiniGame {
 			}
 
 		}
-
+		this.setGameTime(30000, extraTime);
 		Gdx.app.log("This is", "Shapes Game!");
 
 	}
