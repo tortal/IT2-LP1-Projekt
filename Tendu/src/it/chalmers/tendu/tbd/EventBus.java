@@ -1,9 +1,9 @@
 package it.chalmers.tendu.tbd;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.badlogic.gdx.Gdx;
@@ -26,9 +26,11 @@ public enum EventBus {
 		synchronized (this) {
 			Gdx.app.log(TAG, "broadcasting" + message);
 
-			Iterator<Listener> iter = listeners.keySet().iterator();
-			while (iter.hasNext()) {
-				iter.next().onBroadcast(message);
+			Set<Listener> allListeners = listeners.keySet();
+			synchronized (allListeners) {
+				for (Listener l : allListeners) {
+					l.onBroadcast(message);
+				} 
 			}
 
 		}
