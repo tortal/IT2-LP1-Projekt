@@ -89,7 +89,6 @@ public class NumberGame extends MiniGame {
 	@Override
 	public void startGame() {
 		super.startGame();
-		;
 		// setState(GameState.INSTRUCTING);
 	}
 

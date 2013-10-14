@@ -30,7 +30,7 @@ public class MiniGameFactory {
 		case NUMBER_GAME:
 			miniGame = new NumberGame(bonusTime, difficulty, players);
 			break;
-		case SHAPES_GAME:
+		case SHAPE_GAME:
 			miniGame = new ShapesGame(bonusTime, difficulty, players);
 			break;
 		}
