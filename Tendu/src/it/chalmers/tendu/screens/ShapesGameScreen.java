@@ -119,20 +119,20 @@ public class ShapesGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		if (s.getBounds().x <= 10) {
-			Gdx.app.log("SENT!!", s.toString() + "sent to player 2");
-			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, messageContentFactory(2, s.getShape())));
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(2, s.getShape())));
 		}
 		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
-			Gdx.app.log("SENT!!", s.toString() + "sent to player 3");
-			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, messageContentFactory(3, s.getShape())));
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(3, s.getShape())));
 
 		}
 		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
-			Gdx.app.log("SENT!!", s.toString() + "sent to player 1");
-			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, messageContentFactory(1, s.getShape())));
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(1, s.getShape())));
 		}
 	}
 
