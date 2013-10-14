@@ -97,22 +97,9 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	public void hostSession() {
 		isReadyToConnect = true;
 		//discoverPeers();
-		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
-
-			@Override
-			public void onSuccess() {
-				Log.d(TAG, "Group initiated");
-
-			}
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Group creation failed: " + translateErrorCodeToMessage(reason));
-				//				if (reason == WifiP2pManager.BUSY) {
-				//							createNewWifiGroup();
-				//				}
-			}
-		});
-
+		createNewWifiGroup();
+		
+		startRegistration();
 	}
 
 	@Override

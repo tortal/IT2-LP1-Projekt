@@ -32,10 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+     <!-- 
         <activity
             android:name="it.chalmers.tendu.BluetoothActivity"
             android:label="@string/title_activity_bluetooth" >
-
+-->
             <!--
                  <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
-        </activity>
+            
+      <!--   </activity> --> 
     </application>
 
 </manifest>
