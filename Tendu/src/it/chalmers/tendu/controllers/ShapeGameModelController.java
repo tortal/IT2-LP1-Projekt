@@ -126,10 +126,12 @@ public class ShapeGameModelController implements Listener {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
+	//TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape shape = (Shape) messageContent.get(1);
-		model.move(shape, player);
+		int sender = model.move(shape, player);
+		model.getAllInventory().get(player).;
 	}
 }
