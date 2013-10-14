@@ -114,6 +114,16 @@ public class NumberGame extends MiniGame {
 		}
 		return false;
 	}
+	
+	public boolean tempCheckNumber(int num){
+		if (nbrCorrectAnswer < answerList.size()) {
+			if (answerList.get(nbrCorrectAnswer) == num) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
 
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
@@ -210,9 +220,7 @@ public class NumberGame extends MiniGame {
 			GameResult result = new GameResult(getGameId(), spentTime, getRemainingTime(), getGameState());
 			return result;
 		}
-		
 		return null;
-
 	}
 
 }

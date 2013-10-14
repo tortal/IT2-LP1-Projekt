@@ -1,6 +1,8 @@
 package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.screens.GameScreen;
@@ -40,18 +42,14 @@ public class NumberGameController implements MiniGameController {
 			if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
-			
+
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if (message.msg == C.Msg.NUMBER_GUESS) {
 					if (numberGame.checkNbr((Integer) message.content)) {
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
 						message.tag = Tag.COMMAND_AS_HOST;
 						EventBus.INSTANCE.broadcast(message);
 					} else {
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
 						message = new EventMessage(Tag.COMMAND_AS_HOST,
 								Msg.REMOVE_TIME, GameId.NUMBER_GAME);
 						EventBus.INSTANCE.broadcast(message);
@@ -70,7 +68,7 @@ public class NumberGameController implements MiniGameController {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
-			}else if (message.msg == C.Msg.START_MINI_GAME) {
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();
 			}
 		}
@@ -85,14 +83,6 @@ public class NumberGameController implements MiniGameController {
 				} else if (message.msg == Msg.REMOVE_TIME) {
 					numberGame.changeTime(-3000);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
-					if(numberGame.checkNbr((Integer) message.content)){
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					}else{
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					}
-					
 				}
 			}
 		}

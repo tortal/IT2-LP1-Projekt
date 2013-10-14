@@ -64,8 +64,6 @@ public class NumberGameScreen extends GameScreen {
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		numberFont = new BitmapFont(Gdx.files.internal("fonts/numberFont.fnt"),
 				Gdx.files.internal("fonts/numberFont.png"), false);
-
-		sound = new NumberGameSound();
 		
 		setUpGame();
 	}
@@ -215,7 +213,6 @@ public class NumberGameScreen extends GameScreen {
 			// TODO refactor
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
-
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.GAME_RESULT, model.getGameResult());
 				EventBus.INSTANCE.broadcast(message);

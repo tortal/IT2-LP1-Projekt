@@ -3,6 +3,8 @@ package it.chalmers.tendu.gamemodel.numbergame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
+import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -21,7 +23,11 @@ public class NumberGameSound implements Listener {
 	private Sound succeededSound;
 	private Sound failSound;
 	
-	public NumberGameSound(){
+	NumberGame numberGame;
+	
+	public NumberGameSound(NumberGame numberGame){
+		
+		this.numberGame = numberGame;
 		
 		EventBus.INSTANCE.addListener(this);
 		
@@ -35,14 +41,21 @@ public class NumberGameSound implements Listener {
 	public void onBroadcast(EventMessage message) {
 		
 		if (message.tag == C.Tag.TO_SELF) {
-			if (message.msg == C.Msg.SOUND_WIN) {
-				playSoundGameWon();
-			}else if(message.msg == C.Msg.SOUND_LOST){
-				playSoundGameLost();
-			}else if(message.msg == C.Msg.SOUND_SUCCEED){
-				playSoundSuccess();
-			}else if(message.msg == C.Msg.SOUND_FAIL){
-				playSoundFail();
+			if (message.msg == C.Msg.GAME_RESULT) {
+				GameResult result = (GameResult) message.content;
+				GameState state = result.getGameState();
+				if (state == GameState.WON) {
+					playSoundGameWon();
+				} else if (state == GameState.LOST) {
+					playSoundGameLost();
+				}
+			}else if(message.msg == C.Msg.NUMBER_GUESS){
+				this.numberGame = (NumberGame) message.content;
+				if(numberGame.tempCheckNumber((Integer) message.content)){
+					playSoundSuccess();
+				}else{
+					playSoundFail();
+				}
 			}
 		}
 		

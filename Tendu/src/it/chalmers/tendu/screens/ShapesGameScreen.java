@@ -33,8 +33,6 @@ public class ShapesGameScreen extends GameScreen {
 	private GraphicalShape movingShape;
 
 	private ShapeGameModelController controller;
-	
-	private ShapesGameSound sound;
 
 	// For debug
 	int count = 0;
@@ -45,7 +43,7 @@ public class ShapesGameScreen extends GameScreen {
 		this.shapeRenderer = new ShapeRenderer();
 		
 		player_num = controller.getModel().getplayerNbr();
-		sound = new ShapesGameSound();
+		
 		
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
@@ -229,7 +227,6 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		sound.unregister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.

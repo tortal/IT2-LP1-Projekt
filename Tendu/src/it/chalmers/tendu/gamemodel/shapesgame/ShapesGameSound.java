@@ -1,13 +1,21 @@
 package it.chalmers.tendu.gamemodel.shapesgame;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.audio.Sound;
 
+import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
+import it.chalmers.tendu.screens.ShapesGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
 
 /**
  * Class for sounds in ShapesGame
@@ -20,9 +28,11 @@ public class ShapesGameSound implements Listener {
 	private Sound lostGameSound;
 	private Sound succeededSound;
 	private Sound failSound;
+	private ShapesGame shapeGame;
 
-	public ShapesGameSound() {
+	public ShapesGameSound(ShapesGame shapeGame) {
 
+		this.shapeGame = shapeGame;
 		EventBus.INSTANCE.addListener(this);
 
 		completedGameSound = Gdx.audio.newSound(Gdx.files
@@ -36,17 +46,22 @@ public class ShapesGameSound implements Listener {
 	public void onBroadcast(EventMessage message) {
 		
 		if (message.tag == C.Tag.TO_SELF) {
-			if (message.msg == C.Msg.SOUND_WIN) {
-				playSoundGameWon();
-			}else if(message.msg == C.Msg.SOUND_LOST){
-				playSoundGameLost();
-			}else if(message.msg == C.Msg.SOUND_SUCCEED){
-				playSoundSuccess();
-			}else if(message.msg == C.Msg.SOUND_FAIL){
-				playSoundFail();
+			if (message.msg == C.Msg.GAME_RESULT) {
+				GameResult result = (GameResult) message.content;
+				GameState state = result.getGameState();
+				if (state == GameState.WON) {
+					playSoundGameWon();
+				} else if (state == GameState.LOST) {
+					playSoundGameLost();
+				}	
+			}else if(message.msg == C.Msg.LOCK_ATTEMPT){
+				if(shapeFitIntoLock(message.content)){
+					playSoundSuccess();
+				}else{
+					playSoundFail();
+				}
 			}
 		}
-
 	}
 
 	public void playSoundSuccess() {
@@ -69,4 +84,12 @@ public class ShapesGameSound implements Listener {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
+	private boolean shapeFitIntoLock(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape lockShape = (Shape) messageContent.get(1);
+		Shape shape = (Shape) messageContent.get(2);
+
+		return shapeGame.shapeFitIntoLock(player, shape, lockShape);
+	}	
 }
