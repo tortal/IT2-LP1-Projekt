@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class OnScreenText {
+public class TextWidget {
 	private String text;
 	private Vector2 position;
 	private int width;
@@ -13,19 +13,19 @@ public class OnScreenText {
 	private Color color;
 	private float scale;
 
-	public OnScreenText(String text, Vector2 position) {
+	public TextWidget(String text, Vector2 position) {
 		this(text, position, Color.WHITE, 0f);
 	}
 
-	public OnScreenText(String text, Vector2 position, Color color) {
+	public TextWidget(String text, Vector2 position, Color color) {
 		this(text, position, color, 0f);
 	}
 	
-	public OnScreenText(String text, Vector2 position, float scale) {
+	public TextWidget(String text, Vector2 position, float scale) {
 		this(text, position, Color.WHITE, scale);
 	}
 	
-	public OnScreenText(String text, Vector2 position, Color color, float scale) {
+	public TextWidget(String text, Vector2 position, Color color, float scale) {
 		this.text = text;
 		this.position = position;
 		this.color = color;

@@ -19,10 +19,10 @@ import com.badlogic.gdx.math.Vector2;
 public class LobbyScreen implements Screen {
 	private LobbyController lobbyController;
 	private Tendu tendu;
-	private OnScreenText statusText;
-	private OnScreenText readyText;
-	private OnScreenText playerText;
-	private OnScreenText waitingText;
+	private TextWidget statusText;
+	private TextWidget readyText;
+	private TextWidget playerText;
+	private TextWidget waitingText;
 	private BitmapFont font;
 	private int playersConnected;
 	private final int maximumPlayers;
@@ -37,9 +37,9 @@ public class LobbyScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		
-		readyText = new OnScreenText("I'm ready", new Vector2(65, 130));
-		waitingText = new OnScreenText("Waiting for other players...", new Vector2(65, 130), -0.25f);		
-		playerText = new OnScreenText("Players", new Vector2(65, 450), -0.25f);
+		readyText = new TextWidget("I'm ready", new Vector2(65, 130));
+		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 130), -0.25f);		
+		playerText = new TextWidget("Players", new Vector2(65, 450), -0.25f);
 		
 		ready = false;
 
@@ -56,13 +56,13 @@ public class LobbyScreen implements Screen {
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
 
-		statusText = new OnScreenText("Waiting for connections...", new Vector2(40,
+		statusText = new TextWidget("Waiting for connections...", new Vector2(40,
 				460), -0.25f);
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
-		statusText = new OnScreenText("Searching for game session...", new Vector2(
+		statusText = new TextWidget("Searching for game session...", new Vector2(
 				40, 460), -0.25f);
 	}
 

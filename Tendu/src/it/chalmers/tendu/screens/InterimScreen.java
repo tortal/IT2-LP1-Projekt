@@ -18,9 +18,9 @@ public class InterimScreen implements Screen {
 	private final int level;
 	private float time;
 	private float totalTime;
-	private OnScreenText levelText;
-	private OnScreenText timeText;
-	private OnScreenText totalTimeText;
+	private TextWidget levelText;
+	private TextWidget timeText;
+	private TextWidget totalTimeText;
 	private SimpleTimer timer;
 	
 	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
@@ -35,9 +35,9 @@ public class InterimScreen implements Screen {
 		
 		level = sessionResult.gamesPlayed();
 		
-		levelText = new OnScreenText("Level: " + level, new Vector2(120, 380));
-		timeText = new OnScreenText("Time: " + time, new Vector2(120, 280));
-		totalTimeText = new OnScreenText("Total time: " + totalTime, new Vector2(120, 180));
+		levelText = new TextWidget("Level: " + level, new Vector2(120, 380));
+		timeText = new TextWidget("Time: " + time, new Vector2(120, 280));
+		totalTimeText = new TextWidget("Total time: " + totalTime, new Vector2(120, 180));
 		
 		timer = new SimpleTimer();
 		timer.startTimer(3000);

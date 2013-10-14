@@ -20,7 +20,8 @@ public class SimpleTimer {
 	}
 
 	/**
-	 * Starts a timer with the specified amount of time If the timer is already
+	 * Starts a timer with the specified amount of time.
+	 * If the timer is already
 	 * running or has ended calling this method will do nothing
 	 * 
 	 * @param time

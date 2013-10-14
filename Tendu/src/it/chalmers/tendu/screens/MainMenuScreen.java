@@ -12,9 +12,9 @@ public class MainMenuScreen implements Screen {
 
 	private BitmapFont font;
 	private final Tendu tendu;
-	private OnScreenText hostGame;
-	private OnScreenText joinGame;
-	private OnScreenText testStuff;
+	private TextWidget hostGame;
+	private TextWidget joinGame;
+	private TextWidget testStuff;
 
 	public MainMenuScreen(Tendu tendu) {
 
@@ -22,9 +22,9 @@ public class MainMenuScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/tenduandroid.fnt"),
 				Gdx.files.internal("fonts/tenduandroid.png"), false);
 
-		hostGame = new OnScreenText("Host game", new Vector2(65 ,230));
-		joinGame = new OnScreenText("Join game", new Vector2(65, 130));
-		testStuff = new OnScreenText("test stuff", new Vector2(600, 450));
+		hostGame = new TextWidget("Host game", new Vector2(65 ,230));
+		joinGame = new TextWidget("Join game", new Vector2(65, 130));
+		testStuff = new TextWidget("test stuff", new Vector2(600, 450));
 
 	}
 

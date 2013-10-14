@@ -39,9 +39,9 @@ public class NumberGameScreen extends GameScreen {
 	private BitmapFont font;
 	private BitmapFont numberFont;
 
-	private OnScreenText memorizeText;
-	private OnScreenText instructionText;
-	private OnScreenText numberText;
+	private TextWidget memorizeText;
+	private TextWidget instructionText;
+	private TextWidget numberText;
 
 	/**
 	 * @param tendu
@@ -68,9 +68,9 @@ public class NumberGameScreen extends GameScreen {
 	private void setUpGame() {
 		instructionsTimer = new SimpleTimer();
 
-		memorizeText = new OnScreenText("Memorize the numbers", new Vector2(
+		memorizeText = new TextWidget("Memorize the numbers", new Vector2(
 				145, 400), -0.2f);
-		instructionText = new OnScreenText(
+		instructionText = new TextWidget(
 				"Enter the numbers in the correct order", new Vector2(50, 400),
 				-0.35f);
 
