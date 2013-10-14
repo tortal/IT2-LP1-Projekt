@@ -14,7 +14,7 @@ public class MiniGameScreenFactory {
 		case NUMBER_GAME:
 			return new NumberGameScreen(game, miniModel);
 		case SHAPE_GAME:
-			return new ShapesGameScreen(game, miniModel);
+			return new ShapeGameScreen(game, miniModel);
 		}
 		return null;
 	}

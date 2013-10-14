@@ -21,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 
-public class ShapesGameScreen extends GameScreen {
+public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 
@@ -40,7 +40,7 @@ public class ShapesGameScreen extends GameScreen {
 	// For debug
 	int count = 0;
 
-	public ShapesGameScreen(Tendu game, MiniGame model) {
+	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		controller = new ShapeGameModelController((ShapesGame) model);
 		this.shapeRenderer = new ShapeRenderer();
