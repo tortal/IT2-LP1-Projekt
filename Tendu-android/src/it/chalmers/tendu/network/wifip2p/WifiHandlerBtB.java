@@ -111,30 +111,11 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 	public void joinGame() {
 		isReadyToConnect = true;
 		
-		//resetConnection();
-		mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
-			
-			@Override
-			public void onSuccess() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onFailure(int reason) {
-				Log.d(TAG, "Cancel connect failed: " + translateErrorCodeToMessage(reason));
-				
-			}
-		});
-		
-		
-		
 		// TODO Check if already connected by wifi and if so start kryo connection
 		mManager.requestConnectionInfo(mChannel, this);
 		//discoverPeers();
 		//connectToFirstAvailable();
-
-
+		
 	}
 
 	@Override
