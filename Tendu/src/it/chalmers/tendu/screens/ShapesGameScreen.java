@@ -144,13 +144,13 @@ public class ShapesGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		Vector3 touchPos = new Vector3(input.x, input.y, +0);
-		tendu.getCamera().unproject(touchPos);
+//		Vector3 touchPos = new Vector3(input.x, input.y, +0);
+//		tendu.getCamera().unproject(touchPos);
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(touchPos.x, touchPos.y)) {
+				if (s.getBounds().contains(input.x, input.y)) {
 					movingShape = s;
 				}
 			}
@@ -171,8 +171,8 @@ public class ShapesGameScreen extends GameScreen {
 				// Gdx.app.log(TAG, "Shape: " +
 				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
-					movingShape.moveShape(touchPos.x
-							- movingShape.getBounds().width / 2, touchPos.y
+					movingShape.moveShape(input.x
+							- movingShape.getBounds().width / 2, input.y
 							- movingShape.getBounds().height / 2);
 				}
 			}
