@@ -7,6 +7,7 @@ import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -31,12 +32,14 @@ public class NumberGameScreen extends GameScreen {
 													// with (guess)
 	private ArrayList<Integer> numbers; // the correct numbers
 	private int time; // used to time certain "events" during the game.
+	private SimpleTimer instructionsTimer;
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	private NumberGameController controller;
-	
+
 	private BitmapFont font;
-	
+	private BitmapFont numberFont;
+
 	private OnScreenText memorizeText;
 	private OnScreenText instructionText;
 	private OnScreenText numberText;
@@ -54,7 +57,9 @@ public class NumberGameScreen extends GameScreen {
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		
+		numberFont = new BitmapFont(Gdx.files.internal("fonts/numberFont.fnt"),
+				Gdx.files.internal("fonts/numberFont.png"), false);
+
 		setUpGame();
 	}
 
@@ -63,9 +68,13 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void setUpGame() {
 		time = 0;
-		
-		memorizeText = new OnScreenText("Memorize the numbers", new Vector2(145, 400), -0.2f);
-		instructionText = new OnScreenText("Enter the numbers in the correct order", new Vector2(50, 400), -0.35f);
+		instructionsTimer = new SimpleTimer();
+
+		memorizeText = new OnScreenText("Memorize the numbers", new Vector2(
+				145, 400), -0.2f);
+		instructionText = new OnScreenText(
+				"Enter the numbers in the correct order", new Vector2(50, 400),
+				-0.35f);
 
 		numberCircles = new ArrayList<NumberCircle>();
 		numbers = new ArrayList<Integer>();
@@ -81,12 +90,12 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
-		//add the correct number from the answerlist
+		// add the correct number from the answerlist
 		for (Integer number : getModel().getAnswerList()) {
 			numbers.add(number.intValue());
 		}
 
-		//setup the guess list
+		// setup the guess list
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
 			numberCircles.add(new NumberCircle(getModel().getMyList().get(i),
 					(90 + 95 * i), 120, 35, colors.get(i)));
@@ -114,18 +123,18 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		//TODO redo properly so number always centered
+		// TODO redo properly so number always centered
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
-				font.setColor(colors.get(i));
-				font.draw(tendu.spriteBatch, "" + numbers.get(i),
+				numberFont.setColor(colors.get(i));
+				numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
 						numberAlignment + i * 105, 300);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					font.setColor(colors.get(i));
-					font.draw(tendu.spriteBatch, "" + numbers.get(i),
+					numberFont.setColor(colors.get(i));
+					numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
 							numberAlignment + i * 105, 300);
 				}
 			}
@@ -168,18 +177,18 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		super.render(); // draws common ui-stuff
-		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
+		if (model.checkGameState() == GameState.RUNNING) {
+			super.render(); // draws common ui-stuff
+			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 
-		if (time < 240) {
-			memorizeText.draw(tendu.spriteBatch, font);
-			drawNumbers(true);
+			if (instructionsTimer.getRemainingTime() >= 0) {
+				memorizeText.draw(tendu.spriteBatch, font);
+				drawNumbers(true);
 
-		} else {
-			if (model.checkGameState() == GameState.RUNNING) {
+			} else {
 				font.setColor(Color.BLUE);
 				instructionText.draw(tendu.spriteBatch, font);
-				
+
 				drawNumbers(false);
 				drawNumberCircles();
 			}
@@ -192,7 +201,7 @@ public class NumberGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		model = getModel(); // make sure we have to new model (the host maybe
 							// changed it)
-		super.tick();
+		// super.tick(); not used
 
 		// TODO maybe not the best solution...
 		if (model.checkGameState() != GameState.RUNNING) {
@@ -205,34 +214,27 @@ public class NumberGameScreen extends GameScreen {
 				EventBus.INSTANCE.broadcast(message);
 			}
 			return;
-		}
+		} else if (model.checkGameState() == GameState.RUNNING) {
+			instructionsTimer.startTimer(4000);
 
-		if (time < 240) {
-			time++;
-			return;
-		}
-		
-		if(time == 239) {
-			//model.startTimer();
-		}
-
-		if (time == 240) {
-			if (input.isTouchedUp()) {
-				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(input.getCoordinates())) {
-						Gdx.input.vibrate(25);
-						EventBus.INSTANCE.broadcast(new EventMessage(
-								C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
-										.getGameId(), circle.getNumber()));
+			if (instructionsTimer.getRemainingTime() <= 0) {
+				if (input.isTouchedUp()) {
+					for (NumberCircle circle : numberCircles) {
+						if (circle.collided(input.getCoordinates())) {
+							Gdx.input.vibrate(25);
+							EventBus.INSTANCE.broadcast(new EventMessage(
+									C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
+											.getGameId(), circle.getNumber()));
+						}
+						circle.scale = 1;
 					}
-					circle.scale = 1;
 				}
-			}
 
-			if (input.isTouchedDown()) {
-				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(input.getCoordinates())) {
-						circle.scale = 1.5f;
+				if (input.isTouchedDown()) {
+					for (NumberCircle circle : numberCircles) {
+						if (circle.collided(input.getCoordinates())) {
+							circle.scale = 1.5f;
+						}
 					}
 				}
 			}
@@ -247,6 +249,7 @@ public class NumberGameScreen extends GameScreen {
 	public void removed() {
 		super.removed();
 		font.dispose();
+		numberFont.dispose();
 		controller.unregister();
 		shapeRenderer.dispose();
 	}

@@ -19,11 +19,11 @@ public class MainMenuScreen implements Screen {
 	public MainMenuScreen(Tendu tendu) {
 
 		this.tendu = tendu;
-		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
-				Gdx.files.internal("fonts/menuFont.png"), false);
+		font = new BitmapFont(Gdx.files.internal("fonts/tenduandroid.fnt"),
+				Gdx.files.internal("fonts/tenduandroid.png"), false);
 
 		hostGame = new OnScreenText("Host game", new Vector2(65 ,230));
-		joinGame = new OnScreenText("Join game", new Vector2(70, 130));
+		joinGame = new OnScreenText("Join game", new Vector2(65, 130));
 		testStuff = new OnScreenText("test stuff", new Vector2(600, 450));
 
 	}

@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.gamemodel.SessionResult;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -17,10 +18,10 @@ public class InterimScreen implements Screen {
 	private final int level;
 	private float time;
 	private float totalTime;
-	private long endTime;
 	private OnScreenText levelText;
 	private OnScreenText timeText;
 	private OnScreenText totalTimeText;
+	private SimpleTimer timer;
 	
 	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
 		this.tendu = tendu;
@@ -33,12 +34,13 @@ public class InterimScreen implements Screen {
 		totalTime = totalTime/1000;
 		
 		level = sessionResult.gamesPlayed();
-		endTime = System.currentTimeMillis() + 3000;
 		
 		levelText = new OnScreenText("Level: " + level, new Vector2(120, 380));
 		timeText = new OnScreenText("Time: " + time, new Vector2(120, 280));
 		totalTimeText = new OnScreenText("Total time: " + totalTime, new Vector2(120, 180));
 		
+		timer = new SimpleTimer();
+		timer.startTimer(3000);
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class InterimScreen implements Screen {
 
 	@Override
 	public void tick(InputController input) {		
-		if(endTime - System.currentTimeMillis() <= 0) {
+		if(timer.getRemainingTime() <= 0) {
 			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.INTERIM_FINISHED);
 			EventBus.INSTANCE.broadcast(message);
 		}

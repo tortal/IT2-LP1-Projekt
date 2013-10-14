@@ -1,8 +1,5 @@
 package it.chalmers.tendu.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
