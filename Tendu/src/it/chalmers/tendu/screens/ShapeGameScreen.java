@@ -19,15 +19,13 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
-
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	// private ShapesGame model;
+	
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -97,14 +95,14 @@ public class ShapeGameScreen extends GameScreen {
 				getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1)-1,
 					s.getShape())));
 		}
 		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
 				getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2)-1,
 					s.getShape())));
 
 		}
@@ -112,17 +110,9 @@ public class ShapeGameScreen extends GameScreen {
 				getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0)-1,
 					s.getShape())));
 		}
-
-//		if (s.getBounds().y <= 60) {
-//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-//					.getModel().getGameId(), messageContentFactory(0,
-//					s.getShape())));
-//		}
-
 	}
 
 	/**
