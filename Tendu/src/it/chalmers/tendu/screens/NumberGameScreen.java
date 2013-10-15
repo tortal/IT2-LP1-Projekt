@@ -71,10 +71,10 @@ public class NumberGameScreen extends GameScreen {
 		instructionsTimer = new SimpleTimer();
 		gameCompletedTimer = new SimpleTimer();
 
-		memorizeText = new TextWidget("Memorize the numbers", new Vector2(310,
-				580));
+		memorizeText = new TextWidget("Memorize the numbers", new Vector2(295,
+				595));
 		instructionText = new TextWidget(
-				"Enter the numbers in the correct order", new Vector2(50, 580));
+				"Enter the numbers in the correct order", new Vector2(50, 595));
 
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
@@ -103,19 +103,21 @@ public class NumberGameScreen extends GameScreen {
 			guessNumbersWidgets.add(new TextWidget(getModel().getMyList()
 					.get(i).toString(), new Vector2(72 + 140 * i, 130), colors
 					.get(i), -0.15f));
+			guessNumbersWidgets.get(i).expandHeight(5);
+			guessNumbersWidgets.get(i).expandWidth(5);
 		}
 
 		// TODO check number of numbers instead
 		if (model.getDifficulty() == Constants.Difficulty.ONE) {
 			numberAlignment = 240;
 		} else if (model.getDifficulty() == Constants.Difficulty.TWO) {
-			numberAlignment = 25;
+			numberAlignment = 50;
 		} else if (model.getDifficulty() == Constants.Difficulty.THREE) {
 			numberAlignment = 240;
 		} else if (model.getDifficulty() == Constants.Difficulty.FOUR) {
-			numberAlignment = 25;
+			numberAlignment = 50;
 		} else if (model.getDifficulty() == Constants.Difficulty.FIVE) {
-			numberAlignment = 25;
+			numberAlignment = 50;
 		}
 	}
 

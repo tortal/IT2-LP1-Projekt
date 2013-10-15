@@ -32,8 +32,8 @@ public class TextWidget {
 		this.position = position;
 		this.color = color;
 		this.scale = scale;
-
 		// TODO add constructor for this
+
 		expandHitboxX = 0;
 		expandHitboxY = 0;
 	}
@@ -41,21 +41,17 @@ public class TextWidget {
 	public void draw(SpriteBatch spriteBatch, BitmapFont font) {
 		font.setColor(color);
 		font.scale(scale);
+
 		width = expandHitboxX + (int) font.getBounds(text).width; // Get the
 																	// width of
 																	// the text
-																	// we draw
-																	// using the
-																	// current
-																	// font
+		// we draw using the current
+		// font
 		height = expandHitboxY + (int) font.getBounds(text).height; // Get the
 																	// height of
 																	// the
-																	// text we
-																	// draw
-																	// using the
-																	// current
-																	// font
+		// text we draw using the
+		// current font
 		font.draw(spriteBatch, text, position.x, position.y);
 		font.scale(-scale);
 	}
@@ -63,23 +59,20 @@ public class TextWidget {
 	public void drawAtCenterPoint(SpriteBatch spriteBatch, BitmapFont font) {
 		font.setColor(color);
 		font.scale(scale);
-		width = expandHitboxX + (int) font.getBounds(text).width; // Get the
-																	// width of
-																	// the text
-																	// we draw
-																	// using the
-																	// current
-																	// font
-		height = expandHitboxY + (int) font.getBounds(text).height; // Get the
-																	// height of
-																	// the
-																	// text we
-																	// draw
-																	// using the
-																	// current
-																	// font
-		font.draw(spriteBatch, text, position.x - width / 2, position.y
-				- height / 2);
+
+		width = (int) font.getBounds(text).width; // Get the width of the text
+													// we draw using the current
+													// font
+		height = (int) font.getBounds(text).height; // Get the height of the
+													// text we draw using the
+													// current font
+		// TODO - fix something
+		int drawX = (int) position.x - width / 2;
+		int drawY = (int) position.y - height / 2;
+		width = width + expandHitboxX;
+		height = height + expandHitboxY;
+
+		font.draw(spriteBatch, text, drawX, drawY);
 		font.scale(-scale);
 	}
 
@@ -170,5 +163,4 @@ public class TextWidget {
 	public void expandHeight(int extraHeight) {
 		expandHitboxX = extraHeight;
 	}
-
 }
