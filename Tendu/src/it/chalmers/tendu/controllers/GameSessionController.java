@@ -51,8 +51,9 @@ public class GameSessionController implements Listener {
 					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
 							C.Msg.START_MINI_GAME);
 					EventBus.INSTANCE.broadcast(msg);
-					msg.tag = C.Tag.TO_SELF;
-					EventBus.INSTANCE.broadcast(msg);
+					EventMessage changedMessage = new EventMessage(msg, C.Tag.TO_SELF);
+
+					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 
 			} else if (message.msg == C.Msg.GAME_RESULT) {
@@ -110,20 +111,20 @@ public class GameSessionController implements Listener {
 		if (message.tag == C.Tag.TO_SELF) {
 
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
-				message.tag = C.Tag.REQUEST_AS_CLIENT;
-				EventBus.INSTANCE.broadcast(message);
+				EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
+				EventBus.INSTANCE.broadcast(changedMessage);
 
 			} else if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult) message.content;
 				gameSession.enterResult(result);
 
 			} else if (message.msg == C.Msg.PLAYER_READY) {
-				message.tag = C.Tag.REQUEST_AS_CLIENT;
-				EventBus.INSTANCE.broadcast(message);
+				EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
+				EventBus.INSTANCE.broadcast(changedMessage);
 
 			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
-				message.tag = C.Tag.REQUEST_AS_CLIENT;
-				EventBus.INSTANCE.broadcast(message);
+				EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
+				EventBus.INSTANCE.broadcast(changedMessage);
 
 			} else if (message.msg == C.Msg.RETURN_MAIN_MENU) {
 				returnToMainMenu();
@@ -135,8 +136,8 @@ public class GameSessionController implements Listener {
 				gameSession.nextScreen();
 
 			} else if (message.msg == C.Msg.START_MINI_GAME) {
-				message.tag = C.Tag.TO_SELF;
-				EventBus.INSTANCE.broadcast(message);
+				EventMessage changedMessage = new EventMessage(message, C.Tag.TO_SELF);
+				EventBus.INSTANCE.broadcast(changedMessage);
 
 			} else if (message.msg == C.Msg.GAME_SESSION_MODEL) {
 				this.gameSession = (GameSession) message.content;

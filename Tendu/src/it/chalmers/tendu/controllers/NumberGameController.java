@@ -47,8 +47,8 @@ public class NumberGameController implements MiniGameController {
 					if (numberGame.checkNbr((Integer) message.content)) {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
-						message.tag = Tag.COMMAND_AS_HOST;
-						EventBus.INSTANCE.broadcast(message);
+						EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
+						EventBus.INSTANCE.broadcast(changedMessage);
 					} else {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
@@ -67,8 +67,8 @@ public class NumberGameController implements MiniGameController {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					message.tag = Tag.REQUEST_AS_CLIENT;
-					EventBus.INSTANCE.broadcast(message);
+					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
+					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 			}else if (message.msg == C.Msg.START_MINI_GAME) {
 				numberGame.startGame();

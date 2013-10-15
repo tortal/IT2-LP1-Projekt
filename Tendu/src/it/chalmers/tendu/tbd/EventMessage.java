@@ -5,14 +5,19 @@ import it.chalmers.tendu.gamemodel.GameId;
 public class EventMessage {
 	
 
-	public C.Tag tag;
-	public C.Msg msg;
-	public GameId gameId;
-	public Object content;
-	public String mac;
+	public final C.Tag tag;
+	public final C.Msg msg;
+	public final GameId gameId;
+	public final Object content;
+	public final String mac;
 
 	/** No args constructor for reflection */
 	EventMessage() {
+		tag = null;
+		msg = null;
+		gameId = null;
+		content = null;
+		mac = null;
 	}
 
 	public EventMessage(String mac, C.Tag tag, C.Msg msg, GameId gameId, Object content) {
@@ -21,6 +26,14 @@ public class EventMessage {
 		this.msg = msg;
 		this.gameId = gameId;
 		this.content = content;
+	}
+	
+	public EventMessage(EventMessage message, C.Tag newTag) {
+		this.tag = newTag;
+		this.msg = message.msg;
+		this.mac = message.mac;
+		this.gameId = message.gameId;
+		this.content = message.content;
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg, Object content) {
@@ -37,10 +50,6 @@ public class EventMessage {
 
 	public EventMessage(C.Tag tag, C.Msg msg) {
 		this(null, tag, msg, null, null);
-	}
-
-	public void setTag(C.Tag tag) {
-		this.tag = tag;
 	}
 
 	@Override

@@ -59,16 +59,17 @@ public class ShapeGameModelController implements MiniGameController {
 								C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
 					}
-					message.tag = C.Tag.COMMAND_AS_HOST;
+					
+					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
 					Gdx.app.log(TAG, "Sent from server");
-					EventBus.INSTANCE.broadcast(message);
+					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {
 					sendShape(message.content);
-					message.tag = C.Tag.COMMAND_AS_HOST;
+					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
 					Gdx.app.log(TAG, "Sent from server");
-					EventBus.INSTANCE.broadcast(message);
+					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 			}
 
@@ -81,8 +82,8 @@ public class ShapeGameModelController implements MiniGameController {
 			if (message.gameId == GameId.SHAPE_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT
 						|| message.msg == C.Msg.SHAPE_SENT) {
-					message.tag = Tag.REQUEST_AS_CLIENT;
-					EventBus.INSTANCE.broadcast(message);
+					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
+					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				shapeGame.startGame();
