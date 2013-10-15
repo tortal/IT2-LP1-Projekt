@@ -21,7 +21,7 @@ public abstract class GameScreen implements Screen {
 	private int count; // used to count renders for events that should be
 
 	protected BitmapFont font;
-	private List<Integer> otherPlayers;
+	private List<Integer> otherPlayers; // 1 = left, 0 = top, 2 = right
 
 	/**
 	 * @param game
