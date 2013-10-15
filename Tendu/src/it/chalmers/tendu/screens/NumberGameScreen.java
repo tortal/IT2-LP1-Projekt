@@ -57,8 +57,8 @@ public class NumberGameScreen extends GameScreen {
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		numberFont = new BitmapFont(Gdx.files.internal("fonts/numberFont.fnt"),
-				Gdx.files.internal("fonts/numberFont.png"), false);
+		numberFont = new BitmapFont(Gdx.files.internal("fonts/digitalTendu.fnt"),
+				Gdx.files.internal("fonts/digitalTendu.png"), false);
 		sound = new NumberGameSound();
 
 		setUpGame();
@@ -71,11 +71,10 @@ public class NumberGameScreen extends GameScreen {
 		instructionsTimer = new SimpleTimer();
 		gameCompletedTimer = new SimpleTimer();
 
-		memorizeText = new TextWidget("Memorize the numbers", new Vector2(145,
-				400), -0.2f);
+		memorizeText = new TextWidget("Memorize the numbers", new Vector2(310,
+				580));
 		instructionText = new TextWidget(
-				"Enter the numbers in the correct order", new Vector2(50, 400),
-				-0.35f);
+				"Enter the numbers in the correct order", new Vector2(50, 580));
 
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
@@ -102,8 +101,8 @@ public class NumberGameScreen extends GameScreen {
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
 			guessNumbers.add(getModel().getMyList().get(i));
 			guessNumbersWidgets.add(new TextWidget(getModel().getMyList()
-					.get(i).toString(), new Vector2(72 + 95 * i, 120), colors
-					.get(i), -0.3f));
+					.get(i).toString(), new Vector2(72 + 140 * i, 130), colors
+					.get(i), -0.15f));
 		}
 
 		// TODO check number of numbers instead
@@ -133,14 +132,14 @@ public class NumberGameScreen extends GameScreen {
 			for (int i = 0; i < numbers.size(); i++) {
 				numberFont.setColor(colors.get(i));
 				numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
-						numberAlignment + i * 105, 300);
+						numberAlignment + i * 150, 425);
 			}
 		} else {
 			for (int i = 0; i < numbers.size(); i++) {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
 					numberFont.setColor(colors.get(i));
 					numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
-							numberAlignment + i * 105, 300);
+							numberAlignment + i * 150, 425);
 				}
 			}
 		}
@@ -209,8 +208,8 @@ public class NumberGameScreen extends GameScreen {
 									C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
 											.getGameId(), guessNumbers.get(i)));
 						}
-						guessNumbersWidgets.get(i).setScale(-0.3f);
-						guessNumbersWidgets.get(i).setY(120);
+						guessNumbersWidgets.get(i).setScale(-0.15f);
+						guessNumbersWidgets.get(i).setY(130);
 						
 					}
 				}
