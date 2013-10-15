@@ -1,4 +1,4 @@
-package it.chalmers.tendu.network;
+package it.chalmers.tendu.unused;
 
 import it.chalmers.tendu.gamemodel.MiniGame;
 

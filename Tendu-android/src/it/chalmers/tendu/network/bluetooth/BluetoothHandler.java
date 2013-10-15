@@ -2,11 +2,11 @@ package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.clicklinkcompete.Connection;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -350,11 +350,18 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
-		removeTenduFromDeviceName();
+		resetNetwork();
+		
 		if (mReceiver != null) {
 			context.unregisterReceiver(mReceiver);
 		}
-		connection.shutdown();
+		
+	}
+	
+	@Override
+	public void resetNetwork() {
+		removeTenduFromDeviceName();
+		connection.reset();
 	}
 
 	// Test Method
@@ -362,7 +369,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		connection.broadcastMessage(new EventMessage(C.Tag.TEST, C.Msg.TEST));
 	}
 
-	// Message handler
+	// Message handler - not used atmo
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -382,6 +389,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		return connection.getAddress();
 	}
 
+	
 	@Override
 	public void onBroadcast(final EventMessage message) {
 		switch (message.tag) {
