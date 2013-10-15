@@ -48,6 +48,7 @@ public class ShapeGameSound implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
+		Gdx.app.log(TAG, "broadcasting to sound");
 		if (message.tag == C.Tag.TO_SELF) {
 			if(message.msg == C.Msg.LOCK_ATTEMPT){
 				if(shapeFitIntoLock(message.content)){
