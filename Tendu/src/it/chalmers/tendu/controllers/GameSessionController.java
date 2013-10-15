@@ -93,7 +93,7 @@ public class GameSessionController implements Listener {
 					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
 							C.Msg.GAME_SESSION_MODEL, gameSession);
 					EventBus.INSTANCE.broadcast(msg);
-					msg = new EventMessage(C.Tag.HOST_COMMANDED,
+					msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
 							C.Msg.LOAD_GAME);
 					EventBus.INSTANCE.broadcast(msg);
 					gameSession.nextScreen();
