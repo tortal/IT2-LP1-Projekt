@@ -358,4 +358,9 @@ public class ConnectionService {
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
+
+	public void stopAcceptingConnections() {
+		// TODO Implement 
+		
+	}
 }

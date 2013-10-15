@@ -363,7 +363,12 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		removeTenduFromDeviceName();
 		connection.reset();
 	}
-
+	
+	@Override
+	public void stopAcceptingConnections() {
+		connection.stopAcceptingConnections();
+	}
+	
 	// Test Method
 	public void testStuff() {
 		connection.broadcastMessage(new EventMessage(C.Tag.TEST, C.Msg.TEST));
