@@ -114,6 +114,8 @@ public class GameSession {
 		EventMessage message = new EventMessage(C.Tag.TO_SELF,
 				C.Msg.SHOW_GAME_OVER_SCREEN, sessionResult);
 		EventBus.INSTANCE.broadcast(message);
+		sessionResult.clear();
+		completedLvls = (sessionResult.gamesPlayed());
 	}
 
 	public void playerReplayReady(String player) {
@@ -127,24 +129,7 @@ public class GameSession {
 	}
 
 	public void enterResult(GameResult gameResult) {
-//		Gdx.app.log(this.getClass().getSimpleName(), " Time left = "
-//				+ gameResult.getRemainingTime());
-//		Gdx.app.log(this.getClass().getSimpleName(), " GameState = "
-//				+ gameResult.getGameState());
-		
 		sessionResult.addResult(gameResult);
-		
-//		if (gameResult.getGameState() == GameState.WON) {
-//			sessionResult.addResult(gameResult);
-//			interimScreen();
-//		} else {
-//			sessionResult.addResult(gameResult);
-//			gameOverScreen();
-//
-//			// empty the results list
-//			sessionResult.clear();
-//		}
-
 		completedLvls = (sessionResult.gamesPlayed());
 	}
 }
