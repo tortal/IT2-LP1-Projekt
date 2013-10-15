@@ -34,16 +34,16 @@ public class GameOverScreen implements Screen {
 
 		gameOver = new TextWidget("GAME OVER!", new Vector2(Constants.SCREEN_WIDTH/2, 640));
 		levelText = new TextWidget("You reached level: " + level, new Vector2(
-				120, 380));
+				Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2));
 
-		mainMenu = new TextWidget("Main menu", new Vector2(65, 230));
-		replay = new TextWidget("GoGoGo", new Vector2(65, 130));
+		mainMenu = new TextWidget("Main menu", new Vector2(100, 150));
+		replay = new TextWidget("Replay", new Vector2(620, 150));
 	}
 
 	@Override
 	public void render() {
 		gameOver.drawAtCenterPoint(tendu.spriteBatch, font);
-		levelText.draw(tendu.spriteBatch, font);
+		levelText.drawAtCenterPoint(tendu.spriteBatch, font);
 		mainMenu.draw(tendu.spriteBatch, font);
 		replay.draw(tendu.spriteBatch, font);
 	}
