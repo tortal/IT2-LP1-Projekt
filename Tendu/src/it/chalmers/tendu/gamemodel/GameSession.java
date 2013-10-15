@@ -6,6 +6,7 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class GameSession {
 		currentMiniGame = getNextMiniGame();
 		// gameResults = new ArrayList<GameResult>();
 		sessionResult = new SessionResult();
+		playerReplayReady = new ArrayList<String>();
+
 
 	}
 
