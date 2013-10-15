@@ -27,6 +27,7 @@ public class GameOverScreen implements Screen {
 	public GameOverScreen(Tendu tendu, SessionResult sessionResult) {
 
 		this.tendu = tendu;
+		
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 
@@ -34,10 +35,12 @@ public class GameOverScreen implements Screen {
 
 		gameOver = new TextWidget("GAME OVER!", new Vector2(
 				Constants.SCREEN_WIDTH / 2, 640));
+		
 		levelText = new TextWidget("You reached level: " + level, new Vector2(
 				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2));
 
 		mainMenu = new TextWidget("Main menu", new Vector2(100, 150));
+		
 		replay = new TextWidget("Replay", new Vector2(620, 150));
 	}
 
