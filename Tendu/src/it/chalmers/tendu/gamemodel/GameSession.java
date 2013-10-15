@@ -126,21 +126,24 @@ public class GameSession {
 		return (players.size() == playerReplayReady.size());
 	}
 
-	public void miniGameEnded(GameResult gameResult) {
-		Gdx.app.log(this.getClass().getSimpleName(), " Time left = "
-				+ gameResult.getRemainingTime());
-		Gdx.app.log(this.getClass().getSimpleName(), " GameState = "
-				+ gameResult.getGameState());
-
-		if (gameResult.getGameState() == GameState.WON) {
-			sessionResult.addResult(gameResult);
-			interimScreen();
-		} else {
-			gameOverScreen();
-
-			// empty the results list
-			sessionResult.clear();
-		}
+	public void enterResult(GameResult gameResult) {
+//		Gdx.app.log(this.getClass().getSimpleName(), " Time left = "
+//				+ gameResult.getRemainingTime());
+//		Gdx.app.log(this.getClass().getSimpleName(), " GameState = "
+//				+ gameResult.getGameState());
+		
+		sessionResult.addResult(gameResult);
+		
+//		if (gameResult.getGameState() == GameState.WON) {
+//			sessionResult.addResult(gameResult);
+//			interimScreen();
+//		} else {
+//			sessionResult.addResult(gameResult);
+//			gameOverScreen();
+//
+//			// empty the results list
+//			sessionResult.clear();
+//		}
 
 		completedLvls = (sessionResult.gamesPlayed());
 	}

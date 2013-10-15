@@ -2,6 +2,7 @@ package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
@@ -55,18 +56,27 @@ public class GameSessionController implements Listener {
 				}
 
 			} else if (message.msg == C.Msg.GAME_RESULT) {
-				GameResult result = (GameResult) message.content;
-				gameSession.miniGameEnded(result);
 
-				MiniGame miniGame = gameSession.getNextMiniGame();
-				gameSession.setCurrentMiniGame(miniGame);
-				// EventMessage eventMessage = new EventMessage(
-				// C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
-				EventMessage eventMessage = new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
-						gameSession);
-				EventBus.INSTANCE.broadcast(eventMessage);
-				// gameSession.interimScreen();
+				GameResult result = (GameResult) message.content;
+				gameSession.enterResult(result);
+
+				if (result.getGameState() == GameState.WON) {
+					MiniGame miniGame = gameSession.getNextMiniGame();
+					gameSession.setCurrentMiniGame(miniGame);
+					EventMessage eventMessage = new EventMessage(
+							C.Tag.COMMAND_AS_HOST, C.Msg.SHOW_INTERIM_SCREEN,
+							gameSession);
+					EventBus.INSTANCE.broadcast(eventMessage);
+					gameSession.interimScreen();
+
+				} else if (result.getGameState() == GameState.LOST) {
+					EventMessage eventMessage = new EventMessage(
+							C.Tag.COMMAND_AS_HOST, C.Msg.SHOW_GAME_OVER_SCREEN,
+							gameSession);
+					EventBus.INSTANCE.broadcast(eventMessage);
+					gameSession.gameOverScreen();
+
+				}
 
 			} else if (message.msg == C.Msg.INTERIM_FINISHED) {
 				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
@@ -100,7 +110,7 @@ public class GameSessionController implements Listener {
 
 			} else if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult) message.content;
-				gameSession.miniGameEnded(result);
+				gameSession.enterResult(result);
 
 			} else if (message.msg == C.Msg.PLAYER_READY) {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
@@ -125,7 +135,14 @@ public class GameSessionController implements Listener {
 
 			} else if (message.msg == C.Msg.GAME_SESSION_MODEL) {
 				this.gameSession = (GameSession) message.content;
+
+			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+				this.gameSession = (GameSession) message.content;
 				gameSession.interimScreen();
+
+			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+				this.gameSession = (GameSession) message.content;
+				gameSession.gameOverScreen();
 			}
 		}
 	}
