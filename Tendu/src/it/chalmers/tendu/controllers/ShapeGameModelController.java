@@ -126,8 +126,17 @@ public class ShapeGameModelController implements MiniGameController {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape lockShape = (Shape) messageContent.get(1);
+		// Since we send objects, their references no longer matches our model
+		// we have to see which of the objects in "our" model that was sent. 
+		for (Shape l : shapeGame.getLock(player).getLockSequence()) {
+			if (l.equals(lockShape))
+				lockShape = l;
+		}
 		Shape shape = (Shape) messageContent.get(2);
-
+		for (Shape s : shapeGame.getAllInventory().get(player)) {
+			if (s.equals(shape))
+				shape = s;
+		}
 		return shapeGame.insertShapeIntoSlot(player, shape, lockShape);
 	}
 
@@ -136,13 +145,13 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
-	//TODO Shape should appear on the proper pos
+	// TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape shape = (Shape) messageContent.get(1);
-		//int sender = shapeGame.move(shape, player);
-		//shapeGame.getAllInventory().get(player);
+		// int sender = shapeGame.move(shape, player);
+		// shapeGame.getAllInventory().get(player);
 		shapeGame.move(shape, player);
 	}
 }

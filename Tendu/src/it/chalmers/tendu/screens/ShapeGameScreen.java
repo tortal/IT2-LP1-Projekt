@@ -97,14 +97,14 @@ public class ShapeGameScreen extends GameScreen {
 				getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1)-1,
 					s.getShape())));
 		}
 		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
 				getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2)-1,
 					s.getShape())));
 
 		}
@@ -112,7 +112,7 @@ public class ShapeGameScreen extends GameScreen {
 				getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0)-1,
 					s.getShape())));
 		}
 
@@ -221,7 +221,7 @@ public class ShapeGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				shape.getShape().setLocked(true);
+				//shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
