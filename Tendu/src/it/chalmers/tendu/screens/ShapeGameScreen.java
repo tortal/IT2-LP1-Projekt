@@ -185,6 +185,7 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
+		controller.unregister();
 		sound.unregister();
 	}
 
