@@ -54,6 +54,7 @@ public class SimpleTimer {
 	 * Pause the timer
 	 */
 	public void pause() {
+		getRemainingTime();
 		state = STATE.PAUSED;
 	}
 
@@ -108,5 +109,10 @@ public class SimpleTimer {
 			return true;
 		}	
 		return false;
+	}
+
+	public void stop() {
+		getRemainingTime();
+		state = STATE.DONE;
 	}
 }

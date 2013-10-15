@@ -25,9 +25,13 @@ import com.badlogic.gdx.math.Vector2;
 public class NumberGameScreen extends GameScreen {
 	private ArrayList<Color> colors; // list with colors for all numbers
 	private ArrayList<Integer> guessNumbers; // the correct numbers
-	
+
 	private ArrayList<Integer> numbers; // the correct numbers
-	private SimpleTimer instructionsTimer; //used to time how long the instructions should be displayed
+	private SimpleTimer instructionsTimer; // used to time how long the
+											// instructions should be displayed
+	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
+											// the millisecond you've one or
+											// lost
 	private int numberAlignment; // start position of first number to the left
 									// on the screen
 	private NumberGameController controller;
@@ -65,6 +69,7 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void setUpGame() {
 		instructionsTimer = new SimpleTimer();
+		gameCompletedTimer = new SimpleTimer();
 
 		memorizeText = new TextWidget("Memorize the numbers", new Vector2(145,
 				400), -0.2f);
@@ -72,12 +77,11 @@ public class NumberGameScreen extends GameScreen {
 				"Enter the numbers in the correct order", new Vector2(50, 400),
 				-0.35f);
 
-		
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
 
-		//TODO more natural colors
+		// TODO more natural colors
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -97,7 +101,9 @@ public class NumberGameScreen extends GameScreen {
 		// setup the guess list
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
 			guessNumbers.add(getModel().getMyList().get(i));
-			guessNumbersWidgets.add(new TextWidget(getModel().getMyList().get(i).toString(), new Vector2(72+95*i, 120), colors.get(i), -0.3f));
+			guessNumbersWidgets.add(new TextWidget(getModel().getMyList()
+					.get(i).toString(), new Vector2(72 + 95 * i, 120), colors
+					.get(i), -0.3f));
 		}
 
 		// TODO check number of numbers instead
@@ -152,10 +158,8 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		if (model.checkGameState() == GameState.RUNNING) {
+		if (model.checkGameState() != GameState.WAITING) {
 			super.render(); // draws common ui-stuff
-			
-			instructionsTimer.start(4000); //only starts once
 
 			if (!instructionsTimer.isDone()) {
 				memorizeText.draw(tendu.spriteBatch, font);
@@ -175,40 +179,50 @@ public class NumberGameScreen extends GameScreen {
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		model = getModel(); // make sure we have the new model (the host might have changed it)
+		model = getModel(); // make sure we have the new model (the host might
+							// have changed it)
 
 		if (model.checkGameState() != GameState.RUNNING) {
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
+				gameCompletedTimer.start(1500);
 
-				EventMessage message = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.GAME_RESULT, model.getGameResult());
-				EventBus.INSTANCE.broadcast(message);
+				if (gameCompletedTimer.isDone()) {
+					EventMessage message = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.GAME_RESULT, model.getGameResult());
+					EventBus.INSTANCE.broadcast(message);
+				}
 			}
 
 			return;
-			
+
 		} else if (model.checkGameState() == GameState.RUNNING) {
+			instructionsTimer.start(4000); // only starts once
+
 			if (instructionsTimer.isDone()) {
 				model.startGameTimer();
 				if (input.isTouchedUp()) {
 					for (int i = 0; i < guessNumbers.size(); i++) {
-						if (guessNumbersWidgets.get(i).collided(input.getCoordinates())) {
+						if (guessNumbersWidgets.get(i).collided(
+								input.getCoordinates())) {
 							EventBus.INSTANCE.broadcast(new EventMessage(
 									C.Tag.TO_SELF, C.Msg.NUMBER_GUESS, model
 											.getGameId(), guessNumbers.get(i)));
-						}			
+						}
 						guessNumbersWidgets.get(i).setScale(-0.3f);
-						guessNumbersWidgets.get(i).setY(120);;
+						guessNumbersWidgets.get(i).setY(120);
+						
 					}
 				}
 
 				if (input.isTouchedDown()) {
 					for (int i = 0; i < guessNumbers.size(); i++) {
-						if (guessNumbersWidgets.get(i).collided(input.getCoordinates())) {
+						if (guessNumbersWidgets.get(i).collided(
+								input.getCoordinates())) {
 							Gdx.input.vibrate(25);
 							guessNumbersWidgets.get(i).setScale(0.2f);
-							guessNumbersWidgets.get(i).setY(147);;
+							guessNumbersWidgets.get(i).setY(145);
+							;
 						}
 
 					}
