@@ -154,13 +154,20 @@ public class Tendu implements ApplicationListener, Listener {
 			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
 					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
 			EventBus.INSTANCE.broadcast(msg);
+			
 		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 			SessionResult sessionResult = (SessionResult)message.content;
 			Screen screen = new InterimScreen(this, sessionResult);
 			setScreen(screen);
+			
 		} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN){
 			SessionResult sessionResult = (SessionResult)message.content;
 			Screen screen = new GameOverScreen(this, sessionResult);
+			setScreen(screen);
+			
+		} else if (message.msg == C.Msg.RESTART){
+			// TODO: Unregister network
+			Screen screen = new MainMenuScreen(this);
 			setScreen(screen);
 		}
 	}
@@ -168,5 +175,6 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void unregister() {
 		// TODO: Will this ever be called? ( maybe on dispose() )
+		EventBus.INSTANCE.removeListener(this);
 	}
 }
