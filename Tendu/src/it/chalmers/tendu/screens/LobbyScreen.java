@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.LobbyController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
@@ -37,9 +38,9 @@ public class LobbyScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		
-		readyText = new TextWidget("I'm ready", new Vector2(640, 150));
-		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 150));		
-		playerText = new TextWidget("Players", new Vector2(65, 450));
+		readyText = new TextWidget("I'm ready", new Vector2(640, 150), Constants.MENU_FONT_COLOR);
+		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 150), Constants.MENU_FONT_COLOR);		
+		playerText = new TextWidget("Players", new Vector2(65, 450), Constants.MENU_FONT_COLOR);
 		
 		ready = false;
 
@@ -57,13 +58,13 @@ public class LobbyScreen implements Screen {
 		lobbyController.getModel().addPlayer(myMac);
 
 		statusText = new TextWidget("Waiting for connections...", new Vector2(40,
-				620));
+				620), Constants.MENU_FONT_COLOR);
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
 		statusText = new TextWidget("Searching for game session...", new Vector2(
-				40, 620));
+				40, 620), Constants.MENU_FONT_COLOR);
 	}
 
 	public void tick(InputController input) {
@@ -78,7 +79,7 @@ public class LobbyScreen implements Screen {
 		if (input.isTouchedDown()) {
 			if (readyText.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				readyText.setColor(Color.LIGHT_GRAY);
+				readyText.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 		} else if (input.isTouchedUp()) {
 			if (readyText.collided(input.getCoordinates())) {
@@ -87,7 +88,7 @@ public class LobbyScreen implements Screen {
 						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
 			}
 
-			readyText.setColor(Color.WHITE);
+			readyText.setColor(Constants.MENU_FONT_COLOR);
 		}
 	}
 

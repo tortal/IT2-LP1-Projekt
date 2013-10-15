@@ -2,6 +2,7 @@ package it.chalmers.tendu.screens;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -22,9 +23,9 @@ public class MainMenuScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
 				Gdx.files.internal("fonts/mainMenuTendu.png"), false);
 
-		hostGame = new TextWidget("Host game", new Vector2(90 ,270));
-		joinGame = new TextWidget("Join game", new Vector2(90, 150));
-		testStuff = new TextWidget("test stuff", new Vector2(785, 680));
+		hostGame = new TextWidget("Host game", new Vector2(90 ,270), Constants.MENU_FONT_COLOR);
+		joinGame = new TextWidget("Join game", new Vector2(90, 150), Constants.MENU_FONT_COLOR);
+		testStuff = new TextWidget("test stuff", new Vector2(785, 680), Constants.MENU_FONT_COLOR);
 
 	}
 
@@ -43,24 +44,24 @@ public class MainMenuScreen implements Screen {
 				tendu.getNetworkHandler().testStuff();
 			}
 			
-			hostGame.setColor(Color.WHITE);
-			joinGame.setColor(Color.WHITE);
-			testStuff.setColor(Color.WHITE);
+			hostGame.setColor(Constants.MENU_FONT_COLOR);
+			joinGame.setColor(Constants.MENU_FONT_COLOR);
+			testStuff.setColor(Constants.MENU_FONT_COLOR);
 
 		} else if (input.isTouchedDown()) {
 			if (hostGame.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				hostGame.setColor(Color.LIGHT_GRAY);
+				hostGame.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 
 			if (joinGame.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				joinGame.setColor(Color.LIGHT_GRAY);
+				joinGame.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 
 			if (testStuff.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				testStuff.setColor(Color.LIGHT_GRAY);
+				testStuff.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 		}
 	}

@@ -32,8 +32,9 @@ public class NumberGameScreen extends GameScreen {
 	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
 											// the millisecond you've one or
 											// lost
-	private int numberAlignment; // start position of first number to the left
-									// on the screen
+	int numberSpacing = 150;
+	int numberAlignment;
+
 	private NumberGameController controller;
 
 	private NumberGameSound sound;
@@ -73,10 +74,8 @@ public class NumberGameScreen extends GameScreen {
 		gameCompletedTimer = new SimpleTimer();
 
 		memorizeText = new TextWidget("Memorize the numbers", new Vector2(295,
-				595));
-		instructionText = new TextWidget(
-
-				"Enter the numbers in the correct order", new Vector2(50, 595));
+				595), Constants.MENU_FONT_COLOR);
+		instructionText = new TextWidget("Enter the numbers in the correct order", new Vector2(50, 595), Constants.MENU_FONT_COLOR);
 
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
@@ -110,19 +109,10 @@ public class NumberGameScreen extends GameScreen {
 			guessNumbersWidgets.get(i).expandHeight(5);
 			guessNumbersWidgets.get(i).expandWidth(5);
 		}
-
-		// TODO check number of numbers instead
-		if (model.getDifficulty() == Constants.Difficulty.ONE) {
-			numberAlignment = 240;
-		} else if (model.getDifficulty() == Constants.Difficulty.TWO) {
-			numberAlignment = 50;
-		} else if (model.getDifficulty() == Constants.Difficulty.THREE) {
-			numberAlignment = 240;
-		} else if (model.getDifficulty() == Constants.Difficulty.FOUR) {
-			numberAlignment = 50;
-		} else if (model.getDifficulty() == Constants.Difficulty.FIVE) {
-			numberAlignment = 50;
-		}
+		
+		numberSpacing = 150; //pixels between numbers on screen
+		//position of the first number to the left on the screen
+		numberAlignment = Constants.SCREEN_WIDTH/2 - (numbers.size()-1)*numberSpacing/2;
 	}
 
 	/**
@@ -133,14 +123,12 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		int spacing = 150;
-		int start = Constants.SCREEN_WIDTH/2 - (numbers.size()-1)*spacing/2;
 		
 		if (showAll) {
 			for (int i = 0; i < numbers.size() ; i++) {
 				numberWidget.setColor(colors.get(i));
 				numberWidget.setText(numbers.get(i).toString());
-				numberWidget.setX(start+i*spacing);
+				numberWidget.setX(numberAlignment+i*numberSpacing);
 				numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 			}
 		} else {
@@ -148,7 +136,7 @@ public class NumberGameScreen extends GameScreen {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
 					numberWidget.setColor(colors.get(i));
 					numberWidget.setText(numbers.get(i).toString());
-					numberWidget.setX(start+i*spacing);
+					numberWidget.setX(numberAlignment+i*numberSpacing);
 					numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 				}
 			}

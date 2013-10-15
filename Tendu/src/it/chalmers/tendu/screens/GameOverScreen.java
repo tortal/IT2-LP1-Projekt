@@ -34,14 +34,14 @@ public class GameOverScreen implements Screen {
 		level = sessionResult.gamesPlayed();
 
 		gameOver = new TextWidget("GAME OVER!", new Vector2(
-				Constants.SCREEN_WIDTH / 2, 640));
+				Constants.SCREEN_WIDTH / 2, 640), Constants.MENU_FONT_COLOR);
 		
 		levelText = new TextWidget("You reached level: " + level, new Vector2(
-				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2));
+				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2), Constants.MENU_FONT_COLOR);
 
-		mainMenu = new TextWidget("Main menu", new Vector2(100, 150));
+		mainMenu = new TextWidget("Main menu", new Vector2(100, 150), Constants.MENU_FONT_COLOR);
 		
-		replay = new TextWidget("Replay", new Vector2(950, 150));
+		replay = new TextWidget("Replay", new Vector2(950, 150), Constants.MENU_FONT_COLOR);
 	}
 
 	@Override
@@ -69,18 +69,18 @@ public class GameOverScreen implements Screen {
 				EventBus.INSTANCE.broadcast(message);
 			}
 
-			mainMenu.setColor(Color.WHITE);
-			replay.setColor(Color.WHITE);
+			mainMenu.setColor(Constants.MENU_FONT_COLOR);
+			replay.setColor(Constants.MENU_FONT_COLOR);
 
 		} else if (input.isTouchedDown()) {
 			if (mainMenu.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				mainMenu.setColor(Color.LIGHT_GRAY);
+				mainMenu.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 
 			if (replay.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
-				replay.setColor(Color.LIGHT_GRAY);
+				replay.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
 		}
 	}

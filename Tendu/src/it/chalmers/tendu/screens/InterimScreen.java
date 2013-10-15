@@ -2,6 +2,7 @@ package it.chalmers.tendu.screens;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.tbd.C;
@@ -17,10 +18,8 @@ public class InterimScreen implements Screen {
 	private BitmapFont font;
 	private final int level;
 	private float time;
-	private float totalTime;
 	private TextWidget levelText;
 	private TextWidget timeText;
-	private TextWidget totalTimeText;
 	private SimpleTimer timer;
 	
 	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
@@ -33,8 +32,8 @@ public class InterimScreen implements Screen {
 		
 		level = sessionResult.gamesPlayed();
 		
-		levelText = new TextWidget("Level: " + level, new Vector2(120, 280));
-		timeText = new TextWidget("Bonus time: " + time, new Vector2(120, 180));
+		levelText = new TextWidget("Level: " + level, new Vector2(120, 280), Constants.MENU_FONT_COLOR);
+		timeText = new TextWidget("Bonus time: " + time, new Vector2(120, 180), Constants.MENU_FONT_COLOR);
 		
 		timer = new SimpleTimer();
 		timer.start(3000);
