@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.chalmers.tendu.network.clicklinkcompete;
+package it.chalmers.tendu.network.bluetooth.clicklinkcompete;
 
 import it.chalmers.tendu.tbd.EventMessage;
 import android.bluetooth.BluetoothDevice;

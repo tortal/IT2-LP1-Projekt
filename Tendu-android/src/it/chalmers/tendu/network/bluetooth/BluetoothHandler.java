@@ -2,11 +2,11 @@ package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.clicklinkcompete.Connection;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;

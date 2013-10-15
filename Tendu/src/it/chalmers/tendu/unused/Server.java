@@ -1,4 +1,4 @@
-package it.chalmers.tendu.network;
+package it.chalmers.tendu.unused;
 
 public interface Server {
 

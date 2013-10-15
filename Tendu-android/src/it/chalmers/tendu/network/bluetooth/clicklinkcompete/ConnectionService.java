@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package it.chalmers.tendu.network.clicklinkcompete;
+package it.chalmers.tendu.network.bluetooth.clicklinkcompete;
 
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
