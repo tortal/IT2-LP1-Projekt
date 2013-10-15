@@ -31,6 +31,9 @@ public interface INetworkHandler {
 	/** Returns the units mac address */
 	public String getMacAddress();
 
+	/** Returns network to virgin state */
+	public void resetNetwork();
+	
 	// /**
 	// * Search for active teams.
 	// */

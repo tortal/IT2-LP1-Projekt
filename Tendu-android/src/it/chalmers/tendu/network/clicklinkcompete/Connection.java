@@ -138,9 +138,9 @@ public class Connection {
 		return "";
 	}
 
-	public void shutdown() {
+	public void reset() {
 		try {
-			connectionService.shutdown();
+			connectionService.reset();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

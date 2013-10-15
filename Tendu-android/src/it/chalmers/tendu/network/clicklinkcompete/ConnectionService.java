@@ -146,6 +146,16 @@ public class ConnectionService {
 			mBtSockets.remove(address);
 			mBtStreamWatcherThreads.remove(address);
 			mOnConnectionLostListener.OnConnectionLost(device);
+			if (in != null) {
+				in.close();
+			}
+			if (mmInStream != null) {
+				try {
+					mmInStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -319,7 +329,7 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public void shutdown() throws RemoteException {
+	public void reset() throws RemoteException {
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
 				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
@@ -331,7 +341,13 @@ public class ConnectionService {
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
 		} catch (IOException e) {
-			Log.i(TAG, "IOException in shutdown", e);
+			Log.i(TAG, "IOException in reset", e);
+		}
+		if (out != null) {
+			out.close();
+		}
+		if (mKryo != null) {
+			mKryo.reset();
 		}
 	}
 
