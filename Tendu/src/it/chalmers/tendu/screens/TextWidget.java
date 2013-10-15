@@ -8,12 +8,15 @@ import com.badlogic.gdx.math.Vector2;
 public class TextWidget {
 	private String text;
 	private Vector2 position;
+	private Vector2 centerPosition;
 	private int width;
 	private int height;
 	private Color color;
 	private float scale;
 	private int expandHitboxX;
 	private int expandHitboxY;
+	
+	private boolean drawAtCenter;
 
 	public TextWidget(String text, Vector2 position) {
 		this(text, position, Color.WHITE, 0f);
@@ -32,13 +35,16 @@ public class TextWidget {
 		this.position = position;
 		this.color = color;
 		this.scale = scale;
+		
 		// TODO add constructor for this
-
 		expandHitboxX = 0;
 		expandHitboxY = 0;
+		drawAtCenter = false;
+		this.centerPosition = new Vector2(0,0);
 	}
 
 	public void draw(SpriteBatch spriteBatch, BitmapFont font) {
+		drawAtCenter = false;
 		font.setColor(color);
 		font.scale(scale);
 
@@ -57,6 +63,7 @@ public class TextWidget {
 	}
 
 	public void drawAtCenterPoint(SpriteBatch spriteBatch, BitmapFont font) {
+		drawAtCenter = true;
 		font.setColor(color);
 		font.scale(scale);
 
@@ -66,20 +73,27 @@ public class TextWidget {
 		height = (int) font.getBounds(text).height; // Get the height of the
 													// text we draw using the
 													// current font
-		// TODO - fix something
-		int drawX = (int) position.x - width / 2;
-		int drawY = (int) position.y - height / 2;
+		centerPosition.x = (int) position.x - width / 2;
+		centerPosition.y = (int) position.y - height / 2;
 		width = width + expandHitboxX;
 		height = height + expandHitboxY;
 
-		font.draw(spriteBatch, text, drawX, drawY);
+		font.draw(spriteBatch, text, centerPosition.x, centerPosition.y);
 		font.scale(-scale);
 	}
 
 	public boolean collided(Vector2 touchPos) {
-		if (touchPos.x > position.x && touchPos.x < position.x + width) {
-			if (touchPos.y < position.y && touchPos.y > position.y - height) {
-				return true;
+		if(!drawAtCenter) {
+			if (touchPos.x > position.x && touchPos.x < position.x + width) {
+				if (touchPos.y < position.y && touchPos.y > position.y - height) {
+					return true;
+				}
+			}
+		} else if(drawAtCenter) {
+			if (touchPos.x > centerPosition.x && touchPos.x < centerPosition.x + width) {
+				if (touchPos.y < centerPosition.y && touchPos.y > centerPosition.y - height) {
+					return true;
+				}
 			}
 		}
 

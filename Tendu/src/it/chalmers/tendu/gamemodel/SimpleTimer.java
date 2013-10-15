@@ -84,6 +84,7 @@ public class SimpleTimer {
 			if (remainingTime > 0) {
 				remainingTime = endTime - System.currentTimeMillis();
 			} else {
+				remainingTime = 0;
 				state = STATE.DONE; // the timer is done
 			}
 		}
