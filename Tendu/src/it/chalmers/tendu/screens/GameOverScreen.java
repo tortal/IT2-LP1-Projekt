@@ -32,9 +32,10 @@ public class GameOverScreen implements Screen {
 
 		level = sessionResult.gamesPlayed();
 
-		gameOver = new TextWidget("GAME OVER!", new Vector2(Constants.SCREEN_WIDTH/2, 640));
+		gameOver = new TextWidget("GAME OVER!", new Vector2(
+				Constants.SCREEN_WIDTH / 2, 640));
 		levelText = new TextWidget("You reached level: " + level, new Vector2(
-				Constants.SCREEN_WIDTH/2, Constants.SCREEN_HEIGHT/2));
+				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2));
 
 		mainMenu = new TextWidget("Main menu", new Vector2(100, 150));
 		replay = new TextWidget("Replay", new Vector2(620, 150));
