@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 public enum EventBus {
 
 	INSTANCE;
+	private final String TAG = "ShapeGameSound";
 
 	private List<Listener> listeners = new ArrayList<Listener>();
 
