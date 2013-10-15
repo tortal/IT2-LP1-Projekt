@@ -55,9 +55,9 @@ public class ShapeGameModelController implements MiniGameController {
 			if (message.gameId == GameId.SHAPE_GAME) {
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					message.tag = C.Tag.COMMAND_AS_HOST;
+					EventMessage newMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, message.content);
 					Gdx.app.log(TAG, "Sent from server");
-					EventBus.INSTANCE.broadcast(message);
+					EventBus.INSTANCE.broadcast(newMessage);
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {
