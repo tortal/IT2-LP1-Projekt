@@ -81,7 +81,7 @@ public class NumberGameScreen extends GameScreen {
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
-		numberWidget = new TextWidget("Numbers will be drawn with this widget", new Vector2(0,0));
+		numberWidget = new TextWidget("Numbers will be drawn with this widget", new Vector2(0,470));
 
 		// TODO more natural colors
 		colors = new ArrayList<Color>();
@@ -140,7 +140,6 @@ public class NumberGameScreen extends GameScreen {
 			for (int i = 0; i < numbers.size() ; i++) {
 				numberWidget.setColor(colors.get(i));
 				numberWidget.setText(numbers.get(i).toString());
-				numberWidget.setY(425);
 				numberWidget.setX(start+i*spacing);
 				numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 			}
@@ -149,7 +148,6 @@ public class NumberGameScreen extends GameScreen {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
 					numberWidget.setColor(colors.get(i));
 					numberWidget.setText(numbers.get(i).toString());
-					numberWidget.setY(425);
 					numberWidget.setX(start+i*spacing);
 					numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 				}
