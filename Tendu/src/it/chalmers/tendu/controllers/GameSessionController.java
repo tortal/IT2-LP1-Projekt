@@ -69,6 +69,9 @@ public class GameSessionController implements Listener {
 				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_GAME);
 				EventBus.INSTANCE.broadcast(msg);
 				gameSession.nextScreen();
+			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY){
+				String playerMac = (String) message.content;
+				gameSession.playerReplayReady(playerMac);
 			}
 		}
 	}
@@ -86,6 +89,10 @@ public class GameSessionController implements Listener {
 
 			}
 			if (message.msg == C.Msg.PLAYER_READY){
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+				EventBus.INSTANCE.broadcast(message);
+			}
+			if (message.msg == C.Msg.PLAYER_REPLAY_READY){
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
 			}

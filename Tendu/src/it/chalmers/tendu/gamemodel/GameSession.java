@@ -7,6 +7,7 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -22,8 +23,10 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
-	//private List<GameResult> gameResults;
+	// private List<GameResult> gameResults;
 	private SessionResult sessionResult;
+
+	public List<String> playerReplayReady;
 
 	// public GameSession(Map<String, Integer> players, String hostMac) {
 	// this.players = players;
@@ -34,9 +37,9 @@ public class GameSession {
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
-		//gameResults = new ArrayList<GameResult>();
+		// gameResults = new ArrayList<GameResult>();
 		sessionResult = new SessionResult();
-		
+
 	}
 
 	// for reflection
@@ -61,11 +64,11 @@ public class GameSession {
 
 	private MiniGame getMiniGame(GameId gameId) {
 		long extraTime = 0;
-		
-		if(sessionResult != null && sessionResult.gamesPlayed() > 0) {
+
+		if (sessionResult != null && sessionResult.gamesPlayed() > 0) {
 			extraTime = sessionResult.getLastResult().getRemainingTime();
 		}
-		
+
 		return MiniGameFactory.createMiniGame(extraTime, gameId, difficulty,
 				players);
 
@@ -97,23 +100,35 @@ public class GameSession {
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
 	}
-	
+
 	public void interimScreen() {
 		EventMessage message = new EventMessage(C.Tag.TO_SELF,
 				C.Msg.SHOW_INTERIM_SCREEN, sessionResult);
 		EventBus.INSTANCE.broadcast(message);
 	}
-	
-	public void gameOverScreen(){
+
+	public void gameOverScreen() {
 		EventMessage message = new EventMessage(C.Tag.TO_SELF,
 				C.Msg.SHOW_GAME_OVER_SCREEN, sessionResult);
 		EventBus.INSTANCE.broadcast(message);
 	}
 
+	public void playerReplayReady(String player) {
+		if (!playerReplayReady.contains(player)) {
+			playerReplayReady.add(player);
+		}
+	}
+
+	public boolean arePlayersReady() {
+		return (players.size() == playerReplayReady.size());
+	}
+
 	public void miniGameEnded(GameResult gameResult) {
-		Gdx.app.log(this.getClass().getSimpleName(), " Time left = " + gameResult.getRemainingTime());
-		Gdx.app.log(this.getClass().getSimpleName(), " GameState = " + gameResult.getGameState());
-		
+		Gdx.app.log(this.getClass().getSimpleName(), " Time left = "
+				+ gameResult.getRemainingTime());
+		Gdx.app.log(this.getClass().getSimpleName(), " GameState = "
+				+ gameResult.getGameState());
+
 		if (gameResult.getGameState() == GameState.WON) {
 			sessionResult.addResult(gameResult);
 			interimScreen();
