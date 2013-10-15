@@ -16,6 +16,6 @@ public class GameIdTest {
 		Collections.shuffle(games);
 		GameId game = games.get(0);
 		assertTrue(game == GameId.NUMBER_GAME);
-		assertTrue(game != GameId.SHAPES_GAME);
+		assertTrue(game != GameId.SHAPE_GAME);
 	}
 }

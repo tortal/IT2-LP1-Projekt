@@ -33,3 +33,46 @@ public enum EventBus {
 		listeners.remove(l);
 	}
 }
+
+// /////////////////////////////////////////////////////
+
+// public enum EventBus {
+//
+// INSTANCE;
+//
+// public final static String TAG = "EventBus";
+//
+// private Map<Listener, Void> listeners;
+//
+// EventBus() {
+// WeakHashMap<Listener, Void> l = new WeakHashMap<Listener, Void>();
+// listeners = Collections.synchronizedMap(l);
+// }
+//
+// public void broadcast(EventMessage message) {
+// synchronized (this) {
+// Gdx.app.log(TAG, "broadcasting" + message);
+//
+// Set<Listener> allListeners = listeners.keySet();
+// synchronized (listeners) {
+// for (Listener l : allListeners) {
+// l.onBroadcast(message);
+// }
+// }
+//
+// }
+// }
+//
+// public void addListener(Listener l) {
+// synchronized (this) {
+// listeners.put(l, null);
+// }
+// }
+//
+// public void removeListener(Listener l) {
+// synchronized (this) {
+// listeners.remove(l);
+// }
+//
+// }
+// }

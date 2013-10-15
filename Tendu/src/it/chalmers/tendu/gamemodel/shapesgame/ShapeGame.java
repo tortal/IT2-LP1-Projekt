@@ -26,7 +26,7 @@ import com.badlogic.gdx.Gdx;
  * players until you will be able to solve YOUR puzzle.
  * 
  */
-public class ShapesGame extends MiniGame {
+public class ShapeGame extends MiniGame {
 	
 	public final String TAG = this.getClass().getName();
 
@@ -44,7 +44,7 @@ public class ShapesGame extends MiniGame {
 	private Map<Integer, Lock> allLocks;
 
 	/** No args constructor for reflection use */
-	protected ShapesGame() {
+	protected ShapeGame() {
 		super();
 	};
 
@@ -54,9 +54,8 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-
-	public ShapesGame(long addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(difficulty, GameId.SHAPES_GAME, players);
+	public ShapeGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(difficulty, GameId.SHAPE_GAME, players);
 
 
 		// Get list of all combinations of shapes and colors then shuffle
@@ -97,7 +96,7 @@ public class ShapesGame extends MiniGame {
 			}
 
 		}
-
+		this.setGameTime(30000, extraTime);
 		Gdx.app.log("This is", "Shapes Game!");
 
 	}
@@ -107,23 +106,23 @@ public class ShapesGame extends MiniGame {
 	 * 
 	 * @param shape
 	 *            to move
-	 * @param player
+	 * @param recipiant
 	 *            that should receive the shape-
 	 * @return <code>-1</code> if that player already owned that shape.
-	 *         <code>0</code> on successful move.
+	 *         <code>sender</code> on successful move.
 	 */
-	public int move(Shape shape, int player) {
-		int owner = getOwnerOf(shape);
-		if (owner == player)
+	public int move(Shape shape, int recipiant) {
+		int sender = getOwnerOf(shape);
+		if (sender == recipiant)
 			return -1;
 		else {
-			List<Shape> oldLocation = allInventory.get(owner);
-			List<Shape> newLocation = allInventory.get(player);
+			List<Shape> oldLocation = allInventory.get(sender);
+			List<Shape> newLocation = allInventory.get(recipiant);
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
 			newLocation.add(shape);
-			return 0;
+			return sender;
 		}
 	}
 
@@ -136,10 +135,10 @@ public class ShapesGame extends MiniGame {
 	 *            that is inserting the shape
 	 * @param shape
 <<<<<<< HEAD
-	 *            <<<<<<< HEAD to be inserted into the players ���������.
+	 *            <<<<<<< HEAD to be inserted into the players ���.
 	 *            ======= to be inserted into the players slot. >>>>>>>
 =======
-	 *            <<<<<<< HEAD to be inserted into the players ���������. ======= to
+	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
 	 *            be inserted into the players slot. >>>>>>>
 >>>>>>> refs/heads/FontsAndGraphics
 	 *            refs/heads/ShapesGameGraphics

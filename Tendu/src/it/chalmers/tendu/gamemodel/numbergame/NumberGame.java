@@ -17,7 +17,7 @@ import com.badlogic.gdx.audio.Sound;
 public class NumberGame extends MiniGame {
 
 	private int playerCount;
-	private int	playerListSize;
+	private int playerListSize;
 	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
@@ -29,7 +29,8 @@ public class NumberGame extends MiniGame {
 		super();
 	};
 
-	public NumberGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+	public NumberGame(long extraTime, Difficulty difficulty,
+			Map<String, Integer> players) {
 		super(difficulty, GameId.NUMBER_GAME, players);
 
 		nbrCorrectAnswer = 0;
@@ -45,26 +46,27 @@ public class NumberGame extends MiniGame {
 		Collections.shuffle(listOfNumbers);
 
 		// Create an answerList and set the game time according to difficulty.
+
 		switch (difficulty) {
 		case ONE:
-			this.setStartTime(30000, extraTime);
+			this.setGameTime(30000, extraTime);
 			answerList = createAnswer(playerCount);
 			break;
 		case TWO:
-			this.setStartTime(30000, extraTime);
-			answerList = createAnswer(playerCount*2);
+			this.setGameTime(30000, extraTime);
+			answerList = createAnswer(playerCount * 2);
 			break;
 		case THREE:
-			this.setStartTime(15000, extraTime);
+			this.setGameTime(15000, extraTime);
 			answerList = createAnswer(playerCount);
 			break;
 		case FOUR:
-			this.setStartTime(15000, extraTime);
-			answerList = createAnswer(playerCount*2);
+			this.setGameTime(15000, extraTime);
+			answerList = createAnswer(playerCount * 2);
 			break;
 		case FIVE:
-			this.setStartTime(500, extraTime);
-			answerList = createAnswer(playerCount*2);
+			this.setGameTime(500, extraTime);
+			answerList = createAnswer(playerCount * 2);
 			break;
 		default:
 			// TODO:
@@ -79,15 +81,15 @@ public class NumberGame extends MiniGame {
 		Gdx.app.log("NumberGame", "Starttid = " + getGameTime());
 
 	}
-	
+
 	/**
-	 * Changes the state of the game to running
-	 * However it does not start the timer
+	 * Changes the state of the game to running However it does not start the
+	 * timer
 	 */
 	@Override
 	public void startGame() {
-		super.startGame();;
-		//setState(GameState.INSTRUCTING);
+		super.startGame();
+		// setState(GameState.INSTRUCTING);
 	}
 
 	/**
@@ -114,13 +116,14 @@ public class NumberGame extends MiniGame {
 		}
 		return false;
 	}
-	
+	/**
+	 * Check if number is correct. 
+	 * @param num
+	 * @return
+	 */
 	public boolean tempCheckNumber(int num){
-		if (nbrCorrectAnswer < answerList.size()) {
-			if (answerList.get(nbrCorrectAnswer) == num) {
-				return true;
-			}
-			return false;
+		if (answerList.get(nbrCorrectAnswer) == num) {
+			return true;
 		}
 		return false;
 	}
@@ -154,7 +157,6 @@ public class NumberGame extends MiniGame {
 		return list;
 	}
 
-
 	/**
 	 * Returns a list with random numbers from 1-99 that represents the correct
 	 * answer in the game.
@@ -178,16 +180,16 @@ public class NumberGame extends MiniGame {
 	 */
 	private Map<Integer, ArrayList<Integer>> divideAndConquer(
 			ArrayList<Integer> list) {
-	
+
 		Map<Integer, ArrayList<Integer>> newMap = new HashMap<Integer, ArrayList<Integer>>();
-	
+
 		ArrayList<Integer> temp = new ArrayList<Integer>(answerList);
-	
+
 		Collections.shuffle(temp);
-	
+
 		for (int i = 0; i < playerCount; i++) {
 			ArrayList<Integer> newList = new ArrayList<Integer>();
-	
+
 			for (int j = 0; j < answerList.size() / playerCount; j++) {
 				Integer r = temp.remove(0);
 				newList.add(r);
@@ -196,7 +198,7 @@ public class NumberGame extends MiniGame {
 			newMap.put(i, newList);
 		}
 		return newMap;
-	
+
 	}
 
 	/**
@@ -215,9 +217,11 @@ public class NumberGame extends MiniGame {
 
 	@Override
 	public GameResult getGameResult() {
-		if(checkGameState() == GameState.WON || checkGameState() == GameState.LOST) {
-			long spentTime = (getGameTime()-getRemainingTime());
-			GameResult result = new GameResult(getGameId(), spentTime, getRemainingTime(), getGameState());
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), getGameState());
 			return result;
 		}
 		return null;

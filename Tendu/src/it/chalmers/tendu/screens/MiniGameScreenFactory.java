@@ -13,8 +13,8 @@ public class MiniGameScreenFactory {
 		switch (miniModel.getGameId()) {
 		case NUMBER_GAME:
 			return new NumberGameScreen(game, miniModel);
-		case SHAPES_GAME:
-			return new ShapesGameScreen(game, miniModel);
+		case SHAPE_GAME:
+			return new ShapeGameScreen(game, miniModel);
 		}
 		return null;
 	}

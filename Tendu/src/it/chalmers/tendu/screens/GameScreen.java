@@ -6,7 +6,9 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -19,7 +21,7 @@ public abstract class GameScreen implements Screen {
 	private int count; // used to count renders for events that should be
 
 	protected BitmapFont font;
-
+	private List<Integer> otherPlayers;
 
 	/**
 	 * @param game
@@ -31,7 +33,6 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-
 		if (model != null) {
 			model.startGame();
 		}
@@ -50,21 +51,16 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 
-			// currently does nothing
-//			if (count == 0) {
-//				shapeRenderer.setColor(Color.YELLOW);
-//			} else {
-//				shapeRenderer.setColor(Color.RED);
-//				count--;
-//			}
-			
 			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 			shapeRenderer.end();
-			
-			for(int i = 1; i < model.getNumberOfPlayers(); i++) {
-				renderPlayerIndicator(i);
+
+			otherPlayers = new ArrayList<Integer>();
+			for (int i = 1; i < model.getNumberOfPlayers() + 1; i++) {
+				if (!(i - 1 == model.getplayerNbr()))
+					otherPlayers.add(new Integer(i));
 			}
-			
+			renderPlayerIndicator();
+
 		}
 	}
 
@@ -90,15 +86,14 @@ public abstract class GameScreen implements Screen {
 		return (int) timerWitdth;
 	}
 
-
 	// TODO: could probably look better.
 	/**
 	 * Renders a visual indicator for respective player
 	 */
-	public void renderPlayerIndicator(int player) {
+	public void renderPlayerIndicator() {
 		font.scale(-2);
-		// Player 1
-		if (player == 1) {
+		// First player
+		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.BLUE);
 			shapeRenderer.filledRect(0, Constants.SCREEN_HEIGHT - 5,
@@ -112,11 +107,13 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "1", Constants.SCREEN_WIDTH / 2 - 4,
+			font.draw(tendu.spriteBatch, otherPlayers.get(0) + "",
+					Constants.SCREEN_WIDTH / 2 - 4,
 					Constants.SCREEN_HEIGHT - 10);
-		} else if (player == 2) {
 
-			// Player 2
+		}
+		if (otherPlayers.size() >= 2) {
+			// second player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
 			shapeRenderer.filledRect(0, 0, 5, Constants.SCREEN_HEIGHT);
@@ -128,11 +125,12 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "2", 10,
+			font.draw(tendu.spriteBatch, otherPlayers.get(1) + "", 10,
 					Constants.SCREEN_HEIGHT / 2 + 5);
-		} else if (player == 3) {
 
-			// Player 3
+		}
+		if (otherPlayers.size() >= 3) {
+			// third player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.GREEN);
 			shapeRenderer.filledRect(Constants.SCREEN_WIDTH - 5, 0, 5,
@@ -145,21 +143,26 @@ public abstract class GameScreen implements Screen {
 					Constants.SCREEN_HEIGHT / 2, 29);
 			shapeRenderer.end();
 
-
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
+			font.draw(tendu.spriteBatch, otherPlayers.get(2) + "",
+					Constants.SCREEN_WIDTH - 13,
 					Constants.SCREEN_HEIGHT / 2 + 5);
 
 		}
-
 		font.scale(2);
 
 	}
-	
+
 	/**
-	 * Called every frame.
-	 * Make sure to call super() from subclass
+	 * Called every frame. Make sure to call super() from subclass
 	 */
 	public void tick() {
+	}
+
+	/**
+	 * @return the otherPlayers
+	 */
+	public List<Integer> getOtherPlayers() {
+		return otherPlayers;
 	}
 }

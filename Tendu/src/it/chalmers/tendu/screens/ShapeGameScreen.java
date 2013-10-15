@@ -3,12 +3,13 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.ShapeGameModelController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
-import it.chalmers.tendu.gamemodel.shapesgame.ShapesGameSound;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGameSound;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 
-public class ShapesGameScreen extends GameScreen {
+public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 
@@ -34,17 +35,19 @@ public class ShapesGameScreen extends GameScreen {
 
 	private ShapeGameModelController controller;
 
+	private ShapeGameSound sound;
+
 	// For debug
 	int count = 0;
 
-	public ShapesGameScreen(Tendu game, MiniGame model) {
+	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 		controller = new ShapeGameModelController((ShapeGame) model);
 		this.shapeRenderer = new ShapeRenderer();
-		
+
 		player_num = controller.getModel().getplayerNbr();
-		
-		
+		sound = new ShapeGameSound();
+
 		shapes = new ArrayList<GraphicalShape>();
 		int x = 150;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
@@ -70,102 +73,56 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void render() {
 		super.render();
-		if (model.checkGameState() == GameState.RUNNING) {
+		if (controller.getModel().checkGameState() == GameState.RUNNING) {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
 				sgs.renderShape(shapeRenderer);
 			}
-
 			// Renders shapes
 			for (GraphicalShape sgs : shapes) {
 				sgs.renderShape(shapeRenderer);
 			}
 
-
-			// if (Gdx.input.isTouched()) {
-			// Vector3 touchPos = new Vector3(Gdx.input.getX(),
-			// Gdx.input.getY(), +0);
-			// tendu.getCamera().unproject(touchPos);
-			// for (GraphicalShape s : shapes) {
-			// // TODO: Should not prio the shape that is first by index.
-			// if (s.getBounds().contains(touchPos.x, touchPos.y)
-			// && !s.getShape().isLocked()) {
-			// Collections.swap(shapes, 0, shapes.indexOf(s));
-			// s.moveShape(touchPos.x - s.getBounds().width / 2,
-			// touchPos.y - s.getBounds().height / 2);
-			// for (GraphicalShape lock : locks) {
-			// if (snapIntoPlace(s, lock)) {
-			// // TODO: is game completed?
-			// }
-			// }
-			// if (s.getBounds().x <= 10) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 2");
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(2, s.getShape())));
-			// }
-			// if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 3");
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(3, s.getShape())));
-			//
-			// }
-			// if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
-			// Gdx.app.log("SENT!!", s.toString()
-			// + "sent to player 1");
-			//
-			// EventBus.INSTANCE.broadcast(new EventMessage(
-			// C.Tag.TO_SELF, C.Msg.SHAPE_SENT,
-			// messageContentFactory(1, s.getShape())));
-			// }
-			// break;
-			// }
-			//
-			// }
-
-		/*	if (Gdx.input.isTouched()) {
-				Vector3 touchPos = new Vector3(Gdx.input.getX(),
-						Gdx.input.getY(), +0);
-				tendu.getCamera().unproject(touchPos);
-				for (GraphicalShape s : shapes) {
-					// TODO: Should not prio the shape that is first by index.
-					if (s.getBounds().contains(touchPos.x, touchPos.y)
-							&& !s.isLocked()) {
-						Collections.swap(shapes, 0, shapes.indexOf(s));
-						s.moveShape(touchPos.x - s.getBounds().width / 2,
-								touchPos.y - s.getBounds().height / 2);
-						for (GraphicalShape lock : locks) {
-							if (snapIntoPlace(s, lock)) {
-								// TODO: is game completed?
-							}
-						}
-						if (s.getBounds().x <= 10) {
-							Gdx.app.log("SENT!!", s.toString()
-									+ "sent to player 2");
-						}
-						if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60) {
-							Gdx.app.log("SENT!!", s.toString()
-									+ "sent to player 3");
-						}
-						if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60) {
-							Gdx.app.log("SENT!!", s.toString()
-									+ "sent to player 1");
-						}
-						break;
-					}
-
-				}
-			}*/
-
 		} else {
-			//showGameResult();
+			// showGameResult();
 		}
-		model.checkGameState();
+	}
+
+	/**
+	 * @param s
+	 */
+	private void sendToTeamMate(GraphicalShape s) {
+		if (s.getBounds().x <= 10 &&
+				getOtherPlayers().size() >= 2) {
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
+					s.getShape())));
+		}
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
+				getOtherPlayers().size() >= 3) {
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
+					s.getShape())));
+
+		}
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60 &&
+				getOtherPlayers().size() >= 1) {
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
+					s.getShape())));
+		}
+
+//		if (s.getBounds().y <= 60) {
+//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+//					.getModel().getGameId(), messageContentFactory(0,
+//					s.getShape())));
+//		}
+
 	}
 
 	/**
@@ -188,17 +145,15 @@ public class ShapesGameScreen extends GameScreen {
 	/** All game logic goes here (within the model...) */
 	@Override
 	public void tick(InputController input) {
-
 		updateShapesFromModel();
 
-		Vector3 touchPos = new Vector3(input.x, input.y, +0);
-		tendu.getCamera().unproject(touchPos);
+		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
+		// tendu.getCamera().unproject(touchPos);
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(touchPos.x, touchPos.y)
-						&& !s.getShape().isLocked()) {
+				if (s.getBounds().contains(input.x, input.y) && !s.getShape().isLocked()) {
 					movingShape = s;
 				}
 			}
@@ -209,15 +164,18 @@ public class ShapesGameScreen extends GameScreen {
 				for (GraphicalShape lock : locks) {
 					snapIntoPlace(movingShape, lock);
 				}
+				sendToTeamMate(movingShape);
 				movingShape = null;
 			}
 		}
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
+				// Gdx.app.log(TAG, "Shape: " +
+				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
-					movingShape.moveShape(touchPos.x
-							- movingShape.getBounds().width / 2, touchPos.y
+					movingShape.moveShape(input.x
+							- movingShape.getBounds().width / 2, input.y
 							- movingShape.getBounds().height / 2);
 				}
 			}
@@ -227,6 +185,7 @@ public class ShapesGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
+		sound.unregister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.
@@ -254,7 +213,6 @@ public class ShapesGameScreen extends GameScreen {
 		for (GraphicalShape gs : removeList)
 			shapes.remove(gs);
 
-
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
@@ -263,6 +221,7 @@ public class ShapesGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
+				shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
@@ -276,8 +235,8 @@ public class ShapesGameScreen extends GameScreen {
 					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));
 		}
+
 		return result;
 
 	}
-
 }
