@@ -27,6 +27,7 @@ public class InterimScreen implements Screen {
 		this.tendu = tendu;
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
+		
 		time = sessionResult.timePlayedLastGame();
 		time = time/1000;
 		

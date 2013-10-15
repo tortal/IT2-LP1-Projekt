@@ -45,6 +45,7 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
 				String macAddress = (String) message.content;
 				gameSession.playerWaitingToStart(macAddress);
+
 				if (gameSession.allWaiting()) {
 					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
 							C.Msg.START_MINI_GAME);
@@ -52,23 +53,40 @@ public class GameSessionController implements Listener {
 					msg.tag = C.Tag.TO_SELF;
 					EventBus.INSTANCE.broadcast(msg);
 				}
+
 			} else if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
 
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
-//				EventMessage eventMessage = new EventMessage(
-//						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				// EventMessage eventMessage = new EventMessage(
+				// C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventMessage eventMessage = new EventMessage(
-				C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL, gameSession);
+						C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
+						gameSession);
 				EventBus.INSTANCE.broadcast(eventMessage);
-				gameSession.interimScreen();
+				// gameSession.interimScreen();
 
-			} else if(message.msg == C.Msg.INTERIM_FINISHED) {
-				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_GAME);
+			} else if (message.msg == C.Msg.INTERIM_FINISHED) {
+				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
+						C.Msg.LOAD_GAME);
 				EventBus.INSTANCE.broadcast(msg);
 				gameSession.nextScreen();
+
+			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+				String playerMac = (String) message.content;
+				gameSession.playerReplayReady(playerMac);
+				if (gameSession.arePlayersReady()) {
+					// TODO: start new game
+					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
+							C.Msg.LOAD_GAME);
+					EventBus.INSTANCE.broadcast(msg);
+					gameSession.nextScreen();
+				}
+
+			} else if (message.msg == C.Msg.RETURN_MAIN_MENU) {
+				returnToMainMenu();
 			}
 		}
 	}
@@ -79,26 +97,43 @@ public class GameSessionController implements Listener {
 			if (message.msg == C.Msg.WAITING_TO_START_GAME) {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
-			}
-			if (message.msg == C.Msg.GAME_RESULT) {
+
+			} else if (message.msg == C.Msg.GAME_RESULT) {
 				GameResult result = (GameResult) message.content;
 				gameSession.miniGameEnded(result);
 
+			} else if (message.msg == C.Msg.PLAYER_READY) {
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+				EventBus.INSTANCE.broadcast(message);
+
+			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+				message.tag = C.Tag.REQUEST_AS_CLIENT;
+				EventBus.INSTANCE.broadcast(message);
+
+			} else if (message.msg == C.Msg.RETURN_MAIN_MENU) {
+				returnToMainMenu();
 			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 
 			if (message.msg == C.Msg.LOAD_GAME) {
 				gameSession.nextScreen();
-			}
-			if (message.msg == C.Msg.START_MINI_GAME) {
+
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);
-			} else if(message.msg == C.Msg.GAME_SESSION_MODEL) {
-				this.gameSession = (GameSession)message.content;
+
+			} else if (message.msg == C.Msg.GAME_SESSION_MODEL) {
+				this.gameSession = (GameSession) message.content;
 				gameSession.interimScreen();
 			}
 		}
+	}
+
+	private void returnToMainMenu() {
+		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
+		EventBus.INSTANCE.broadcast(message);
+		unregister();
 	}
 
 	@Override
