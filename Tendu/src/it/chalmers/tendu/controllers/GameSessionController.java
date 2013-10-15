@@ -77,6 +77,13 @@ public class GameSessionController implements Listener {
 			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
 				String playerMac = (String) message.content;
 				gameSession.playerReplayReady(playerMac);
+				if (gameSession.arePlayersReady()) {
+					// TODO: start new game
+					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
+							C.Msg.LOAD_GAME);
+					EventBus.INSTANCE.broadcast(msg);
+					gameSession.nextScreen();
+				}
 
 			} else if (message.msg == C.Msg.RETURN_MAIN_MENU) {
 				returnToMainMenu();
