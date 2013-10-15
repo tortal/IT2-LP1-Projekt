@@ -1,5 +1,6 @@
 package it.chalmers.tendu.controllers;
 
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
@@ -51,22 +52,23 @@ public class GameSessionController implements Listener {
 					msg.tag = C.Tag.TO_SELF;
 					EventBus.INSTANCE.broadcast(msg);
 				}
-			}
-			if (message.msg == C.Msg.GAME_WON) {
-				gameSession.miniGameWon();
+			} else if (message.msg == C.Msg.GAME_RESULT) {
+				GameResult result = (GameResult) message.content;
+				gameSession.miniGameEnded(result);
+
 				MiniGame miniGame = gameSession.getNextMiniGame();
 				gameSession.setCurrentMiniGame(miniGame);
+//				EventMessage eventMessage = new EventMessage(
+//						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
 				EventMessage eventMessage = new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
+				C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL, gameSession);
 				EventBus.INSTANCE.broadcast(eventMessage);
-			}
-			if (message.msg == C.Msg.GAME_LOST) {
-				gameSession.miniGameLost();
-				MiniGame miniGame = gameSession.getNextMiniGame();
-				gameSession.setCurrentMiniGame(miniGame);
-				EventMessage eventMessage = new EventMessage(
-						C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, miniGame);
-				EventBus.INSTANCE.broadcast(eventMessage);
+				gameSession.interimScreen();
+
+			} else if(message.msg == C.Msg.INTERIM_FINISHED) {
+				EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_GAME);
+				EventBus.INSTANCE.broadcast(msg);
+				gameSession.nextScreen();
 			}
 		}
 	}
@@ -78,25 +80,29 @@ public class GameSessionController implements Listener {
 				message.tag = C.Tag.REQUEST_AS_CLIENT;
 				EventBus.INSTANCE.broadcast(message);
 			}
-			if (message.msg == C.Msg.GAME_WON) {
-				gameSession.miniGameWon();
-				message.tag = C.Tag.REQUEST_AS_CLIENT;
-			}
-			if (message.msg == C.Msg.GAME_LOST) {
-				gameSession.miniGameLost();
-				message.tag = C.Tag.REQUEST_AS_CLIENT;
+			if (message.msg == C.Msg.GAME_RESULT) {
+				GameResult result = (GameResult) message.content;
+				gameSession.miniGameEnded(result);
+
 			}
 
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 
-			if (message.msg == C.Msg.LOAD_THIS_GAME) {
-				MiniGame miniGame = (MiniGame) message.content;
-				gameSession.setCurrentMiniGame(miniGame);
+			if (message.msg == C.Msg.LOAD_GAME) {
+				gameSession.nextScreen();
 			}
 			if (message.msg == C.Msg.START_MINI_GAME) {
 				message.tag = C.Tag.TO_SELF;
 				EventBus.INSTANCE.broadcast(message);
+			} else if(message.msg == C.Msg.GAME_SESSION_MODEL) {
+				this.gameSession = (GameSession)message.content;
+				gameSession.interimScreen();
 			}
 		}
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
 	}
 }

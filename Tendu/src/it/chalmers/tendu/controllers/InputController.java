@@ -1,15 +1,29 @@
 package it.chalmers.tendu.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class InputController implements InputProcessor {
 
-	private boolean touchedUp = false;
-	private boolean touchedDown = false;
-	private int x, y;
+	private boolean touchedUp;
+	private boolean touchedDown;
+	private boolean dragged;
+	private OrthographicCamera camera;
+	private Vector3 vector3;
+	private Vector2 vector2;
+
+	public int screenX, screenY, x, y;
+
+	public InputController(OrthographicCamera camera) {
+		this.camera = camera;
+		touchedUp = false;
+		touchedDown = false;
+		dragged = false;
+		vector3 = new Vector3(0, 0, 0);
+		vector2 = new Vector2(0, 0);
+	}
 
 	public void tick() {
 		touchedUp = false;
@@ -36,18 +50,17 @@ public class InputController implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		x = screenX;
-		y = screenY;
+		setCoordinates(screenX, screenY);
 		touchedDown = true;
 		return true;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		x = screenX;
-		y = screenY;
+		setCoordinates(screenX, screenY);
 		touchedUp = true;
-		return true;
+		dragged = false;
+		return touchedUp;
 	}
 
 	public boolean isTouchedUp() {
@@ -60,18 +73,9 @@ public class InputController implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// Gdx.app.log("TouchedDrag" , " x = " + screenX + " y = " + screenY);
-		x = screenX;
-		y = screenY;
-		return false;
-	}
-
-	public List<Integer> getDraggedXY() {
-		List<Integer> l = new ArrayList<Integer>();
-		l.add(x);
-		l.add(y);
-		return l;
-
+		setCoordinates(screenX, screenY);
+		dragged = true;
+		return dragged;
 	}
 
 	@Override
@@ -86,4 +90,29 @@ public class InputController implements InputProcessor {
 		return false;
 	}
 
+	public boolean isDragged() {
+		return dragged;
+	}
+
+	private void setCoordinates(int screenX, int screenY) {
+		this.screenX = screenX;
+		this.screenY = screenY;
+		vector3.set(screenX, screenY, 0);
+		camera.unproject(vector3);
+		x = (int) vector3.x;
+		y = (int) vector3.y;
+
+	}
+
+	public Vector2 getCoordinates() {
+		vector2.x = x;
+		vector2.y = y;
+		return vector2;
+	}
+
+	public Vector2 getScreenCoordinates() {
+		vector2.x = screenX;
+		vector2.y = screenY;
+		return vector2;
+	}
 }

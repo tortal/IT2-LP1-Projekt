@@ -4,65 +4,78 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 public class MainMenuScreen implements Screen {
 
 	private BitmapFont font;
-	private BitmapFont smallFont;
-	private Vector3 touchPos = new Vector3();
 	private final Tendu tendu;
+	private TextWidget hostGame;
+	private TextWidget joinGame;
+	private TextWidget testStuff;
 
 	public MainMenuScreen(Tendu tendu) {
 
 		this.tendu = tendu;
-		font = new BitmapFont();
-		font.scale(5);
+		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
+				Gdx.files.internal("fonts/mainMenuTendu.png"), false);
 
-		smallFont = new BitmapFont();
-		smallFont.scale(2);
+		hostGame = new TextWidget("Host game", new Vector2(90 ,270));
+		joinGame = new TextWidget("Join game", new Vector2(90, 150));
+		testStuff = new TextWidget("test stuff", new Vector2(785, 680));
 
 	}
 
 	public void tick(InputController input) {
 		// process user input
-		// TODO refactor and use inputclass etc. Works for now...
-		if (Gdx.input.justTouched()) {
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			tendu.getCamera().unproject(touchPos);
+		if (input.isTouchedUp()) {
+			if (hostGame.collided(input.getCoordinates())) {
+				tendu.setScreen(new LobbyScreen(tendu, true));
+			}
 
-			if (touchPos.x > 35 && touchPos.x < 435) {
-				if (touchPos.y >= 180 && touchPos.y < 250) {
-					Gdx.app.log("Testing", "Host");
-					tendu.setScreen(new LobbyScreen(tendu, true));
-				}
+			if (joinGame.collided(input.getCoordinates())) {
+				tendu.setScreen(new LobbyScreen(tendu, false));
+			}
 
-				if (touchPos.y >= 80 && touchPos.y < 150) {
-					Gdx.app.log("Testing", "Join");
-					tendu.setScreen(new LobbyScreen(tendu, false));
-				}
-			} else if (touchPos.x > 600 && touchPos.y > 390) {
-				Gdx.app.log("Testing", "test test");
+			if (testStuff.collided(input.getCoordinates())) {
 				tendu.getNetworkHandler().testStuff();
+			}
+			
+			hostGame.setColor(Color.WHITE);
+			joinGame.setColor(Color.WHITE);
+			testStuff.setColor(Color.WHITE);
+
+		} else if (input.isTouchedDown()) {
+			if (hostGame.collided(input.getCoordinates())) {
+				Gdx.input.vibrate(25);
+				hostGame.setColor(Color.LIGHT_GRAY);
+			}
+
+			if (joinGame.collided(input.getCoordinates())) {
+				Gdx.input.vibrate(25);
+				joinGame.setColor(Color.LIGHT_GRAY);
+			}
+
+			if (testStuff.collided(input.getCoordinates())) {
+				Gdx.input.vibrate(25);
+				testStuff.setColor(Color.LIGHT_GRAY);
 			}
 		}
 	}
 
 	@Override
 	public void render() {
-
-		font.draw(tendu.spriteBatch, "Host game", 35, 250);
-		font.draw(tendu.spriteBatch, "Join game", 47, 150);
-
-		smallFont.draw(tendu.spriteBatch, "test stuff", 600, 450);
+		hostGame.draw(tendu.spriteBatch, font);
+		joinGame.draw(tendu.spriteBatch, font);
+		testStuff.draw(tendu.spriteBatch, font);
 
 	}
 
 	@Override
 	public void removed() {
 		font.dispose();
-		smallFont.dispose();
 	}
 
 }

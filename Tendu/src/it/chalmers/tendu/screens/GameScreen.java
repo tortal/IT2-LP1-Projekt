@@ -6,9 +6,9 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -19,13 +19,9 @@ public abstract class GameScreen implements Screen {
 	protected MiniGame model; // model of current minigame
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private int count; // used to count renders for events that should be
+
 	protected BitmapFont font;
-
-	private Sound completedGameSound;
-	private Sound lostGameSound;
-
-	// makes sure end sounds only plays once
-	private boolean playCompletedSound = true;
+	private List<Integer> otherPlayers;
 
 	/**
 	 * @param game
@@ -37,11 +33,6 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-
-		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
-
 		if (model != null) {
 			model.startGame();
 		}
@@ -55,37 +46,22 @@ public abstract class GameScreen implements Screen {
 			// TODO drawWaiting();
 			// TODO Maybe unnecessary
 			return;
-		} else if (model.checkGameState() == GameState.RUNNING) {
-			// checks if time has run out and if so changes the game state to
-			// lost
-			// TODO maybe not in render, but in tick instead?
-			model.checkGameOver();
-
+		} else if (model.checkGameState() != GameState.WAITING) {
 			// draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 
-			// currently does nothing
-			if (count == 0) {
-				shapeRenderer.setColor(Color.YELLOW);
-			} else {
-				shapeRenderer.setColor(Color.RED);
-				count--;
-
-			}
-			// Gdx.app.log("Quota", calculateTimerWidth() + "");
 			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
 			shapeRenderer.end();
-			//TODO refactor
-			
-			for(int i = 1; i < model.getNumberOfPlayers(); i++) {
-				renderPlayerIndicator(i);
-			}
-			
-		} else {
-			showGameResult();
-		}
 
+			otherPlayers = new ArrayList<Integer>();
+			for (int i = 1; i < model.getNumberOfPlayers() + 1; i++) {
+				if (!(i - 1 == model.getplayerNbr()))
+					otherPlayers.add(new Integer(i));
+			}
+			renderPlayerIndicator();
+
+		}
 	}
 
 	/** All game logic goes here */
@@ -96,9 +72,7 @@ public abstract class GameScreen implements Screen {
 	 */
 	public void removed() {
 		shapeRenderer.dispose();
-		completedGameSound.dispose();
 		font.dispose();
-		lostGameSound.dispose();
 	}
 
 	/**
@@ -106,34 +80,20 @@ public abstract class GameScreen implements Screen {
 	 * of time
 	 */
 	private int calculateTimerWidth() {
-		double quota = (double) model.getTimeLeft()
+		double quota = (double) model.getRemainingTime()
 				/ (double) model.getGameTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
-
-	}
-
-	// TODO maybe the model could remove time without involving the screen?
-	// TODO not currently used, remove?
-	/**
-	 * Removes time for the user and shows this buy changing color on the timer.
-	 * 
-	 * @param time
-	 */
-	public void loseTime(int time) {
-		count = 60;
-		model.changeTimeWith(-time);
 	}
 
 	// TODO: could probably look better.
-	// TODO: show only connected players
 	/**
 	 * Renders a visual indicator for respective player
 	 */
-	public void renderPlayerIndicator(int player) {
+	public void renderPlayerIndicator() {
 		font.scale(-2);
-		// Player 1
-		if (player == 1) {
+		// First player
+		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.BLUE);
 			shapeRenderer.filledRect(0, Constants.SCREEN_HEIGHT - 5,
@@ -147,11 +107,13 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "1", Constants.SCREEN_WIDTH / 2 - 4,
+			font.draw(tendu.spriteBatch, otherPlayers.get(0) + "",
+					Constants.SCREEN_WIDTH / 2 - 4,
 					Constants.SCREEN_HEIGHT - 10);
-		} else if (player == 2) {
 
-			// Player 2
+		}
+		if (otherPlayers.size() >= 2) {
+			// second player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
 			shapeRenderer.filledRect(0, 0, 5, Constants.SCREEN_HEIGHT);
@@ -163,11 +125,12 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "2", 10,
+			font.draw(tendu.spriteBatch, otherPlayers.get(1) + "", 10,
 					Constants.SCREEN_HEIGHT / 2 + 5);
-		} else if (player == 3) {
 
-			// Player 3
+		}
+		if (otherPlayers.size() >= 3) {
+			// third player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.GREEN);
 			shapeRenderer.filledRect(Constants.SCREEN_WIDTH - 5, 0, 5,
@@ -181,37 +144,25 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, "3", Constants.SCREEN_WIDTH - 13,
+			font.draw(tendu.spriteBatch, otherPlayers.get(2) + "",
+					Constants.SCREEN_WIDTH - 13,
 					Constants.SCREEN_HEIGHT / 2 + 5);
-		}
 
+		}
 		font.scale(2);
 
 	}
 
 	/**
-	 * Call when game ends shows either a success or a failure message and plays
-	 * the corresponding sound
+	 * Called every frame. Make sure to call super() from subclass
 	 */
-	public void showGameResult() {
-		if (model.checkGameState() == GameState.WON) {
-			font.setColor(Color.GREEN);
-			font.scale(2);
-			font.draw(tendu.spriteBatch, "You won!", 300, 300);
-			font.scale(-2);
-			if (playCompletedSound) {
-				completedGameSound.play();
-				playCompletedSound = false;
-			}
-		} else if (model.checkGameState() == GameState.LOST) {
-			font.setColor(Color.RED);
-			font.scale(2);
-			font.draw(tendu.spriteBatch, "You Lost!", 300, 300);
-			font.scale(-2);
-			if (playCompletedSound) {
-				lostGameSound.play();
-				playCompletedSound = false;
-			}
-		}
+	public void tick() {
+	}
+
+	/**
+	 * @return the otherPlayers
+	 */
+	public List<Integer> getOtherPlayers() {
+		return otherPlayers;
 	}
 }

@@ -429,4 +429,9 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	public void sendMessageToPlayer(BluetoothDevice device, EventMessage message) {
 		connection.sendMessage(device, message);
 	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
 }

@@ -1,42 +1,31 @@
-/**
- * 
- */
 package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.GameId;
-import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.Shape;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 
-/**
- * 
- *
- */
-public class ShapeGameModelController implements Listener {
+public class ShapeGameModelController implements MiniGameController {
 
 	private final String TAG = "ShapeGameModelController";
-	private GameSession gameSession;
-	private Tendu tendu;
-	// TODO: not sure if all controllers need tendu, perhaps only gamesessioncontroller.
+	private ShapeGame shapeGame;
 
-	public ShapeGameModelController(Tendu tendu, GameSession gameSession) {
-		this.tendu = tendu;
-		this.gameSession = gameSession;
-
+	public ShapeGameModelController(ShapeGame model) {
+		this.shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
-	public void setModel(GameSession session) {
-		this.gameSession = session;
+	public ShapeGame getModel() {
+		return shapeGame;
 	}
 
 	@Override
@@ -49,46 +38,111 @@ public class ShapeGameModelController implements Listener {
 		}
 	}
 
-	private void handleAsHost(EventMessage message) {
+	@Override
+	public void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
-					gameSession.setCurrentMiniGame(game);
-					message = new EventMessage(Tag.COMMAND_AS_HOST,
-							Msg.UPDATE_MODEL, GameId.NUMBER_GAME,
-							gameSession.currentMiniGame);
+			if (message.msg == C.Msg.START_MINI_GAME) {
+				shapeGame.startGame();
+				shapeGame.startGameTimer();
+			}
+
+			if (message.gameId == GameId.SHAPE_GAME) {
+				// Lock attempt
+				if (message.msg == C.Msg.LOCK_ATTEMPT) {
+					if (insertIntoSlot(message.content)) {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					} else {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
+					message.tag = C.Tag.COMMAND_AS_HOST;
+					Gdx.app.log(TAG, "Sent from server");
+					EventBus.INSTANCE.broadcast(message);
+				}
+				// Send object
+				if (message.msg == C.Msg.SHAPE_SENT) {
+					sendShape(message.content);
+					message.tag = C.Tag.COMMAND_AS_HOST;
+					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
 			}
+
 		}
 	}
 
-	private void handleAsClient(EventMessage message) {
+	@Override
+	public void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				NumberGame game = (NumberGame) gameSession.currentMiniGame;
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					game.checkNbr((Integer) message.content);
+			if (message.gameId == GameId.SHAPE_GAME) {
+				if (message.msg == C.Msg.LOCK_ATTEMPT
+						|| message.msg == C.Msg.SHAPE_SENT) {
 					message.tag = Tag.REQUEST_AS_CLIENT;
 					EventBus.INSTANCE.broadcast(message);
 				}
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
+				shapeGame.startGame();
+				shapeGame.startGameTimer();
 			}
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
-			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				if (message.msg == Msg.UPDATE_MODEL) {
-					NumberGame game = (NumberGame) message.content;
-					gameSession.setCurrentMiniGame(game);
+			if (message.gameId == GameId.SHAPE_GAME) {
+				Gdx.app.log(TAG, "Recived from host");
+				// Lock attempt
+				if (message.msg == C.Msg.LOCK_ATTEMPT) {
+					if (insertIntoSlot(message.content)) {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
+						Gdx.app.log(TAG, "Client changed model");
+					} else {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+								C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
+				}
+				if (message.msg == C.Msg.SHAPE_SENT) {
+					sendShape(message.content);
 				}
 			}
 		}
 	}
 
+	private boolean fitsIntoSlot(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape lockShape = (Shape) messageContent.get(1);
+		Shape shape = (Shape) messageContent.get(2);
+
+		return shapeGame.shapeFitIntoLock(player, shape, lockShape);
+	}
+
+	private boolean insertIntoSlot(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape lockShape = (Shape) messageContent.get(1);
+		Shape shape = (Shape) messageContent.get(2);
+
+		return shapeGame.insertShapeIntoSlot(player, shape, lockShape);
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
+
+	//TODO Shape should appear on the proper pos
+	private void sendShape(Object content) {
+		List<Object> messageContent = (List) content;
+		int player = (Integer) messageContent.get(0);
+		Shape shape = (Shape) messageContent.get(1);
+		//int sender = shapeGame.move(shape, player);
+		//shapeGame.getAllInventory().get(player);
+		shapeGame.move(shape, player);
+	}
 }

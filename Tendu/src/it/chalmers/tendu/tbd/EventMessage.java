@@ -8,12 +8,14 @@ public class EventMessage {
 	public C.Msg msg;
 	public GameId gameId;
 	public Object content;
+	public String mac;
 
 	/** No args constructor for reflection */
 	EventMessage() {
 	}
 
-	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content) {
+	public EventMessage(String mac, C.Tag tag, C.Msg msg, GameId gameId, Object content) {
+		this.mac = mac;
 		this.tag = tag;
 		this.msg = msg;
 		this.gameId = gameId;
@@ -21,15 +23,19 @@ public class EventMessage {
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg, Object content) {
-		this(tag, msg, null, content);
+		this(null, tag, msg, null, content);
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId) {
-		this(tag, msg, gameId, null);
+		this(null, tag, msg, gameId, null);
+	}
+	
+	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content){
+		this(null, tag, msg, gameId, content);
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg) {
-		this(tag, msg, null, null);
+		this(null, tag, msg, null, null);
 	}
 
 	public void setTag(C.Tag tag) {

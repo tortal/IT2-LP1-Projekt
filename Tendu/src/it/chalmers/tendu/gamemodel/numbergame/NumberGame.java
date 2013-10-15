@@ -2,6 +2,8 @@ package it.chalmers.tendu.gamemodel.numbergame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -10,38 +12,84 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 public class NumberGame extends MiniGame {
 
 	private int playerCount;
+	private int playerListSize;
 	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
+
+	private ArrayList<Integer> listOfNumbers;
 
 	/** No args constructor for reflection use */
 	protected NumberGame() {
 		super();
 	};
 
-	public NumberGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(addTime, difficulty, GameId.NUMBER_GAME, players);
+	public NumberGame(long extraTime, Difficulty difficulty,
+			Map<String, Integer> players) {
+		super(difficulty, GameId.NUMBER_GAME, players);
+
 		nbrCorrectAnswer = 0;
+		playerListSize = 8;
 		playerCount = players.size();
+
+		// Create a list of numbers containing all numbers 1-99 an then shuffle
+		// it.
+		listOfNumbers = new ArrayList<Integer>();
+		for (int i = 1; i < 100; i++) {
+			listOfNumbers.add(i);
+		}
+		Collections.shuffle(listOfNumbers);
+
+		// Create an answerList and set the game time according to difficulty.
+
 		switch (difficulty) {
 		case ONE:
-			this.setEndTime(30000);
+			this.setGameTime(30000, extraTime);
 			answerList = createAnswer(playerCount);
 			break;
 		case TWO:
-			this.setEndTime(30000);
-			answerList = createAnswer(playerCount*2);
+			this.setGameTime(30000, extraTime);
+			answerList = createAnswer(playerCount * 2);
+			break;
+		case THREE:
+			this.setGameTime(15000, extraTime);
+			answerList = createAnswer(playerCount);
+			break;
+		case FOUR:
+			this.setGameTime(15000, extraTime);
+			answerList = createAnswer(playerCount * 2);
+			break;
+		case FIVE:
+			this.setGameTime(500, extraTime);
+			answerList = createAnswer(playerCount * 2);
 			break;
 		default:
 			// TODO:
 			Gdx.app.debug("NumberGame Class", "Fix this switch case");
+			break;
 		}
+
+		// Populate the player lists with their own correct numbers and then
+		// fill it up with dummy numbers.
 		playerLists = divideAndConquer(answerList);
 
+		Gdx.app.log("NumberGame", "Starttid = " + getGameTime());
+
+	}
+
+	/**
+	 * Changes the state of the game to running However it does not start the
+	 * timer
+	 */
+	@Override
+	public void startGame() {
+		super.startGame();
+		// setState(GameState.INSTRUCTING);
 	}
 
 	/**
@@ -62,7 +110,7 @@ public class NumberGame extends MiniGame {
 				}
 				return true;
 			} else {
-				this.changeTimeWith(-3000);
+				this.changeTime(-3000);
 				return false;
 			}
 		}
@@ -107,13 +155,8 @@ public class NumberGame extends MiniGame {
 	 */
 	private ArrayList<Integer> createAnswer(int length) {
 		ArrayList<Integer> answerList = new ArrayList<Integer>();
-		int i = 0;
-		while (i < length) {
-			int randomNbr = 1 + (int) (Math.random() * 99);
-			if (!(answerList.contains(randomNbr))) {
-				answerList.add(randomNbr);
-				i++;
-			}
+		for (int i = 0; i < length; i++) {
+			answerList.add(listOfNumbers.remove(i));
 		}
 		return answerList;
 	}
@@ -126,16 +169,16 @@ public class NumberGame extends MiniGame {
 	 */
 	private Map<Integer, ArrayList<Integer>> divideAndConquer(
 			ArrayList<Integer> list) {
-	
+
 		Map<Integer, ArrayList<Integer>> newMap = new HashMap<Integer, ArrayList<Integer>>();
-	
+
 		ArrayList<Integer> temp = new ArrayList<Integer>(answerList);
-	
+
 		Collections.shuffle(temp);
-	
+
 		for (int i = 0; i < playerCount; i++) {
 			ArrayList<Integer> newList = new ArrayList<Integer>();
-	
+
 			for (int j = 0; j < answerList.size() / playerCount; j++) {
 				Integer r = temp.remove(0);
 				newList.add(r);
@@ -144,7 +187,7 @@ public class NumberGame extends MiniGame {
 			newMap.put(i, newList);
 		}
 		return newMap;
-	
+
 	}
 
 	/**
@@ -154,16 +197,25 @@ public class NumberGame extends MiniGame {
 	 * @param list
 	 */
 	private void popAndShuffleList(ArrayList<Integer> list) {
-		int i = 0;
-		int length = list.size();
-		while (i < (8 - length)) {
-			int randomNbr = 1 + (int) (Math.random() * 99);
-			if (!(answerList.contains(randomNbr)) || !(list.contains(randomNbr))) {
-				list.add(randomNbr);
-				i++;
-			}
+		int length = playerListSize - list.size();
+		for (int i = 0; i < length; i++) {
+			list.add(listOfNumbers.remove(i));
 		}
 		Collections.shuffle(list);
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), getGameState());
+			return result;
+		}
+
+		return null;
+
 	}
 
 }

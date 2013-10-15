@@ -2,6 +2,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import com.badlogic.gdx.Gdx;
  * players until you will be able to solve YOUR puzzle.
  * 
  */
-public class ShapesGame extends MiniGame {
+public class ShapeGame extends MiniGame {
+	
+	public final String TAG = this.getClass().getName();
 
-	private final static int PLAYER_COUNT = 4;
+	private int playerCount;
 	private final static int LOCK_SIZE = 4;
 
 	/**
@@ -41,7 +44,7 @@ public class ShapesGame extends MiniGame {
 	private Map<Integer, Lock> allLocks;
 
 	/** No args constructor for reflection use */
-	protected ShapesGame() {
+	protected ShapeGame() {
 		super();
 	};
 
@@ -51,21 +54,24 @@ public class ShapesGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapesGame(int addTime, Difficulty difficulty, Map<String, Integer> players) {
-		super(addTime, difficulty, GameId.SHAPES_GAME, players);
+	public ShapeGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+		super(difficulty, GameId.SHAPE_GAME, players);
+
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
 
-		allInventory = new HashMap<Integer, List<Shape>>(PLAYER_COUNT);
-		allLocks = new HashMap<Integer, Lock>(PLAYER_COUNT);
+		playerCount = players.size();
+
+		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
+		allLocks = new HashMap<Integer, Lock>(playerCount);
 
 		// Every player only has an explicit number of slots to fill, so let's
 		// grab the need amount of shapes from our allShapes list
-		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * PLAYER_COUNT);
+		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * playerCount);
 
-		for (int i = 0; i < LOCK_SIZE * PLAYER_COUNT; i++) {
+		for (int i = 0; i < LOCK_SIZE * playerCount; i++) {
 			Shape randomShape = allShapes.remove(0);
 			gameShapes.add(randomShape);
 		}
@@ -77,7 +83,7 @@ public class ShapesGame extends MiniGame {
 		Collections.shuffle(copyOfShapes);
 
 		// Create inventory and slots lists for all players.
-		for (int p = 0; p < PLAYER_COUNT; p++) {
+		for (int p = 0; p < playerCount; p++) {
 			List<Shape> playerInventory = new ArrayList<Shape>();
 			Lock playerLock = new Lock();
 
@@ -90,7 +96,7 @@ public class ShapesGame extends MiniGame {
 			}
 
 		}
-
+		this.setGameTime(30000, extraTime);
 		Gdx.app.log("This is", "Shapes Game!");
 
 	}
@@ -100,32 +106,41 @@ public class ShapesGame extends MiniGame {
 	 * 
 	 * @param shape
 	 *            to move
-	 * @param player
+	 * @param recipiant
 	 *            that should receive the shape-
 	 * @return <code>-1</code> if that player already owned that shape.
-	 *         <code>0</code> on successful move.
+	 *         <code>sender</code> on successful move.
 	 */
-	public int move(Shape shape, int player) {
-		int owner = getOwnerOf(shape);
-		if (owner == player)
+	public int move(Shape shape, int recipiant) {
+		int sender = getOwnerOf(shape);
+		if (sender == recipiant)
 			return -1;
 		else {
-			List<Shape> oldLocation = allInventory.get(owner);
-			List<Shape> newLocation = allInventory.get(player);
+			List<Shape> oldLocation = allInventory.get(sender);
+			List<Shape> newLocation = allInventory.get(recipiant);
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
 			newLocation.add(shape);
-			return 0;
+			return sender;
 		}
+	}
+
+	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape) {
+		return allLocks.get(player).fitsIntoSlot(shape, lockShape);
 	}
 
 	/**
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD to be inserted into the players �. ======= to
+<<<<<<< HEAD
+	 *            <<<<<<< HEAD to be inserted into the players ���.
+	 *            ======= to be inserted into the players slot. >>>>>>>
+=======
+	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
 	 *            be inserted into the players slot. >>>>>>>
+>>>>>>> refs/heads/FontsAndGraphics
 	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
@@ -134,6 +149,7 @@ public class ShapesGame extends MiniGame {
 		if (lock.fillSlot(shape, lockShape))
 			return true;
 
+		super.changeTime(-3000);
 		return false;
 	}
 
@@ -232,6 +248,12 @@ public class ShapesGame extends MiniGame {
 	 */
 	public Map<Integer, List<Shape>> getAllInventory() {
 		return allInventory;
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

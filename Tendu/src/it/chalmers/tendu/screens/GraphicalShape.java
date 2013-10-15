@@ -4,6 +4,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -16,11 +17,11 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public class GraphicalShape {
 
+	public final String TAG = this.getClass().getName();
 	private Rectangle bounds;
 	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
-	private boolean locked = false;
 
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
@@ -30,8 +31,15 @@ public class GraphicalShape {
 		bounds.height = 100;
 		bounds.width = 100;
 		this.shapeType = determineGeometricShape(shape);
+		//Gdx.app.log(TAG, "Shape created");
 		this.color = determineColor(shape);
 
+	}
+	
+	public GraphicalShape(Shape shape, int x, int y){
+		this(shape);
+		moveShape(x, y);
+		
 	}
 
 	public void renderShape(ShapeRenderer sr) {
@@ -97,6 +105,8 @@ public class GraphicalShape {
 	}
 
 	public static Color determineColor(Shape s) {
+//		if(s.isLocked())
+//			return com.badlogic.gdx.graphics.Color.GRAY;
 		switch (s.color) {
 		case BLUE:
 			return com.badlogic.gdx.graphics.Color.BLUE;
@@ -178,21 +188,4 @@ public class GraphicalShape {
 		this.color = color;
 	}
 
-	/**
-	 * Makes the shape unable to move.
-	 */
-	public void lock() {
-		locked = true;
-	}
-
-	/**
-	 * Makes the shape able to move.
-	 */
-	public void unsLock() {
-		locked = false;
-	}
-
-	public boolean isLocked() {
-		return locked;
-	}
 }

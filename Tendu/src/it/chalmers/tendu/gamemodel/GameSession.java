@@ -15,52 +15,60 @@ public class GameSession {
 
 	// public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
-	private int currentLvl = 1;
+	private int completedLvls;
 	private Difficulty difficulty = Difficulty.ONE;
 	/**
 	 * Integer = player id String = player MacAddress
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
+	//private List<GameResult> gameResults;
+	private SessionResult sessionResult;
 
 	// public GameSession(Map<String, Integer> players, String hostMac) {
 	// this.players = players;
 	// hostMacAddress = hostMac;
 	// }
 	public GameSession(Map<String, Integer> players) {
+		completedLvls = 0;
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
+		//gameResults = new ArrayList<GameResult>();
+		sessionResult = new SessionResult();
+		
 	}
 
+	// for reflection
+	@SuppressWarnings("unused")
 	private GameSession() {
-		// TODO Auto-generated constructor stub
 	}
 
 	private GameId getNextGameId() {
-		if (currentLvl < 5) {
+		if (completedLvls < 2) {
 			difficulty = Difficulty.ONE;
-		} // TODO add more lvls
-		// } else if (currentLvl < 10) {
-		// difficulty = Difficulty.TWO;
-		// }
-		else {
+		} else if (completedLvls < 4) {
 			difficulty = Difficulty.TWO;
+		} else if (completedLvls < 6) {
+			difficulty = Difficulty.THREE;
+		} else if (completedLvls < 8) {
+			difficulty = Difficulty.FOUR;
+		} else {
+			difficulty = Difficulty.FIVE;
 		}
 		return MiniGameFactory.createGameId(difficulty);
 	}
 
 	private MiniGame getMiniGame(GameId gameId) {
-		int bonusTime = 0;
-		Gdx.app.log("gameId", " " + gameId);
-
-		if (currentMiniGame != null) {
-			bonusTime = (int) currentMiniGame.getTimeLeft();
+		long extraTime = 0;
+		
+		if(sessionResult != null && sessionResult.gamesPlayed() > 0) {
+			extraTime = sessionResult.getLastResult().getRemainingTime();
 		}
+		
+		return MiniGameFactory.createMiniGame(extraTime, gameId, difficulty,
+				players);
 
-		currentMiniGame = MiniGameFactory.createMiniGame(bonusTime, gameId,
-				difficulty, players);
-		return currentMiniGame;
 	}
 
 	public MiniGame getNextMiniGame() {
@@ -70,7 +78,6 @@ public class GameSession {
 
 	public void setCurrentMiniGame(MiniGame miniGame) {
 		currentMiniGame = miniGame;
-		nextScreen();
 	}
 
 	public Map<String, Integer> getPlayers() {
@@ -90,12 +97,26 @@ public class GameSession {
 				C.Msg.CREATE_SCREEN, currentMiniGame);
 		EventBus.INSTANCE.broadcast(message);
 	}
-
-	public void miniGameWon() {
-		currentLvl++;
+	
+	public void interimScreen() {
+		EventMessage message = new EventMessage(C.Tag.TO_SELF,
+				C.Msg.SHOW_INTERIM_SCREEN, sessionResult);
+		EventBus.INSTANCE.broadcast(message);
 	}
 
-	public void miniGameLost() {
-		currentLvl = 1;
+	public void miniGameEnded(GameResult gameResult) {
+		Gdx.app.log(this.getClass().getSimpleName(), " Time left = " + gameResult.getRemainingTime());
+		Gdx.app.log(this.getClass().getSimpleName(), " GameState = " + gameResult.getGameState());
+		
+		if (gameResult.getGameState() == GameState.WON) {
+			sessionResult.addResult(gameResult);
+		} else {
+			// TODO do something with the results (present to user...)
+
+			// empty the results list
+			sessionResult.clear();
+		}
+
+		completedLvls = (sessionResult.gamesPlayed());
 	}
 }
