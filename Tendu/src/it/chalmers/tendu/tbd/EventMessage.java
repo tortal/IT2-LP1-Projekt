@@ -3,6 +3,7 @@ package it.chalmers.tendu.tbd;
 import it.chalmers.tendu.gamemodel.GameId;
 
 public class EventMessage {
+	
 
 	public C.Tag tag;
 	public C.Msg msg;
