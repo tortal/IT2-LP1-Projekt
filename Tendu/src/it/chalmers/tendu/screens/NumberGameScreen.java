@@ -44,6 +44,7 @@ public class NumberGameScreen extends GameScreen {
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
 	private ArrayList<TextWidget> guessNumbersWidgets;
+	private TextWidget numberWidget;
 
 	/**
 	 * @param tendu
@@ -80,6 +81,7 @@ public class NumberGameScreen extends GameScreen {
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
+		numberWidget = new TextWidget("Numbers will be drawn with this widget", new Vector2(0,0));
 
 		// TODO more natural colors
 		colors = new ArrayList<Color>();
@@ -131,19 +133,25 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		// TODO redo properly so number always centered
+		int spacing = 150;
+		int start = Constants.SCREEN_WIDTH/2 - (numbers.size()-1)*spacing/2;
+		
 		if (showAll) {
-			for (int i = 0; i < numbers.size(); i++) {
-				numberFont.setColor(colors.get(i));
-				numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
-						numberAlignment + i * 150, 425);
+			for (int i = 0; i < numbers.size() ; i++) {
+				numberWidget.setColor(colors.get(i));
+				numberWidget.setText(numbers.get(i).toString());
+				numberWidget.setY(425);
+				numberWidget.setX(start+i*spacing);
+				numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 			}
 		} else {
-			for (int i = 0; i < numbers.size(); i++) {
+			for (int i = 0; i < numbers.size() ; i++)  {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberFont.setColor(colors.get(i));
-					numberFont.draw(tendu.spriteBatch, "" + numbers.get(i),
-							numberAlignment + i * 150, 425);
+					numberWidget.setColor(colors.get(i));
+					numberWidget.setText(numbers.get(i).toString());
+					numberWidget.setY(425);
+					numberWidget.setX(start+i*spacing);
+					numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
 				}
 			}
 		}

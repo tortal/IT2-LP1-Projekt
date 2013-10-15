@@ -50,11 +50,11 @@ public class NumberGame extends MiniGame {
 		switch (difficulty) {
 		case ONE:
 			this.setGameTime(30000, extraTime);
-			answerList = createAnswer(playerCount);
+			answerList = createAnswer(playerCount*2);
 			break;
 		case TWO:
 			this.setGameTime(30000, extraTime);
-			answerList = createAnswer(playerCount * 2);
+			answerList = createAnswer(playerCount * 4);
 			break;
 		case THREE:
 			this.setGameTime(15000, extraTime);

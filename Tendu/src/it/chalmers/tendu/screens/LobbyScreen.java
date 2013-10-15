@@ -37,8 +37,8 @@ public class LobbyScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		
-		readyText = new TextWidget("I'm ready", new Vector2(640, 130));
-		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 130));		
+		readyText = new TextWidget("I'm ready", new Vector2(640, 150));
+		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 150));		
 		playerText = new TextWidget("Players", new Vector2(65, 450));
 		
 		ready = false;
@@ -57,13 +57,13 @@ public class LobbyScreen implements Screen {
 		lobbyController.getModel().addPlayer(myMac);
 
 		statusText = new TextWidget("Waiting for connections...", new Vector2(40,
-				595));
+				620));
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
 		statusText = new TextWidget("Searching for game session...", new Vector2(
-				40, 595));
+				40, 620));
 	}
 
 	public void tick(InputController input) {
@@ -96,7 +96,7 @@ public class LobbyScreen implements Screen {
 
 		statusText.draw(tendu.spriteBatch, font);
 		
-		playerText.setY(450);
+		playerText.setY(580);
 
 		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {

@@ -9,6 +9,7 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -59,6 +60,7 @@ public abstract class GameScreen implements Screen {
 				if (!(i - 1 == model.getplayerNbr()))
 					otherPlayers.add(new Integer(i));
 			}
+			shapeRenderer.setColor(Color.GRAY);
 			renderPlayerIndicator();
 
 		}
