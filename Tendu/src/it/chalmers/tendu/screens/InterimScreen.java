@@ -28,17 +28,13 @@ public class InterimScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		
-		time = sessionResult.timePlayedLastGame();
+		time = sessionResult.getLastResult().getRemainingTime();
 		time = time/1000;
-		
-		totalTime = sessionResult.totalTimePlayed();
-		totalTime = totalTime/1000;
 		
 		level = sessionResult.gamesPlayed();
 		
-		levelText = new TextWidget("Level: " + level, new Vector2(120, 380));
-		timeText = new TextWidget("Time: " + time, new Vector2(120, 280));
-		totalTimeText = new TextWidget("Total time: " + totalTime, new Vector2(120, 180));
+		levelText = new TextWidget("Level: " + level, new Vector2(120, 280));
+		timeText = new TextWidget("Bonus time: " + time, new Vector2(120, 180));
 		
 		timer = new SimpleTimer();
 		timer.start(3000);
@@ -48,9 +44,6 @@ public class InterimScreen implements Screen {
 	public void render() {
 		levelText.draw(tendu.spriteBatch, font);
 		timeText.draw(tendu.spriteBatch, font);
-		totalTimeText.draw(tendu.spriteBatch, font);
-
-
 	}
 
 	@Override

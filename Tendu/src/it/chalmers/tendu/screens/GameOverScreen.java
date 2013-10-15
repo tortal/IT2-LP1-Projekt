@@ -41,7 +41,7 @@ public class GameOverScreen implements Screen {
 
 		mainMenu = new TextWidget("Main menu", new Vector2(100, 150));
 		
-		replay = new TextWidget("Replay", new Vector2(1080, 150));
+		replay = new TextWidget("Replay", new Vector2(950, 150));
 	}
 
 	@Override
