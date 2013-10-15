@@ -2,6 +2,7 @@ package it.chalmers.tendu.screens;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.tbd.C;
@@ -31,7 +32,7 @@ public class GameOverScreen implements Screen {
 
 		level = sessionResult.gamesPlayed();
 
-		gameOver = new TextWidget("GAME OVER!", new Vector2(120, 420));
+		gameOver = new TextWidget("GAME OVER!", new Vector2(Constants.SCREEN_WIDTH/2, 640));
 		levelText = new TextWidget("You reached level: " + level, new Vector2(
 				120, 380));
 
@@ -41,7 +42,7 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void render() {
-		gameOver.draw(tendu.spriteBatch, font);
+		gameOver.drawAtCenterPoint(tendu.spriteBatch, font);
 		levelText.draw(tendu.spriteBatch, font);
 		mainMenu.draw(tendu.spriteBatch, font);
 		replay.draw(tendu.spriteBatch, font);
@@ -52,6 +53,9 @@ public class GameOverScreen implements Screen {
 		if (input.isTouchedUp()) {
 			if (mainMenu.collided(input.getCoordinates())) {
 				// TODO: back to main menu, restart network
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.RETURN_MAIN_MENU);
+				EventBus.INSTANCE.broadcast(message);
 			}
 
 			if (replay.collided(input.getCoordinates())) {
