@@ -145,6 +145,9 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
+		if(message.tag == C.Tag.TO_SELF){
+			
+		
 		if (message.msg == C.Msg.CREATE_SCREEN) {
 			MiniGame game = (MiniGame) message.content;
 			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this,
@@ -169,6 +172,7 @@ public class Tendu implements ApplicationListener, Listener {
 			// TODO: Unregister network
 			Screen screen = new MainMenuScreen(this);
 			setScreen(screen);
+		}
 		}
 	}
 
