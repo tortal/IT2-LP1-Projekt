@@ -41,7 +41,7 @@ public class ShapeGameSound implements Listener {
 				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
+		//failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
 		
 		
 	}
