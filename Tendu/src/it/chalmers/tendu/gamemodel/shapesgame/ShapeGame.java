@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -135,10 +136,10 @@ public class ShapeGame extends MiniGame {
 	 *            that is inserting the shape
 	 * @param shape
 <<<<<<< HEAD
-	 *            <<<<<<< HEAD to be inserted into the players ���.
+	 *            <<<<<<< HEAD to be inserted into the players ���������.
 	 *            ======= to be inserted into the players slot. >>>>>>>
 =======
-	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
+	 *            <<<<<<< HEAD to be inserted into the players ���������. ======= to
 	 *            be inserted into the players slot. >>>>>>>
 >>>>>>> refs/heads/FontsAndGraphics
 	 *            refs/heads/ShapesGameGraphics
@@ -252,7 +253,13 @@ public class ShapeGame extends MiniGame {
 
 	@Override
 	public GameResult getGameResult() {
-		// TODO Auto-generated method stub
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), getGameState());
+			return result;
+		}
 		return null;
 	}
 

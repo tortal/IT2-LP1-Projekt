@@ -143,6 +143,15 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		updateShapesFromModel();
+		
+		if (model.checkGameState() != GameState.RUNNING) {
+			if (model.checkGameState() == GameState.WON
+					|| model.checkGameState() == GameState.LOST) {
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, model.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
+			}
+		}
 
 		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
 		// tendu.getCamera().unproject(touchPos);
