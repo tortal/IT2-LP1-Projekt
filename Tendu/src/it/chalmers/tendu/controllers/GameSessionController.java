@@ -89,7 +89,8 @@ public class GameSessionController implements Listener {
 				gameSession.playerReplayReady(playerMac);
 
 				if (gameSession.arePlayersReady()) {
-					gameSession.getNextMiniGame();
+					MiniGame miniGame = gameSession.getNextMiniGame();
+					gameSession.setCurrentMiniGame(miniGame);
 					EventMessage msg = new EventMessage(C.Tag.COMMAND_AS_HOST,
 							C.Msg.GAME_SESSION_MODEL, gameSession);
 					EventBus.INSTANCE.broadcast(msg);
