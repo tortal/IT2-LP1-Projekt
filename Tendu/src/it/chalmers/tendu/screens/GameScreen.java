@@ -46,7 +46,7 @@ public abstract class GameScreen implements Screen {
 			// TODO drawWaiting();
 			// TODO Maybe unnecessary
 			return;
-		} else if (model.checkGameState() == GameState.RUNNING) {
+		} else if (model.checkGameState() != GameState.WAITING) {
 			// draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);

@@ -19,15 +19,13 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
-
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	// private ShapesGame model;
+	
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -115,14 +113,6 @@ public class ShapeGameScreen extends GameScreen {
 					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0)-1,
 					s.getShape())));
 		}
-
-//		if (s.getBounds().y <= 60) {
-//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-//					.getModel().getGameId(), messageContentFactory(0,
-//					s.getShape())));
-//		}
-
 	}
 
 	/**
@@ -171,8 +161,6 @@ public class ShapeGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				// Gdx.app.log(TAG, "Shape: " +
-				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(input.x
 							- movingShape.getBounds().width / 2, input.y
