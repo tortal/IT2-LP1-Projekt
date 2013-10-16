@@ -197,4 +197,8 @@ public abstract class MiniGame {
 	public void setState(GameState state) {
 		this.state = state;
 	}
+	
+	public SimpleTimer getTimer(){
+		return timer;
+	}
 }

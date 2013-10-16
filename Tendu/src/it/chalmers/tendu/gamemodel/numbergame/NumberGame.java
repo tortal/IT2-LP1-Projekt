@@ -18,7 +18,7 @@ public class NumberGame extends MiniGame {
 
 	private int playerCount;
 	private int playerListSize;
-	private ArrayList<Integer> answerList;
+	private final ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
 
@@ -27,6 +27,7 @@ public class NumberGame extends MiniGame {
 	/** No args constructor for reflection use */
 	protected NumberGame() {
 		super();
+		answerList = null;
 	};
 
 	public NumberGame(long extraTime, Difficulty difficulty,
@@ -50,7 +51,7 @@ public class NumberGame extends MiniGame {
 		switch (difficulty) {
 		case ONE:
 			this.setGameTime(30000, extraTime);
-			answerList = createAnswer(playerCount*2);
+			answerList = createAnswer(playerCount * 2);
 			break;
 		case TWO:
 			this.setGameTime(30000, extraTime);
@@ -69,8 +70,7 @@ public class NumberGame extends MiniGame {
 			answerList = createAnswer(playerCount * 2);
 			break;
 		default:
-			// TODO:
-			Gdx.app.debug("NumberGame Class", "Fix this switch case");
+			answerList = null;
 			break;
 		}
 
@@ -89,7 +89,6 @@ public class NumberGame extends MiniGame {
 	@Override
 	public void startGame() {
 		super.startGame();
-		// setState(GameState.INSTRUCTING);
 	}
 
 	/**
@@ -101,22 +100,20 @@ public class NumberGame extends MiniGame {
 	 * @return
 	 */
 	public boolean checkNbr(int num) {
-		// TODO make sure it can't go out of bounds (make it prettier)
-		if (nbrCorrectAnswer < answerList.size()) {
-			if (answerList.get(nbrCorrectAnswer) == num) {
-				nbrCorrectAnswer++;
-				if (nbrCorrectAnswer == answerList.size()) {
-					gameWon();
-				}
-				return true;
-			} else {
-				this.changeTime(-3000);
-				return false;
-			}
-		}
-		return false;
+		return (answerList.get(nbrCorrectAnswer) == num);
 	}
 
+	/**
+	 * Plusing counter for number of correct answers.
+	 */
+	public void guessedCorrectly() {
+		nbrCorrectAnswer++;
+	}
+
+	/**
+	 * return the list with the correct answers.
+	 * @return
+	 */
 	public ArrayList<Integer> getAnswerList() {
 		return answerList;
 	}
@@ -130,7 +127,6 @@ public class NumberGame extends MiniGame {
 	public ArrayList<Integer> getMyList() {
 		int playerNbr = getplayerNbr();
 		return playerLists.get(playerNbr);
-		// return answerList;
 	}
 
 	/**
@@ -205,6 +201,16 @@ public class NumberGame extends MiniGame {
 	}
 
 	@Override
+	public GameState checkGameState() {
+		if (answerList.size() == nbrCorrectAnswer) {
+			return GameState.WON;
+		} else if (getTimer().isDone()) {
+			return GameState.LOST;
+		}
+		return GameState.RUNNING;
+	}
+
+	@Override
 	public GameResult getGameResult() {
 		if (checkGameState() == GameState.WON
 				|| checkGameState() == GameState.LOST) {
@@ -213,9 +219,7 @@ public class NumberGame extends MiniGame {
 					getRemainingTime(), getGameState());
 			return result;
 		}
-
 		return null;
-
 	}
 
 }
