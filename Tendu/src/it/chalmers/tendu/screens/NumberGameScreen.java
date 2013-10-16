@@ -32,7 +32,7 @@ public class NumberGameScreen extends GameScreen {
 	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
 											// the millisecond you've one or
 											// lost
-	int numberSpacing = 150;
+	int numberSpacing;
 	int numberAlignment;
 
 	private NumberGameController controller;
@@ -45,7 +45,7 @@ public class NumberGameScreen extends GameScreen {
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
 	private ArrayList<TextWidget> guessNumbersWidgets;
-	private TextWidget numberWidget;
+	private ArrayList<TextWidget> numberWidgets;
 
 	/**
 	 * @param tendu
@@ -80,7 +80,7 @@ public class NumberGameScreen extends GameScreen {
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
-		numberWidget = new TextWidget("Numbers will be drawn with this widget", new Vector2(0,470));
+		numberWidgets = new ArrayList<TextWidget>();
 
 		// TODO more natural colors
 		colors = new ArrayList<Color>();
@@ -94,9 +94,14 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
+		numberSpacing = 150; //pixels between the numbers on screen
+		//position of the first number to the left on the screen
+		numberAlignment = Constants.SCREEN_WIDTH/2 - (getModel().getAnswerList().size()-1)*numberSpacing/2;
+		
 		// add the correct number from the answerlist
-		for (Integer number : getModel().getAnswerList()) {
-			numbers.add(number.intValue());
+		for (int i = 0; i <  getModel().getAnswerList().size(); i++) {
+			numbers.add(getModel().getAnswerList().get(i));
+			numberWidgets.add(new TextWidget(getModel().getAnswerList().get(i).toString(), new Vector2(numberAlignment+i*numberSpacing, 470), colors.get(i)));
 		}
 
 		// setup the guess list
@@ -110,9 +115,7 @@ public class NumberGameScreen extends GameScreen {
 			guessNumbersWidgets.get(i).expandWidth(5);
 		}
 		
-		numberSpacing = 150; //pixels between numbers on screen
-		//position of the first number to the left on the screen
-		numberAlignment = Constants.SCREEN_WIDTH/2 - (numbers.size()-1)*numberSpacing/2;
+
 	}
 
 	/**
@@ -126,18 +129,12 @@ public class NumberGameScreen extends GameScreen {
 		
 		if (showAll) {
 			for (int i = 0; i < numbers.size() ; i++) {
-				numberWidget.setColor(colors.get(i));
-				numberWidget.setText(numbers.get(i).toString());
-				numberWidget.setX(numberAlignment+i*numberSpacing);
-				numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
+				numberWidgets.get(i).draw(tendu.spriteBatch, numberFont);
 			}
 		} else {
 			for (int i = 0; i < numbers.size() ; i++)  {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberWidget.setColor(colors.get(i));
-					numberWidget.setText(numbers.get(i).toString());
-					numberWidget.setX(numberAlignment+i*numberSpacing);
-					numberWidget.drawAtCenterPoint(tendu.spriteBatch, numberFont);
+					numberWidgets.get(i).draw(tendu.spriteBatch, numberFont);
 				}
 			}
 		}
