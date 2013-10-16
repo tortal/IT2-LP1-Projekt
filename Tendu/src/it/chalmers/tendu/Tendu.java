@@ -23,27 +23,49 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
+/**
+ * ENTRY CLASS.
+ */
 public class Tendu implements ApplicationListener, Listener {
+	public static final String TAG = "Tendu";
 
-	public static final String TAG = "Tendu"; // Tag for logging
+	/**
+	 * The {@link Screen}-object to render.
+	 */
+	private Screen screen;
 
-	private Screen screen; // contains whats shown on device screen in any
-							// given moment. Changes depending current
-							// minigame or if in a menu etc
-	private float accum = 0; // used to help lock frame rate in 60 frames per
-								// second
-	private InputController input; // used for handling input (obviously)
-	private OrthographicCamera camera; // The use of a camera helps us to work
-										// on one screen size no matter the
-										// actual screen sizes of different
-										// devices
+	/**
+	 * "Accumulated" numeric used to lock frame rate.
+	 */
+	private float accum = 0;
 
-	private INetworkHandler networkHandler; // handle to all network related
-											// stuff (Android specific, at least
-											// for now)
+	/**
+	 * User's physical input.
+	 */
+	private InputController input;
+
+	/**
+	 * "Camera" object for dynamic rendering of varying display resolutions and
+	 * aspect ration.
+	 */
+	private OrthographicCamera camera;
+
+	/**
+	 * Network controller. All networking is implemented through the
+	 * {@link INetworkHandler} interface.
+	 */
+	private INetworkHandler networkHandler;
+
+	/**
+	 * All drawing is done 
+	 */
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
+	/**
+	 * 
+	 * @param networkHandler
+	 *            Platform-specific implementation of the network communication.
+	 */
 	public Tendu(INetworkHandler networkHandler) {
 		setNetworkHandler(networkHandler);
 		EventBus.INSTANCE.addListener(this);
@@ -57,8 +79,7 @@ public class Tendu implements ApplicationListener, Listener {
 
 		spriteBatch = new SpriteBatch();
 
-		 setScreen(new MainMenuScreen(this));
-
+		setScreen(new MainMenuScreen(this));
 
 		// setup the camera
 		camera = new OrthographicCamera();
@@ -86,9 +107,9 @@ public class Tendu implements ApplicationListener, Listener {
 		// connections is lost?
 		// clear the entire screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-	    //Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
-	    //Gdx.gl.glClearColor(1f, 1f, 0f, 1);
-	    //Gdx.gl.glClearColor(1f, 1f, 1f, 1);
+		// Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
+		// Gdx.gl.glClearColor(1f, 1f, 0f, 1);
+		// Gdx.gl.glClearColor(1f, 1f, 1f, 1);
 
 		// makes sure the game runs in 60 fps
 		accum += Gdx.graphics.getDeltaTime();
@@ -134,7 +155,7 @@ public class Tendu implements ApplicationListener, Listener {
 		return camera;
 	}
 
-	//screens need access to the network
+	// screens need access to the network
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
@@ -145,34 +166,34 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		if(message.tag == C.Tag.TO_SELF){
-			
-		
-		if (message.msg == C.Msg.CREATE_SCREEN) {
-			MiniGame game = (MiniGame) message.content;
-			Screen screen = MiniGameScreenFactory.createMiniGameScreen(this,
-					game);
-			setScreen(screen);
+		if (message.tag == C.Tag.TO_SELF) {
 
-			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
-					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
-			EventBus.INSTANCE.broadcast(msg);
-			
-		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
-			SessionResult sessionResult = (SessionResult)message.content;
-			Screen screen = new InterimScreen(this, sessionResult);
-			setScreen(screen);
-			
-		} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN){
-			SessionResult sessionResult = (SessionResult)message.content;
-			Screen screen = new GameOverScreen(this, sessionResult);
-			setScreen(screen);
-			
-		} else if (message.msg == C.Msg.RESTART){
-			// TODO: Unregister network
-			Screen screen = new MainMenuScreen(this);
-			setScreen(screen);
-		}
+			if (message.msg == C.Msg.CREATE_SCREEN) {
+				MiniGame game = (MiniGame) message.content;
+				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
+						this, game);
+				setScreen(screen);
+
+				EventMessage msg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.WAITING_TO_START_GAME, Player.getInstance()
+								.getMac());
+				EventBus.INSTANCE.broadcast(msg);
+
+			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+				SessionResult sessionResult = (SessionResult) message.content;
+				Screen screen = new InterimScreen(this, sessionResult);
+				setScreen(screen);
+
+			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+				SessionResult sessionResult = (SessionResult) message.content;
+				Screen screen = new GameOverScreen(this, sessionResult);
+				setScreen(screen);
+
+			} else if (message.msg == C.Msg.RESTART) {
+				// TODO: Unregister network
+				Screen screen = new MainMenuScreen(this);
+				setScreen(screen);
+			}
 		}
 	}
 
