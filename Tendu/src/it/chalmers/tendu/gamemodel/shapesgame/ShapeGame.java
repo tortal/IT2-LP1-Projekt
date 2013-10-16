@@ -35,6 +35,12 @@ public class ShapeGame extends MiniGame {
 	private int lockSize;
 
 	/**
+	 * Holds every persons latest received shape. Replaces the value when a new
+	 * shape has been received. <Integer(Receiver), <Integer(Sender),
+	 * Shape(Received Shape)>
+	 */
+	private Map<Integer, Map<Integer, Shape>> latestReceivedShape;
+	/**
 	 * All shapes for all players mapped by player number (Integer).
 	 */
 	private Map<Integer, List<Shape>> allInventory;
@@ -83,11 +89,18 @@ public class ShapeGame extends MiniGame {
 		default:
 			break;
 		}
+
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
 
 		playerCount = players.size();
+
+		latestReceivedShape = new HashMap<Integer, Map<Integer, Shape>>();
+		// Map initiation
+		for (int i = 0; i < playerCount; i++) {
+			latestReceivedShape.put(i, new HashMap<Integer, Shape>());
+		}
 
 		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
 		allLocks = new HashMap<Integer, Lock>(playerCount);
@@ -147,7 +160,12 @@ public class ShapeGame extends MiniGame {
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
+			//Added to the new owners inventory
 			newLocation.add(shape);
+			//Added to new owners latestReceivedShape
+			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
+			senderShapePack.put(sender, shape);
+			latestReceivedShape.put(recipiant, senderShapePack);
 			return sender;
 		}
 	}
@@ -160,6 +178,10 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
+<<<<<<< HEAD
+=======
+	 *            to be inserted into the players slot.
+>>>>>>> branch 'Majormerge' of https://github.com/tortal/IT2-LP1-Tendu.git
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -282,6 +304,10 @@ public class ShapeGame extends MiniGame {
 
 		return null;
 
+	}
+	
+	public Map<Integer, Shape> getLatestReceivedShape(int player){
+		return latestReceivedShape.get(player);
 	}
 
 	/**

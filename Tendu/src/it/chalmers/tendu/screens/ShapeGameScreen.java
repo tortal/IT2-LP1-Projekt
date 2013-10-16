@@ -15,7 +15,9 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -35,20 +37,28 @@ public class ShapeGameScreen extends GameScreen {
 	private ShapeGameModelController controller;
 
 	private ShapeGameSound sound;
-	
+
+	private Map<Integer, Shape> latestShape;
+
+	ShapeGame shapeGameModel;
 
 	// For debug
 	int count = 0;
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
+
 		controller = new ShapeGameModelController((ShapeGame) model);
+		shapeGameModel = controller.getModel();
 		this.shapeRenderer = new ShapeRenderer();
 
-		player_num = controller.getModel().getplayerNbr();
+		latestShape = new HashMap<Integer, Shape>();
+
+		player_num = shapeGameModel.getplayerNbr();
 		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
+
 		int x = Constants.SCREEN_WIDTH
 				/ (controller.getModel().getLock(player_num).getLockSequence()
 						.size() + 1) - 100;
@@ -63,11 +73,13 @@ public class ShapeGameScreen extends GameScreen {
 		}
 
 		locks = new ArrayList<GraphicalShape>();
+
 		x = Constants.SCREEN_WIDTH
 				/ (controller.getModel().getLock(player_num).getLockSequence()
 						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getLock(player_num)
 				.getLockSequence()) {
+
 			GraphicalShape sgs = new GraphicalShape(s);
 			sgs.moveShape(x, 500);
 			sgs.setRenderAsLock(true);
@@ -84,7 +96,7 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void render() {
 		super.render();
-		if (controller.getModel().checkGameState() == GameState.RUNNING) {
+		if (shapeGameModel.checkGameState() == GameState.RUNNING) {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
@@ -190,9 +202,22 @@ public class ShapeGameScreen extends GameScreen {
 
 	// TODO : Adds a new shape if any shape has changed color.
 	private void updateShapesFromModel() {
+
+		Map<Integer, Shape> latestModelReceivedShape = shapeGameModel
+				.getLatestReceivedShape(player_num);
+
+		if (!latestModelReceivedShape.isEmpty()) {
+			if (!latestModelReceivedShape.equals(latestShape)) {
+				for (Map.Entry<Integer, Shape> entry : latestModelReceivedShape
+						.entrySet()) {
+					showShapeFromSender(entry.getValue(), entry.getKey());
+					latestShape = latestModelReceivedShape;
+				}
+			}
+		}
 		// Adds shapes to the gui that are no longer part
 		// of the model.
-		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
+		for (Shape s : shapeGameModel.getAllInventory().get(player_num)) {
 			if (!shapes.contains(new GraphicalShape(s))) {
 				shapes.add(new GraphicalShape(s));
 				Gdx.app.log(TAG, "new Shape!");
@@ -203,7 +228,7 @@ public class ShapeGameScreen extends GameScreen {
 		// model.
 		List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
 		for (GraphicalShape gs : shapes) {
-			if (!controller.getModel().getAllInventory().get(player_num)
+			if (!shapeGameModel.getAllInventory().get(player_num)
 					.contains(gs.getShape())) {
 				removeList.add(gs);
 				Gdx.app.log(TAG, "Shape removed!");
@@ -218,8 +243,8 @@ public class ShapeGameScreen extends GameScreen {
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		boolean result = false;
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			if (controller.getModel().shapeFitIntoLock(player_num,
-					shape.getShape(), lock.getShape())) {
+			if (shapeGameModel.shapeFitIntoLock(player_num, shape.getShape(),
+					lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
 				// shape.getShape().setLocked(true);
 				result = true;
@@ -246,5 +271,44 @@ public class ShapeGameScreen extends GameScreen {
 		font.dispose();
 		sound.unregister();
 		controller.unregister();
+	}
+
+	/**
+	 * Used to move the shape to appear as if it was sent by the proper sender
+	 * 
+	 * @param shape
+	 *            That was sent
+	 * @param sender
+	 * @return <code>true</code> everything went according to plan, sit back and
+	 *         relax. <code>false</code> something went wrong, run around and
+	 *         scream in utter terror
+	 */
+	public boolean showShapeFromSender(Shape shape, int sender) {
+		List<Integer> otherPlayers = super.getOtherPlayers();
+		GraphicalShape receivedShape = null;
+		if (!otherPlayers.contains(sender))
+			return false;
+
+		for (GraphicalShape s : shapes) {
+			if (s.getShape().equals(shape))
+				receivedShape = s;
+		}
+
+		if (receivedShape == null)
+			return false;
+
+		if (otherPlayers.get(0) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
+					Constants.SCREEN_HEIGHT - 20);
+		}
+		if (otherPlayers.get(1) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2, 20);
+		}
+		if (otherPlayers.get(2) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
+					Constants.SCREEN_WIDTH - 20);
+		}
+
+		return true;
 	}
 }
