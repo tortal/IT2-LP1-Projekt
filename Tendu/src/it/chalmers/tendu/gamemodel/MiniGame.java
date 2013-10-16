@@ -198,7 +198,7 @@ public abstract class MiniGame {
 		this.state = state;
 	}
 	
-	public SimpleTimer getTimer(){
-		return timer;
+	public boolean timerIsDone(){
+		return timer.isDone();
 	}
 }

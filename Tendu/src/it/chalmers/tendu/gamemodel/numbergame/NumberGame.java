@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 
 public class NumberGame extends MiniGame {
 
@@ -112,6 +111,7 @@ public class NumberGame extends MiniGame {
 
 	/**
 	 * return the list with the correct answers.
+	 * 
 	 * @return
 	 */
 	public ArrayList<Integer> getAnswerList() {
@@ -142,6 +142,28 @@ public class NumberGame extends MiniGame {
 		return list;
 	}
 
+	@Override
+	public GameState checkGameState() {
+		if (answerList.size() == nbrCorrectAnswer) {
+			return GameState.WON;
+		} else if (timerIsDone()) {
+			return GameState.LOST;
+		}
+		return GameState.RUNNING;
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), getGameState());
+			return result;
+		}
+		return null;
+	}
+
 	/**
 	 * Returns a list with random numbers from 1-99 that represents the correct
 	 * answer in the game.
@@ -155,6 +177,20 @@ public class NumberGame extends MiniGame {
 			answerList.add(listOfNumbers.remove(i));
 		}
 		return answerList;
+	}
+
+	/**
+	 * Fills up an array with random numbers until there are eight different
+	 * numbers in the array total and shuffles them.
+	 * 
+	 * @param list
+	 */
+	private void popAndShuffleList(ArrayList<Integer> list) {
+		int length = playerListSize - list.size();
+		for (int i = 0; i < length; i++) {
+			list.add(listOfNumbers.remove(i));
+		}
+		Collections.shuffle(list);
 	}
 
 	/**
@@ -184,42 +220,6 @@ public class NumberGame extends MiniGame {
 		}
 		return newMap;
 
-	}
-
-	/**
-	 * Fills up an array with random numbers until there are eight different
-	 * numbers in the array total and shuffles them.
-	 * 
-	 * @param list
-	 */
-	private void popAndShuffleList(ArrayList<Integer> list) {
-		int length = playerListSize - list.size();
-		for (int i = 0; i < length; i++) {
-			list.add(listOfNumbers.remove(i));
-		}
-		Collections.shuffle(list);
-	}
-
-	@Override
-	public GameState checkGameState() {
-		if (answerList.size() == nbrCorrectAnswer) {
-			return GameState.WON;
-		} else if (getTimer().isDone()) {
-			return GameState.LOST;
-		}
-		return GameState.RUNNING;
-	}
-
-	@Override
-	public GameResult getGameResult() {
-		if (checkGameState() == GameState.WON
-				|| checkGameState() == GameState.LOST) {
-			long spentTime = (getGameTime() - getRemainingTime());
-			GameResult result = new GameResult(getGameId(), spentTime,
-					getRemainingTime(), getGameState());
-			return result;
-		}
-		return null;
 	}
 
 }
