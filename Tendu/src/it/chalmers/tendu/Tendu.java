@@ -167,7 +167,6 @@ public class Tendu implements ApplicationListener, Listener {
 			SessionResult sessionResult = (SessionResult)message.content;
 			Screen screen = new GameOverScreen(this, sessionResult);
 			setScreen(screen);
-			networkHandler.resetNetwork();
 			
 		} else if (message.msg == C.Msg.RESTART){
 			// TODO: Unregister network
