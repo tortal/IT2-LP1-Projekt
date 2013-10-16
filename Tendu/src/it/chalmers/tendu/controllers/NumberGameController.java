@@ -38,7 +38,7 @@ public class NumberGameController implements MiniGameController {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.START_MINI_GAME) {
-				numberGame.startGame();
+				//numberGame.startGame();
 			}
 			
 			// *********NUMBER GAME***********
@@ -71,7 +71,7 @@ public class NumberGameController implements MiniGameController {
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 			}else if (message.msg == C.Msg.START_MINI_GAME) {
-				numberGame.startGame();
+				//numberGame.startGame();
 			}
 		}
 
