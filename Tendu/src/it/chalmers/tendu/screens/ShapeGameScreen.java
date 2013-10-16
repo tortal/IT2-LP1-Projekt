@@ -47,7 +47,9 @@ public class ShapeGameScreen extends GameScreen {
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
+		
 		controller = new ShapeGameModelController((ShapeGame) model);
+		shapeGameModel = controller.getModel();
 		this.shapeRenderer = new ShapeRenderer();
 
 		latestShape = new HashMap<Integer, Shape>();
@@ -63,8 +65,6 @@ public class ShapeGameScreen extends GameScreen {
 			shapes.add(sgs);
 			x = x + 151;
 		}
-
-		shapeGameModel = controller.getModel();
 
 		locks = new ArrayList<GraphicalShape>();
 		x = 150;
