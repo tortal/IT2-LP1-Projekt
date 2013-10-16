@@ -110,6 +110,7 @@ public abstract class MiniGame {
 	}
 
 	protected void gameWon() {
+		timer.pause();
 		setState(GameState.WON);
 	}
 

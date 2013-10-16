@@ -21,7 +21,7 @@ public abstract class GameScreen implements Screen {
 	private int count; // used to count renders for events that should be
 
 	protected BitmapFont font;
-	private List<Integer> otherPlayers;
+	private List<Integer> otherPlayers; // 1 = left, 0 = top, 2 = right
 
 	/**
 	 * @param game
@@ -46,7 +46,7 @@ public abstract class GameScreen implements Screen {
 			// TODO drawWaiting();
 			// TODO Maybe unnecessary
 			return;
-		} else if (model.checkGameState() == GameState.RUNNING) {
+		} else if (model.checkGameState() != GameState.WAITING) {
 			// draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			shapeRenderer.begin(ShapeType.FilledRectangle);

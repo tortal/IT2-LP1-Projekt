@@ -9,7 +9,6 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
 
 import java.util.List;
 
@@ -54,6 +53,7 @@ public class ShapeGameModelController implements MiniGameController {
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					EventMessage newMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, message.content);
 					Gdx.app.log(TAG, "Sent from server");
+					insertIntoSlot(message.content);
 					EventBus.INSTANCE.broadcast(newMessage);
 					if(fitsIntoSlot(message.content)){
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
@@ -113,7 +113,7 @@ public class ShapeGameModelController implements MiniGameController {
 			}
 		}
 	}
-
+	
 	private boolean fitsIntoSlot(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
@@ -127,8 +127,17 @@ public class ShapeGameModelController implements MiniGameController {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape lockShape = (Shape) messageContent.get(1);
+		// Since we send objects, their references no longer matches our model
+		// we have to see which of the objects in "our" model that was sent. 
+		for (Shape l : shapeGame.getLock(player).getLockSequence()) {
+			if (l.equals(lockShape))
+				lockShape = l;
+		}
 		Shape shape = (Shape) messageContent.get(2);
-
+		for (Shape s : shapeGame.getAllInventory().get(player)) {
+			if (s.equals(shape))
+				shape = s;
+		}
 		return shapeGame.insertShapeIntoSlot(player, shape, lockShape);
 	}
 
@@ -137,13 +146,12 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
-	//TODO Shape should appear on the proper pos
+	// TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape shape = (Shape) messageContent.get(1);
-		//int sender = shapeGame.move(shape, player);
-		//shapeGame.getAllInventory().get(player);
-		shapeGame.move(shape, player);
+		int sender = shapeGame.move(shape, player);
+		shapeGame.getAllInventory().get(player);
 	}
 }

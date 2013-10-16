@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 
 public class ShapeGameScreen extends GameScreen {
 
@@ -27,7 +26,7 @@ public class ShapeGameScreen extends GameScreen {
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	// private ShapesGame model;
+
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -90,36 +89,27 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10 &&
-				getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 10 && getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(1) - 1, s.getShape())));
 		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
-				getOtherPlayers().size() >= 3) {
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60
+				&& getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(2) - 1, s.getShape())));
 
 		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60 &&
-				getOtherPlayers().size() >= 1) {
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60
+				&& getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(0) - 1, s.getShape())));
 		}
-
-//		if (s.getBounds().y <= 60) {
-//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-//					.getModel().getGameId(), messageContentFactory(0,
-//					s.getShape())));
-//		}
-
 	}
 
 	/**
@@ -153,13 +143,11 @@ public class ShapeGameScreen extends GameScreen {
 			}
 		}
 
-		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
-		// tendu.getCamera().unproject(touchPos);
-
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(input.x, input.y) && !s.getShape().isLocked()) {
+				if (s.getBounds().contains(input.x, input.y)
+						&& !s.getShape().isLocked()) {
 					movingShape = s;
 				}
 			}
@@ -177,8 +165,6 @@ public class ShapeGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				// Gdx.app.log(TAG, "Shape: " +
-				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(input.x
 							- movingShape.getBounds().width / 2, input.y
@@ -226,7 +212,7 @@ public class ShapeGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				shape.getShape().setLocked(true);
+				// shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
@@ -243,5 +229,44 @@ public class ShapeGameScreen extends GameScreen {
 
 		return result;
 
+	}
+
+	/**
+	 * Used to move the shape to appear as if it was sent by the proper sender
+	 * 
+	 * @param shape
+	 *            That was sent
+	 * @param sender
+	 * @return <code>true</code> everything went according to plan, sit back and
+	 *         relax. <code>false</code> something went wrong, run around and
+	 *         scream in utter terror 
+	 */
+	public boolean showShapeFromSender(Shape shape, int sender) {
+		List<Integer> otherPlayers = super.getOtherPlayers();
+		GraphicalShape receivedShape = null;
+		if (!otherPlayers.contains(sender))
+			return false;
+
+		for (GraphicalShape s : shapes) {
+			if (s.getShape().equals(shape))
+				receivedShape = s;
+		}
+
+		if (receivedShape == null)
+			return false;
+
+		if (otherPlayers.get(0) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
+					Constants.SCREEN_HEIGHT - 20);
+		}
+		if (otherPlayers.get(1) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2, 20);
+		}
+		if (otherPlayers.get(2) == sender) {
+			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
+					Constants.SCREEN_WIDTH - 20);
+		}
+
+		return true;
 	}
 }
