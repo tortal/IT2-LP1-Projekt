@@ -27,12 +27,18 @@ import com.badlogic.gdx.Gdx;
  * 
  */
 public class ShapeGame extends MiniGame {
-	
+
 	public final String TAG = this.getClass().getName();
 
 	private int playerCount;
 	private final static int LOCK_SIZE = 4;
 
+	/**
+	 * Holds every persons latest received shape. Replaces the value when a new
+	 * shape has been received. <Integer(Receiver), <Integer(Sender),
+	 * Shape(Received Shape)>
+	 */
+	private Map<Integer, Map<Integer, Shape>> latestReceivedShape;
 	/**
 	 * All shapes for all players mapped by player number (Integer).
 	 */
@@ -54,15 +60,21 @@ public class ShapeGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapeGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+	public ShapeGame(long extraTime, Difficulty difficulty,
+			Map<String, Integer> players) {
 		super(difficulty, GameId.SHAPE_GAME, players);
-
 
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
 
 		playerCount = players.size();
+
+		latestReceivedShape = new HashMap<Integer, Map<Integer, Shape>>();
+		// Map initiation
+		for (int i = 0; i < playerCount; i++) {
+			latestReceivedShape.put(i, new HashMap<Integer, Shape>());
+		}
 
 		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
 		allLocks = new HashMap<Integer, Lock>(playerCount);
@@ -121,7 +133,12 @@ public class ShapeGame extends MiniGame {
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
+			//Added to the new owners inventory
 			newLocation.add(shape);
+			//Added to new owners latestReceivedShape
+			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
+			senderShapePack.put(sender, shape);
+			latestReceivedShape.put(recipiant, senderShapePack);
 			return sender;
 		}
 	}
@@ -134,14 +151,7 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-	 *            <<<<<<< HEAD to be inserted into the players ���.
-	 *            ======= to be inserted into the players slot. >>>>>>>
-=======
-	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
-	 *            be inserted into the players slot. >>>>>>>
->>>>>>> refs/heads/FontsAndGraphics
-	 *            refs/heads/ShapesGameGraphics
+	 *            to be inserted into the players slot.
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -254,6 +264,10 @@ public class ShapeGame extends MiniGame {
 	public GameResult getGameResult() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Map<Integer, Shape> getLatestReceivedShape(int player){
+		return latestReceivedShape.get(player);
 	}
 
 }

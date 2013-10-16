@@ -151,5 +151,6 @@ public class ShapeGameModelController implements MiniGameController {
 		Shape shape = (Shape) messageContent.get(1);
 		int sender = shapeGame.move(shape, player);
 		shapeGame.getAllInventory().get(player);
+		
 	}
 }
