@@ -173,7 +173,9 @@ public class Tendu implements ApplicationListener, Listener {
 			// TODO: Unregister network
 			Screen screen = new MainMenuScreen(this);
 			setScreen(screen);
-		}
+			
+		} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS);
+			networkHandler.stopAcceptingConnections();
 		}
 	}
 

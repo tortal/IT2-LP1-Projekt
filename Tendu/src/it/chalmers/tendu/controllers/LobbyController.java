@@ -92,6 +92,8 @@ public class LobbyController implements Listener {
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.msg == Msg.GAME_SESSION_MODEL) {
 				new GameSessionController((GameSession) message.content);
+				EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
+				EventBus.INSTANCE.broadcast(msg);
 				EventBus.INSTANCE.removeListener(this);
 			}
 			if (message.msg == Msg.UPDATE_LOBBY_MODEL) {
