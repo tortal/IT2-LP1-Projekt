@@ -11,7 +11,6 @@ public abstract class MiniGame {
 	private final GameId gameId;
 	private long gameTime;
 	private SimpleTimer timer;
-	private GameState stateBeforePause;
 
 	/**
 	 * Creates a new minigame.
