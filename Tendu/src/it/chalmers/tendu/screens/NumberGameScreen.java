@@ -46,6 +46,8 @@ public class NumberGameScreen extends GameScreen {
 
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
+	private TextWidget timeOutText;
+
 	private ArrayList<TextWidget> guessNumbersWidgets;
 	private ArrayList<TextWidget> numberWidgets;
 
@@ -80,7 +82,9 @@ public class NumberGameScreen extends GameScreen {
 				250, 595), Constants.MENU_FONT_COLOR);
 		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(
 				150, 595), Constants.MENU_FONT_COLOR);
-		
+		timeOutText = new TextWidget(TextLabels.TIME_OUT, new Vector2(
+				440, 400), Color.RED);
+
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
@@ -132,15 +136,15 @@ public class NumberGameScreen extends GameScreen {
 			guessNumbersWidgets.get(i).expandHeight(15);
 			guessNumbersWidgets.get(i).expandWidth(15);
 		}
-		
-		//TODO fewer players should have more time for better game balance
-		if(numbers.size() <= 2) {
+
+		// TODO fewer players should have more time for better game balance
+		if (numbers.size() <= 2) {
 			time = 2000;
-		} else if(numbers.size() <= 4) {
+		} else if (numbers.size() <= 4) {
 			time = 3500;
-		} else if(numbers.size() <= 8) {
+		} else if (numbers.size() <= 8) {
 			time = 5000;
-		} else if(numbers.size() <= 16) {
+		} else if (numbers.size() <= 16) {
 			time = 7500;
 		}
 
@@ -154,7 +158,6 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-
 		if (showAll) {
 			for (int i = 0; i < numbers.size(); i++) {
 				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
@@ -192,7 +195,11 @@ public class NumberGameScreen extends GameScreen {
 			font.setColor(Color.BLUE);
 			instructionText.draw(tendu.spriteBatch, font);
 
-			drawNumbers(false);
+			if (model.checkGameState() == GameState.LOST) {
+				timeOutText.draw(tendu.spriteBatch, font);
+			} else {
+				drawNumbers(false);
+			}
 			drawGuessNumbers();
 		}
 	}
@@ -206,7 +213,7 @@ public class NumberGameScreen extends GameScreen {
 		if (model.checkGameState() != GameState.RUNNING) {
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
-				model.pauseTimer();
+				model.stopTimer();
 				gameCompletedTimer.start(1500);
 
 				if (gameCompletedTimer.isDone()) {
@@ -233,7 +240,6 @@ public class NumberGameScreen extends GameScreen {
 						}
 						guessNumbersWidgets.get(i).setScale(-0.15f);
 						guessNumbersWidgets.get(i).setY(130);
-
 					}
 				}
 

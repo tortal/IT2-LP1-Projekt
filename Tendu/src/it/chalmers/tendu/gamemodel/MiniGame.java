@@ -142,7 +142,7 @@ public abstract class MiniGame {
 //		return GameState.RUNNING;
 //	}
 
-	public void pauseTimer() {
-		timer.pause();
+	public void stopTimer() {
+		timer.stop();
 	}
 }
