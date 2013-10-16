@@ -135,8 +135,15 @@ public class ShapeGameScreen extends GameScreen {
 		updateShapesFromModel();
 		
 		if (model.checkGameState() != GameState.RUNNING) {
-			if (model.checkGameState() == GameState.WON
-					|| model.checkGameState() == GameState.LOST) {
+			if (model.checkGameState() == GameState.WON){
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WON);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, model.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
+			}else if(model.checkGameState() == GameState.LOST){
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_LOST);
+				EventBus.INSTANCE.broadcast(soundMsg);
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.GAME_RESULT, model.getGameResult());
 				EventBus.INSTANCE.broadcast(message);
