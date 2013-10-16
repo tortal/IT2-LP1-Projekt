@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.tbd.C;
@@ -33,15 +34,15 @@ public class GameOverScreen implements Screen {
 
 		level = sessionResult.gamesPlayed();
 
-		gameOver = new TextWidget("GAME OVER!", new Vector2(
+		gameOver = new TextWidget(TextLabels.GAME_OVER, new Vector2(
 				Constants.SCREEN_WIDTH / 2, 640), Constants.MENU_FONT_COLOR);
 		
-		levelText = new TextWidget("You reached level: " + level, new Vector2(
-				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2), Constants.MENU_FONT_COLOR);
+		levelText = new TextWidget(TextLabels.LEVEL_REACHED +": " + level, new Vector2(
+				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2 + 60), Constants.MENU_FONT_COLOR);
 
-		mainMenu = new TextWidget("Main menu", new Vector2(100, 150), Constants.MENU_FONT_COLOR);
+		mainMenu = new TextWidget(TextLabels.RETURN_TO_MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
 		
-		replay = new TextWidget("Replay", new Vector2(950, 150), Constants.MENU_FONT_COLOR);
+		replay = new TextWidget(TextLabels.PLAY_AGAIN, new Vector2(800, 150), Constants.MENU_FONT_COLOR);
 	}
 
 	@Override

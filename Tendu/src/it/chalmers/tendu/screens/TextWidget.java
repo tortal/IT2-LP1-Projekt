@@ -42,6 +42,8 @@ public class TextWidget {
 		drawAtCenter = false;
 		this.centerPosition = new Vector2(0,0);
 	}
+	
+	
 
 	public void draw(SpriteBatch spriteBatch, BitmapFont font) {
 		drawAtCenter = false;

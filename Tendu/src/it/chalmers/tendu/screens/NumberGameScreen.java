@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
@@ -73,9 +74,9 @@ public class NumberGameScreen extends GameScreen {
 		instructionsTimer = new SimpleTimer();
 		gameCompletedTimer = new SimpleTimer();
 
-		memorizeText = new TextWidget("Memorize the numbers", new Vector2(295,
+		memorizeText = new TextWidget(TextLabels.MEMORIZE_NUMBERS, new Vector2(250,
 				595), Constants.MENU_FONT_COLOR);
-		instructionText = new TextWidget("Enter the numbers in the correct order", new Vector2(50, 595), Constants.MENU_FONT_COLOR);
+		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(150, 595), Constants.MENU_FONT_COLOR);
 
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
@@ -108,11 +109,11 @@ public class NumberGameScreen extends GameScreen {
 		for (int i = 0; i < getModel().getMyList().size(); i++) {
 			guessNumbers.add(getModel().getMyList().get(i));
 			guessNumbersWidgets.add(new TextWidget(getModel().getMyList()
-					.get(i).toString(), new Vector2(72 + 140 * i, 130), colors
+					.get(i).toString(), new Vector2(72 + 150 * i, 130), colors
 					.get(i), -0.15f));
 
-			guessNumbersWidgets.get(i).expandHeight(5);
-			guessNumbersWidgets.get(i).expandWidth(5);
+			guessNumbersWidgets.get(i).expandHeight(10);
+			guessNumbersWidgets.get(i).expandWidth(10);
 		}
 		
 
@@ -129,12 +130,12 @@ public class NumberGameScreen extends GameScreen {
 		
 		if (showAll) {
 			for (int i = 0; i < numbers.size() ; i++) {
-				numberWidgets.get(i).draw(tendu.spriteBatch, numberFont);
+				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch, numberFont);
 			}
 		} else {
 			for (int i = 0; i < numbers.size() ; i++)  {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberWidgets.get(i).draw(tendu.spriteBatch, numberFont);
+					numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch, numberFont);
 				}
 			}
 		}

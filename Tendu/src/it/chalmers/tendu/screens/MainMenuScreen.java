@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -23,8 +24,8 @@ public class MainMenuScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
 				Gdx.files.internal("fonts/mainMenuTendu.png"), false);
 
-		hostGame = new TextWidget("Host game", new Vector2(90 ,270), Constants.MENU_FONT_COLOR);
-		joinGame = new TextWidget("Join game", new Vector2(90, 150), Constants.MENU_FONT_COLOR);
+		hostGame = new TextWidget(TextLabels.HOST, new Vector2(90 ,270), Constants.MENU_FONT_COLOR);
+		joinGame = new TextWidget(TextLabels.JOIN, new Vector2(90, 150), Constants.MENU_FONT_COLOR);
 		testStuff = new TextWidget("test stuff", new Vector2(785, 680), Constants.MENU_FONT_COLOR);
 
 	}
