@@ -3,12 +3,14 @@ package it.chalmers.tendu;
 
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screens.GameOverScreen;
 import it.chalmers.tendu.screens.InterimScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
+import it.chalmers.tendu.screens.MiniGameScreenFactory;
 import it.chalmers.tendu.screens.Screen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
@@ -165,29 +167,35 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
+			if (message.msg == C.Msg.CREATE_SCREEN) {
+				MiniGame game = (MiniGame) message.content;
+				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
+						this, game);
+				setScreen(screen);
+				EventMessage msg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.WAITING_TO_START_GAME, Player.getInstance()
+								.getMac());
+				EventBus.INSTANCE.broadcast(msg);
 
-			EventMessage msg = new EventMessage(C.Tag.TO_SELF,
-					C.Msg.WAITING_TO_START_GAME, Player.getInstance().getMac());
-			EventBus.INSTANCE.broadcast(msg);
+			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+				SessionResult sessionResult = (SessionResult) message.content;
+				Screen screen = new InterimScreen(this, sessionResult);
+				setScreen(screen);
 
-		} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
-			SessionResult sessionResult = (SessionResult) message.content;
-			Screen screen = new InterimScreen(this, sessionResult);
-			setScreen(screen);
+			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+				SessionResult sessionResult = (SessionResult) message.content;
+				Screen screen = new GameOverScreen(this, sessionResult);
+				setScreen(screen);
 
-		} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
-			SessionResult sessionResult = (SessionResult) message.content;
-			Screen screen = new GameOverScreen(this, sessionResult);
-			setScreen(screen);
+			} else if (message.msg == C.Msg.RESTART) {
+				// networkHandler.resetNetwork();
+				Screen screen = new MainMenuScreen(this);
+				setScreen(screen);
 
-		} else if (message.msg == C.Msg.RESTART) {
-			// networkHandler.resetNetwork();
-			Screen screen = new MainMenuScreen(this);
-			setScreen(screen);
-
-		} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS)
-			;
-		// networkHandler.stopAcceptingConnections();
+			} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
+				// networkHandler.stopAcceptingConnections();
+			}
+		}
 	}
 
 	@Override
