@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.tbd.C;
@@ -32,8 +33,8 @@ public class InterimScreen implements Screen {
 		
 		level = sessionResult.gamesPlayed();
 		
-		levelText = new TextWidget("Level: " + level, new Vector2(120, 280), Constants.MENU_FONT_COLOR);
-		timeText = new TextWidget("Bonus time: " + time, new Vector2(120, 180), Constants.MENU_FONT_COLOR);
+		levelText = new TextWidget(TextLabels.LEVEL + ":  " + level, new Vector2(120, 280), Constants.MENU_FONT_COLOR);
+		timeText = new TextWidget(TextLabels.BONUS_TIME + ":  " + time, new Vector2(120, 180), Constants.MENU_FONT_COLOR);
 		
 		timer = new SimpleTimer();
 		timer.start(3000);

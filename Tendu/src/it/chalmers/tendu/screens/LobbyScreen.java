@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.LobbyController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.tbd.C;
@@ -38,9 +39,9 @@ public class LobbyScreen implements Screen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 		
-		readyText = new TextWidget("I'm ready", new Vector2(640, 150), Constants.MENU_FONT_COLOR);
-		waitingText = new TextWidget("Waiting for other players...", new Vector2(65, 150), Constants.MENU_FONT_COLOR);		
-		playerText = new TextWidget("Players", new Vector2(65, 450), Constants.MENU_FONT_COLOR);
+		readyText = new TextWidget(TextLabels.READY, new Vector2(640, 150), Constants.MENU_FONT_COLOR);
+		waitingText = new TextWidget(TextLabels.WAITING_FOR_PLAYERS, new Vector2(65, 150), Constants.MENU_FONT_COLOR);		
+		playerText = new TextWidget("This will never be shown on screen", new Vector2(65, 450), Constants.MENU_FONT_COLOR);
 		
 		ready = false;
 
@@ -57,13 +58,13 @@ public class LobbyScreen implements Screen {
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
 
-		statusText = new TextWidget("Waiting for connections...", new Vector2(40,
+		statusText = new TextWidget(TextLabels.WAITING_FOR_CONNECTIONS, new Vector2(40,
 				620), Constants.MENU_FONT_COLOR);
 	}
 
 	private void initClient() {
 		tendu.getNetworkHandler().joinGame();
-		statusText = new TextWidget("Searching for game session...", new Vector2(
+		statusText = new TextWidget(TextLabels.SEARCHING_FOR_SESSION, new Vector2(
 				40, 620), Constants.MENU_FONT_COLOR);
 	}
 
@@ -71,7 +72,7 @@ public class LobbyScreen implements Screen {
 		playersConnected = getModel().getLobbyMembers().entrySet().size();
 
 		if (!Player.getInstance().isHost() && playersConnected > 0) {
-			statusText.setText("Connected to game session");
+			statusText.setText(TextLabels.CONNECTED_TO_SESSION);
 		} else if (Player.getInstance().isHost() && playersConnected == maximumPlayers) {
 			statusText.setText("Maximum players connected");
 		}
@@ -101,8 +102,8 @@ public class LobbyScreen implements Screen {
 
 		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {
-			playerText.setText("Player: " + p.getValue());
-			playerText.addToY(-50);
+			playerText.setText(TextLabels.PLAYER + ": " + p.getValue());
+			playerText.addToY(-65);
 			playerText.draw(tendu.spriteBatch, font);
 		}
 		
