@@ -134,7 +134,6 @@ public abstract class MiniGame {
 	public abstract GameResult getGameResult();
 
 
-	//Override this method
 	public abstract GameState checkGameState(); 
 //		if(timer.isDone()) {
 //			return GameState.LOST;

@@ -54,6 +54,9 @@ public class SimpleTimer {
 	 * Pause the timer
 	 */
 	public void pause() {
+		if(state == STATE.DONE) { //can't pause if done
+			return;
+		}
 		getRemainingTime();
 		state = STATE.PAUSED;
 	}
