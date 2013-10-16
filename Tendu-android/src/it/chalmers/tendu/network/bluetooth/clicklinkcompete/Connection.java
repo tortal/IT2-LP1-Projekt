@@ -146,4 +146,9 @@ public class Connection {
 			e.printStackTrace();
 		}
 	}
+
+	public void stopAcceptingConnections() {
+		connectionService.stopAcceptingConnections();
+		
+	}
 }

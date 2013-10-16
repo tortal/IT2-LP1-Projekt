@@ -52,6 +52,10 @@ import com.esotericsoftware.kryo.io.Output;
 public class ConnectionService {
 	public static final String TAG = "ConnectionService";
 
+	private ConnectionWaiter connectionWaiter;
+	
+	private boolean acceptConnections = true;
+	
 	// private ArrayList<UUID> mUuid;
 
 	private ArrayList<BluetoothDevice> mBtDevices;
@@ -168,11 +172,22 @@ public class ConnectionService {
 			maxConnections = connections;
 		}
 
+		private BluetoothServerSocket myServerSocket;
+		public void stopAcceptingConnections() {
+			if (myServerSocket != null) {
+				try {
+					myServerSocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		public void run() {
 			try {
 				for (int i = 0; i < Connection.MAX_SUPPORTED
 						&& maxConnections > 0; i++) {
-					BluetoothServerSocket myServerSocket = mBtAdapter
+					myServerSocket = mBtAdapter
 							.listenUsingRfcommWithServiceRecord(srcApp,
 									APP_UUID);
 					BluetoothSocket myBSock = myServerSocket.accept();
@@ -230,8 +245,10 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		(new Thread(new ConnectionWaiter(maxConnections))).start();
-
+		
+		connectionWaiter = (new ConnectionWaiter(maxConnections));
+		(new Thread(connectionWaiter)).start();
+		
 		// Be discoverable
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -349,6 +366,7 @@ public class ConnectionService {
 		if (mKryo != null) {
 			mKryo.reset();
 		}
+		acceptConnections = true;
 	}
 
 	public String getAddress() throws RemoteException {
@@ -357,5 +375,10 @@ public class ConnectionService {
 
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
+	}
+
+	public void stopAcceptingConnections() {
+		connectionWaiter.stopAcceptingConnections();
+		
 	}
 }

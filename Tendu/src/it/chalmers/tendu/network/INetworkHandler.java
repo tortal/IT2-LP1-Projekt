@@ -34,6 +34,9 @@ public interface INetworkHandler {
 	/** Returns network to virgin state */
 	public void resetNetwork();
 	
+	/** Stops the network from accepting any 
+	 * more incoming connections. No more matchmaking */
+	public void stopAcceptingConnections();
 	// /**
 	// * Search for active teams.
 	// */
