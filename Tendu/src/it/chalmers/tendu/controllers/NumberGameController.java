@@ -15,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 public class NumberGameController implements MiniGameController {
 
 	private static final String TAG = "NumberGameController";
+	private static final int PENALTY_TIME = -3000;
 	private NumberGame numberGame;
 
 	public NumberGameController(NumberGame model) {
@@ -57,6 +58,7 @@ public class NumberGameController implements MiniGameController {
 						message = new EventMessage(Tag.COMMAND_AS_HOST,
 								Msg.REMOVE_TIME, GameId.NUMBER_GAME);
 						EventBus.INSTANCE.broadcast(message);
+						numberGame.changeTime(PENALTY_TIME);
 					}
 				}
 			}
@@ -87,7 +89,7 @@ public class NumberGameController implements MiniGameController {
 					// Gdx.app.log(TAG, " Time left = " +
 					// gameSession.currentMiniGame.getTimeLeft());
 				} else if (message.msg == Msg.REMOVE_TIME) {
-					numberGame.changeTime(-3000);
+					numberGame.changeTime(PENALTY_TIME);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
 					if(numberGame.checkNbr((Integer) message.content)){
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
