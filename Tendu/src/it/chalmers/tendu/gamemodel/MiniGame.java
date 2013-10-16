@@ -123,11 +123,16 @@ public abstract class MiniGame {
 	public int getNumberOfPlayers() {
 		return players.size();
 	}
+	public boolean timerIsDone() {
+		
+		return timer.isDone();
+	}
 
 	/**
 	 * Returns the results of the game
 	 */
 	public abstract GameResult getGameResult();
+
 
 	//Override this method
 	public abstract GameState checkGameState(); 
