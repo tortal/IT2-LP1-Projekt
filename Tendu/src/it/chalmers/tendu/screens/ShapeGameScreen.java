@@ -19,13 +19,14 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	
+
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -47,22 +48,23 @@ public class ShapeGameScreen extends GameScreen {
 		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
-		int x = 150;
+		int x = Constants.SCREEN_WIDTH / 5 - 100;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 150);
+			sgs.moveShape(x, 250);
 			shapes.add(sgs);
-			x = x + 151;
+			x = x + Constants.SCREEN_WIDTH / 5;
 		}
 
 		locks = new ArrayList<GraphicalShape>();
-		x = 150;
+		x = Constants.SCREEN_WIDTH / 5 - 100;
 		for (Shape s : controller.getModel().getLock(player_num)
 				.getLockSequence()) {
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 300);
+			sgs.moveShape(x, 500);
+			sgs.setRenderAsLock(true);
 			locks.add(sgs);
-			x = x + 151;
+			x = x + Constants.SCREEN_WIDTH / 5;
 		}
 
 	}
@@ -75,11 +77,11 @@ public class ShapeGameScreen extends GameScreen {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
-				sgs.renderShape(shapeRenderer);
+				sgs.render(shapeRenderer);
 			}
 			// Renders shapes
 			for (GraphicalShape sgs : shapes) {
-				sgs.renderShape(shapeRenderer);
+				sgs.render(shapeRenderer);
 			}
 
 		} else {
@@ -91,27 +93,26 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10 &&
-				getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 10 && getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1)-1,
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(1) - 1, s.getShape())));
 		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
-				getOtherPlayers().size() >= 3) {
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60
+				&& getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2)-1,
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(2) - 1, s.getShape())));
 
 		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60 &&
-				getOtherPlayers().size() >= 1) {
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60
+				&& getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0)-1,
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(0) - 1, s.getShape())));
 		}
 	}
 
@@ -143,7 +144,8 @@ public class ShapeGameScreen extends GameScreen {
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(input.x, input.y) && !s.getShape().isLocked()) {
+				if (s.getBounds().contains(input.x, input.y)
+						&& !s.getShape().isLocked()) {
 					movingShape = s;
 				}
 			}
@@ -209,7 +211,7 @@ public class ShapeGameScreen extends GameScreen {
 			if (controller.getModel().shapeFitIntoLock(player_num,
 					shape.getShape(), lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				//shape.getShape().setLocked(true);
+				// shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());

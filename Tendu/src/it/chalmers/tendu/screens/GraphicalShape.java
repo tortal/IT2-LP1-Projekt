@@ -18,68 +18,175 @@ import com.badlogic.gdx.math.Rectangle;
 public class GraphicalShape {
 
 	public final String TAG = this.getClass().getName();
+
+	public final int HEIGHT = 150;
+	public final int WIDTH = 150;
+
 	private Rectangle bounds;
-	private ShapeType shapeType;
 	private Color color;
 	private Shape shape;
+
+	private boolean renderAsLock;
 
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
 		bounds = new Rectangle();
 		bounds.x = Constants.SCREEN_WIDTH / 2;
 		bounds.y = Constants.SCREEN_HEIGHT / 2;
-		bounds.height = 100;
-		bounds.width = 100;
-		this.shapeType = determineGeometricShape(shape);
-		//Gdx.app.log(TAG, "Shape created");
-		this.color = determineColor(shape);
+		bounds.height = HEIGHT;
+		bounds.width = WIDTH;
+		this.color = determineColor();
 
 	}
-	
-	public GraphicalShape(Shape shape, int x, int y){
+
+	public GraphicalShape(Shape shape, int x, int y) {
 		this(shape);
 		moveShape(x, y);
-		
+
 	}
 
-	public void renderShape(ShapeRenderer sr) {
-		switch (shapeType) {
-		case FilledCircle:
+	public void render(ShapeRenderer sr) {
+		if (renderAsLock)
+			renderAsLock(sr);
+		else
+			renderAsShape(sr);
+	}
+
+	/**
+	 * @param sr
+	 */
+	private void renderAsShape(ShapeRenderer sr) {
+		GeometricShape gs = shape.geometricShape;
+		switch (gs) {
+		case CIRCLE:
 			sr.begin(ShapeType.FilledCircle);
 			sr.setColor(color);
 			sr.filledCircle(bounds.x + bounds.width / 2, bounds.y
 					+ bounds.height / 2, bounds.height / 2);
 			sr.end();
 			break;
-		case FilledRectangle:
+		case SQUARE:
 			sr.begin(ShapeType.FilledRectangle);
 			sr.setColor(color);
 			sr.filledRect(bounds.x, bounds.y, bounds.height, bounds.width);
 			sr.end();
 			break;
-		case FilledTriangle:
+		case TRIANGLE:
 			sr.begin(ShapeType.FilledTriangle);
 			sr.setColor(color);
 			sr.filledTriangle(bounds.x, bounds.y, bounds.width / 2 + bounds.x,
 					bounds.height + bounds.y, bounds.x + bounds.width, bounds.y);
 			sr.end();
 			break;
-		case Rectangle:
-			sr.begin(ShapeType.Rectangle);
+		case DIAMOND:
+			sr.begin(ShapeType.FilledTriangle);
 			sr.setColor(color);
-			sr.rect(bounds.x, bounds.y, bounds.height, bounds.width);
+			sr.filledTriangle(bounds.x + WIDTH / 2, bounds.y, bounds.x,
+					bounds.y + HEIGHT / 2, bounds.x + WIDTH / 2, bounds.y
+							+ HEIGHT);
+			sr.end();
+			sr.begin(ShapeType.FilledTriangle);
+			sr.setColor(color);
+			sr.filledTriangle(bounds.x + bounds.width / 2, bounds.y, bounds.x
+					+ WIDTH, bounds.y + bounds.height / 2, bounds.x
+					+ bounds.width / 2, bounds.y + bounds.height);
 			sr.end();
 			break;
-		case Circle:
+		case RHOMBOID:
+			int angle = 60;
+			sr.begin(ShapeType.FilledTriangle);
+			sr.setColor(color);
+			sr.filledTriangle(bounds.x, bounds.y, bounds.x + angle, bounds.y,
+					bounds.x + angle, bounds.y + bounds.height);
+			sr.end();
+			sr.begin(ShapeType.FilledRectangle);
+			sr.setColor(color);
+			sr.filledRect(bounds.x + angle, bounds.y, bounds.width - angle,
+					bounds.height);
+			sr.end();
+			sr.begin(ShapeType.FilledTriangle);
+			sr.setColor(color);
+			sr.filledTriangle(bounds.x + bounds.width, bounds.y, bounds.x
+					+ bounds.width, bounds.y + bounds.height, bounds.x
+					+ bounds.width + angle, bounds.y + bounds.height);
+			sr.end();
+			break;
+		default:
+		}
+	}
+
+	/**
+	 * @param sr
+	 */
+	private void renderAsLock(ShapeRenderer sr) {
+		GeometricShape gs = shape.geometricShape;
+		switch (gs) {
+		case CIRCLE:
 			sr.begin(ShapeType.Circle);
 			sr.setColor(color);
 			sr.circle(bounds.x + bounds.width / 2,
 					bounds.y + bounds.height / 2, bounds.height / 2);
 			sr.end();
 			break;
+		case SQUARE:
+			sr.begin(ShapeType.Rectangle);
+			sr.setColor(color);
+			sr.rect(bounds.x, bounds.y, bounds.height, bounds.width);
+			sr.end();
+			break;
+		case TRIANGLE:
+			sr.begin(ShapeType.Triangle);
+			sr.setColor(color);
+			sr.triangle(bounds.x, bounds.y, bounds.width / 2 + bounds.x,
+					bounds.height + bounds.y, bounds.x + bounds.width, bounds.y);
+			sr.end();
+			break;
+		case DIAMOND:
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + bounds.width / 2, bounds.y, bounds.x, bounds.y
+					+ bounds.height / 2);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x, bounds.y + bounds.height / 2, bounds.x
+					+ bounds.width / 2, bounds.y + bounds.height);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + bounds.width / 2, bounds.y + bounds.height,
+					bounds.x + bounds.width, bounds.y + bounds.height / 2);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + bounds.width, bounds.y + bounds.height / 2,
+					bounds.x + bounds.width / 2, bounds.y);
+			sr.end();
+			break;
+		case RHOMBOID:
+			int angle = 60;
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x, bounds.y, bounds.x + angle, bounds.y
+					+ bounds.height);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + angle, bounds.y + bounds.height, bounds.x
+					+ bounds.width + angle, bounds.y + bounds.height);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + bounds.width + angle, bounds.y + bounds.height,
+					bounds.x + bounds.width, bounds.y);
+			sr.end();
+			sr.begin(ShapeType.Line);
+			sr.setColor(color);
+			sr.line(bounds.x + bounds.width, bounds.y, bounds.x, bounds.y);
+			sr.end();
+			break;
 		default:
 		}
-
 	}
 
 	public void moveShape(float f, float g) {
@@ -87,27 +194,42 @@ public class GraphicalShape {
 		bounds.y = g;
 	}
 
-	public static ShapeType determineGeometricShape(Shape s) {
-		GeometricShape gs = s.geometricShape;
-		switch (gs) {
-		case CIRCLE:
-			return ShapeType.FilledCircle;
-		case OCTAGON:
-			return ShapeType.Circle;
-		case RHOMBOID:
-			return ShapeType.Rectangle;
-		case SQUARE:
-			return ShapeType.FilledRectangle;
-		case TRIANGLE:
-			return ShapeType.FilledTriangle;
-		}
-		return ShapeType.FilledCircle;
+	// public static ShapeType determineGeometricShape(Shape s) {
+	// GeometricShape gs = s.geometricShape;
+	// switch (gs) {
+	// case CIRCLE:
+	// return ShapeType.FilledCircle;
+	// case OCTAGON:
+	// return ShapeType.Circle;
+	// case RHOMBOID:
+	// return ShapeType.Rectangle;
+	// case SQUARE:
+	// return ShapeType.FilledRectangle;
+	// case TRIANGLE:
+	// return ShapeType.FilledTriangle;
+	// }
+	// return ShapeType.FilledCircle;
+	// }
+
+	/**
+	 * @return the renderAsLock
+	 */
+	public boolean isRenderAsLock() {
+		return renderAsLock;
 	}
 
-	public static Color determineColor(Shape s) {
-//		if(s.isLocked())
-//			return com.badlogic.gdx.graphics.Color.GRAY;
-		switch (s.color) {
+	/**
+	 * @param renderAsLock
+	 *            the renderAsLock to set
+	 */
+	public void setRenderAsLock(boolean renderAsLock) {
+		this.renderAsLock = renderAsLock;
+	}
+
+	private Color determineColor() {
+		// if(s.isLocked())
+		// return com.badlogic.gdx.graphics.Color.GRAY;
+		switch (shape.color) {
 		case BLUE:
 			return com.badlogic.gdx.graphics.Color.BLUE;
 		case GREEN:
@@ -148,8 +270,7 @@ public class GraphicalShape {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result
-				+ ((shapeType == null) ? 0 : shapeType.hashCode());
+		result = prime * result;
 		return result;
 	}
 
@@ -166,8 +287,6 @@ public class GraphicalShape {
 			if (other.color != null)
 				return false;
 		} else if (!color.equals(other.color))
-			return false;
-		if (shapeType != other.shapeType)
 			return false;
 		return true;
 	}
