@@ -89,11 +89,11 @@ public class NumberGameController implements MiniGameController {
 					if(numberGame.checkNbr((Integer) message.content)){
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
+						numberGame.guessedCorrectly();
 					}else{
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
 					}
-					
 				}
 			}
 		}
