@@ -19,13 +19,10 @@ public class ShapeGameModelController implements MiniGameController {
 
 	private final String TAG = "ShapeGameModelController";
 	private ShapeGame shapeGame;
-	private ShapeGameSound shapeGameSound;
 
 	public ShapeGameModelController(ShapeGame model) {
 		this.shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
-		
-		shapeGameSound = new ShapeGameSound(shapeGame);
 	}
 
 	public ShapeGame getModel() {
@@ -58,6 +55,13 @@ public class ShapeGameModelController implements MiniGameController {
 					EventMessage newMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, message.content);
 					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(newMessage);
+					if(fitsIntoSlot(message.content)){
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);	
+					}else{
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {

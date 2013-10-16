@@ -28,13 +28,11 @@ public class ShapeGameSound implements Listener {
 	private Sound lostGameSound;
 	private Sound succeededSound;
 	private Sound failSound;
-	private ShapeGame shapeGame;
 	
 	private final String TAG = "ShapeGameSound";
 
 	public ShapeGameSound(ShapeGame shapeGame) {
 
-		this.shapeGame = shapeGame;
 		EventBus.INSTANCE.addListener(this);
 
 		completedGameSound = Gdx.audio.newSound(Gdx.files
@@ -49,22 +47,15 @@ public class ShapeGameSound implements Listener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		
-		Gdx.app.log(TAG, "broadcasting to sound");
 		if (message.tag == C.Tag.TO_SELF) {
-			if(message.msg == C.Msg.LOCK_ATTEMPT){
-				if(shapeFitIntoLock(message.content)){
-					playSoundSuccess();
-				}else{
-					playSoundFail();
-				}
-			}else if (message.msg == C.Msg.GAME_RESULT) {
-				GameResult result = (GameResult) message.content;
-				GameState state = result.getGameState();
-				if (state == GameState.WON) {
-					playSoundGameWon();
-				} else if (state == GameState.LOST) {
-					playSoundGameLost();
-				}	
+			if (message.msg == C.Msg.SOUND_WON) {
+				playSoundGameWon();
+			}else if(message.msg == C.Msg.SOUND_LOST){
+			    playSoundGameLost();
+			}else if(message.msg == C.Msg.SOUND_SUCCEED){
+			    playSoundSuccess();
+			}else if(message.msg == C.Msg.SOUND_FAIL){
+				 playSoundFail();
 			}
 		}
 	}
@@ -87,15 +78,29 @@ public class ShapeGameSound implements Listener {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
+		completedGameSound.dispose();
+		lostGameSound.dispose();
+		succeededSound.dispose();
+		failSound.dispose();
 		
 	}
-
-	private boolean shapeFitIntoLock(Object content) {
-		List<Object> messageContent = (List) content;
-		int player = (Integer) messageContent.get(0);
-		Shape lockShape = (Shape) messageContent.get(1);
-		Shape shape = (Shape) messageContent.get(2);
-
-		return shapeGame.shapeFitIntoLock(player, shape, lockShape);
-	}	
+	
+	/*Gdx.app.log(TAG, "broadcasting to sound");
+	if (message.tag == C.Tag.TO_SELF) {
+		if(message.msg == C.Msg.LOCK_ATTEMPT){
+			if(shapeFitIntoLock(message.content)){
+				playSoundSuccess();
+			}else{
+				playSoundFail();
+			}
+		}else if (message.msg == C.Msg.GAME_RESULT) {
+			GameResult result = (GameResult) message.content;
+			GameState state = result.getGameState();
+			if (state == GameState.WON) {
+				playSoundGameWon();
+			} else if (state == GameState.LOST) {
+				playSoundGameLost();
+			}	
+		}
+	}*/
 }
