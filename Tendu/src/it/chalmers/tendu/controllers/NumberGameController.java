@@ -46,10 +46,14 @@ public class NumberGameController implements MiniGameController {
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
 				if (message.msg == C.Msg.NUMBER_GUESS) {
-					if (numberGame.checkNbr((Integer) message.content)) {
+					if (numberGame.checkNbr((Integer) message.content)){
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
 						message.tag = Tag.COMMAND_AS_HOST;
 						EventBus.INSTANCE.broadcast(message);
 					} else {
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
+						EventBus.INSTANCE.broadcast(soundMsg);
 						message = new EventMessage(Tag.COMMAND_AS_HOST,
 								Msg.REMOVE_TIME, GameId.NUMBER_GAME);
 						EventBus.INSTANCE.broadcast(message);
@@ -83,6 +87,13 @@ public class NumberGameController implements MiniGameController {
 				} else if (message.msg == Msg.REMOVE_TIME) {
 					numberGame.changeTime(-3000);
 				} else if (message.msg == Msg.NUMBER_GUESS) {
+					if (numberGame.checkNbr((Integer) message.content)){
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}else{
+						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
+						EventBus.INSTANCE.broadcast(soundMsg);
+					}
 				}
 			}
 		}

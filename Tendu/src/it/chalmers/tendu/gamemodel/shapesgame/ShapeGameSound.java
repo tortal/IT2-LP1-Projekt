@@ -41,13 +41,14 @@ public class ShapeGameSound implements Listener {
 				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-		//failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
+		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.wav"));
 		
 		
 	}
 
 	@Override
 	public void onBroadcast(EventMessage message) {
+		
 		Gdx.app.log(TAG, "broadcasting to sound");
 		if (message.tag == C.Tag.TO_SELF) {
 			if(message.msg == C.Msg.LOCK_ATTEMPT){
@@ -86,6 +87,7 @@ public class ShapeGameSound implements Listener {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
+		
 	}
 
 	private boolean shapeFitIntoLock(Object content) {

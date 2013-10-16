@@ -12,74 +12,85 @@ import it.chalmers.tendu.tbd.Listener;
 
 /**
  * Class for sounds in NumberGame
+ * 
  * @author johannahartman
- *
+ * 
  */
 
 public class NumberGameSound implements Listener {
-	
+
 	private Sound completedGameSound;
 	private Sound lostGameSound;
 	private Sound succeededSound;
 	private Sound failSound;
-	
-	NumberGame numberGame;
-	
-	public NumberGameSound(NumberGame numberGame){
-		
-		this.numberGame = numberGame;
-		
+
+	public NumberGameSound(NumberGame numberGame) {
+
 		EventBus.INSTANCE.addListener(this);
-		
-		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
+
+		completedGameSound = Gdx.audio.newSound(Gdx.files
+				.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
+		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.wav"));
 	}
 
 	@Override
 	public void onBroadcast(EventMessage message) {
 		
 		if (message.tag == C.Tag.TO_SELF) {
-			if (message.msg == C.Msg.GAME_RESULT) {
-				GameResult result = (GameResult) message.content;
-				GameState state = result.getGameState();
-				if (state == GameState.WON) {
-					playSoundGameWon();
-				} else if (state == GameState.LOST) {
-					playSoundGameLost();
-				}
-			}else if(message.msg == C.Msg.NUMBER_GUESS){
-				this.numberGame = (NumberGame) message.content;
-				if(numberGame.tempCheckNumber((Integer) message.content)){
-					playSoundSuccess();
-				}else{
-					playSoundFail();
-				}
+			if (message.msg == C.Msg.SOUND_WON) {
+				playSoundGameWon();
+			}else if(message.msg == C.Msg.SOUND_LOST){
+			    playSoundGameLost();
+			}else if(message.msg == C.Msg.SOUND_SUCCEED){
+			    playSoundSuccess();
+			}else if(message.msg == C.Msg.SOUND_FAIL){
+				 playSoundFail();
 			}
 		}
-		
+
 	}
-	
-	public void playSoundSuccess(){
+
+	public void playSoundSuccess() {
 		succeededSound.play();
 	}
-	
-	public void playSoundFail(){
+
+	public void playSoundFail() {
 		failSound.play();
 	}
-	
-	public void playSoundGameWon(){
+
+	public void playSoundGameWon() {
 		completedGameSound.play();
 	}
-	
-	public void playSoundGameLost(){
+
+	public void playSoundGameLost() {
 		lostGameSound.play();
 	}
-	
+
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
+		completedGameSound.dispose();
+		lostGameSound.dispose();
+		succeededSound.dispose();
+		failSound.dispose();
 	}
+	
+	/*if (message.tag == C.Tag.TO_SELF) {
+	if (message.msg == C.Msg.NUMBER_GUESS){
+		playSoundSuccess();
+	} else {
+		playSoundFail();
+	}
+} else if (message.msg == C.Msg.GAME_RESULT) {
+	GameResult result = (GameResult) message.content;
+	GameState state = result.getGameState();
+	if (state == GameState.WON) {
+		playSoundGameWon();
+	} else if (state == GameState.LOST) {
+		playSoundGameLost();
+	}
+}*/
 
 }
