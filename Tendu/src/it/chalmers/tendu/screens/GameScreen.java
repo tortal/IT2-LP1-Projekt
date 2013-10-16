@@ -36,9 +36,6 @@ public abstract class GameScreen implements Screen {
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
 		this.model = model;
-		if (model != null) {
-			model.startGame();
-		}
 		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
 	}

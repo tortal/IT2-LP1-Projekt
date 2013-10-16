@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -134,14 +135,6 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-	 *            <<<<<<< HEAD to be inserted into the players ���.
-	 *            ======= to be inserted into the players slot. >>>>>>>
-=======
-	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
-	 *            be inserted into the players slot. >>>>>>>
->>>>>>> refs/heads/FontsAndGraphics
-	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -252,6 +245,12 @@ public class ShapeGame extends MiniGame {
 
 	@Override
 	public GameResult getGameResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GameState checkGameState() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -153,22 +153,19 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		if (model.checkGameState() != GameState.WAITING) {
-			super.render(); // draws common ui-stuff
+		super.render(); // draws common ui-stuff
+		
+		if (!instructionsTimer.isDone()) {
+			memorizeText.draw(tendu.spriteBatch, font);
+			drawNumbers(true);
 
-			if (!instructionsTimer.isDone()) {
-				memorizeText.draw(tendu.spriteBatch, font);
-				drawNumbers(true);
+		} else {
+			font.setColor(Color.BLUE);
+			instructionText.draw(tendu.spriteBatch, font);
 
-			} else {
-				font.setColor(Color.BLUE);
-				instructionText.draw(tendu.spriteBatch, font);
-
-				drawNumbers(false);
-				drawGuessNumbers();
-			}
+			drawNumbers(false);
+			drawGuessNumbers();
 		}
-
 	}
 
 	/** All game logic goes here */
