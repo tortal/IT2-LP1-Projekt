@@ -49,6 +49,7 @@ public class NumberGameController implements MiniGameController {
 						EventBus.INSTANCE.broadcast(soundMsg);
 						EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
 						EventBus.INSTANCE.broadcast(changedMessage);
+						numberGame.guessedCorrectly();
 					} else {
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
