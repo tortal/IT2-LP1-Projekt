@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameResult;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.ArrayList;
@@ -27,11 +28,11 @@ import com.badlogic.gdx.Gdx;
  * 
  */
 public class ShapeGame extends MiniGame {
-	
+
 	public final String TAG = this.getClass().getName();
 
 	private int playerCount;
-	private final static int LOCK_SIZE = 4;
+	private int lockSize;
 
 	/**
 	 * All shapes for all players mapped by player number (Integer).
@@ -54,10 +55,34 @@ public class ShapeGame extends MiniGame {
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
-	public ShapeGame(long extraTime, Difficulty difficulty, Map<String, Integer> players) {
+	public ShapeGame(long extraTime, Difficulty difficulty,
+			Map<String, Integer> players) {
 		super(difficulty, GameId.SHAPE_GAME, players);
 
-
+		switch (difficulty) {
+		case ONE:
+			this.setGameTime(20000, extraTime);
+			lockSize = 2;
+			break;
+		case TWO:
+			this.setGameTime(15000, extraTime);
+			lockSize = 3;
+			break;
+		case THREE:
+			this.setGameTime(10000, extraTime);
+			lockSize = 4;
+			break;
+		case FOUR:
+			this.setGameTime(7000, extraTime);
+			lockSize = 5;
+			break;
+		case FIVE:
+			this.setGameTime(7000, extraTime);
+			lockSize = 5;
+			break;
+		default:
+			break;
+		}
 		// Get list of all combinations of shapes and colors then shuffle
 		List<Shape> allShapes = Shape.getAllShapes();
 		Collections.shuffle(allShapes);
@@ -69,9 +94,9 @@ public class ShapeGame extends MiniGame {
 
 		// Every player only has an explicit number of slots to fill, so let's
 		// grab the need amount of shapes from our allShapes list
-		List<Shape> gameShapes = new ArrayList<Shape>(LOCK_SIZE * playerCount);
+		List<Shape> gameShapes = new ArrayList<Shape>(lockSize * playerCount);
 
-		for (int i = 0; i < LOCK_SIZE * playerCount; i++) {
+		for (int i = 0; i < lockSize * playerCount; i++) {
 			Shape randomShape = allShapes.remove(0);
 			gameShapes.add(randomShape);
 		}
@@ -90,14 +115,15 @@ public class ShapeGame extends MiniGame {
 			allInventory.put(p, playerInventory);
 			allLocks.put(p, playerLock);
 
-			for (int i = 0; i < LOCK_SIZE; i++) {
+			for (int i = 0; i < lockSize; i++) {
 				playerInventory.add(gameShapes.remove(0));
 				playerLock.addSlot(copyOfShapes.remove(0));
 			}
 
 		}
-		this.setGameTime(30000, extraTime);
 		Gdx.app.log("This is", "Shapes Game!");
+
+		
 
 	}
 
@@ -134,21 +160,15 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-	 *            <<<<<<< HEAD to be inserted into the players ���.
-	 *            ======= to be inserted into the players slot. >>>>>>>
-=======
-	 *            <<<<<<< HEAD to be inserted into the players ���. ======= to
-	 *            be inserted into the players slot. >>>>>>>
->>>>>>> refs/heads/FontsAndGraphics
-	 *            refs/heads/ShapesGameGraphics
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
 		Lock lock = this.allLocks.get(player);
-		if (lock.fillSlot(shape, lockShape))
+		if (lock.fillSlot(shape, lockShape)) {
+			checkIfGameWon();
+			Gdx.app.log(TAG, "" + this.getGameState());
 			return true;
-
+		}
 		super.changeTime(-3000);
 		return false;
 	}
@@ -252,8 +272,27 @@ public class ShapeGame extends MiniGame {
 
 	@Override
 	public GameResult getGameResult() {
-		// TODO Auto-generated method stub
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), getGameState());
+			return result;
+		}
+
 		return null;
+
 	}
 
+	/**
+	 * Checks all the players locks and returns true if all locks are filled and
+	 * the game is won.
+	 */
+	private void checkIfGameWon() {
+		for (int i = 0; i < allLocks.size(); i++) {
+			if (!(getLock(i).isAllSlotsFilled()))
+				return;
+		}
+		this.setGameState(GameState.WON);
+	}
 }

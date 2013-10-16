@@ -20,7 +20,7 @@ public class ShapeGameModelController implements MiniGameController {
 	private ShapeGame shapeGame;
 
 	public ShapeGameModelController(ShapeGame model) {
-		this.shapeGame = model;
+		shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 

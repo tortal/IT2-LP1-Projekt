@@ -35,6 +35,7 @@ public class ShapeGameScreen extends GameScreen {
 	private ShapeGameModelController controller;
 
 	private ShapeGameSound sound;
+	
 
 	// For debug
 	int count = 0;
@@ -48,23 +49,33 @@ public class ShapeGameScreen extends GameScreen {
 		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
-		int x = Constants.SCREEN_WIDTH / 5 - 100;
+		int x = Constants.SCREEN_WIDTH
+				/ (controller.getModel().getLock(player_num).getLockSequence()
+						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
 			sgs.moveShape(x, 250);
 			shapes.add(sgs);
-			x = x + Constants.SCREEN_WIDTH / 5;
+			x = x
+					+ Constants.SCREEN_WIDTH
+					/ (controller.getModel().getLock(player_num)
+							.getLockSequence().size() + 1);
 		}
 
 		locks = new ArrayList<GraphicalShape>();
-		x = Constants.SCREEN_WIDTH / 5 - 100;
+		x = Constants.SCREEN_WIDTH
+				/ (controller.getModel().getLock(player_num).getLockSequence()
+						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getLock(player_num)
 				.getLockSequence()) {
 			GraphicalShape sgs = new GraphicalShape(s);
 			sgs.moveShape(x, 500);
 			sgs.setRenderAsLock(true);
 			locks.add(sgs);
-			x = x + Constants.SCREEN_WIDTH / 5;
+			x = x
+					+ Constants.SCREEN_WIDTH
+					/ (controller.getModel().getLock(player_num)
+							.getLockSequence().size() + 1);
 		}
 
 	}
@@ -93,13 +104,13 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10 && getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 100 && getOtherPlayers().size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
 					getOtherPlayers().get(1) - 1, s.getShape())));
 		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 100
 				&& getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
@@ -107,7 +118,7 @@ public class ShapeGameScreen extends GameScreen {
 					getOtherPlayers().get(2) - 1, s.getShape())));
 
 		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 100
 				&& getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
@@ -138,8 +149,12 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
-		// tendu.getCamera().unproject(touchPos);
+		if (controller.getModel().checkGameState() == GameState.WON
+				|| model.checkGameState() == GameState.LOST) {
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		}
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
@@ -170,12 +185,7 @@ public class ShapeGameScreen extends GameScreen {
 				}
 			}
 		}
-	}
 
-	@Override
-	public void removed() {
-		super.removed();
-		sound.unregister();
 	}
 
 	// TODO : Adds a new shape if any shape has changed color.
@@ -228,5 +238,13 @@ public class ShapeGameScreen extends GameScreen {
 
 		return result;
 
+	}
+
+	@Override
+	public void removed() {
+		super.removed();
+		font.dispose();
+		sound.unregister();
+		controller.unregister();
 	}
 }
