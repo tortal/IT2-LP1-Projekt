@@ -37,6 +37,7 @@ public class NumberGameController implements MiniGameController {
 	public void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
+
 //			if (message.msg == C.Msg.START_MINI_GAME) {
 //				numberGame.startGame();
 //			}
@@ -71,6 +72,7 @@ public class NumberGameController implements MiniGameController {
 					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
+
 			}
 //				else if (message.msg == C.Msg.START_MINI_GAME) {
 //				numberGame.startGame();
