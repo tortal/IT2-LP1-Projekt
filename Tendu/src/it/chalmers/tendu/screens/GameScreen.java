@@ -14,22 +14,24 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-/** Abstract screen class that can be extended by all minigame screens */
+/**
+ * GameScreen is the main rendering class of a {@link MiniGame}.
+ * 
+ */
 public abstract class GameScreen implements Screen {
-	protected Tendu tendu; // reference to the main Tendu object
-	protected MiniGame model; // model of current minigame
-	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private int count; // used to count renders for events that should be
 
-	protected BitmapFont font;
+	final Tendu tendu; // reference to the main Tendu object
+	MiniGame model; // model of current minigame
+	final private ShapeRenderer shapeRenderer; // used to render vector graphics
+	private BitmapFont font;
 	private List<Integer> otherPlayers;
 
 	/**
-	 * @param game
-	 *            Tendu object that creates the screen
+	 * Returns a {@link Screen} of the given {@link MiniGame}.
+	 * 
+	 * @param tendu
 	 * @param model
-	 *            MiniGame model
-	 * @return a new GameScreen
+	 *            The game to draw.
 	 */
 	public GameScreen(Tendu tendu, MiniGame model) {
 		this.tendu = tendu;
@@ -41,7 +43,7 @@ public abstract class GameScreen implements Screen {
 		font = new BitmapFont();
 	}
 
-	/** all rendering goes here **/
+	@Override
 	public void render() {
 		if (model.checkGameState() == GameState.WAITING) {
 			// TODO drawWaiting();
