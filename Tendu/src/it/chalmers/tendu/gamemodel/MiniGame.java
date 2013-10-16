@@ -135,7 +135,7 @@ public abstract class MiniGame {
 
 
 	//Override this method
-	protected abstract GameState checkGameState(); 
+	public abstract GameState checkGameState(); 
 //		if(timer.isDone()) {
 //			return GameState.LOST;
 //		} 
