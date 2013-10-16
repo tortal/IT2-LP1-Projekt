@@ -8,11 +8,9 @@ import java.util.Map;
 
 public abstract class MiniGame {
 	private Difficulty difficulty;
-	private GameState state;
-	private GameId gameId;
+	private final GameId gameId;
 	private long gameTime;
 	private SimpleTimer timer;
-	private GameState stateBeforePause;
 
 	/**
 	 * Creates a new minigame.
@@ -26,14 +24,14 @@ public abstract class MiniGame {
 	public MiniGame(Difficulty difficulty, GameId gameId,
 			Map<String, Integer> players) {
 		this.difficulty = difficulty;
-		this.setGameId(gameId);
-		this.setState(GameState.WAITING);
+		this.gameId = gameId;
 		this.players = players;
 		timer = new SimpleTimer();
 	}
 
 	/** No args constructor for reflection use */
 	protected MiniGame() {
+		gameId = null;
 	}
 
 	public void setGameTime(long gameTime, long extraTime) {
@@ -46,10 +44,6 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		if (timer.isDone()) {
-			gameLost();
-		}
-
 		return timer.getRemainingTime();
 	}
 
@@ -96,27 +90,6 @@ public abstract class MiniGame {
 		this.difficulty = difficulty;
 	}
 
-	/**
-	 * Checks and returns the state of the game.
-	 * 
-	 * @return the game's state
-	 */
-	public GameState checkGameState() {
-		return getGameState();
-	}
-
-	private void gameLost() {
-		setState(GameState.LOST);
-	}
-
-	protected void gameWon() {
-		timer.pause();
-		setState(GameState.WON);
-	}
-
-	public void setGameState(GameState g) {
-		setState(g);
-	}
 
 	/**
 	 * Gets the game id.
@@ -127,42 +100,8 @@ public abstract class MiniGame {
 		return gameId;
 	}
 
-	/**
-	 * Set the game id.
-	 * 
-	 * @param gameId
-	 *            requested game id.
-	 */
-	public void setGameId(GameId gameId) {
-		this.gameId = gameId;
-	}
-
-	/**
-	 * Starts the game
-	 */
-	public void startGame() {
-		setState(GameState.RUNNING);
-	}
-
 	public void startGameTimer() {
 		timer.start(gameTime);
-	}
-
-	/**
-	 * Pauses the game
-	 */
-	public void pauseGame() {
-		timer.pause();
-		stateBeforePause = getGameState();
-		setState(GameState.PAUSED);
-	}
-
-	/**
-	 * Resume the game
-	 */
-	public void resumeGame() {
-		timer.resume();
-		setState(stateBeforePause);
 	}
 
 	/**
@@ -184,21 +123,23 @@ public abstract class MiniGame {
 	public int getNumberOfPlayers() {
 		return players.size();
 	}
+	public boolean timerIsDone() {
+		
+		return timer.isDone();
+	}
 
 	/**
 	 * Returns the results of the game
 	 */
 	public abstract GameResult getGameResult();
 
-	protected GameState getGameState() {
-		return state;
-	}
 
-	public void setState(GameState state) {
-		this.state = state;
-	}
-	
-	public boolean timerIsDone(){
-		return timer.isDone();
-	}
+	//Override this method
+	protected abstract GameState checkGameState(); 
+//		if(timer.isDone()) {
+//			return GameState.LOST;
+//		} 
+//		
+//		return GameState.RUNNING;
+//	}
 }

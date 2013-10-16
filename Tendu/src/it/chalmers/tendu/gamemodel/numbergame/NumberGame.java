@@ -86,8 +86,8 @@ public class NumberGame extends MiniGame {
 	 * timer
 	 */
 	@Override
-	public void startGame() {
-		super.startGame();
+	public void startGameTimer() {
+		super.startGameTimer();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class NumberGame extends MiniGame {
 				|| checkGameState() == GameState.LOST) {
 			long spentTime = (getGameTime() - getRemainingTime());
 			GameResult result = new GameResult(getGameId(), spentTime,
-					getRemainingTime(), getGameState());
+					getRemainingTime(), checkGameState());
 			return result;
 		}
 		return null;
