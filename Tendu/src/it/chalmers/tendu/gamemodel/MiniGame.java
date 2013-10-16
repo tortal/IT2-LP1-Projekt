@@ -130,7 +130,7 @@ public abstract class MiniGame {
 	public abstract GameResult getGameResult();
 
 	//Override this method
-	protected abstract GameState checkGameState(); 
+	public abstract GameState checkGameState(); 
 //		if(timer.isDone()) {
 //			return GameState.LOST;
 //		} 
