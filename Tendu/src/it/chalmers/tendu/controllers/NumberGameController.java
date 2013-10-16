@@ -37,9 +37,10 @@ public class NumberGameController implements MiniGameController {
 	public void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
-			if (message.msg == C.Msg.START_MINI_GAME) {
-				//numberGame.startGame();
-			}
+
+//			if (message.msg == C.Msg.START_MINI_GAME) {
+//				numberGame.startGame();
+//			}
 			
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
@@ -70,9 +71,11 @@ public class NumberGameController implements MiniGameController {
 					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
-			}else if (message.msg == C.Msg.START_MINI_GAME) {
-				//numberGame.startGame();
+
 			}
+//				else if (message.msg == C.Msg.START_MINI_GAME) {
+//				numberGame.startGame();
+//			}
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
@@ -88,14 +91,15 @@ public class NumberGameController implements MiniGameController {
 					if(numberGame.checkNbr((Integer) message.content)){
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
+						numberGame.guessedCorrectly();
 					}else{
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
 					}
-					
 				}
 			}
 		}
+		
 	}
 
 	public NumberGame getModel() {

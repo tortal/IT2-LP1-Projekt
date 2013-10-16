@@ -43,8 +43,6 @@ public class ShapeGameModelController implements MiniGameController {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.START_MINI_GAME) {
-				//TODO do something else?
-				//shapeGame.startGame();
 				shapeGame.startGameTimer();
 			}
 
@@ -86,9 +84,9 @@ public class ShapeGameModelController implements MiniGameController {
 					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
+
 			} else if (message.msg == C.Msg.START_MINI_GAME) {
-				//TODO do something else?
-				//shapeGame.startGame();
+//				shapeGame.startGame();
 				shapeGame.startGameTimer();
 			}
 		}
