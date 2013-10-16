@@ -11,13 +11,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-
 public class NumberGame extends MiniGame {
 
 	private int playerCount;
 	private int playerListSize;
-	private final ArrayList<Integer> answerList;
+	private ArrayList<Integer> answerList;
 	private Map<Integer, ArrayList<Integer>> playerLists;
 	private int nbrCorrectAnswer;
 
@@ -26,7 +24,6 @@ public class NumberGame extends MiniGame {
 	/** No args constructor for reflection use */
 	protected NumberGame() {
 		super();
-		answerList = null;
 	};
 
 	public NumberGame(long extraTime, Difficulty difficulty,
@@ -46,39 +43,120 @@ public class NumberGame extends MiniGame {
 		Collections.shuffle(listOfNumbers);
 
 		// Create an answerList and set the game time according to difficulty.
-
-		switch (difficulty) {
-		case ONE:
-			this.setGameTime(30000, extraTime);
-			answerList = createAnswer(playerCount * 2);
-			break;
-		case TWO:
-			this.setGameTime(30000, extraTime);
-			answerList = createAnswer(playerCount * 4);
-			break;
-		case THREE:
-			this.setGameTime(15000, extraTime);
-			answerList = createAnswer(playerCount);
-			break;
-		case FOUR:
-			this.setGameTime(15000, extraTime);
-			answerList = createAnswer(playerCount * 2);
-			break;
-		case FIVE:
-			this.setGameTime(500, extraTime);
-			answerList = createAnswer(playerCount * 2);
-			break;
-		default:
-			answerList = null;
-			break;
-		}
-
+		
+		setUpGamePlay(difficulty, extraTime);
+		
 		// Populate the player lists with their own correct numbers and then
 		// fill it up with dummy numbers.
 		playerLists = divideAndConquer(answerList);
-
-		Gdx.app.log("NumberGame", "Starttid = " + getGameTime());
-
+	}
+	
+	public void setUpGamePlay(Difficulty difficulty, long extraTime) {
+		if(playerCount == 1) {
+			switch (difficulty) {
+			case ONE:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(2);
+				break;
+			case TWO:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(3);
+				break;
+			case THREE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(4);
+				break;
+			case FOUR:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(6);
+				break;
+			case FIVE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(8);
+				break;
+			default:
+				answerList = null;
+				break;
+			}
+		} else if(playerCount == 2) {
+			switch (difficulty) {
+			case ONE:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(2);
+				break;
+			case TWO:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(4);
+				break;
+			case THREE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(6);
+				break;
+			case FOUR:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(8);
+				break;
+			case FIVE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(12);
+				break;
+			default:
+				answerList = null;
+				break;
+			}
+		} else if(playerCount == 3) {
+			switch (difficulty) {
+			case ONE:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(3);
+				break;
+			case TWO:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(5);
+				break;
+			case THREE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(7);
+				break;
+			case FOUR:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(10);
+				break;
+			case FIVE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(14);
+				break;
+			default:
+				answerList = null;
+				break;
+			}
+		} else if(playerCount == 4) {
+			switch (difficulty) {
+			case ONE:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(4);
+				break;
+			case TWO:
+				this.setGameTime(30000, extraTime);
+				answerList = createAnswer(6);
+				break;
+			case THREE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(8);
+				break;
+			case FOUR:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(12);
+				break;
+			case FIVE:
+				this.setGameTime(25000, extraTime);
+				answerList = createAnswer(16);
+				break;
+			default:
+				answerList = null;
+				break;
+			}
+		}
 	}
 
 	/**

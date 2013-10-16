@@ -30,6 +30,7 @@ public class NumberGameScreen extends GameScreen {
 	private ArrayList<Integer> numbers; // the correct numbers
 	private SimpleTimer instructionsTimer; // used to time how long the
 											// instructions should be displayed
+	private int time;
 	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
 											// the millisecond you've one or
 											// lost
@@ -60,7 +61,8 @@ public class NumberGameScreen extends GameScreen {
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		numberFont = new BitmapFont(Gdx.files.internal("fonts/digitalTendu.fnt"),
+		numberFont = new BitmapFont(
+				Gdx.files.internal("fonts/digitalTendu.fnt"),
 				Gdx.files.internal("fonts/digitalTendu.png"), false);
 		sound = new NumberGameSound();
 
@@ -74,10 +76,11 @@ public class NumberGameScreen extends GameScreen {
 		instructionsTimer = new SimpleTimer();
 		gameCompletedTimer = new SimpleTimer();
 
-		memorizeText = new TextWidget(TextLabels.MEMORIZE_NUMBERS, new Vector2(250,
-				595), Constants.MENU_FONT_COLOR);
-		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(150, 595), Constants.MENU_FONT_COLOR);
-
+		memorizeText = new TextWidget(TextLabels.MEMORIZE_NUMBERS, new Vector2(
+				250, 595), Constants.MENU_FONT_COLOR);
+		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(
+				150, 595), Constants.MENU_FONT_COLOR);
+		
 		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
 		guessNumbersWidgets = new ArrayList<TextWidget>();
@@ -95,14 +98,28 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
-		numberSpacing = 150; //pixels between the numbers on screen
-		//position of the first number to the left on the screen
-		numberAlignment = Constants.SCREEN_WIDTH/2 - (getModel().getAnswerList().size()-1)*numberSpacing/2;
-		
+		numberSpacing = 150; // pixels between the numbers on screen
+		// position of the first number to the left on the screen
+		if (getModel().getAnswerList().size() < 8) {
+			numberAlignment = Constants.SCREEN_WIDTH / 2
+					- (getModel().getAnswerList().size() - 1) * numberSpacing
+					/ 2;
+		} else {
+			numberAlignment = Constants.SCREEN_WIDTH / 2 - 7 * numberSpacing
+					/ 2;
+		}
 		// add the correct number from the answerlist
-		for (int i = 0; i <  getModel().getAnswerList().size(); i++) {
+		for (int i = 0; i < getModel().getAnswerList().size(); i++) {
 			numbers.add(getModel().getAnswerList().get(i));
-			numberWidgets.add(new TextWidget(getModel().getAnswerList().get(i).toString(), new Vector2(numberAlignment+i*numberSpacing, 470), colors.get(i)));
+			if (i < 8) {
+				numberWidgets.add(new TextWidget(getModel().getAnswerList()
+						.get(i).toString(), new Vector2(numberAlignment + i
+						* numberSpacing, 470), colors.get(i)));
+			} else {
+				numberWidgets.add(new TextWidget(getModel().getAnswerList()
+						.get(i).toString(), new Vector2(numberAlignment
+						+ (i - 8) * numberSpacing, 385), colors.get(-(8 - i))));
+			}
 		}
 
 		// setup the guess list
@@ -112,10 +129,20 @@ public class NumberGameScreen extends GameScreen {
 					.get(i).toString(), new Vector2(72 + 150 * i, 130), colors
 					.get(i), -0.15f));
 
-			guessNumbersWidgets.get(i).expandHeight(10);
-			guessNumbersWidgets.get(i).expandWidth(10);
+			guessNumbersWidgets.get(i).expandHeight(15);
+			guessNumbersWidgets.get(i).expandWidth(15);
 		}
 		
+		//TODO fewer players should have more time for better game balance
+		if(numbers.size() <= 2) {
+			time = 2000;
+		} else if(numbers.size() <= 4) {
+			time = 3500;
+		} else if(numbers.size() <= 8) {
+			time = 5000;
+		} else if(numbers.size() <= 16) {
+			time = 7500;
+		}
 
 	}
 
@@ -127,15 +154,17 @@ public class NumberGameScreen extends GameScreen {
 	 *            drawn
 	 */
 	private void drawNumbers(boolean showAll) {
-		
+
 		if (showAll) {
-			for (int i = 0; i < numbers.size() ; i++) {
-				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch, numberFont);
+			for (int i = 0; i < numbers.size(); i++) {
+				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
+						numberFont);
 			}
 		} else {
-			for (int i = 0; i < numbers.size() ; i++)  {
+			for (int i = 0; i < numbers.size(); i++) {
 				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch, numberFont);
+					numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
+							numberFont);
 				}
 			}
 		}
@@ -154,7 +183,7 @@ public class NumberGameScreen extends GameScreen {
 	@Override
 	public void render() {
 		super.render(); // draws common ui-stuff
-		
+
 		if (!instructionsTimer.isDone()) {
 			memorizeText.draw(tendu.spriteBatch, font);
 			drawNumbers(true);
@@ -177,6 +206,7 @@ public class NumberGameScreen extends GameScreen {
 		if (model.checkGameState() != GameState.RUNNING) {
 			if (model.checkGameState() == GameState.WON
 					|| model.checkGameState() == GameState.LOST) {
+				model.pauseTimer();
 				gameCompletedTimer.start(1500);
 
 				if (gameCompletedTimer.isDone()) {
@@ -189,7 +219,7 @@ public class NumberGameScreen extends GameScreen {
 			return;
 
 		} else if (model.checkGameState() == GameState.RUNNING) {
-			instructionsTimer.start(4000); // only starts once
+			instructionsTimer.start(time); // only starts once
 
 			if (instructionsTimer.isDone()) {
 				model.startGameTimer();
@@ -203,7 +233,7 @@ public class NumberGameScreen extends GameScreen {
 						}
 						guessNumbersWidgets.get(i).setScale(-0.15f);
 						guessNumbersWidgets.get(i).setY(130);
-						
+
 					}
 				}
 
@@ -214,7 +244,6 @@ public class NumberGameScreen extends GameScreen {
 							Gdx.input.vibrate(25);
 							guessNumbersWidgets.get(i).setScale(0.2f);
 							guessNumbersWidgets.get(i).setY(145);
-							;
 						}
 
 					}
