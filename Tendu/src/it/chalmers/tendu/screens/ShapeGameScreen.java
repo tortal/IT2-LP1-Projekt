@@ -43,8 +43,8 @@ public class ShapeGameScreen extends GameScreen {
 	private Shape latestRemovedShape;
 
 	ShapeGame shapeGameModel;
-	
-	private SimpleTimer gameCompletedTimer; 
+
+	private SimpleTimer gameCompletedTimer;
 
 	// For debug
 	int count = 0;
@@ -166,25 +166,26 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		/*if (controller.getModel().checkGameState() == GameState.WON
-				|| model.checkGameState() == GameState.LOST) {
-			EventMessage message = new EventMessage(C.Tag.TO_SELF,
-					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
-			EventBus.INSTANCE.broadcast(message);
-		}*/
-		
-		if (model.checkGameState() == GameState.WON){
-			EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WIN);
-			EventBus.INSTANCE.broadcast(soundMsg);
-			gameCompletedTimer.start(1500);
-		}else if(model.checkGameState() == GameState.LOST){
-			EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_LOST);
-			EventBus.INSTANCE.broadcast(soundMsg);
-			gameCompletedTimer.start(1500);
+		if (!gameCompletedTimer.isRunning()) {
+			if (controller.getModel().checkGameState() == GameState.WON) {
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.SOUND_WIN);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				gameCompletedTimer.start(1500);
+				Gdx.app.log(TAG, "Timer started! game won");
 
+
+			} else if (controller.getModel().checkGameState() == GameState.LOST) {
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.SOUND_LOST);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				gameCompletedTimer.start(1500);
+			}
 			if (gameCompletedTimer.isDone()) {
+				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.GAME_RESULT, model.getGameResult());
+						C.Msg.GAME_RESULT, controller.getModel()
+								.getGameResult());
 				EventBus.INSTANCE.broadcast(message);
 			}
 		}
