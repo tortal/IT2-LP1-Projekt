@@ -174,7 +174,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 					.runOnUiThread(new displayConnectionLostAlert());
 
 			// shutdown EVERYTHING!
-			destroy();
+			//destroy();
 		}
 	};
 
@@ -277,8 +277,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			Log.d(TAG, "Bluetooth name removal successfull? "
 					+ mBluetoothAdapter.setName(newName));
 		}
-		Log.v(TAG, "Remove: " + oldName + " -> " + newName
-				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
+		//Log.v(TAG, "Remove: " + oldName + " -> " + newName
+		//		+ ". Actual adapter name: " + mBluetoothAdapter.getName());
 	}
 
 	/**
