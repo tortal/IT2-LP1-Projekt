@@ -57,7 +57,7 @@ import com.esotericsoftware.kryonet.Server;
 public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
-	private static final int MAX_KRYO_BLOCKING_TIME = 5000;
+	private static final int MAX_KRYONET_BLOCKING_TIME = 5000;
 	private static final int TCP_PORT = 54555;
 	private Client client;
 	private Server server;
@@ -583,7 +583,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			//client.start();
 			try {
 				Log.d(TAG, "KryoNet will now connct to address: " + address);
-				client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
+				client.connect(MAX_KRYONET_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
 			} catch (IOException e) {
 				Log.d(TAG, "Error in connecting via KryoNet");
 				e.printStackTrace();
@@ -620,4 +620,22 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 		kryo.register(C.Msg.class);
 		kryo.register(C.Tag.class);
 	}	
+	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void test() {
+		mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onFailure(int reason) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
 }
