@@ -43,27 +43,19 @@ public abstract class GameScreen implements Screen {
 		
 		otherPlayers = model.getOtherPlayerNumbers();
 		
-		for(int i = 0; i < otherPlayers.size(); i++) {
-			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
-		}
+//		for(int i = 0; i < otherPlayers.size(); i++) {
+//			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
+//		}
 	}
 
 	@Override
 	public void render() {
-		if (model.checkGameState() == GameState.WAITING) {
-			// TODO drawWaiting();
-			// TODO Maybe unnecessary
-			return;
-		} else if (model.checkGameState() != GameState.WAITING) {
-			// draw common graphics while game runs, hud, timer etc...
-			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-			
-			//Draw the timer
-			drawTimer();
-			
-			renderPlayerIndicator();
-
-		}
+		// draw common graphics while game runs, hud, timer etc...
+		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
+		
+		//Draw the timer
+		drawTimer();
+		renderPlayerIndicator();
 	}
 
 	/** All game logic goes here */
@@ -104,19 +96,19 @@ public abstract class GameScreen implements Screen {
 		// First player
 		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.BLUE);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(0)));
 			shapeRenderer.filledRect(0, Constants.SCREEN_HEIGHT - 5,
 					Constants.SCREEN_WIDTH, 5);
 			shapeRenderer.end();
 
 			shapeRenderer.begin(ShapeType.FilledCircle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.BLUE);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(0)));
 			shapeRenderer.filledCircle(Constants.SCREEN_WIDTH / 2,
 					Constants.SCREEN_HEIGHT - 5, 29);
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, otherPlayers.get(0) + "",
+			font.draw(tendu.spriteBatch, (otherPlayers.get(0)+1) + "",
 					Constants.SCREEN_WIDTH / 2 - 4,
 					Constants.SCREEN_HEIGHT - 10);
 
@@ -124,36 +116,36 @@ public abstract class GameScreen implements Screen {
 		if (otherPlayers.size() >= 2) {
 			// second player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(1)));
 			shapeRenderer.filledRect(0, 0, 5, Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();
 
 			shapeRenderer.begin(ShapeType.FilledCircle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(1)));
 			shapeRenderer.filledCircle(0, Constants.SCREEN_HEIGHT / 2, 29);
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, otherPlayers.get(1) + "", 10,
+			font.draw(tendu.spriteBatch, (otherPlayers.get(1)+1) + "", 10,
 					Constants.SCREEN_HEIGHT / 2 + 5);
 
 		}
 		if (otherPlayers.size() >= 3) {
 			// third player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.GREEN);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(2)));
 			shapeRenderer.filledRect(Constants.SCREEN_WIDTH - 5, 0, 5,
 					Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();
 
 			shapeRenderer.begin(ShapeType.FilledCircle);
-			shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.GREEN);
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(2)));
 			shapeRenderer.filledCircle(Constants.SCREEN_WIDTH - 5,
 					Constants.SCREEN_HEIGHT / 2, 29);
 			shapeRenderer.end();
 
 			font.setColor(com.badlogic.gdx.graphics.Color.BLACK);
-			font.draw(tendu.spriteBatch, otherPlayers.get(2) + "",
+			font.draw(tendu.spriteBatch, (otherPlayers.get(2)+1) + "",
 					Constants.SCREEN_WIDTH - 13,
 					Constants.SCREEN_HEIGHT / 2 + 5);
 
@@ -166,12 +158,5 @@ public abstract class GameScreen implements Screen {
 	 * Called every frame. Make sure to call super() from subclass
 	 */
 	public void tick() {
-	}
-
-	/**
-	 * @return the otherPlayers
-	 */
-	public List<Integer> getOtherPlayers() {
-		return otherPlayers;
 	}
 }

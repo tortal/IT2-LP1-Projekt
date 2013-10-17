@@ -45,6 +45,7 @@ public class ShapeGameScreen extends GameScreen {
 	ShapeGame shapeGameModel;
 
 	private SimpleTimer gameCompletedTimer;
+	private List<Integer> otherPlayers;
 
 	// For debug
 	int count = 0;
@@ -94,6 +95,12 @@ public class ShapeGameScreen extends GameScreen {
 					/ (controller.getModel().getLock(player_num)
 							.getLockSequence().size() + 1);
 		}
+		
+		otherPlayers = model.getOtherPlayerNumbers();
+		
+		for(int i = 0; i < otherPlayers.size(); i++) {
+			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
+		}
 
 	}
 
@@ -122,25 +129,25 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().x <= 160 && getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 160 && otherPlayers.size() >= 2) {
 			Gdx.app.log(TAG, "To ");
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(1) - 1, s.getShape())));
+							otherPlayers.get(1) - 1, s.getShape())));
 		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
-				&& getOtherPlayers().size() >= 3) {
+				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(2) - 1, s.getShape())));
+							otherPlayers.get(2) - 1, s.getShape())));
 
 		} else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
-				&& getOtherPlayers().size() >= 1) {
+				&& otherPlayers.size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(0) - 1, s.getShape())));
+							otherPlayers.get(0) - 1, s.getShape())));
 		}
 	}
 
@@ -335,9 +342,9 @@ public class ShapeGameScreen extends GameScreen {
 	 *         scream in utter terror
 	 */
 	public boolean showShapeFromSender(Shape shape, int sender) {
-		List<Integer> otherPlayers = super.getOtherPlayers();
+		List<Integer> others = otherPlayers; //TODO is this really needed?
 		GraphicalShape receivedShape = new GraphicalShape(shape);
-		if (!otherPlayers.contains(sender + 1))
+		if (!others.contains(sender + 1))
 			return false;
 
 		// for (GraphicalShape s : shapes) {
@@ -348,12 +355,12 @@ public class ShapeGameScreen extends GameScreen {
 
 		shapes.add(receivedShape);
 
-		if (otherPlayers.get(0) == sender + 1) {
+		if (others.get(0) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
 					Constants.SCREEN_HEIGHT - 110);
-		} else if (otherPlayers.get(1) == sender + 1) {
+		} else if (others.get(1) == sender + 1) {
 			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
-		} else if (otherPlayers.get(2) == sender + 1) {
+		} else if (others.get(2) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
 					Constants.SCREEN_WIDTH - 110);
 		}
