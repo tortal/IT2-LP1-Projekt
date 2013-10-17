@@ -166,14 +166,6 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		/*
-		 * if (controller.getModel().checkGameState() == GameState.WON ||
-		 * model.checkGameState() == GameState.LOST) { EventMessage message =
-		 * new EventMessage(C.Tag.TO_SELF, C.Msg.GAME_RESULT,
-		 * controller.getModel().getGameResult());
-		 * EventBus.INSTANCE.broadcast(message); }
-		 */
-
 		if (!gameCompletedTimer.isRunning()) {
 			if (controller.getModel().checkGameState() == GameState.WON) {
 				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
