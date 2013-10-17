@@ -172,6 +172,9 @@ public class ShapeGameScreen extends GameScreen {
 			EventBus.INSTANCE.broadcast(message);
 		}*/
 		
+		/**
+		 * Used when you win or loose the game. 
+		 */
 		if (model.checkGameState() == GameState.WON){
 			EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WIN);
 			EventBus.INSTANCE.broadcast(soundMsg);

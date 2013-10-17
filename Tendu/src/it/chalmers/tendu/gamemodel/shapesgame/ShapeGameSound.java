@@ -48,7 +48,9 @@ public class ShapeGameSound implements Listener {
 		}
 
 	}
-
+	/**
+	 * Methods for all the sounds. 
+	 */
 	public void playSoundSuccess() {
 		succeededSound.play();
 	}
@@ -64,7 +66,10 @@ public class ShapeGameSound implements Listener {
 	public void playSoundGameLost() {
 		lostGameSound.play();
 	}
-
+	
+	/**
+	 * Releases all the sound resources.
+	 */
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
