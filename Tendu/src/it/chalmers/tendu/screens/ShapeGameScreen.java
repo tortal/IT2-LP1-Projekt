@@ -122,14 +122,14 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().x <= 100 && getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 160 && getOtherPlayers().size() >= 2) {
 			Gdx.app.log(TAG, "To ");
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
 					getOtherPlayers().get(1) - 1, s.getShape())));
 		}
-		else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 100
+		else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
 				&& getOtherPlayers().size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
@@ -137,7 +137,7 @@ public class ShapeGameScreen extends GameScreen {
 					getOtherPlayers().get(2) - 1, s.getShape())));
 
 		}
-		else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 100
+		else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
 				&& getOtherPlayers().size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller

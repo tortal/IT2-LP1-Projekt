@@ -181,6 +181,7 @@ public class ShapeGame extends MiniGame {
 			// Added to new owners latestReceivedShape
 			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
 
+			Gdx.app.log(TAG, "Added to latestSentShapes: from " + sender + " " + shape);
 			senderShapePack.put(sender, shape);
 			latestReceivedShapes.put(recipiant, senderShapePack);
 			return sender;
