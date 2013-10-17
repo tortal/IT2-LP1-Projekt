@@ -3,6 +3,7 @@ package it.chalmers.tendu.gamemodel;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 public abstract class MiniGame {
