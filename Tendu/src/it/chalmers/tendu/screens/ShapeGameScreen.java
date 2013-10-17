@@ -69,7 +69,7 @@ public class ShapeGameScreen extends GameScreen {
 						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 250);
+			sgs.moveShape(x, 500);
 			shapes.add(sgs);
 			x = x
 					+ Constants.SCREEN_WIDTH
@@ -86,7 +86,7 @@ public class ShapeGameScreen extends GameScreen {
 				.getLockSequence()) {
 
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 500);
+			sgs.moveShape(x, 250);
 			sgs.setRenderAsLock(true);
 			locks.add(sgs);
 			x = x
@@ -244,14 +244,20 @@ public class ShapeGameScreen extends GameScreen {
 
 		// Removes shapes that are no longer part of the model
 		if (controller.getModel().getLatestSentShapes(player_num).size() >= 1)
-			latestRemovedShape = controller.getModel()
-					.getLatestSentShapes(player_num).get(0);
+			latestRemovedShape = controller
+					.getModel()
+					.getLatestSentShapes(player_num)
+					.get(controller.getModel().getLatestSentShapes(player_num)
+							.size() - 1);
 		if (latestRemovedShape != null) {
 			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
 			for (GraphicalShape gs : shapes) {
 				if (latestRemovedShape.equals(gs.getShape())) {
-					removeList.add(gs);
-					Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+					if (!controller.getModel().getAllInventory()
+							.get(player_num).contains(latestRemovedShape)) {
+						removeList.add(gs);
+						Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+					}
 				}
 			}
 			for (GraphicalShape gs : removeList)
