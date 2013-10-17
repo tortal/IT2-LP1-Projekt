@@ -214,8 +214,7 @@ public class ConnectionService {
 					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
 				}
 			} catch (IOException e) {
-				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
-						e);
+				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter");
 			}
 		}
 	}
@@ -378,7 +377,9 @@ public class ConnectionService {
 	}
 
 	public void stopAcceptingConnections() {
-		connectionWaiter.stopAcceptingConnections();
+		if (connectionWaiter != null) { 
+			connectionWaiter.stopAcceptingConnections();
+		}
 		
 	}
 }
