@@ -89,7 +89,6 @@ public class LobbyScreen implements Screen {
 				// Received by host and client in LobbyController.
 				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
-				tendu.getNetworkHandler().stopAcceptingConnections(); // TODO Not sure this is the right place
 			}
 
 			readyText.setColor(Constants.MENU_FONT_COLOR);
