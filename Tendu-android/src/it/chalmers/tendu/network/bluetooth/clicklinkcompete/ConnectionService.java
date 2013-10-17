@@ -25,7 +25,6 @@ import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -54,9 +53,9 @@ public class ConnectionService {
 	public static final String TAG = "ConnectionService";
 
 	private ConnectionWaiter connectionWaiter;
-
+	
 	private boolean acceptConnections = true;
-
+	
 	// private ArrayList<UUID> mUuid;
 
 	private ArrayList<BluetoothDevice> mBtDevices;
@@ -175,22 +174,15 @@ public class ConnectionService {
 
 		private BluetoothServerSocket myServerSocket;
 		public void stopAcceptingConnections() {
-			//closeServerSocket();
-			//Thread.currentThread().interrupt();
-		}
-
-		private void closeServerSocket() {
-			synchronized (myServerSocket) {
-				if (myServerSocket != null) {
-					try {
-						myServerSocket.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+			if (myServerSocket != null) {
+				try {
+					myServerSocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-
+		
 		public void run() {
 			try {
 				for (int i = 0; i < Connection.MAX_SUPPORTED
@@ -199,8 +191,7 @@ public class ConnectionService {
 							.listenUsingRfcommWithServiceRecord(srcApp,
 									APP_UUID);
 					BluetoothSocket myBSock = myServerSocket.accept();
-					//closeServerSocket();
-					//myServerSocket.close(); // Close the socket now that the
+					myServerSocket.close(); // Close the socket now that the
 					// connection has been made.
 
 					String address = myBSock.getRemoteDevice().getAddress();
@@ -212,20 +203,16 @@ public class ConnectionService {
 							new BtStreamWatcher(device));
 					mBtStreamWatcherThread.start();
 					mBtStreamWatcherThreads
-					.put(address, mBtStreamWatcherThread);
+							.put(address, mBtStreamWatcherThread);
 					maxConnections = maxConnections - 1;
 					if (mOnIncomingConnectionListener != null) {
 						mOnIncomingConnectionListener
-						.OnIncomingConnection(device);
+								.OnIncomingConnection(device);
 					}
-
 				}
 				if (mOnMaxConnectionsReachedListener != null) {
 					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
 				}
-			}catch (InterruptedIOException e) {
-				Thread.currentThread().interrupt();
-				System.out.println("Interrupted via InterruptedIOException");
 			} catch (IOException e) {
 				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter");
 			}
@@ -257,10 +244,10 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-
+		
 		connectionWaiter = (new ConnectionWaiter(maxConnections));
 		(new Thread(connectionWaiter)).start();
-
+		
 		// Be discoverable
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -303,7 +290,7 @@ public class ConnectionService {
 		Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
 		mBtStreamWatcherThread.start();
 		mBtStreamWatcherThreads
-		.put(device.getAddress(), mBtStreamWatcherThread);
+				.put(device.getAddress(), mBtStreamWatcherThread);
 		return Connection.SUCCESS;
 	}
 
@@ -393,6 +380,6 @@ public class ConnectionService {
 		if (connectionWaiter != null) { 
 			connectionWaiter.stopAcceptingConnections();
 		}
-
+		
 	}
 }
