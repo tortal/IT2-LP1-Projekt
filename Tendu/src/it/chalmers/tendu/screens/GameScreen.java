@@ -40,6 +40,12 @@ public abstract class GameScreen implements Screen {
 		this.model = model;
 		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont();
+		
+		otherPlayers = model.getOtherPlayerNumbers();
+		
+		for(int i = 0; i < otherPlayers.size(); i++) {
+			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
+		}
 	}
 
 	@Override
@@ -54,12 +60,7 @@ public abstract class GameScreen implements Screen {
 			
 			//Draw the timer
 			drawTimer();
-
-			otherPlayers = new ArrayList<Integer>();
-			for (int i = 1; i < model.getNumberOfPlayers() + 1; i++) {
-				if (!(i - 1 == model.getplayerNbr()))
-					otherPlayers.add(new Integer(i));
-			}
+			
 			renderPlayerIndicator();
 
 		}
@@ -90,7 +91,7 @@ public abstract class GameScreen implements Screen {
 	private void drawTimer() {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
-		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		shapeRenderer.filledRect(50, 40, calculateTimerWidth(), 10);
 		shapeRenderer.end();
 	}
 

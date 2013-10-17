@@ -2,6 +2,7 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public abstract class MiniGame {
@@ -111,6 +112,16 @@ public abstract class MiniGame {
 		String myMac = Player.getInstance().getMac();
 		int playerNbr = players.get(myMac);
 		return playerNbr;
+	}
+	
+	public ArrayList<Integer> getOtherPlayerNumbers() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < getNumberOfPlayers(); i++) {
+			if (!(i == getplayerNbr()))
+				list.add(new Integer(i));
+		}
+		
+		return list;
 	}
 
 	/**

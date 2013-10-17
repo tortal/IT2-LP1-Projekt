@@ -106,7 +106,7 @@ public class LobbyScreen implements Screen {
 				.entrySet()) {
 			
 			if(p.getKey().equals(Player.getInstance().getMac())) {
-				playerText.setText(TextLabels.ME + TextLabels.PLAYER + ": " + (p.getValue()+1)); 
+				playerText.setText(TextLabels.ME + " - " + TextLabels.PLAYER + ": " + (p.getValue()+1)); 
 			} else {
 				playerText.setText(TextLabels.PLAYER + ": " + (p.getValue()+1)); 
 			}
