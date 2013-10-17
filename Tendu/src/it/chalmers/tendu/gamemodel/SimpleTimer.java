@@ -27,15 +27,16 @@ public class SimpleTimer {
 	 * @param time
 	 *            time in milliseconds
 	 */
-	public void start(long time) {
+	public boolean start(long time) {
 		if (state == STATE.RUNNING || state == STATE.DONE) {
-			return;
+			return false;
 		}
 
 		totalTime = time;
 		remainingTime = totalTime;
 		setEndTime(totalTime);
 		state = STATE.RUNNING;
+		return true;
 	}
 
 	/**

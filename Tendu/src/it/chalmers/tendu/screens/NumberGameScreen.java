@@ -210,19 +210,18 @@ public class NumberGameScreen extends GameScreen {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
 
-		if (!gameCompletedTimer.isRunning()) {
 			if (model.checkGameState() != GameState.RUNNING) {
-				if (model.checkGameState() == GameState.WON) {
+				model.stopTimer();
+				if (model.checkGameState() == GameState.WON && gameCompletedTimer.start(1500)) {
 					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 							C.Msg.SOUND_WIN);
 					EventBus.INSTANCE.broadcast(soundMsg);
-					gameCompletedTimer.start(1500);
-				} else if (model.checkGameState() == GameState.LOST) {
+				} else if (model.checkGameState() == GameState.LOST && gameCompletedTimer.start(1500)) {
 					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 							C.Msg.SOUND_LOST);
 					EventBus.INSTANCE.broadcast(soundMsg);
-					gameCompletedTimer.start(1500);
 				}
+
 				if (gameCompletedTimer.isDone()) {
 					
 					// Received by GameSessionController.
@@ -230,11 +229,10 @@ public class NumberGameScreen extends GameScreen {
 							C.Msg.GAME_RESULT, model.getGameResult());
 					EventBus.INSTANCE.broadcast(message);
 				}
-			}
+				
+				return;
 
-			return;
-
-		} else if (model.checkGameState() == GameState.RUNNING) {
+			} else if (model.checkGameState() == GameState.RUNNING) {
 			instructionsTimer.start(time); // only starts once
 
 			if (instructionsTimer.isDone()) {
