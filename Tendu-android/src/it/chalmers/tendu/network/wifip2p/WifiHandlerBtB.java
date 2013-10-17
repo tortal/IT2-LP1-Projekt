@@ -579,7 +579,8 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 			client = new Client();
 			Kryo kryo = client.getKryo();
 			registerKryoClasses(kryo);
-			client.start();
+			new Thread(client).start(); // Possible daemon thread-related bug fix
+			//client.start();
 			try {
 				Log.d(TAG, "KryoNet will now connct to address: " + address);
 				client.connect(MAX_KRYO_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
