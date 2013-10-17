@@ -145,7 +145,8 @@ public class ShapeGameModelController implements MiniGameController {
 			if (l.equals(lockShape))
 				lockShape = l;
 		}
-		Shape shape = (Shape) messageContent.get(2);
+		Gdx.app.log(TAG, (messageContent.get(2) + ""));
+		Shape shape = (Shape) (messageContent.get(2));
 		for (Shape s : shapeGame.getAllInventory().get(player)) {
 			if (s.equals(shape))
 				shape = s;
