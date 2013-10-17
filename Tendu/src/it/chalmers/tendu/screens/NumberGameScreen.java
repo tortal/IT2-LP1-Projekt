@@ -57,7 +57,8 @@ public class NumberGameScreen extends GameScreen {
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		numberFont = new BitmapFont(Gdx.files.internal("fonts/digitalTendu.fnt"),
+		numberFont = new BitmapFont(
+				Gdx.files.internal("fonts/digitalTendu.fnt"),
 				Gdx.files.internal("fonts/digitalTendu.png"), false);
 		sound = new NumberGameSound();
 
@@ -183,16 +184,19 @@ public class NumberGameScreen extends GameScreen {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
 
-		if (model.checkGameState() != GameState.RUNNING) {
-			if (model.checkGameState() == GameState.WON){
-				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WIN);
-				EventBus.INSTANCE.broadcast(soundMsg);
-				gameCompletedTimer.start(1500);
-			}else if(model.checkGameState() == GameState.LOST){
-				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_LOST);
-				EventBus.INSTANCE.broadcast(soundMsg);
-				gameCompletedTimer.start(1500);
-
+		if (!gameCompletedTimer.isRunning()) {
+			if (model.checkGameState() != GameState.RUNNING) {
+				if (model.checkGameState() == GameState.WON) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_WIN);
+					EventBus.INSTANCE.broadcast(soundMsg);
+					gameCompletedTimer.start(1500);
+				} else if (model.checkGameState() == GameState.LOST) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_LOST);
+					EventBus.INSTANCE.broadcast(soundMsg);
+					gameCompletedTimer.start(1500);
+				}
 				if (gameCompletedTimer.isDone()) {
 					EventMessage message = new EventMessage(C.Tag.TO_SELF,
 							C.Msg.GAME_RESULT, model.getGameResult());
@@ -217,7 +221,7 @@ public class NumberGameScreen extends GameScreen {
 						}
 						guessNumbersWidgets.get(i).setScale(-0.15f);
 						guessNumbersWidgets.get(i).setY(130);
-						
+
 					}
 				}
 
