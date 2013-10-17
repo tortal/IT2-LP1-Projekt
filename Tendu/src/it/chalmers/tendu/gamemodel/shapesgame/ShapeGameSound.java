@@ -48,9 +48,7 @@ public class ShapeGameSound implements Listener {
 		}
 
 	}
-	/**
-	 * Methods for all the sounds. 
-	 */
+	
 	public void playSoundSuccess() {
 		succeededSound.play();
 	}
