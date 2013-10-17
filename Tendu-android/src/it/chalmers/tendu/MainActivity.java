@@ -1,7 +1,6 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.wifip2p.WifiHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandlerBtB;
 import android.os.Bundle;
 

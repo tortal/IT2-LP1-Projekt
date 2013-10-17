@@ -1,4 +1,4 @@
-package it.chalmers.tendu.network.wifip2p;
+package it.chalmers.tendu.unused.wifip2p;
 
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.network.NetworkHandler;
