@@ -314,7 +314,7 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void removed() {
 		super.removed();
-		font.dispose();
+		shapeRenderer.dispose();
 		sound.unregister();
 		controller.unregister();
 	}
