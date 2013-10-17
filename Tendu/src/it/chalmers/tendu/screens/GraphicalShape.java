@@ -265,15 +265,30 @@ public class GraphicalShape {
 		this.shape = shape;
 	}
 
+
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + HEIGHT;
+		result = prime * result + ((TAG == null) ? 0 : TAG.hashCode());
+		result = prime * result + WIDTH;
+		result = prime * result + ((bounds == null) ? 0 : bounds.hashCode());
 		result = prime * result + ((color == null) ? 0 : color.hashCode());
-		result = prime * result;
+		result = prime * result + (renderAsLock ? 1231 : 1237);
+		result = prime * result + ((shape == null) ? 0 : shape.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -283,10 +298,31 @@ public class GraphicalShape {
 		if (getClass() != obj.getClass())
 			return false;
 		GraphicalShape other = (GraphicalShape) obj;
+		if (HEIGHT != other.HEIGHT)
+			return false;
+		if (TAG == null) {
+			if (other.TAG != null)
+				return false;
+		} else if (!TAG.equals(other.TAG))
+			return false;
+		if (WIDTH != other.WIDTH)
+			return false;
+		if (bounds == null) {
+			if (other.bounds != null)
+				return false;
+		} else if (!bounds.equals(other.bounds))
+			return false;
 		if (color == null) {
 			if (other.color != null)
 				return false;
 		} else if (!color.equals(other.color))
+			return false;
+		if (renderAsLock != other.renderAsLock)
+			return false;
+		if (shape == null) {
+			if (other.shape != null)
+				return false;
+		} else if (!shape.equals(other.shape))
 			return false;
 		return true;
 	}
