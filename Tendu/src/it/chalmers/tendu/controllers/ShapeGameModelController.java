@@ -148,9 +148,14 @@ public class ShapeGameModelController implements MiniGameController {
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
+		// Since we send objects, their references no longer matches our model
+				// we have to see which of the objects in "our" model that was sent.
 		Shape shape = (Shape) messageContent.get(1);
+		for (Shape s : shapeGame.getAllInventory().get(player)) {
+			if (s.equals(shape))
+				shape = s;
+		}
 		int sender = shapeGame.move(shape, player);
-		shapeGame.getAllInventory().get(player);
 		
 	}
 }

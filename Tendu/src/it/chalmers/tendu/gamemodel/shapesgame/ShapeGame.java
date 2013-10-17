@@ -39,7 +39,14 @@ public class ShapeGame extends MiniGame {
 	 * shape has been received. <Integer(Receiver), <Integer(Sender),
 	 * Shape(Received Shape)>
 	 */
-	private Map<Integer, Map<Integer, Shape>> latestReceivedShape;
+	private Map<Integer, Map<Integer, Shape>> latestReceivedShapes;
+
+	/**
+	 * Holds every persons last sent shape <Integer(Receiver), <Integer(Sender),
+	 * Shape(Received Shape)>
+	 */
+	private Map<Integer, List<Shape>> latestSentShapes;
+
 	/**
 	 * All shapes for all players mapped by player number (Integer).
 	 */
@@ -96,10 +103,16 @@ public class ShapeGame extends MiniGame {
 
 		playerCount = players.size();
 
-		latestReceivedShape = new HashMap<Integer, Map<Integer, Shape>>();
+		latestReceivedShapes = new HashMap<Integer, Map<Integer, Shape>>();
 		// Map initiation
 		for (int i = 0; i < playerCount; i++) {
-			latestReceivedShape.put(i, new HashMap<Integer, Shape>());
+			latestReceivedShapes.put(i, new HashMap<Integer, Shape>());
+		}
+
+		latestSentShapes = new HashMap<Integer, List<Shape>>();
+		// Map initiation
+		for (int i = 0; i < playerCount; i++) {
+			latestSentShapes.put(i, new ArrayList<Shape>());
 		}
 
 		allInventory = new HashMap<Integer, List<Shape>>(playerCount);
@@ -136,8 +149,6 @@ public class ShapeGame extends MiniGame {
 		}
 		Gdx.app.log("This is", "Shapes Game!");
 
-		
-
 	}
 
 	/**
@@ -160,12 +171,18 @@ public class ShapeGame extends MiniGame {
 			if (!oldLocation.remove(shape)) // TODO: for debugging.
 				return -2;
 
-			//Added to the new owners inventory
+			// Added to the new owners inventory
 			newLocation.add(shape);
-			//Added to new owners latestReceivedShape
+
+			// Adds shape to the list of sent shapes
+			latestSentShapes.get(sender).add(shape);
+			Gdx.app.log(TAG, "" + latestSentShapes.get(super.getplayerNbr()));
+
+			// Added to new owners latestReceivedShape
 			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
+
 			senderShapePack.put(sender, shape);
-			latestReceivedShape.put(recipiant, senderShapePack);
+			latestReceivedShapes.put(recipiant, senderShapePack);
 			return sender;
 		}
 	}
@@ -178,10 +195,8 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-=======
-	 *            to be inserted into the players slot.
->>>>>>> branch 'Majormerge' of https://github.com/tortal/IT2-LP1-Tendu.git
+	 *            to be inserted into the players slot. >>>>>>> branch
+	 *            'Majormerge' of https://github.com/tortal/IT2-LP1-Tendu.git
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -305,9 +320,13 @@ public class ShapeGame extends MiniGame {
 		return null;
 
 	}
-	
-	public Map<Integer, Shape> getLatestReceivedShape(int player){
-		return latestReceivedShape.get(player);
+
+	public Map<Integer, Shape> getLatestReceivedShape(int player) {
+		return latestReceivedShapes.get(player);
+	}
+
+	public List<Shape> getLatestSentShapes(int player) {
+		return latestSentShapes.get(player);
 	}
 
 	/**
