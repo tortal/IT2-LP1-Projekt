@@ -8,6 +8,8 @@ import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomin
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
 import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 import it.chalmers.tendu.tbd.Listener;
@@ -137,8 +139,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION,
-					C.Msg.CONNECTION_LOST, device.getName()));
 			// Show a dialogue notifying user it got disconnected
 			class displayConnectionLostAlert implements Runnable {
 				public void run() {
@@ -160,21 +160,25 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 					try {
 						connectionLostAlert.show();
 					} catch (BadTokenException e) {
-						// Something really bad happened here;
-						// seems like the Activity itself went away before
-						// the runnable finished.
-						// Bail out gracefully here and do nothing.
+						Log.e(TAG, "BadTokenException", e);
 					}
 				}
 			}
+
 			connectedDevices.remove(device);
+			if (connectedDevices.isEmpty()) {
+				// If all devices are disconnected we notify and reset the network
+				// otherwise we just broadcast that a player is gone
+				
+				// Display on UI-thread
+				((AndroidApplication) context)
+				.runOnUiThread(new displayConnectionLostAlert());
 
-			// Display on UI-thread
-			((AndroidApplication) context)
-					.runOnUiThread(new displayConnectionLostAlert());
-
-			// shutdown EVERYTHING!
-			destroy();
+				resetNetwork();
+				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+			} else {
+				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_DISCONNECTED, device.getAddress()));				
+			}
 		}
 	};
 
@@ -212,10 +216,10 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 
 			@Override
 			public void run() {
-				BluetoothDevice bd = findAvailableServerDevice();
-				if (bd != null) {
-					Log.d(TAG, "Will now try and connect to: " + bd.getName());
-					connection.connect(bd, dataReceivedListener,
+				BluetoothDevice device = findAvailableServerDevice();
+				if (device != null) {
+					Log.d(TAG, "Will now try and connect to: " + device.getName());
+					connection.connect(device, dataReceivedListener,
 							disconnectedListener);
 				} else {
 					Log.d(TAG, "No device to connect to");
