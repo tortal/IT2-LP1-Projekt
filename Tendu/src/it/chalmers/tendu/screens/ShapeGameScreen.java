@@ -7,6 +7,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGameSound;
@@ -42,6 +43,8 @@ public class ShapeGameScreen extends GameScreen {
 	private Shape latestRemovedShape;
 
 	ShapeGame shapeGameModel;
+	
+	private SimpleTimer gameCompletedTimer; 
 
 	// For debug
 	int count = 0;
@@ -59,6 +62,7 @@ public class ShapeGameScreen extends GameScreen {
 		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
+		gameCompletedTimer = new SimpleTimer();
 
 		int x = Constants.SCREEN_WIDTH
 				/ (controller.getModel().getLock(player_num).getLockSequence()
@@ -162,11 +166,27 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		if (controller.getModel().checkGameState() == GameState.WON
+		/*if (controller.getModel().checkGameState() == GameState.WON
 				|| model.checkGameState() == GameState.LOST) {
 			EventMessage message = new EventMessage(C.Tag.TO_SELF,
 					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
 			EventBus.INSTANCE.broadcast(message);
+		}*/
+		
+		if (model.checkGameState() == GameState.WON){
+			EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WIN);
+			EventBus.INSTANCE.broadcast(soundMsg);
+			gameCompletedTimer.start(1500);
+		}else if(model.checkGameState() == GameState.LOST){
+			EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_LOST);
+			EventBus.INSTANCE.broadcast(soundMsg);
+			gameCompletedTimer.start(1500);
+
+			if (gameCompletedTimer.isDone()) {
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, model.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
+			}
 		}
 
 		// TODO nullpointer movingShape

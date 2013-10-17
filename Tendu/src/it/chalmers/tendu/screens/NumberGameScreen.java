@@ -184,8 +184,13 @@ public class NumberGameScreen extends GameScreen {
 							// have changed it)
 
 		if (model.checkGameState() != GameState.RUNNING) {
-			if (model.checkGameState() == GameState.WON
-					|| model.checkGameState() == GameState.LOST) {
+			if (model.checkGameState() == GameState.WON){
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_WIN);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				gameCompletedTimer.start(1500);
+			}else if(model.checkGameState() == GameState.LOST){
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF, C.Msg.SOUND_LOST);
+				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
 
 				if (gameCompletedTimer.isDone()) {
