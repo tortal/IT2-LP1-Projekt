@@ -38,7 +38,8 @@ public class ShapeGameScreen extends GameScreen {
 
 	private ShapeGameSound sound;
 
-	private Map<Integer, Shape> latestShape;
+	private Map<Integer, Shape> latestAddedShape;
+	private Shape latestRemovedShape;
 
 	ShapeGame shapeGameModel;
 
@@ -52,7 +53,7 @@ public class ShapeGameScreen extends GameScreen {
 		shapeGameModel = controller.getModel();
 		this.shapeRenderer = new ShapeRenderer();
 
-		latestShape = new HashMap<Integer, Shape>();
+		latestAddedShape = new HashMap<Integer, Shape>();
 
 		player_num = shapeGameModel.getplayerNbr();
 		sound = new ShapeGameSound();
@@ -206,37 +207,59 @@ public class ShapeGameScreen extends GameScreen {
 		Map<Integer, Shape> latestModelReceivedShape = shapeGameModel
 				.getLatestReceivedShape(player_num);
 
+		// if(!shapeGameModel.getLatestReceivedShape(player_num).isEmpty()){
+		// Gdx.app.log(TAG, shapeGameModel
+		// .getLatestReceivedShape(player_num).toString() + "");
+		// }
+
 		if (!latestModelReceivedShape.isEmpty()) {
-			if (!latestModelReceivedShape.equals(latestShape)) {
+			if (!latestModelReceivedShape.equals(latestAddedShape)) {
 				for (Map.Entry<Integer, Shape> entry : latestModelReceivedShape
 						.entrySet()) {
 					showShapeFromSender(entry.getValue(), entry.getKey());
-					latestShape = latestModelReceivedShape;
+					latestAddedShape = latestModelReceivedShape;
 				}
 			}
+
+		}
+
+		// Removes shapes that are no longer part of the model
+		if (controller.getModel().getLatestSentShapes(player_num).size() >= 1)
+			latestRemovedShape = controller.getModel()
+					.getLatestSentShapes(player_num).get(0);
+		if (latestRemovedShape != null) {
+			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+			for (GraphicalShape gs : shapes) {
+				if (latestRemovedShape.equals(gs.getShape())) {
+					removeList.add(gs);
+					Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+				}
+			}
+			for (GraphicalShape gs : removeList)
+				shapes.remove(gs);
 		}
 		// Adds shapes to the gui that are no longer part
 		// of the model.
-		for (Shape s : shapeGameModel.getAllInventory().get(player_num)) {
-			if (!shapes.contains(new GraphicalShape(s))) {
-				shapes.add(new GraphicalShape(s));
-				Gdx.app.log(TAG, "new Shape!");
-			}
-		}
+		// for (Shape s : shapeGameModel.getAllInventory().get(player_num)) {
+		// if (!shapes.contains(new GraphicalShape(s))) {
+		// shapes.add(new GraphicalShape(s));
+		// Gdx.app.log(TAG, "new Shape!");
+		// }
+		// }
 
 		// Removes shapes that are no longer parts of the
 		// model.
-		List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
-		for (GraphicalShape gs : shapes) {
-			if (!shapeGameModel.getAllInventory().get(player_num)
-					.contains(gs.getShape())) {
-				removeList.add(gs);
-				Gdx.app.log(TAG, "Shape removed!");
-			}
-		}
-
-		for (GraphicalShape gs : removeList)
-			shapes.remove(gs);
+		// List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+		// for (GraphicalShape gs : shapes) {
+		// if (!shapeGameModel.getAllInventory().get(player_num)
+		// .contains(gs.getShape())) {
+		// removeList.add(gs);
+		// Gdx.app.log(TAG, "Shape removed!");
+		// }
+		// }
+		//
+		// for (GraphicalShape gs : removeList)
+		// shapes.remove(gs);
 
 	}
 
@@ -285,28 +308,26 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	public boolean showShapeFromSender(Shape shape, int sender) {
 		List<Integer> otherPlayers = super.getOtherPlayers();
-		GraphicalShape receivedShape = null;
-		if (!otherPlayers.contains(sender))
+		GraphicalShape receivedShape = new GraphicalShape(shape);
+		if (!otherPlayers.contains(sender + 1))
 			return false;
 
-		for (GraphicalShape s : shapes) {
-			if (s.getShape().equals(shape))
-				receivedShape = s;
-		}
+		// for (GraphicalShape s : shapes) {
+		// if (s.getShape().equals(shape))
+		// receivedShape = s;
+		// }
+		Gdx.app.log(TAG, "Shapes being added");
 
-		if (receivedShape == null)
-			return false;
+		shapes.add(receivedShape);
 
-		if (otherPlayers.get(0) == sender) {
+		if (otherPlayers.get(0) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
-					Constants.SCREEN_HEIGHT - 20);
-		}
-		if (otherPlayers.get(1) == sender) {
-			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2, 20);
-		}
-		if (otherPlayers.get(2) == sender) {
+					Constants.SCREEN_HEIGHT - 110);
+		} else if (otherPlayers.get(1) == sender + 1) {
+			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
+		} else if (otherPlayers.get(2) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
-					Constants.SCREEN_WIDTH - 20);
+					Constants.SCREEN_WIDTH - 110);
 		}
 
 		return true;
