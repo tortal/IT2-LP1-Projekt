@@ -93,35 +93,40 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10 &&
-				getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 10 && getOtherPlayers().size() >= 2) {
+
+			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(1),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(1), s.getShape())));
 		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60 && 
-				getOtherPlayers().size() >= 3) {
+		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60
+				&& getOtherPlayers().size() >= 3) {
+
+			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(2),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(2), s.getShape())));
 
 		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60 &&
-				getOtherPlayers().size() >= 1) {
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60
+				&& getOtherPlayers().size() >= 1) {
+
+			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(getOtherPlayers().get(0),
-					s.getShape())));
+					.getModel().getGameId(), messageContentFactory(
+					getOtherPlayers().get(0), s.getShape())));
 		}
 
-//		if (s.getBounds().y <= 60) {
-//			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-//					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-//					.getModel().getGameId(), messageContentFactory(0,
-//					s.getShape())));
-//		}
+		// if (s.getBounds().y <= 60) {
+		// EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+		// .getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+		// .getModel().getGameId(), messageContentFactory(0,
+		// s.getShape())));
+		// }
 
 	}
 
@@ -153,7 +158,8 @@ public class ShapeGameScreen extends GameScreen {
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
 			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(input.x, input.y) && !s.getShape().isLocked()) {
+				if (s.getBounds().contains(input.x, input.y)
+						&& !s.getShape().isLocked()) {
 					movingShape = s;
 				}
 			}
@@ -232,6 +238,8 @@ public class ShapeGameScreen extends GameScreen {
 			content.add(player_num);
 			content.add(lock.getShape());
 			content.add(shape.getShape());
+
+			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));

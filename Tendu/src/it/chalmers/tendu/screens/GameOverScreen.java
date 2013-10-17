@@ -57,13 +57,17 @@ public class GameOverScreen implements Screen {
 	public void tick(InputController input) {
 		if (input.isTouchedUp()) {
 			if (mainMenu.collided(input.getCoordinates())) {
-				// TODO: back to main menu, restart network
+				
+				// TODO: Restart network
+				// Received by GameSessionController.
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.RETURN_MAIN_MENU);
 				EventBus.INSTANCE.broadcast(message);
 			}
 
 			if (replay.collided(input.getCoordinates())) {
+				
+				// Received by GameSessionController.
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_REPLAY_READY, Player.getInstance()
 								.getMac());

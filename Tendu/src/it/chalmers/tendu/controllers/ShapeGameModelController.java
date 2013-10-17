@@ -50,25 +50,34 @@ public class ShapeGameModelController implements MiniGameController {
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
+						
+						// Received by NumberGameSound.
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
 					} else {
+						
+						// Received by NumberGameSound.
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);
 					}
 					
+					// Received by clients in ShapeGameController through the network.
 					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
-					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(changedMessage);
+					
+					Gdx.app.log(TAG, "Sent from server");
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {
 					sendShape(message.content);
+					
+					// Received by clients in ShapeGameController through the network.
 					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
-					Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(changedMessage);
+					
+					Gdx.app.log(TAG, "Sent from server");
 				}
 			}
 
@@ -81,6 +90,8 @@ public class ShapeGameModelController implements MiniGameController {
 			if (message.gameId == GameId.SHAPE_GAME) {
 				if (message.msg == C.Msg.LOCK_ATTEMPT
 						|| message.msg == C.Msg.SHAPE_SENT) {
+					
+					// Received by host in ShapeGameController through the network.
 					EventMessage changedMessage = new EventMessage(message, C.Tag.REQUEST_AS_CLIENT);
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
@@ -97,11 +108,15 @@ public class ShapeGameModelController implements MiniGameController {
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
+						
+						// Received by NumberGameSound.
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_SUCCEED);
 						EventBus.INSTANCE.broadcast(soundMsg);
 						Gdx.app.log(TAG, "Client changed model");
 					} else {
+						
+						// Received by NumberGameSound.
 						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 								C.Msg.SOUND_FAIL);
 						EventBus.INSTANCE.broadcast(soundMsg);

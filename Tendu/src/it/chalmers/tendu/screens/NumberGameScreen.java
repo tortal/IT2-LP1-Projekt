@@ -217,6 +217,8 @@ public class NumberGameScreen extends GameScreen {
 				gameCompletedTimer.start(1500);
 
 				if (gameCompletedTimer.isDone()) {
+					
+					// Received by GameSessionController.
 					EventMessage message = new EventMessage(C.Tag.TO_SELF,
 							C.Msg.GAME_RESULT, model.getGameResult());
 					EventBus.INSTANCE.broadcast(message);

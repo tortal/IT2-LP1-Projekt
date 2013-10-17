@@ -49,6 +49,8 @@ public class InterimScreen implements Screen {
 	@Override
 	public void tick(InputController input) {		
 		if(timer.getRemainingTime() <= 0) {
+			
+			// Received by host in GameSessionController.
 			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.INTERIM_FINISHED);
 			EventBus.INSTANCE.broadcast(message);
 		}

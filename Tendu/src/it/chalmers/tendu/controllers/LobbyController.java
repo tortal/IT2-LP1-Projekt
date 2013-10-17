@@ -54,6 +54,7 @@ public class LobbyController implements Listener {
 				String playerMac = (String) message.content;
 				model.playerReady(playerMac);
 
+				// Received by clients in LobbyController through the network.
 				EventMessage updateModel = new EventMessage(
 						C.Tag.COMMAND_AS_HOST, C.Msg.UPDATE_LOBBY_MODEL, model);
 				EventBus.INSTANCE.broadcast(updateModel);
@@ -63,16 +64,24 @@ public class LobbyController implements Listener {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
+					
 					// MiniGame miniGame = gameSession.getNextMiniGame();
 					// gameSession.setCurrentMiniGame(miniGame);
+					
 					new GameSessionController(gameSession);
 
+					// Received by clients in LobbyController through the
+					// network.
 					EventMessage newGameSession = new EventMessage(
 							C.Tag.COMMAND_AS_HOST, C.Msg.GAME_SESSION_MODEL,
 							gameSession);
-					EventMessage msg = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
-					EventBus.INSTANCE.broadcast(msg);
 					EventBus.INSTANCE.broadcast(newGameSession);
+
+					// TODO: Not used yet, should be handled in Tendu.
+					EventMessage msg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.STOP_ACCEPTING_CONNECTIONS);
+					EventBus.INSTANCE.broadcast(msg);
+
 					EventBus.INSTANCE.removeListener(this);
 				}
 				break;
@@ -87,9 +96,10 @@ public class LobbyController implements Listener {
 		if (message.tag == C.Tag.TO_SELF) {
 
 			if (message.msg == C.Msg.PLAYER_READY) {
-				EventBus.INSTANCE.broadcast(new EventMessage(
-						C.Tag.REQUEST_AS_CLIENT, C.Msg.PLAYER_READY, Player
-								.getInstance().getMac()));
+				// Received by host in LobbyController through the network.
+				EventMessage msg = new EventMessage(C.Tag.REQUEST_AS_CLIENT,
+						C.Msg.PLAYER_READY, Player.getInstance().getMac());
+				EventBus.INSTANCE.broadcast(msg);
 			}
 		} else if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.msg == Msg.GAME_SESSION_MODEL) {

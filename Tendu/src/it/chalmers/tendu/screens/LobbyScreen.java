@@ -85,6 +85,8 @@ public class LobbyScreen implements Screen {
 		} else if (input.isTouchedUp()) {
 			if (readyText.collided(input.getCoordinates())) {
 				ready = true;
+				
+				// Received by host and client in LobbyController.
 				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
 			}
