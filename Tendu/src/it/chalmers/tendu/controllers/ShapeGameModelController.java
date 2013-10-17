@@ -8,7 +8,6 @@ import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class ShapeGameModelController implements MiniGameController {
 	private ShapeGame shapeGame;
 
 	public ShapeGameModelController(ShapeGame model) {
-		this.shapeGame = model;
+		shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
@@ -33,7 +32,7 @@ public class ShapeGameModelController implements MiniGameController {
 		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
@@ -67,7 +66,6 @@ public class ShapeGameModelController implements MiniGameController {
 					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
 					EventBus.INSTANCE.broadcast(changedMessage);
 					
-					Gdx.app.log(TAG, "Sent from server");
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {
@@ -77,7 +75,6 @@ public class ShapeGameModelController implements MiniGameController {
 					EventMessage changedMessage = new EventMessage(message, C.Tag.COMMAND_AS_HOST);
 					EventBus.INSTANCE.broadcast(changedMessage);
 					
-					Gdx.app.log(TAG, "Sent from server");
 				}
 			}
 
@@ -104,7 +101,7 @@ public class ShapeGameModelController implements MiniGameController {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPE_GAME) {
-				Gdx.app.log(TAG, "Recived from host");
+				//Gdx.app.log(TAG, "Recived from host");
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
@@ -128,7 +125,7 @@ public class ShapeGameModelController implements MiniGameController {
 			}
 		}
 	}
-
+	
 	private boolean fitsIntoSlot(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
@@ -142,8 +139,17 @@ public class ShapeGameModelController implements MiniGameController {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape lockShape = (Shape) messageContent.get(1);
+		// Since we send objects, their references no longer matches our model
+		// we have to see which of the objects in "our" model that was sent. 
+		for (Shape l : shapeGame.getLock(player).getLockSequence()) {
+			if (l.equals(lockShape))
+				lockShape = l;
+		}
 		Shape shape = (Shape) messageContent.get(2);
-
+		for (Shape s : shapeGame.getAllInventory().get(player)) {
+			if (s.equals(shape))
+				shape = s;
+		}
 		return shapeGame.insertShapeIntoSlot(player, shape, lockShape);
 	}
 
@@ -152,13 +158,18 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
-	//TODO Shape should appear on the proper pos
+	// TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
+		// Since we send objects, their references no longer matches our model
+				// we have to see which of the objects in "our" model that was sent.
 		Shape shape = (Shape) messageContent.get(1);
-		//int sender = shapeGame.move(shape, player);
-		//shapeGame.getAllInventory().get(player);
-		shapeGame.move(shape, player);
+		for (Shape s : shapeGame.getAllInventory().get(player)) {
+			if (s.equals(shape))
+				shape = s;
+		}
+		int sender = shapeGame.move(shape, player);
+		
 	}
 }

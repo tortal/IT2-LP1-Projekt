@@ -7,6 +7,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGameSound;
@@ -15,11 +16,12 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 
 public class ShapeGameScreen extends GameScreen {
 
@@ -27,7 +29,7 @@ public class ShapeGameScreen extends GameScreen {
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	// private ShapesGame model;
+
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
 
@@ -37,34 +39,60 @@ public class ShapeGameScreen extends GameScreen {
 
 	private ShapeGameSound sound;
 
+	private Map<Integer, Shape> latestAddedShape;
+	private Shape latestRemovedShape;
+
+	ShapeGame shapeGameModel;
+
+	private SimpleTimer gameCompletedTimer;
+
 	// For debug
 	int count = 0;
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
+
 		controller = new ShapeGameModelController((ShapeGame) model);
+		shapeGameModel = controller.getModel();
 		this.shapeRenderer = new ShapeRenderer();
 
-		player_num = controller.getModel().getplayerNbr();
+		latestAddedShape = new HashMap<Integer, Shape>();
+
+		player_num = shapeGameModel.getplayerNbr();
 		sound = new ShapeGameSound();
 
 		shapes = new ArrayList<GraphicalShape>();
-		int x = 150;
+		gameCompletedTimer = new SimpleTimer();
+
+		int x = Constants.SCREEN_WIDTH
+				/ (controller.getModel().getLock(player_num).getLockSequence()
+						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 150);
+			sgs.moveShape(x, 250);
 			shapes.add(sgs);
-			x = x + 151;
+			x = x
+					+ Constants.SCREEN_WIDTH
+					/ (controller.getModel().getLock(player_num)
+							.getLockSequence().size() + 1);
 		}
 
 		locks = new ArrayList<GraphicalShape>();
-		x = 150;
+
+		x = Constants.SCREEN_WIDTH
+				/ (controller.getModel().getLock(player_num).getLockSequence()
+						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getLock(player_num)
 				.getLockSequence()) {
+
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 300);
+			sgs.moveShape(x, 500);
+			sgs.setRenderAsLock(true);
 			locks.add(sgs);
-			x = x + 151;
+			x = x
+					+ Constants.SCREEN_WIDTH
+					/ (controller.getModel().getLock(player_num)
+							.getLockSequence().size() + 1);
 		}
 
 	}
@@ -73,15 +101,15 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void render() {
 		super.render();
-		if (controller.getModel().checkGameState() == GameState.RUNNING) {
+		if (shapeGameModel.checkGameState() == GameState.RUNNING) {
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
 			// Renders locks
 			for (GraphicalShape sgs : locks) {
-				sgs.renderShape(shapeRenderer);
+				sgs.render(shapeRenderer);
 			}
 			// Renders shapes
 			for (GraphicalShape sgs : shapes) {
-				sgs.renderShape(shapeRenderer);
+				sgs.render(shapeRenderer);
 			}
 
 		} else {
@@ -93,41 +121,27 @@ public class ShapeGameScreen extends GameScreen {
 	 * @param s
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
-		if (s.getBounds().x <= 10 && getOtherPlayers().size() >= 2) {
-
-			// Received by ShapeGameController.
+		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
+		if (s.getBounds().x <= 160 && getOtherPlayers().size() >= 2) {
+			Gdx.app.log(TAG, "To ");
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(1), s.getShape())));
-		}
-		if (s.getBounds().x >= Constants.SCREEN_WIDTH - 60
+					getOtherPlayers().get(1) - 1, s.getShape())));
+		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
 				&& getOtherPlayers().size() >= 3) {
-
-			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(2), s.getShape())));
+					getOtherPlayers().get(2) - 1, s.getShape())));
 
-		}
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 60
+		} else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
 				&& getOtherPlayers().size() >= 1) {
-
-			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(0), s.getShape())));
+					getOtherPlayers().get(0) - 1, s.getShape())));
 		}
-
-		// if (s.getBounds().y <= 60) {
-		// EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-		// .getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-		// .getModel().getGameId(), messageContentFactory(0,
-		// s.getShape())));
-		// }
-
 	}
 
 	/**
@@ -152,8 +166,28 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		// Vector3 touchPos = new Vector3(input.x, input.y, +0);
-		// tendu.getCamera().unproject(touchPos);
+		if (!gameCompletedTimer.isRunning()) {
+			if (controller.getModel().checkGameState() == GameState.WON) {
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.SOUND_WIN);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				gameCompletedTimer.start(1500);
+				Gdx.app.log(TAG, "Timer started! game won");
+
+			} else if (controller.getModel().checkGameState() == GameState.LOST) {
+				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.SOUND_LOST);
+				EventBus.INSTANCE.broadcast(soundMsg);
+				gameCompletedTimer.start(1500);
+			}
+			if (gameCompletedTimer.isDone()) {
+				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, controller.getModel()
+								.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
+			}
+		}
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
@@ -177,8 +211,6 @@ public class ShapeGameScreen extends GameScreen {
 
 		if (input.isDragged()) {
 			if (movingShape != null) {
-				// Gdx.app.log(TAG, "Shape: " +
-				// movingShape.getShape().isLocked());
 				if (!movingShape.getShape().isLocked()) {
 					movingShape.moveShape(input.x
 							- movingShape.getBounds().width / 2, input.y
@@ -188,47 +220,75 @@ public class ShapeGameScreen extends GameScreen {
 		}
 	}
 
-	@Override
-	public void removed() {
-		super.removed();
-		controller.unregister();
-		sound.unregister();
-	}
-
 	// TODO : Adds a new shape if any shape has changed color.
 	private void updateShapesFromModel() {
+
+		Map<Integer, Shape> latestModelReceivedShape = shapeGameModel
+				.getLatestReceivedShape(player_num);
+
+		// if(!shapeGameModel.getLatestReceivedShape(player_num).isEmpty()){
+		// Gdx.app.log(TAG, shapeGameModel
+		// .getLatestReceivedShape(player_num).toString() + "");
+		// }
+
+		if (!latestModelReceivedShape.isEmpty()) {
+			if (!latestModelReceivedShape.equals(latestAddedShape)) {
+				for (Map.Entry<Integer, Shape> entry : latestModelReceivedShape
+						.entrySet()) {
+					showShapeFromSender(entry.getValue(), entry.getKey());
+					latestAddedShape = latestModelReceivedShape;
+				}
+			}
+
+		}
+
+		// Removes shapes that are no longer part of the model
+		if (controller.getModel().getLatestSentShapes(player_num).size() >= 1)
+			latestRemovedShape = controller.getModel()
+					.getLatestSentShapes(player_num).get(0);
+		if (latestRemovedShape != null) {
+			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+			for (GraphicalShape gs : shapes) {
+				if (latestRemovedShape.equals(gs.getShape())) {
+					removeList.add(gs);
+					Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+				}
+			}
+			for (GraphicalShape gs : removeList)
+				shapes.remove(gs);
+		}
 		// Adds shapes to the gui that are no longer part
 		// of the model.
-		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
-			if (!shapes.contains(new GraphicalShape(s))) {
-				shapes.add(new GraphicalShape(s));
-				Gdx.app.log(TAG, "new Shape!");
-			}
-		}
+		// for (Shape s : shapeGameModel.getAllInventory().get(player_num)) {
+		// if (!shapes.contains(new GraphicalShape(s))) {
+		// shapes.add(new GraphicalShape(s));
+		// Gdx.app.log(TAG, "new Shape!");
+		// }
+		// }
 
 		// Removes shapes that are no longer parts of the
 		// model.
-		List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
-		for (GraphicalShape gs : shapes) {
-			if (!controller.getModel().getAllInventory().get(player_num)
-					.contains(gs.getShape())) {
-				removeList.add(gs);
-				Gdx.app.log(TAG, "Shape removed!");
-			}
-		}
-
-		for (GraphicalShape gs : removeList)
-			shapes.remove(gs);
+		// List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
+		// for (GraphicalShape gs : shapes) {
+		// if (!shapeGameModel.getAllInventory().get(player_num)
+		// .contains(gs.getShape())) {
+		// removeList.add(gs);
+		// Gdx.app.log(TAG, "Shape removed!");
+		// }
+		// }
+		//
+		// for (GraphicalShape gs : removeList)
+		// shapes.remove(gs);
 
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
 		boolean result = false;
 		if (shape.getBounds().overlaps(lock.getBounds())) {
-			if (controller.getModel().shapeFitIntoLock(player_num,
-					shape.getShape(), lock.getShape())) {
+			if (shapeGameModel.shapeFitIntoLock(player_num, shape.getShape(),
+					lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				shape.getShape().setLocked(true);
+				// shape.getShape().setLocked(true);
 				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
@@ -247,5 +307,50 @@ public class ShapeGameScreen extends GameScreen {
 
 		return result;
 
+	}
+
+	@Override
+	public void removed() {
+		super.removed();
+		shapeRenderer.dispose();
+		sound.unregister();
+		controller.unregister();
+	}
+
+	/**
+	 * Used to move the shape to appear as if it was sent by the proper sender
+	 * 
+	 * @param shape
+	 *            That was sent
+	 * @param sender
+	 * @return <code>true</code> everything went according to plan, sit back and
+	 *         relax. <code>false</code> something went wrong, run around and
+	 *         scream in utter terror
+	 */
+	public boolean showShapeFromSender(Shape shape, int sender) {
+		List<Integer> otherPlayers = super.getOtherPlayers();
+		GraphicalShape receivedShape = new GraphicalShape(shape);
+		if (!otherPlayers.contains(sender + 1))
+			return false;
+
+		// for (GraphicalShape s : shapes) {
+		// if (s.getShape().equals(shape))
+		// receivedShape = s;
+		// }
+		Gdx.app.log(TAG, "Shapes being added");
+
+		shapes.add(receivedShape);
+
+		if (otherPlayers.get(0) == sender + 1) {
+			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
+					Constants.SCREEN_HEIGHT - 110);
+		} else if (otherPlayers.get(1) == sender + 1) {
+			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
+		} else if (otherPlayers.get(2) == sender + 1) {
+			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
+					Constants.SCREEN_WIDTH - 110);
+		}
+
+		return true;
 	}
 }

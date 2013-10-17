@@ -28,7 +28,7 @@ public class NumberGameSound implements Listener {
 		completedGameSound = Gdx.audio.newSound(Gdx.files.internal("completed.wav"));
 		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
 		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.aiff"));
+		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.wav"));
 	}
 
 	@Override
@@ -67,6 +67,10 @@ public class NumberGameSound implements Listener {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
+		completedGameSound.dispose();
+		lostGameSound.dispose();
+		succeededSound.dispose();
+		failSound.dispose();
 	}
 
 }

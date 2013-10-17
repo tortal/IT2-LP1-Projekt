@@ -24,7 +24,8 @@ public abstract class GameScreen implements Screen {
 	MiniGame model; // model of current minigame
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private BitmapFont font;
-	private List<Integer> otherPlayers;
+	private List<Integer> otherPlayers; // 1 = left, 0 = top, 2 = right
+
 
 	/**
 	 * Returns a {@link Screen} of the given {@link MiniGame}.
