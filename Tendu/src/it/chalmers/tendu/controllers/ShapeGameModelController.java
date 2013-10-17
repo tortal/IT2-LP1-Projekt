@@ -32,7 +32,7 @@ public class ShapeGameModelController implements MiniGameController {
 		if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
@@ -59,14 +59,14 @@ public class ShapeGameModelController implements MiniGameController {
 						EventBus.INSTANCE.broadcast(soundMsg);
 					}
 					message.tag = C.Tag.COMMAND_AS_HOST;
-					Gdx.app.log(TAG, "Sent from server");
+					//Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
 				// Send object
 				if (message.msg == C.Msg.SHAPE_SENT) {
 					sendShape(message.content);
 					message.tag = C.Tag.COMMAND_AS_HOST;
-					Gdx.app.log(TAG, "Sent from server");
+					//Gdx.app.log(TAG, "Sent from server");
 					EventBus.INSTANCE.broadcast(message);
 				}
 			}
@@ -91,7 +91,7 @@ public class ShapeGameModelController implements MiniGameController {
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			if (message.gameId == GameId.SHAPE_GAME) {
-				Gdx.app.log(TAG, "Recived from host");
+				//Gdx.app.log(TAG, "Recived from host");
 				// Lock attempt
 				if (message.msg == C.Msg.LOCK_ATTEMPT) {
 					if (insertIntoSlot(message.content)) {
