@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.LobbyController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
@@ -14,7 +15,6 @@ import it.chalmers.tendu.tbd.EventMessage;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 
@@ -44,7 +44,7 @@ public class LobbyScreen implements Screen {
 		playerText = new TextWidget("This will never be shown on screen", new Vector2(65, 450), Constants.MENU_FONT_COLOR);
 		
 		ready = false;
-
+		
 		if (isHost)
 			initHost();
 		else
@@ -104,8 +104,14 @@ public class LobbyScreen implements Screen {
 
 		for (Map.Entry<String, Integer> p : getModel().getLobbyMembers()
 				.entrySet()) {
-			playerText.setText(TextLabels.PLAYER + ": " + p.getValue());
+			
+			if(p.getKey().equals(Player.getInstance().getMac())) {
+				playerText.setText(TextLabels.ME + TextLabels.PLAYER + ": " + (p.getValue()+1)); 
+			} else {
+				playerText.setText(TextLabels.PLAYER + ": " + (p.getValue()+1)); 
+			}
 			playerText.addToY(-65);
+			playerText.setColor(PlayerColors.getPlayerColor(p.getValue()));
 			playerText.draw(tendu.spriteBatch, font);
 		}
 		

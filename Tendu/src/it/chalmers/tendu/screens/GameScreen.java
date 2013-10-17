@@ -3,6 +3,7 @@ package it.chalmers.tendu.screens;
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
@@ -50,17 +51,15 @@ public abstract class GameScreen implements Screen {
 		} else if (model.checkGameState() != GameState.WAITING) {
 			// draw common graphics while game runs, hud, timer etc...
 			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-			shapeRenderer.begin(ShapeType.FilledRectangle);
-
-			shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
-			shapeRenderer.end();
+			
+			//Draw the timer
+			drawTimer();
 
 			otherPlayers = new ArrayList<Integer>();
 			for (int i = 1; i < model.getNumberOfPlayers() + 1; i++) {
 				if (!(i - 1 == model.getplayerNbr()))
 					otherPlayers.add(new Integer(i));
 			}
-			shapeRenderer.setColor(Color.GRAY);
 			renderPlayerIndicator();
 
 		}
@@ -86,6 +85,13 @@ public abstract class GameScreen implements Screen {
 				/ (double) model.getGameTime();
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
+	}
+	
+	private void drawTimer() {
+		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
+		shapeRenderer.filledRect(50, 50, calculateTimerWidth(), 6);
+		shapeRenderer.end();
 	}
 
 	// TODO: could probably look better.

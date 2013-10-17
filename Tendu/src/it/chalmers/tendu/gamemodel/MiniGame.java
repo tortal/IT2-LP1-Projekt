@@ -4,13 +4,16 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 
 import java.util.Map;
 
-//TODO make none dependent of internal clock
-
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private final GameId gameId;
 	private long gameTime;
 	private SimpleTimer timer;
+	
+	/**
+	 * Integer = player id String = player MacAddress
+	 */
+	private Map<String, Integer> players;
 
 	/**
 	 * Creates a new minigame.
@@ -65,11 +68,6 @@ public abstract class MiniGame {
 	public long getGameTime() {
 		return gameTime;
 	}
-
-	/**
-	 * Integer = player id String = player MacAddress
-	 */
-	private Map<String, Integer> players;
 
 	/**
 	 * Gets the difficulty of the game

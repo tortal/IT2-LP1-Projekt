@@ -18,6 +18,9 @@ public class Constants {
 	
 	public static final Color MENU_FONT_COLOR = Color.WHITE;
 	public static final Color MENU_FONT_COLOR_PRESSED = Color.LIGHT_GRAY;
-
-
+	
+	public static final Color PLAYER_0_COLOR = Color.BLUE;
+	public static final Color PLAYER_1_COLOR = Color.YELLOW;
+	public static final Color PLAYER_2_COLOR = Color.GREEN;
+	public static final Color PLAYER_3_COLOR = Color.RED;
 }

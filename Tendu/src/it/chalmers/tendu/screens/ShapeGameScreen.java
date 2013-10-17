@@ -172,6 +172,7 @@ public class ShapeGameScreen extends GameScreen {
 						C.Msg.SOUND_WIN);
 				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
+				controller.getModel().stopTimer();
 				Gdx.app.log(TAG, "Timer started! game won");
 
 			} else if (controller.getModel().checkGameState() == GameState.LOST) {
