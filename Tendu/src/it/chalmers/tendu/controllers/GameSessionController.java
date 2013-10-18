@@ -38,7 +38,7 @@ public class GameSessionController implements EventBusListener {
 		} else if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
