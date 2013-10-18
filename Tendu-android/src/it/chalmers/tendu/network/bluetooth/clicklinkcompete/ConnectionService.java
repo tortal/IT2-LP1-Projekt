@@ -355,7 +355,7 @@ public class ConnectionService {
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
 			if (out != null) {
-				out.close();
+				//out.close();
 			}
 			if (mKryo != null) {
 				mKryo.reset();
