@@ -39,10 +39,10 @@ public class LobbyController implements EventBusListener {
 				|| message.tag == C.Tag.TO_SELF) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
+				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				if (model.isMaxPlayersConnected())
 					break;
 
-				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				model.addPlayer((String) message.content);
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,

@@ -2,6 +2,14 @@ package it.chalmers.tendu.network.wifip2p;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.LobbyModel;
+import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.Color;
+import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
+import it.chalmers.tendu.gamemodel.shapesgame.Shape;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
@@ -192,6 +200,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 				if (networkInfo.isConnected()) {
 					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
+
 					// We are connected with the other device, request connection
 					// info to find group owner IP
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this); // (This is done once in join() already)
@@ -239,6 +248,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			if (server == null) {
 				startKryoNetServer();
 			}
+
 		} else if (info.groupFormed) {
 			// The other device acts as the host. In this case,
 			// you'll want to create a client thread that connects to the group
@@ -247,6 +257,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
 
 			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
+
 
 		} else { 
 			// No group is formed, wait a while and then connect to the first unit available
@@ -331,6 +342,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}, CONNECTION_DELAY);
 	}
 
+	private String hostMacAddress = null;
 	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
@@ -341,8 +353,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			public void onSuccess() {
 				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 				Log.d(TAG, "Connection initiated to: " + device.deviceName);
-				// TODO It may be too early to broadcast mac-address here
-				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_CONNECTED, device.deviceAddress));
+				hostMacAddress = device.deviceAddress;
 			}
 
 			@Override
@@ -442,6 +453,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onSuccess() {
 				// Command successful!
+				Log.d(TAG, "Adding local service");
 			}
 
 			@Override
@@ -461,7 +473,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			 */
 
 			public void onDnsSdTxtRecordAvailable(
-					String fullDomain, Map record, WifiP2pDevice device) {
+					String fullDomain, Map<String, String> record, WifiP2pDevice device) {
 				Log.d(TAG, "DnsSdTxtRecord available -" + record.toString());
 				//buddies.put(device.deviceAddress, (String) record.get("name"));
 
@@ -489,6 +501,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onSuccess() {
 				// Success!
+				Log.d(TAG, "Adding service request");
 			}
 
 			@Override
@@ -502,6 +515,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onSuccess() {
 				// Success!
+				Log.d(TAG, "Trying to discover a service");
 			}
 
 			@Override
@@ -552,9 +566,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void received (Connection connection, Object object) {
 				if (object instanceof EventMessage) {
-					EventMessage request = (EventMessage)object;
-					Log.d(TAG, "Received: " + request.toString());
-					toastMessage(request);
+					EventMessage message = (EventMessage)object;
+					Log.d(TAG, "Received: " + message.toString());
+					toastMessage(message);
+					sendToEventBus(message);
 				}
 			}
 			@Override
@@ -589,9 +604,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				@Override
 				public void received(com.esotericsoftware.kryonet.Connection connection, Object object) {
 					if (object instanceof EventMessage) {
-						EventMessage request = (EventMessage)object;
-						Log.d(TAG, "Received: " + request.toString());
-						toastMessage(request);
+						EventMessage message = (EventMessage)object;
+						Log.d(TAG, "Received: " + message.toString());
+						toastMessage(message);
+						sendToEventBus(message);
 					}
 				}
 				@Override
@@ -603,8 +619,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					//client.close();
 				}
 			});
+			// Send own mac address to host
+			broadcastMessageOverNetwork(new EventMessage(Tag.CLIENT_REQUESTED, Msg.PLAYER_CONNECTED, getMacAddress()));
 			return null;
 		}
+
 	}
 
 	/** Register the classes we want to send over the network */
@@ -614,22 +633,33 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(C.class);
 		kryo.register(C.Msg.class);
 		kryo.register(C.Tag.class);
+		kryo.register(LobbyModel.class);
+		kryo.register(Shape.class);
+		kryo.register(ShapeGame.class);
+		kryo.register(Color.class);
+		kryo.register(ArrayList.class);
+		kryo.register(HashMap.class);
+		kryo.register(GameSession.class);
+		kryo.register(GeometricShape.class);
+		kryo.register(MiniGame.class);
+		kryo.register(NumberGame.class);
+
 	}	
-	
+
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void test() {
 		mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
-			
+
 			@Override
 			public void onSuccess() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onFailure(int reason) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 	}
@@ -637,18 +667,18 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void stopAcceptingConnections() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void toggleHostNumber() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void unregister() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
