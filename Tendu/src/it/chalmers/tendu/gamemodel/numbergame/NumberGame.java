@@ -21,9 +21,9 @@ public class NumberGame extends MiniGame {
 
 	private ArrayList<Integer> listOfNumbers;
 
-	/** No args constructor for reflection use */
-	protected NumberGame() {
-		super();
+	/** For reflection only. */
+	@SuppressWarnings("unused")
+	private NumberGame() {
 	};
 
 	public NumberGame(long extraTime, Difficulty difficulty,
@@ -43,16 +43,16 @@ public class NumberGame extends MiniGame {
 		Collections.shuffle(listOfNumbers);
 
 		// Create an answerList and set the game time according to difficulty.
-		
+
 		setUpGamePlay(difficulty, extraTime);
-		
+
 		// Populate the player lists with their own correct numbers and then
 		// fill it up with dummy numbers.
 		playerLists = divideAndConquer(answerList);
 	}
-	
+
 	public void setUpGamePlay(Difficulty difficulty, long extraTime) {
-		if(playerCount == 1) {
+		if (playerCount == 1) {
 			switch (difficulty) {
 			case ONE:
 				this.setGameTime(30000, extraTime);
@@ -78,7 +78,7 @@ public class NumberGame extends MiniGame {
 				answerList = null;
 				break;
 			}
-		} else if(playerCount == 2) {
+		} else if (playerCount == 2) {
 			switch (difficulty) {
 			case ONE:
 				this.setGameTime(30000, extraTime);
@@ -104,7 +104,7 @@ public class NumberGame extends MiniGame {
 				answerList = null;
 				break;
 			}
-		} else if(playerCount == 3) {
+		} else if (playerCount == 3) {
 			switch (difficulty) {
 			case ONE:
 				this.setGameTime(30000, extraTime);
@@ -130,7 +130,7 @@ public class NumberGame extends MiniGame {
 				answerList = null;
 				break;
 			}
-		} else if(playerCount == 4) {
+		} else if (playerCount == 4) {
 			switch (difficulty) {
 			case ONE:
 				this.setGameTime(30000, extraTime);
