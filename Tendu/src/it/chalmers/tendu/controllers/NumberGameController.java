@@ -39,9 +39,9 @@ public class NumberGameController implements MiniGameController {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 
-			// if (message.msg == C.Msg.START_MINI_GAME) {
-			// numberGame.startGame();
-			// }
+			if (message.msg == C.Msg.START_MINI_GAME) {
+				numberGame.startGame();
+			}
 
 			// *********NUMBER GAME***********
 			if (message.gameId == GameId.NUMBER_GAME) {
@@ -92,10 +92,9 @@ public class NumberGameController implements MiniGameController {
 					EventBus.INSTANCE.broadcast(changedMessage);
 				}
 
+			} else if (message.msg == C.Msg.START_MINI_GAME) {
+				numberGame.startGame();
 			}
-			// else if (message.msg == C.Msg.START_MINI_GAME) {
-			// numberGame.startGame();
-			// }
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
@@ -106,10 +105,10 @@ public class NumberGameController implements MiniGameController {
 					// TODO: Not used
 					// Gdx.app.log(TAG, " Time left = " +
 					// gameSession.currentMiniGame.getTimeLeft());
-					
+
 				} else if (message.msg == Msg.REMOVE_TIME) {
 					numberGame.changeTime(PENALTY_TIME);
-					
+
 				} else if (message.msg == Msg.NUMBER_GUESS) {
 					if (numberGame.checkNbr((Integer) message.content)) {
 

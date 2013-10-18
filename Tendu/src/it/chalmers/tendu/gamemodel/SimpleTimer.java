@@ -22,20 +22,21 @@ public class SimpleTimer {
 	/**
 	 * Starts a timer with the specified amount of time.
 	 * If the timer is already
-	 * running or has ended calling this method will do nothing
+	 * running or has ended calling this method will do nothing (return false)
 	 * 
 	 * @param time
 	 *            time in milliseconds
 	 */
-	public void start(long time) {
+	public boolean start(long time) {
 		if (state == STATE.RUNNING || state == STATE.DONE) {
-			return;
+			return false;
 		}
 
 		totalTime = time;
 		remainingTime = totalTime;
 		setEndTime(totalTime);
 		state = STATE.RUNNING;
+		return true;
 	}
 
 	/**

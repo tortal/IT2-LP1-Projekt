@@ -37,20 +37,8 @@ public interface INetworkHandler {
 	/** Stops the network from accepting any 
 	 * more incoming connections. No more matchmaking */
 	public void stopAcceptingConnections();
-	// /**
-	// * Search for active teams.
-	// */
-	// List<Object> searchTeam();
-
-	// /**
-	// * Returns the game state
-	// * @return
-	// */
-	// GameStateBundle pollGameState();
-
-	// /**
-	// * Returns the network state
-	// * @return
-	// */
-	// int pollNetworkState();
+	
+	/** Method for easing multiple simultaneous testing of app */ 
+	public void toggleHostNumber();
+	
 }
