@@ -594,6 +594,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			client = new Client();
 			Kryo kryo = client.getKryo();
 			registerKryoClasses(kryo);
+			// TODO try reverting to old way of starting thread, see if that solves bufferunderflow crash
 			new Thread(client).start(); // Possible daemon thread-related bug fix
 			//client.start();
 			try {
