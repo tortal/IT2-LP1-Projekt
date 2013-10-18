@@ -40,7 +40,7 @@ public class MainMenuScreen implements Screen {
 		testStuff = new TextWidget("test stuff", new Vector2(785, 680),
 				Constants.MENU_FONT_COLOR);
 		
-		hostType = new TextWidget("Host = " + hostNumber, new Vector2(785, 150),
+		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 120),
 				Constants.MENU_FONT_COLOR);
 
 		dark = true;
@@ -62,13 +62,15 @@ public class MainMenuScreen implements Screen {
 			}
 			
 			if(hostType.collided(input.getCoordinates())) {
-				tendu.getCamera().toggleHostNumber();
+				tendu.getNetworkHandler().toggleHostNumber();
 				
 				if(hostNumber == 1) {
 					hostNumber = 2;
 				} else {
 					hostNumber = 1;
 				}
+				
+				hostType.setText("Host = " + hostNumber);
 			}
 
 			if (input.x < 100 && input.y > Constants.SCREEN_HEIGHT - 100) {
@@ -116,6 +118,7 @@ public class MainMenuScreen implements Screen {
 	public void render() {
 		hostGame.draw(tendu.spriteBatch, font);
 		joinGame.draw(tendu.spriteBatch, font);
+		hostType.draw(tendu.spriteBatch, menuFont);
 		// testStuff.draw(tendu.spriteBatch, font);
 
 	}
