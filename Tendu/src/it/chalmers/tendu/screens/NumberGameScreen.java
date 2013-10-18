@@ -215,7 +215,8 @@ public class NumberGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				model.stopTimer();
-
+				gameCompletedTimer.start(1500);
+				
 				if (gameCompletedTimer.isDone()) {
 
 					// Received by GameSessionController.

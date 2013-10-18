@@ -8,6 +8,7 @@ import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
+import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGameSound;
@@ -154,13 +155,16 @@ public class ShapeGameScreen extends GameScreen {
 	 *            shape to be sent
 	 * @return
 	 */
-	private List<Object> messageContentFactory(int player, Shape shape) {
+	private NetworkShape messageContentFactory(int player, Shape shape) {
 
-		List<Object> l = new ArrayList<Object>();
-		l.add(player);
-		l.add(shape);
-		return l;
-
+//		List<Object> l = new ArrayList<Object>();
+//		l.add(player);
+//		l.add(shape);
+//		return l;
+		
+		//return Player.getInstance();
+		return new NetworkShape(player, shape);
+//		return 1;
 	}
 
 	/** All game logic goes here (within the model...) */

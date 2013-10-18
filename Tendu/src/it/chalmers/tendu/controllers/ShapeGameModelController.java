@@ -2,6 +2,7 @@ package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.tbd.C;
@@ -162,12 +163,18 @@ public class ShapeGameModelController implements MiniGameController {
 	// TODO Shape should appear on the proper pos
 	private void sendShape(Object content) {
 		Gdx.app.log(TAG, "Host is in sendShapess: "+Player.getInstance().isHost());
-		List<Object> messageContent = (List) content;
-		int player = (Integer) messageContent.get(0);
-		// Since we send objects, their references no longer matches our model
-				// we have to see which of the objects in "our" model that was sent.
-		Shape shape = (Shape) messageContent.get(1);
 		
+		NetworkShape networkShape = (NetworkShape) content;
+		
+		Shape shape = networkShape.shape;
+		int player = networkShape.player;
+		
+//		List<Object> messageContent = (List) content;
+//		int player = (Integer) messageContent.get(0);
+//		// Since we send objects, their references no longer matches our model
+//				// we have to see which of the objects in "our" model that was sent.
+//		Shape shape = (Shape) messageContent.get(1);
+//		
 		// TODO: this is very fishy...
 //		for (Shape s : shapeGame.getAllInventory().get(player)) {
 //			if (s.equals(shape))

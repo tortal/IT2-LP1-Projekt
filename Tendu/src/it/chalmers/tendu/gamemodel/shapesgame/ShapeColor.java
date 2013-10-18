@@ -1,5 +1,5 @@
 package it.chalmers.tendu.gamemodel.shapesgame;
 
-public enum Color {
+public enum ShapeColor {
 	BLUE, GREEN, RED, YELLOW;
 }

@@ -5,7 +5,7 @@ import it.chalmers.tendu.gamemodel.GameId;
 public class EventMessage {
 	
 
-	public C.Tag tag;
+	public final C.Tag tag;
 	public final C.Msg msg;
 	public final GameId gameId;
 	public final Object content;
