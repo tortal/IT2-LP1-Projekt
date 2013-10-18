@@ -67,7 +67,9 @@ public class GameSessionController implements Listener {
 				if (result.getGameState() == GameState.WON) {
 					MiniGame miniGame = gameSession.getNextMiniGame();
 					gameSession.setCurrentMiniGame(miniGame);
-					
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_WIN);
+					EventBus.INSTANCE.broadcast(soundMsg);
 					// Received by clients in gameSessionController.
 					EventMessage eventMessage = new EventMessage(
 							C.Tag.COMMAND_AS_HOST, C.Msg.SHOW_INTERIM_SCREEN,
@@ -77,6 +79,9 @@ public class GameSessionController implements Listener {
 					gameSession.interimScreen();
 
 				} else if (result.getGameState() == GameState.LOST) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_LOST);
+					EventBus.INSTANCE.broadcast(soundMsg);
 					
 					// Received by clients in gameSessionController.
 					EventMessage eventMessage = new EventMessage(
