@@ -1,15 +1,15 @@
 package it.chalmers.tendu.screens;
 
-//TODO needs major refactoring
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controllers.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
-import it.chalmers.tendu.defaults.Constants.Difficulty;
-import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.MiniGameFactory;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGameSound;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -18,65 +18,79 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
-
+import com.badlogic.gdx.math.Vector2;
 
 /** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
-	public static final int TEMP_PLAYERNUMBER = 3; // Temporary hardcoded player number
-	
-	private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private BitmapFont numberFont; // for rendering fonts
-	private NumberGame model; // Model for current minigame (number)
+	private ArrayList<Color> colors; // list with colors for all numbers
+	private ArrayList<Integer> guessNumbers; // the correct numbers
 
-	private ArrayList<Color> colors;
+	private ArrayList<Integer> numbers; // the correct numbers
+	private SimpleTimer instructionsTimer; // used to time how long the
+											// instructions should be displayed
+	private int time;
+	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
+											// the millisecond you've one or
+											// lost
+	int numberSpacing;
+	int numberAlignment;
 
-	private ArrayList<NumberCircle> numberCircles;
-	private ArrayList<Integer> numbers;
+	private NumberGameController controller;
 
-	private Vector3 touchPos; // used to store coordinates for on screen touches
+	private NumberGameSound sound;
 
-	private int time; // used to time certain "events" during the game.
-	private int numberAlignment; // start position of first number to the left
-									// on the screen
-	private Sound correct = Gdx.audio.newSound(Gdx.files.internal("sounds/correct.wav"));
-	private Sound success = Gdx.audio.newSound(Gdx.files.internal("sounds/success.mp3"));
-	private Sound wrong = Gdx.audio.newSound(Gdx.files.internal("sounds/wrong.wav"));
-	private Sound lost = Gdx.audio.newSound(Gdx.files.internal("sounds/lost.wav"));
-	
-	
+	private BitmapFont font;
+	private BitmapFont numberFont;
+
+	private TextWidget memorizeText;
+	private TextWidget instructionText;
+	private TextWidget timeOutText;
+
+	private ArrayList<TextWidget> guessNumbersWidgets;
+	private ArrayList<TextWidget> numberWidgets;
+
 	/**
-	 * @param game the applicationlistener
-	 * @param model the MiniGame model associated with the screen
+	 * @param tendu
+	 *            the applicationlistener
+	 * @param model
+	 *            the MiniGame model associated with the screen
 	 */
-	public NumberGameScreen(Tendu game, MiniGame model) {
-		super(game, model);
+	public NumberGameScreen(Tendu tendu, MiniGame model) {
+		super(tendu, model);
 
-		shapeRenderer = new ShapeRenderer();
-
-		numberFont = new BitmapFont();
-		touchPos = new Vector3();
-		this.model = (NumberGame) model;
+		controller = new NumberGameController((NumberGame) model);
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+		numberFont = new BitmapFont(
+				Gdx.files.internal("fonts/digitalTendu.fnt"),
+				Gdx.files.internal("fonts/digitalTendu.png"), false);
+		sound = new NumberGameSound();
 
 		setUpGame();
 	}
 
 	/**
-	 * Initiall setup
+	 * Initial setup
 	 */
 	private void setUpGame() {
-		time = 0;
-		numberFont.scale(2); // scale up font relative to the previous scale, -2
-								// scales it back
+		instructionsTimer = new SimpleTimer();
+		gameCompletedTimer = new SimpleTimer();
 
-		numberCircles = new ArrayList<NumberCircle>();
+		memorizeText = new TextWidget(TextLabels.MEMORIZE_NUMBERS, new Vector2(
+				250, 595), Constants.MENU_FONT_COLOR);
+		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(
+				150, 595), Constants.MENU_FONT_COLOR);
+		timeOutText = new TextWidget(TextLabels.TIME_OUT,
+				new Vector2(440, 400), Color.RED);
+
+		guessNumbers = new ArrayList<Integer>();
 		numbers = new ArrayList<Integer>();
+		guessNumbersWidgets = new ArrayList<TextWidget>();
+		numberWidgets = new ArrayList<TextWidget>();
 
+		// TODO more natural colors
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -88,173 +102,189 @@ public class NumberGameScreen extends GameScreen {
 		colors.add(Color.RED);
 		Collections.shuffle(colors);
 
-		for (Integer number : model.getAnswerList()) {
-			numbers.add(number.intValue());
-		}
-
-		// TODO chooses a static player atm.
-		for (int i = 0; i < model.getPlayerList(TEMP_PLAYERNUMBER).size(); i++) {
-			numberCircles.add(new NumberCircle(model.getPlayerList(TEMP_PLAYERNUMBER).get(i),
-					(90 + 95 * i), 120, 35, colors.get(i)));
-		}
-
-		if (model.getDifficulty() == Constants.Difficulty.ONE) {
-			numberAlignment = 240;
+		numberSpacing = 150; // pixels between the numbers on screen
+		// position of the first number to the left on the screen
+		if (getModel().getAnswerList().size() < 8) {
+			numberAlignment = Constants.SCREEN_WIDTH / 2
+					- (getModel().getAnswerList().size() - 1) * numberSpacing
+					/ 2;
 		} else {
-			numberAlignment = 25;
+			numberAlignment = Constants.SCREEN_WIDTH / 2 - 7 * numberSpacing
+					/ 2;
+		}
+		// add the correct number from the answerlist
+		for (int i = 0; i < getModel().getAnswerList().size(); i++) {
+			numbers.add(getModel().getAnswerList().get(i));
+			if (i < 8) {
+				numberWidgets.add(new TextWidget(getModel().getAnswerList()
+						.get(i).toString(), new Vector2(numberAlignment + i
+						* numberSpacing, 470), colors.get(i)));
+			} else {
+				numberWidgets.add(new TextWidget(getModel().getAnswerList()
+						.get(i).toString(), new Vector2(numberAlignment
+						+ (i - 8) * numberSpacing, 385), colors.get(-(8 - i))));
+			}
+		}
+
+		// setup the guess list
+		for (int i = 0; i < getModel().getMyList().size(); i++) {
+			guessNumbers.add(getModel().getMyList().get(i));
+			guessNumbersWidgets.add(new TextWidget(getModel().getMyList()
+					.get(i).toString(), new Vector2(72 + 150 * i, 130), colors
+					.get(i), -0.15f));
+
+			guessNumbersWidgets.get(i).expandHeight(15);
+			guessNumbersWidgets.get(i).expandWidth(15);
+		}
+
+		// TODO fewer players should have more time for better game balance
+		if (numbers.size() <= 2) {
+			time = 2000;
+		} else if (numbers.size() <= 4) {
+			time = 3500;
+		} else if (numbers.size() <= 8) {
+			time = 5000;
+		} else if (numbers.size() <= 16) {
+			time = 7500;
+		}
+
+	}
+
+	/**
+	 * Draws the correct numbers list to the screen
+	 * 
+	 * @param showAll
+	 *            set to false if only correctly answered numbers should be
+	 *            drawn
+	 */
+	private void drawNumbers(boolean showAll) {
+		if (showAll) {
+			for (int i = 0; i < numbers.size(); i++) {
+				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
+						numberFont);
+			}
+		} else {
+			for (int i = 0; i < numbers.size(); i++) {
+				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
+					numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
+							numberFont);
+				}
+			}
 		}
 	}
 
 	/**
-	 * Draws the current number list to the screen
-	 * 
-	 * @param showAll set to false if only correctly answered numbers should be drawn
+	 * Draws all guess numbers
 	 */
-	private void drawNumbers(boolean showAll) {
-		numberFont.scale(1.6f);
-
-		if (showAll) {
-			for (int i = 0; i < numbers.size(); i++) {
-				numberFont.setColor(colors.get(i));
-				numberFont.draw(game.spriteBatch, "" + numbers.get(i),
-						numberAlignment + i * 105, 300);
-			}
-		} else {
-			for (int i = 0; i < numbers.size(); i++) {
-				if (model.getAnsweredNbrs().contains(numbers.get(i))) {
-					numberFont.setColor(colors.get(i));
-					numberFont.draw(game.spriteBatch, ""
-							+ numbers.get(i), numberAlignment + i * 105,
-							300);
-				}
-			}
+	private void drawGuessNumbers() {
+		for (int i = 0; i < guessNumbers.size(); i++) {
+			guessNumbersWidgets.get(i).draw(tendu.spriteBatch, numberFont);
 		}
-		numberFont.scale(-1.6f);
 	}
 
-	
-	private void drawNumberCircle(NumberCircle circle) {
-		shapeRenderer.setColor(circle.color);
-		numberFont.setColor(circle.color);
-
-		for (int i = 0; i < 5; i++) {
-			shapeRenderer.circle(circle.getX(), circle.getY(),
-					(circle.getRadius() - i) * circle.scale);
-		}
-		numberFont.draw(game.spriteBatch, "" + circle.getNumber(),
-				circle.getNumberX(), circle.getNumberY());
-	}
-
-	private void drawNumberCircles() {
-		numberFont.scale(-0.8f);
-		for (int i = 0; i < numberCircles.size(); i++) {
-			drawNumberCircle(numberCircles.get(i));
-		}
-		numberFont.scale(0.8f);
-	}
-
-	/** Draw all graphics here */
+	/** Draw all graphics from here */
 	@Override
 	public void render() {
-		super.render();
-		shapeRenderer.setProjectionMatrix(game.getCamera().combined);
-		shapeRenderer.begin(ShapeType.Circle);
+		if (model.hasStarted()) {
+			super.render(); // draws common ui-stuff
 
-		if (time < 240) {
-			numberFont.setColor(Color.BLUE);
-			numberFont.draw(game.spriteBatch, "Memorize the numbers", 200, 400);
-			drawNumbers(true);
+			if (!instructionsTimer.isDone()) {
+				memorizeText.draw(tendu.spriteBatch, font);
+				drawNumbers(true);
 
-		} else {
-			if (model.checkGameState() == GameState.RUNNING) {
-				numberFont.setColor(Color.BLUE);
-				numberFont.draw(game.spriteBatch,
-						"Enter the numbers in the correct order", 60, 400);
-				
-				drawNumbers(false);
-				drawNumberCircles();
+			} else {
+				font.setColor(Color.BLUE);
+				instructionText.draw(tendu.spriteBatch, font);
+
+				if (model.checkGameState() == GameState.LOST) {
+					timeOutText.draw(tendu.spriteBatch, font);
+				} else {
+					drawNumbers(false);
+				}
+				drawGuessNumbers();
 			}
 		}
-
-		if (model.checkGameState() == GameState.WON) {
-			numberFont.setColor(Color.GREEN);
-			numberFont.scale(2);
-			numberFont.draw(game.spriteBatch, "You won!", 300, 300);
-			numberFont.scale(-2);
-			success.play();
-			loadNext();
-		} else if (model.checkGameState() == GameState.LOST) {
-			numberFont.setColor(Color.RED);
-			numberFont.scale(2);
-			numberFont.draw(game.spriteBatch, "You Lost!", 300, 300);
-			numberFont.scale(-2);
-			lost.play();
-			loadNext();
-		}
-
-		shapeRenderer.end();
-	}
-	
-	//TODO remove this method
-	//used to create infinite loop of number games for testing
-	private void loadNext() {
-		if(game.isHost() && time > 360) {
-			
-			GameId gameId = game.gameSession.getNextGameId();
-			MiniGame nextGame = MiniGameFactory.createMiniGame(0, gameId, Difficulty.TWO);
-			EventMessage evMsg = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.LOAD_THIS_GAME, nextGame);
-			EventBus.INSTANCE.broadcast(evMsg);
-			
-			game.setScreen(MiniGameScreenFactory.createMiniGameScreen(game, game.gameSession.currentMiniGame));
-		}
-		
-		time++;
 	}
 
 	/** All game logic goes here */
 	@Override
 	public void tick(InputController input) {
-		//TODO maybe not the best solution...
-		model = (NumberGame)game.gameSession.currentMiniGame;
-		
-		if (model.checkGameState() != GameState.RUNNING)
-			return;
+		model = getModel(); // make sure we have the new model (the host might
+							// have changed it)
 
-		if (time < 240) {
-			time++;
-		} else {
-			if (input.isTouchedUp()) {
-				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-				game.getCamera().unproject(touchPos);
-
-				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(touchPos)) {
-						Gdx.input.vibrate(25);
-						EventBus.INSTANCE.broadcast(new EventMessage(
-								C.Tag.ACCESS_MODEL, C.Msg.NUMBER_GUESS, model
-										.getGameId(), circle.getNumber()));
-					}
-					circle.scale = 1;
+		if (model.hasStarted()) {
+			if (model.checkGameState() != GameState.RUNNING) {
+				model.stopTimer();
+				if (model.checkGameState() == GameState.WON
+						&& gameCompletedTimer.start(1500)) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_WIN);
+					EventBus.INSTANCE.broadcast(soundMsg);
+				} else if (model.checkGameState() == GameState.LOST
+						&& gameCompletedTimer.start(1500)) {
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_LOST);
+					EventBus.INSTANCE.broadcast(soundMsg);
 				}
-			}
 
-			if (input.isTouchedDown()) {
-				touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-				game.getCamera().unproject(touchPos);
+				if (gameCompletedTimer.isDone()) {
 
-				for (NumberCircle circle : numberCircles) {
-					if (circle.collided(touchPos)) {
-						circle.scale = 1.5f;
+					// Received by GameSessionController.
+					EventMessage message = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.GAME_RESULT, model.getGameResult());
+					EventBus.INSTANCE.broadcast(message);
+				}
+
+				return;
+
+			} else if (model.checkGameState() == GameState.RUNNING) {
+				instructionsTimer.start(time); // only starts once
+
+				if (instructionsTimer.isDone()) {
+					model.startGameTimer();
+					if (input.isTouchedUp()) {
+						for (int i = 0; i < guessNumbers.size(); i++) {
+							if (guessNumbersWidgets.get(i).collided(
+									input.getCoordinates())) {
+								EventBus.INSTANCE
+										.broadcast(new EventMessage(
+												C.Tag.TO_SELF,
+												C.Msg.NUMBER_GUESS, model
+														.getGameId(),
+												guessNumbers.get(i)));
+							}
+							guessNumbersWidgets.get(i).setScale(-0.15f);
+							guessNumbersWidgets.get(i).setY(130);
+
+						}
+					}
+
+					if (input.isTouchedDown()) {
+						for (int i = 0; i < guessNumbers.size(); i++) {
+							if (guessNumbersWidgets.get(i).collided(
+									input.getCoordinates())) {
+								Gdx.input.vibrate(25);
+								guessNumbersWidgets.get(i).setScale(0.2f);
+								guessNumbersWidgets.get(i).setY(145);
+							}
+
+						}
 					}
 				}
 			}
 		}
 	}
 
+	private NumberGame getModel() {
+		return controller.getModel();
+	}
+
 	@Override
 	public void removed() {
 		super.removed();
-		shapeRenderer.dispose();
+		font.dispose();
 		numberFont.dispose();
+		sound.unregister();
+		controller.unregister();
 	}
 }

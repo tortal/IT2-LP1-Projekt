@@ -41,13 +41,12 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 
 		switch (message.tag) {
 		case COMMAND_AS_HOST: 
-			message.setTag(C.Tag.HOST_COMMANDED); 	// Set new tag to prevent
+			// Set new tag to prevent
 			// feedback loop
-			broadcastMessageOverNetwork(message);
+			broadcastMessageOverNetwork(new EventMessage(message, C.Tag.HOST_COMMANDED));
 			break;
 		case REQUEST_AS_CLIENT: 
-			message.setTag(C.Tag.CLIENT_REQUESTED);
-			broadcastMessageOverNetwork(message);
+			broadcastMessageOverNetwork(new EventMessage(message, C.Tag.CLIENT_REQUESTED));
 			break;
 		default:
 			break;

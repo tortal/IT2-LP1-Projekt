@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package it.chalmers.tendu.network.clicklinkcompete;
+package it.chalmers.tendu.network.bluetooth.clicklinkcompete;
 
 import it.chalmers.tendu.tbd.EventMessage;
 import android.bluetooth.BluetoothDevice;
@@ -59,7 +59,7 @@ public class Connection {
 	private ConnectionService connectionService;
 
 	public Connection(Context ctx) {
-		
+
 		connectionService = new ConnectionService(ctx);
 	}
 
@@ -74,7 +74,7 @@ public class Connection {
 					+ MAX_SUPPORTED);
 			return Connection.FAILURE;
 		}
-		
+
 		try {
 			int result = connectionService.startServer(maxConnections,
 					oicListener, omcrListener, omrListener, oclListener);
@@ -138,12 +138,17 @@ public class Connection {
 		return "";
 	}
 
-	public void shutdown() {
+	public void reset() {
 		try {
-			connectionService.shutdown();
+			connectionService.reset();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void stopAcceptingConnections() {
+		connectionService.stopAcceptingConnections();
+		
 	}
 }

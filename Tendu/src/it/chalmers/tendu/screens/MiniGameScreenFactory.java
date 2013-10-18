@@ -1,19 +1,20 @@
 package it.chalmers.tendu.screens;
 
-import com.badlogic.gdx.Gdx;
-
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
+import com.badlogic.gdx.Gdx;
+
 public class MiniGameScreenFactory {
 
-	public static GameScreen createMiniGameScreen(Tendu game, MiniGame miniModel) {
-		Gdx.app.log("MiniGameScreenFactory", "gameId = " + miniModel.getGameId());
+	public static Screen createMiniGameScreen(Tendu game, MiniGame miniModel) {
+		Gdx.app.log("MiniGameScreenFactory",
+				"gameId = " + miniModel.getGameId());
 		switch (miniModel.getGameId()) {
 		case NUMBER_GAME:
 			return new NumberGameScreen(game, miniModel);
-		case SHAPES_GAME:
-			return new ShapesGameScreen(game, miniModel);
+		case SHAPE_GAME:
+			return new ShapeGameScreen(game, miniModel);
 		}
 		return null;
 	}

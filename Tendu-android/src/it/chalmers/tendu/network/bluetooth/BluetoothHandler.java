@@ -1,13 +1,19 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
+
 import it.chalmers.tendu.network.NetworkHandler;
-import it.chalmers.tendu.network.clicklinkcompete.Connection;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnConnectionLostListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnIncomingConnectionListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
-import it.chalmers.tendu.network.clicklinkcompete.Connection.OnMessageReceivedListener;
+
+import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
+import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
+
 import it.chalmers.tendu.tbd.C;
+import it.chalmers.tendu.tbd.C.Msg;
+import it.chalmers.tendu.tbd.C.Tag;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
 
@@ -42,7 +48,6 @@ public class BluetoothHandler extends NetworkHandler {
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	
 
 	// Handles the bluetooth connections
 	private Connection connection;
@@ -89,8 +94,8 @@ public class BluetoothHandler extends NetworkHandler {
 			((AndroidApplication) context).runOnUiThread(new Runnable() {
 				public void run() {
 					Toast toast = Toast.makeText(context, message.toString(),
-							Toast.LENGTH_SHORT); 
-					toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 					toast.show();
 				}
 			});
@@ -123,14 +128,14 @@ public class BluetoothHandler extends NetworkHandler {
 				}
 			});
 			connectedDevices.add(device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.PLAYER_CONNECTED, device.getName()));
+			sendToEventBus(new EventMessage(C.Tag.CLIENT_REQUESTED,
+					C.Msg.PLAYER_CONNECTED, device.getAddress()));
 		}
 	};
 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.CONNECTION_LOST, device.getName()));
 			// Show a dialogue notifying user it got disconnected
 			class displayConnectionLostAlert implements Runnable {
 				public void run() {
@@ -138,35 +143,39 @@ public class BluetoothHandler extends NetworkHandler {
 
 					connectionLostAlert.setTitle("Connection lost");
 					connectionLostAlert
-					.setMessage("Your connection with the other players has been lost.");
+							.setMessage("Your connection with the other players has been lost.");
 
 					connectionLostAlert.setPositiveButton("Ok",
 							new OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int which) {
-							// TODO Let app terminate itself?
-							// finish();
-						}
-					});
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// TODO Let app terminate itself?
+									// finish();
+								}
+							});
 					connectionLostAlert.setCancelable(false);
 					try {
 						connectionLostAlert.show();
 					} catch (BadTokenException e) {
-						// Something really bad happened here;
-						// seems like the Activity itself went away before
-						// the runnable finished.
-						// Bail out gracefully here and do nothing.
+						Log.e(TAG, "BadTokenException", e);
 					}
 				}
 			}
+
 			connectedDevices.remove(device);
+			if (connectedDevices.isEmpty()) {
+				// If all devices are disconnected we notify and reset the network
+				// otherwise we just broadcast that a player is gone
+				
+				// Display on UI-thread
+				((AndroidApplication) context)
+				.runOnUiThread(new displayConnectionLostAlert());
 
-			// Display on UI-thread
-			((AndroidApplication) context)
-			.runOnUiThread(new displayConnectionLostAlert());
-
-			// shutdown EVERYTHING!
-			destroy();
+				resetNetwork();
+				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+			} else {
+				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_DISCONNECTED, device.getAddress()));				
+			}
 		}
 	};
 
@@ -192,7 +201,7 @@ public class BluetoothHandler extends NetworkHandler {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)
-				.show();
+						.show();
 			}
 		});
 		if (D)
@@ -204,10 +213,10 @@ public class BluetoothHandler extends NetworkHandler {
 
 			@Override
 			public void run() {
-				BluetoothDevice bd = findAvailableServerDevice();
-				if (bd != null) {
-					Log.d(TAG, "Will now try and connect to: " + bd.getName());
-					connection.connect(bd, dataReceivedListener,
+				BluetoothDevice device = findAvailableServerDevice();
+				if (device != null) {
+					Log.d(TAG, "Will now try and connect to: " + device.getName());
+					connection.connect(device, dataReceivedListener,
 							disconnectedListener);
 				} else {
 					Log.d(TAG, "No device to connect to");
@@ -245,15 +254,26 @@ public class BluetoothHandler extends NetworkHandler {
 		if (mBluetoothAdapter.getName() == null) {
 			mBluetoothAdapter.setName("Name");
 		}
-
+		
+//		String newName = "No rename occured";
+//		String oldName = mBluetoothAdapter.getName();
+		
+//		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
+//			newName = oldName + Constants.SERVER_NAME;
+//			mBluetoothAdapter.setName(newName);
+//			while (!mBluetoothAdapter.getName().equals(newName)) {
+//				// Loop while name changes
+//			}
+//		}
+		
+		// Multitestversion
+		removeTenduFromDeviceName();
 		String newName = "No rename occured";
 		String oldName = mBluetoothAdapter.getName();
-		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
-			newName = oldName + Constants.SERVER_NAME;
-			mBluetoothAdapter.setName(newName);
-			while (!mBluetoothAdapter.getName().equals(newName)) {
-				// Loop while name changes
-			}
+		newName = oldName + Constants.SERVER_NAME + hostNumber;
+		mBluetoothAdapter.setName(newName);
+		while (!mBluetoothAdapter.getName().equals(newName)) {
+			// Loop while name changes
 		}
 	}
 
@@ -264,15 +284,20 @@ public class BluetoothHandler extends NetworkHandler {
 		String oldName = mBluetoothAdapter.getName();
 		String newName = new String(oldName);
 
-		if (oldName.contains(Constants.SERVER_NAME)) {
-			newName = oldName.replace(Constants.SERVER_NAME, "");
-			Log.d(TAG, "Bluetooth name removal successfull? "
-					+ mBluetoothAdapter.setName(newName));
+		if (oldName.contains(Constants.SERVER_NAME + '1')) {
+			newName = oldName.replace(Constants.SERVER_NAME + '1', "");
+			mBluetoothAdapter.setName(newName);
+			while (!mBluetoothAdapter.getName().equals(newName)) {
+				// Loop while name changes
+			}
+		} else if (oldName.contains(Constants.SERVER_NAME + '2')) {
+			newName = oldName.replace(Constants.SERVER_NAME + '2', "");
+			mBluetoothAdapter.setName(newName);
+			while (!mBluetoothAdapter.getName().equals(newName)) {
+				// Loop while name changes
+			}
 		}
-		Log.v(TAG, "Remove: " + oldName + " -> " + newName
-				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
 	}
-
 
 	/**
 	 * Checks if device is a valid server by looking for the proper name suffix
@@ -286,13 +311,14 @@ public class BluetoothHandler extends NetworkHandler {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(Constants.SERVER_NAME);
+		String deviceName = device.getName(); 
+		return deviceName.contains(Constants.SERVER_NAME + hostNumber);
 	}
 
 	private void registerBroadcastReceiver() {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		context.registerReceiver(mReceiver, filter); 
+		context.registerReceiver(mReceiver, filter);
 		// Don't forget to
 		// unregister during
 		// onDestroy
@@ -354,19 +380,31 @@ public class BluetoothHandler extends NetworkHandler {
 	@Override
 	public void destroy() {
 		Log.d(TAG, "++++++ON DESTROY++++");
-		removeTenduFromDeviceName();
+
 		unregisterBroadcastReceiver();
-		connection.shutdown();
+		resetNetwork();
+
 	}
 
 	@Override
 	public void onPause() {
-		context.unregisterReceiver(mReceiver);
+		unregisterBroadcastReceiver();
 	}
 	
 	@Override
 	public void onResume() {
 		registerBroadcastReceiver();
+	}
+	
+	@Override
+	public void resetNetwork() {
+		removeTenduFromDeviceName();
+		connection.reset();
+	}
+	
+	@Override
+	public void stopAcceptingConnections() {
+		connection.stopAcceptingConnections();
 	}
 	
 	// Test Method
@@ -375,7 +413,7 @@ public class BluetoothHandler extends NetworkHandler {
 				C.Msg.TEST));
 	}
 
-	// Message handler
+	// Message handler - not used atmo
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -395,9 +433,11 @@ public class BluetoothHandler extends NetworkHandler {
 		return connection.getAddress();
 	}
 
+	
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
-		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST, C.Msg.ALL_PLAYERS_CONNECTED, addresses);
+		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST,
+				C.Msg.ALL_PLAYERS_CONNECTED, addresses);
 		sendToEventBus(message);
 	}
 
@@ -409,8 +449,31 @@ public class BluetoothHandler extends NetworkHandler {
 	public void broadcastMessageOverNetwork(EventMessage message) {
 		connection.broadcastMessage(message);
 	}
-	
+
 	public void sendMessageToPlayer(BluetoothDevice device, EventMessage message) {
 		connection.sendMessage(device, message);
+	}
+
+	@Override
+	public void unregister() {
+		EventBus.INSTANCE.removeListener(this);
+	}
+
+	
+	private int hostNumber = 1;
+	@Override
+	public void toggleHostNumber() {
+		if (hostNumber == 1) {
+			hostNumber = 2;
+		} else {
+			hostNumber = 1;
+		}
+		
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+				Toast.makeText(context, "Host: " + hostNumber, Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
 	}
 }

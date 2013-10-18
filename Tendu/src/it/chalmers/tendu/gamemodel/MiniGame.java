@@ -2,37 +2,99 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
-//TODO make none dependent of internal clock
+import com.badlogic.gdx.Gdx;
+
+ /**
+ * One of many minigames to be played during a {@link GameSession}.
+ * 
+ * All games of Tendu should extend this class.
+ * See {@link NumberGame} or {@link ShapeGame} for examples.
+ *
+ */
 public abstract class MiniGame {
 	private Difficulty difficulty;
-	private GameState state;
-	private GameId gameId;
-	private List<Player> players;
-	private long endTime;
-	private int gameTime;
-	private long pausedTimeLeft; 
-
-
-	/** No args constructor for reflection use */
-	protected MiniGame() {};
-
+	private final GameId gameId;
+	private long gameTime;
+	private SimpleTimer timer;
+	private SimpleTimer startTimer;
+	private boolean started;
+	
+	/**
+	 * Integer = player id String = player MacAddress
+	 */
+	private Map<String, Integer> players;
+	
 	/**
 	 * Creates a new minigame.
 	 * 
 	 * @param addTime
-	 *            The game's maximum time in milliseconds
+	 *            > 0 if extra time should be added
 	 * @param difficulty
 	 *            the game's difficulty
 	 * @param gameId
 	 */
-	public MiniGame(int time, Difficulty difficulty, GameId gameId) {
+	public MiniGame(Difficulty difficulty, GameId gameId,
+			Map<String, Integer> players) {
 		this.difficulty = difficulty;
-		this.setGameId(gameId);
-		this.state = GameState.DEFAULT;
-		gameTime= 30000+time;
-		startGame();
+		this.gameId = gameId;
+		this.players = players;
+		timer = new SimpleTimer();
+		startTimer = new SimpleTimer();
+		started = false;
+	}
+
+	/** No args constructor for reflection use */
+	protected MiniGame() {
+		gameId = null;
+	}
+	
+	public void startGame() {
+		//startTimer.start(3000);
+		started = true;
+	}
+	
+	public boolean hasStarted() {
+//		if(startTimer.isDone()) {
+//			return true;
+//		}
+		
+		return started;
+	}
+ 
+	public void setGameTime(long gameTime, long extraTime) {
+		this.gameTime = gameTime + extraTime;
+	}
+
+	/**
+	 * Gets the remaining time
+	 * 
+	 * @return time left in millis seconds
+	 */
+	public long getRemainingTime() {
+		return timer.getRemainingTime();
+	}
+
+	/**
+	 * Call if host pushed new model
+	 */
+	public void reInit() {
+		timer.restart(timer.getRemainingTime());
+	}
+
+	/**
+	 * @param time
+	 *            the change in milliseconds, can be positive or negative;
+	 */
+	public void changeTime(long time) {
+		timer.change(time);
+	}
+
+	public long getGameTime() {
+		return gameTime;
 	}
 
 	/**
@@ -54,109 +116,69 @@ public abstract class MiniGame {
 		this.difficulty = difficulty;
 	}
 
+
 	/**
-	 * Gets the time left.
+	 * Gets the game id.
 	 * 
-	 * @return the time in milliseconds.
-	 */
-	public long getTimeLeft() {
-		if(endTime - System.currentTimeMillis() < 0)
-			gameLost();
-		return (endTime - System.currentTimeMillis());
-	}
-
-	/**
-	 * Sets the time left.
-	 * 
-	 * @param timeLeft
-	 *            The wanted time in milliseconds.
-	 */
-	public void setEndTime(long time) {
-		endTime = System.currentTimeMillis() + time;
-	}
-
-	/**
-	 * Changes the time. 
-	 * @param time Changes the time with requested amounts 
-	 * of milliseconds. Could be positive or negative number. 
-	 */
-	public void changeTimeWith(int time) {
-		setEndTime(getTimeLeft() + time);
-		if (getTimeLeft() <= 0) {
-			gameLost();
-		}
-	}
-
-	/**
-	 * Gets the state of the game.
-	 * @return the game's state
-	 */
-	public GameState checkGameState() {
-		return state;
-	}
-
-	
-	private void gameLost() {
-		state = GameState.LOST;
-	}
-
-	protected void gameWon() {
-		state = GameState.WON;
-	}
-	
-	public void setGameState(GameState g){
-		state = g;
-	}
-
-
-	/**
-	 * Gets the game id. 
 	 * @return the game's id
 	 */
 	public GameId getGameId() {
 		return gameId;
 	}
 
-
-	/**
-	 * Set the game id. 
-	 * @param gameId requested game id. 
-	 */
-	public void setGameId(GameId gameId) {
-		this.gameId = gameId;
+	public void startGameTimer() {
+		timer.start(gameTime);
 	}
 
 	/**
-	 * Starts the game
+	 * Get the player number corresponding to your own macAddress.
+	 * 
+	 * @return
 	 */
-	public void startGame() {
-		setEndTime(gameTime);
-		state=GameState.RUNNING;
+	public int getplayerNbr() {
+		String myMac = Player.getInstance().getMac();
+		int playerNbr = players.get(myMac);
+		return playerNbr;
+	}
+	
+	public ArrayList<Integer> getOtherPlayerNumbers() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < getNumberOfPlayers(); i++) {
+			if (!(i == getplayerNbr()))
+				list.add(new Integer(i));
+		}
+		
+		return list;
 	}
 
 	/**
-	 * Pauses the game
+	 * Get the number of players currently playing the game
+	 * 
+	 * @return
 	 */
-	public void pauseGame() {
-		pausedTimeLeft=getTimeLeft();
+	public int getNumberOfPlayers() {
+		return players.size();
 	}
-	
+	public boolean timerIsDone() {
+		
+		return timer.isDone();
+	}
+
 	/**
-	 * Resume the game
+	 * Returns the results of the game
 	 */
-	public void resumeGame(){
-		setEndTime(pausedTimeLeft);
-	}
-	
-	/**
-	 * Checks if the game is over. 
-	 */
-	public void checkGame() {
-		if(getTimeLeft() < 0)
-			state=GameState.LOST;
-	}
-	
-	public long getGameTime() {
-		return gameTime;
+	public abstract GameResult getGameResult();
+
+
+	public abstract GameState checkGameState(); 
+//		if(timer.isDone()) {
+//			return GameState.LOST;
+//		} 
+//		
+//		return GameState.RUNNING;
+//	}
+
+	public void stopTimer() {
+		timer.stop();
 	}
 }

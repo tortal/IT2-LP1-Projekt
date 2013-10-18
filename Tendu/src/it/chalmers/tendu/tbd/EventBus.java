@@ -11,17 +11,17 @@ public enum EventBus {
 
 	private List<EventBusListener> listeners = new ArrayList<EventBusListener>();
 
-	public void broadcast(EventMessage message){
+	public void broadcast(EventMessage message) {
 		Gdx.app.log("EventBus", "broadcasting" + message);
-		synchronized(listeners) {
-//			for (Listener l : listeners){
-//				l.onBroadcast(message);
-//			}
-			
-			for (int i = 0; i < listeners.size(); i++){
+		synchronized (listeners) {
+			// for (Listener l : listeners){
+			// l.onBroadcast(message);
+			// }
+
+			for (int i = 0; i < listeners.size(); i++) {
 				listeners.get(i).onBroadcast(message);
 			}
-			
+
 		}
 	}
 
@@ -33,3 +33,46 @@ public enum EventBus {
 		listeners.remove(l);
 	}
 }
+
+// /////////////////////////////////////////////////////
+
+// public enum EventBus {
+//
+// INSTANCE;
+//
+// public final static String TAG = "EventBus";
+//
+// private Map<Listener, Void> listeners;
+//
+// EventBus() {
+// WeakHashMap<Listener, Void> l = new WeakHashMap<Listener, Void>();
+// listeners = Collections.synchronizedMap(l);
+// }
+//
+// public void broadcast(EventMessage message) {
+// synchronized (this) {
+// Gdx.app.log(TAG, "broadcasting" + message);
+//
+// Set<Listener> allListeners = listeners.keySet();
+// synchronized (listeners) {
+// for (Listener l : allListeners) {
+// l.onBroadcast(message);
+// }
+// }
+//
+// }
+// }
+//
+// public void addListener(Listener l) {
+// synchronized (this) {
+// listeners.put(l, null);
+// }
+// }
+//
+// public void removeListener(Listener l) {
+// synchronized (this) {
+// listeners.remove(l);
+// }
+//
+// }
+// }

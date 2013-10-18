@@ -239,9 +239,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			if (server == null) {
 				startKryoNetServer();
 			}
-
-			// Let unit know it's host
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_HOST));
 		} else if (info.groupFormed) {
 			// The other device acts as the host. In this case,
 			// you'll want to create a client thread that connects to the group
@@ -251,8 +248,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
 
-			// Let unit know it's a client
-			sendToEventBus(new EventMessage(C.Tag.NETWORK_NOTIFICATION, C.Msg.YOU_ARE_CLIENT));
 		} else { 
 			// No group is formed, wait a while and then connect to the first unit available
 			Log.d(TAG, "No group formed, doing discovery/connect");
@@ -358,7 +353,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
-	private void resetNetwork() {
+	public void resetNetwork() {
 		removeWifiGroup();
 		clearServices();
 
@@ -637,5 +632,23 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				
 			}
 		});
+	}
+
+	@Override
+	public void stopAcceptingConnections() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void toggleHostNumber() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unregister() {
+		// TODO Auto-generated method stub
+		
 	}
 }

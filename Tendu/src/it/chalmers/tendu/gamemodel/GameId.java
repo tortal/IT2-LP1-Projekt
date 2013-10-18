@@ -5,35 +5,46 @@ import it.chalmers.tendu.defaults.Constants.Difficulty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Every implementation of {@link MiniGame} has an enum associated with with it.
+ * Abstractions and game-balance can be controlled with the parameters of
+ * difficulty in these constructors.
+ * 
+ */
 public enum GameId {
-	
-	NUMBER_GAME(Difficulty.ONE, Difficulty.TWO), SHAPES_GAME(Difficulty.TWO);
+
+	NUMBER_GAME(/*
+				 * Difficulty.ONE, Difficulty.TWO, Difficulty.THREE,
+				 * Difficulty.FOUR, Difficulty.FIVE
+				 */), SHAPE_GAME(Difficulty.ONE, Difficulty.TWO,
+			Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE);
 
 	/**
-	 * Levels that 
+	 * Levels that are needed to possible this game.
 	 */
-	private List<Difficulty> acceptedDifficulties = new ArrayList<Difficulty>();
-	
-	
-	private GameId(Difficulty... difficulty){
-		for (Difficulty d : difficulty){
+	private List<Difficulty> acceptedDifficulties;
+
+	private GameId(Difficulty... difficulty) {
+		acceptedDifficulties = new ArrayList<Difficulty>();
+
+		for (Difficulty d : difficulty) {
 			acceptedDifficulties.add(d);
 		}
 
 	}
-	
+
 	/**
-	 * @param level
-	 * @return a list of GameIds that accepts the given level value
+	 * @param difficulty
+	 *            That you search for.
+	 * @return a list of GameIds that accepts the given {@link Difficulty} value
 	 */
-	public static List<GameId> getGameIdsFor(Difficulty difficulty){
+	public static List<GameId> getGameIdsFor(Difficulty difficulty) {
 		List<GameId> validGames = new ArrayList<GameId>();
-		for (GameId g : values()){
+		for (GameId g : values()) {
 			if (g.acceptedDifficulties.contains(difficulty))
 				validGames.add(g);
 		}
 		return validGames;
 	}
-	
-	
+
 }

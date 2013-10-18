@@ -10,12 +10,21 @@ public class Shape {
 
 	public final Color color;
 	public final GeometricShape geometricShape;
+	private boolean locked;
 
 	public Shape(Color color, GeometricShape geometricShape) {
 		this.color = color;
 		this.geometricShape = geometricShape;
 	}
-
+	
+	/**
+	 * No args constructor for reflection use
+	 */
+	private Shape(){
+		this.color = Color.BLUE;
+		this.geometricShape = GeometricShape.CIRCLE;
+		this.locked = true;
+	}
 	/**
 	 * @return a list containing all combinations possible with the enumerators
 	 *         Color and GeometricShape.
@@ -62,5 +71,19 @@ public class Shape {
 		if (geometricShape != other.geometricShape)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the locked
+	 */
+	public boolean isLocked() {
+		return locked;
+	}
+
+	/**
+	 * @param locked the locked to set
+	 */
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 }
