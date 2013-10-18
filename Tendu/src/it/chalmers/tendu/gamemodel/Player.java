@@ -1,15 +1,17 @@
 package it.chalmers.tendu.gamemodel;
 
 /**
- * Represents the player of this particular device.
+ * Stateful Singleton. Represents the player of this particular device.
  */
 public class Player {
 	private static Player instance = null;
 
 	private String mac;
-	private boolean host = false;
+	private boolean host;
 
 	private Player() {
+		mac = "";
+		host = false;
 	}
 
 	public static Player getInstance() {

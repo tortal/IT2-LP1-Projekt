@@ -47,8 +47,9 @@ public class ShapeGameScreen extends GameScreen {
 	private SimpleTimer gameCompletedTimer;
 	private List<Integer> otherPlayers;
 
-	// For debug
-	int count = 0;
+	//
+	// // For debug
+	// int count = 0;
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
@@ -95,12 +96,9 @@ public class ShapeGameScreen extends GameScreen {
 					/ (controller.getModel().getLock(player_num)
 							.getLockSequence().size() + 1);
 		}
-		
-		otherPlayers = model.getOtherPlayerNumbers();
-		
-		for(int i = 0; i < otherPlayers.size(); i++) {
-			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
-		}
+
+
+		otherPlayers = controller.getModel().getOtherPlayerNumbers();
 
 	}
 
@@ -129,25 +127,26 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().x <= 160 && otherPlayers.size() >= 2) {
-			Gdx.app.log(TAG, "To ");
+		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
+				&& otherPlayers.size() >= 1) {
+			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
+					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(controller
+					.getModel().getOtherPlayerNumbers().get(0), s.getShape())));
+		} else if (s.getBounds().x <= 160 && otherPlayers.size() > 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(1) - 1, s.getShape())));
-		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
+
+					otherPlayers.get(1), s.getShape())));
+		}
+		else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
 				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(2) - 1, s.getShape())));
 
-		} else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
-				&& otherPlayers.size() >= 1) {
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(0) - 1, s.getShape())));
+					otherPlayers.get(2), s.getShape())));
 		}
 	}
 
@@ -173,7 +172,12 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		if (!gameCompletedTimer.isRunning()) {
+		if (gameCompletedTimer.isDone()) {
+			Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		} else if (!gameCompletedTimer.isRunning()) {
 			if (controller.getModel().checkGameState() == GameState.WON) {
 				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.SOUND_WIN);
@@ -188,13 +192,7 @@ public class ShapeGameScreen extends GameScreen {
 				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
 			}
-			if (gameCompletedTimer.isDone()) {
-				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
-				EventMessage message = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.GAME_RESULT, controller.getModel()
-								.getGameResult());
-				EventBus.INSTANCE.broadcast(message);
-			}
+
 		}
 
 		// TODO nullpointer movingShape
@@ -343,7 +341,7 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	public boolean showShapeFromSender(Shape shape, int sender) {
 		GraphicalShape receivedShape = new GraphicalShape(shape);
-		if (!otherPlayers.contains(sender + 1))
+		if (!otherPlayers.contains(sender))
 			return false;
 
 		// for (GraphicalShape s : shapes) {
@@ -354,12 +352,12 @@ public class ShapeGameScreen extends GameScreen {
 
 		shapes.add(receivedShape);
 
-		if (otherPlayers.get(0) == sender + 1) {
+		if (otherPlayers.get(0) == sender) {
 			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
 					Constants.SCREEN_HEIGHT - 110);
-		} else if (otherPlayers.get(1) == sender + 1) {
+		} else if (otherPlayers.get(1) == sender) {
 			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
-		} else if (otherPlayers.get(2) == sender + 1) {
+		} else if (otherPlayers.get(2) == sender) {
 			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
 					Constants.SCREEN_WIDTH - 110);
 		}
