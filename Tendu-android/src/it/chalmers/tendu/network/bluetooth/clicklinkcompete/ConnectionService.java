@@ -335,7 +335,7 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 
-		if (tempKryo != null && out != null) {
+		if (btSocket.isConnected()) {
 			tempKryo.writeObject(out, message);
 			out.flush();
 		}

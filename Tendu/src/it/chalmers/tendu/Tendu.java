@@ -57,17 +57,16 @@ public class Tendu implements ApplicationListener, Listener {
 	private INetworkHandler networkHandler;
 
 	/**
-	 * All drawing is done
+	 * All drawing is normally done on this canvas.
 	 */
 	public SpriteBatch spriteBatch; // used for drawing of graphics
 
 	/**
-	 * 
 	 * @param networkHandler
 	 *            Platform-specific implementation of the network communication.
 	 */
 	public Tendu(INetworkHandler networkHandler) {
-		setNetworkHandler(networkHandler);
+		this.networkHandler = networkHandler;
 		EventBus.INSTANCE.addListener(this);
 	}
 
@@ -158,10 +157,6 @@ public class Tendu implements ApplicationListener, Listener {
 	// screens need access to the network
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
-	}
-
-	private void setNetworkHandler(INetworkHandler networkHandler) {
-		this.networkHandler = networkHandler;
 	}
 
 	@Override
