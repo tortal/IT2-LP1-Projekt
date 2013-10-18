@@ -95,11 +95,11 @@ public class ShapeGameScreen extends GameScreen {
 					/ (controller.getModel().getLock(player_num)
 							.getLockSequence().size() + 1);
 		}
-		
+
 		otherPlayers = model.getOtherPlayerNumbers();
-		
-		for(int i = 0; i < otherPlayers.size(); i++) {
-			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
+
+		for (int i = 0; i < otherPlayers.size(); i++) {
+			otherPlayers.set(i, otherPlayers.get(i).intValue() + 1);
 		}
 
 	}
@@ -134,20 +134,20 @@ public class ShapeGameScreen extends GameScreen {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(1) - 1, s.getShape())));
+					otherPlayers.get(1) - 1, s.getShape())));
 		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
 				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(2) - 1, s.getShape())));
+					otherPlayers.get(2) - 1, s.getShape())));
 
 		} else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
 				&& otherPlayers.size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-							otherPlayers.get(0) - 1, s.getShape())));
+					otherPlayers.get(0) - 1, s.getShape())));
 		}
 	}
 
@@ -173,7 +173,12 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 
-		if (!gameCompletedTimer.isRunning()) {
+		if (gameCompletedTimer.isDone()) {
+			Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		} else if (!gameCompletedTimer.isRunning()) {
 			if (controller.getModel().checkGameState() == GameState.WON) {
 				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.SOUND_WIN);
@@ -182,19 +187,13 @@ public class ShapeGameScreen extends GameScreen {
 				controller.getModel().stopTimer();
 				Gdx.app.log(TAG, "Timer started! game won");
 
-			}else if (controller.getModel().checkGameState() == GameState.LOST) {
+			} else if (controller.getModel().checkGameState() == GameState.LOST) {
 				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.SOUND_LOST);
 				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
 			}
-			if (gameCompletedTimer.isDone()) {
-				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
-				EventMessage message = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.GAME_RESULT, controller.getModel()
-								.getGameResult());
-				EventBus.INSTANCE.broadcast(message);
-			}
+
 		}
 
 		// TODO nullpointer movingShape
