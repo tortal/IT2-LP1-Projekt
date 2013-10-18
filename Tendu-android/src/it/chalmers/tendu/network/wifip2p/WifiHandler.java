@@ -54,7 +54,7 @@ import com.esotericsoftware.kryonet.Server;
  * @author johnpetersson
  *
  */
-public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
+public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
 	private static final int MAX_KRYONET_BLOCKING_TIME = 5000;
@@ -74,7 +74,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 
 	private Handler mHandler = new Handler();
 
-	public WifiHandlerBtB(Context ctx) {
+	public WifiHandler(Context ctx) {
 		super(ctx);
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -194,7 +194,7 @@ public class WifiHandlerBtB extends NetworkHandler implements WifiP2pManager.Con
 					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
 					// We are connected with the other device, request connection
 					// info to find group owner IP
-					mManager.requestConnectionInfo(mChannel, WifiHandlerBtB.this); // (This is done once in join() already)
+					mManager.requestConnectionInfo(mChannel, WifiHandler.this); // (This is done once in join() already)
 				}
 			} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 				Log.d(TAG, "This device's wifi state changed");
