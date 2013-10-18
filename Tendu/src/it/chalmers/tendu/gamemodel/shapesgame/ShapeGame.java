@@ -74,7 +74,7 @@ public class ShapeGame extends MiniGame {
 
 		switch (difficulty) {
 		case ONE:
-			this.setGameTime(20000, extraTime);
+			this.setGameTime(200000, extraTime);
 			lockSize = 2;
 			break;
 		case TWO:

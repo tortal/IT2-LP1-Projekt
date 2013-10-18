@@ -82,17 +82,16 @@ public class LobbyController implements Listener {
 							gameSession);
 					EventBus.INSTANCE.broadcast(newGameSession);
 
-					// TODO: Not used yet, should be handled in Tendu.
-					EventMessage msg = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.STOP_ACCEPTING_CONNECTIONS);
-					EventBus.INSTANCE.broadcast(msg);
-
 					EventBus.INSTANCE.removeListener(this);
 				}
 				break;
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
+			}
+		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
+			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
+				model.removePlayer((String) message.content);
 			}
 		}
 	}
