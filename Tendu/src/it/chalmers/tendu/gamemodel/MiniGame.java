@@ -14,6 +14,7 @@ public abstract class MiniGame {
 	private long gameTime;
 	private SimpleTimer timer;
 	private SimpleTimer startTimer;
+	private boolean started;
 	
 	/**
 	 * Integer = player id String = player MacAddress
@@ -36,7 +37,7 @@ public abstract class MiniGame {
 		this.players = players;
 		timer = new SimpleTimer();
 		startTimer = new SimpleTimer();
-
+		started = false;
 	}
 
 	/** No args constructor for reflection use */
@@ -45,15 +46,16 @@ public abstract class MiniGame {
 	}
 	
 	public void startGame() {
-		startTimer.start(3000);
+		//startTimer.start(3000);
+		started = true;
 	}
 	
 	public boolean hasStarted() {
-		if(startTimer.isDone()) {
-			return true;
-		}
+//		if(startTimer.isDone()) {
+//			return true;
+//		}
 		
-		return false;
+		return started;
 	}
  
 	public void setGameTime(long gameTime, long extraTime) {
