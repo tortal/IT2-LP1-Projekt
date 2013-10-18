@@ -48,19 +48,27 @@ public class ShapeGameSound implements Listener {
 		}
 
 	}
-	
+	/**
+	 * Plays sound when you succeed
+	 */
 	public void playSoundSuccess() {
 		succeededSound.play();
 	}
-
+	/**
+	 * Plays sound when you fail
+	 */
 	public void playSoundFail() {
 		failSound.play();
 	}
-
+	/**
+	 * Plays sound when you win
+	 */
 	public void playSoundGameWon() {
 		completedGameSound.play();
 	}
-
+	/**
+	 * Plays sound when you loose
+	 */
 	public void playSoundGameLost() {
 		lostGameSound.play();
 	}
