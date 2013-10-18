@@ -2,7 +2,13 @@ package it.chalmers.tendu.tbd;
 
 import it.chalmers.tendu.gamemodel.GameId;
 
+/**
+ * An Event Message can be broadcasted through the {@link EventBus}.
+ * All listeners will get this broadcast.
+ *
+ */
 public class EventMessage {
+	public final static String TAG = "EventMesssage";
 	
 
 	public final C.Tag tag;
@@ -10,15 +16,6 @@ public class EventMessage {
 	public final GameId gameId;
 	public final Object content;
 	public final String mac;
-
-	/** No args constructor for reflection */
-	EventMessage() {
-		tag = null;
-		msg = null;
-		gameId = null;
-		content = null;
-		mac = null;
-	}
 
 	public EventMessage(String mac, C.Tag tag, C.Msg msg, GameId gameId, Object content) {
 		this.mac = mac;
@@ -54,7 +51,7 @@ public class EventMessage {
 
 	@Override
 	public String toString() {
-		return tag.toString() + " - " + msg.toString();
+		return TAG + ":" + tag.toString() + " - " + msg.toString();
 	}
 
 }

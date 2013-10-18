@@ -25,6 +25,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * ENTRY CLASS.
+ * 
+ * Implements {@link ApplicationListener} (by default) and {@link Listener} (our {@link EventBus})
  */
 public class Tendu implements ApplicationListener, Listener {
 	public static final String TAG = "Tendu";
@@ -67,12 +69,14 @@ public class Tendu implements ApplicationListener, Listener {
 	 *            Platform-specific implementation of the network communication.
 	 */
 	public Tendu(INetworkHandler networkHandler) {
-		setNetworkHandler(networkHandler);
+		this.networkHandler = networkHandler;
 		EventBus.INSTANCE.addListener(this);
 	}
 
 	@Override
 	public void create() {
+		
+		//	Get this devices's MAC.
 		String mac = networkHandler.getMacAddress();
 		Player.getInstance().setMac(mac);
 		Gdx.app.log(TAG, Player.getInstance().getMac());
@@ -91,14 +95,13 @@ public class Tendu implements ApplicationListener, Listener {
 		Gdx.input.setInputProcessor(input);
 	}
 
-	// clean up
+
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
 		networkHandler.destroy();
 	}
 
-	// **The games main loop, everything but early setup happens here
 	@Override
 	public void render() {
 
@@ -155,13 +158,13 @@ public class Tendu implements ApplicationListener, Listener {
 		return camera;
 	}
 
-	// screens need access to the network
+
+	/**
+	 * @return the current networkHandlern of this implementation.
+	 * (Running on android this will be the BluetoothHandler)
+	 */
 	public INetworkHandler getNetworkHandler() {
 		return networkHandler;
-	}
-
-	private void setNetworkHandler(INetworkHandler networkHandler) {
-		this.networkHandler = networkHandler;
 	}
 
 	@Override
