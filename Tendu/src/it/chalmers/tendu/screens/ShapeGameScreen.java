@@ -179,21 +179,17 @@ public class ShapeGameScreen extends GameScreen {
 			EventBus.INSTANCE.broadcast(message);
 		} else if (!gameCompletedTimer.isRunning()) {
 			if (controller.getModel().checkGameState() == GameState.WON) {
-				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.SOUND_WIN);
-				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
 				controller.getModel().stopTimer();
 				Gdx.app.log(TAG, "Timer started! game won");
 
 			} else if (controller.getModel().checkGameState() == GameState.LOST) {
-				EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.SOUND_LOST);
-				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
 			}
 
 		}
+		
+		
 
 		// TODO nullpointer movingShape
 		if (input.isTouchedDown()) {
