@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Handles users' physical inputs. Should be added to Gdx input processor if to
+ * be used.
+ */
 public class InputController implements InputProcessor {
 
 	private boolean touchedUp;
