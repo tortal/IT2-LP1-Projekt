@@ -132,7 +132,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void broadcastMessageOverNetwork(EventMessage message) {
 		if (client != null) {
 			client.sendTCP(message);
-			//client.getKryo().g
 		}
 		if (server != null) {
 			server.sendToAllTCP(message);

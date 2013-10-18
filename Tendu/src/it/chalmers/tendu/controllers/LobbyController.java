@@ -86,7 +86,7 @@ public class LobbyController implements EventBusListener {
 				}
 				break;
 			default:
-				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
+				//Gdx.app.error(TAG, "Incorrect C.msg broadcasted: " + message.toString());
 				break;
 			}
 		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
