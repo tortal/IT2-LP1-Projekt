@@ -354,14 +354,14 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
+			if (out != null) {
+				out.close();
+			}
+			if (mKryo != null) {
+				mKryo.reset();
+			}
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in reset", e);
-		}
-		if (out != null) {
-			out.close();
-		}
-		if (mKryo != null) {
-			mKryo.reset();
 		}
 	}
 

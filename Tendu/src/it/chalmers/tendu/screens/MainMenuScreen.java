@@ -40,7 +40,7 @@ public class MainMenuScreen implements Screen {
 		testStuff = new TextWidget("test stuff", new Vector2(785, 680),
 				Constants.MENU_FONT_COLOR);
 		
-		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 120),
+		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 130),
 				Constants.MENU_FONT_COLOR);
 
 		dark = true;
