@@ -342,6 +342,7 @@ public class ConnectionService {
 	}
 
 	public void reset() throws RemoteException {
+		Log.d(TAG, "Reset");
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
 				BluetoothSocket myBsock = mBtSockets.get(mBtDevices.get(i));
