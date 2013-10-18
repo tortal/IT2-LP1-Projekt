@@ -62,6 +62,11 @@ public class LobbyController implements Listener {
 				// Start the game for all players if they are ready.
 				if (model.arePlayersReady()) {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
+					
+					// Received by Tendu.
+					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
+					EventBus.INSTANCE.broadcast(stopMessage);
+					
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
 					

@@ -53,10 +53,6 @@ public class ConnectionService {
 	public static final String TAG = "ConnectionService";
 
 	private ConnectionWaiter connectionWaiter;
-	
-	private boolean acceptConnections = true;
-	
-	// private ArrayList<UUID> mUuid;
 
 	private ArrayList<BluetoothDevice> mBtDevices;
 
@@ -214,8 +210,7 @@ public class ConnectionService {
 					mOnMaxConnectionsReachedListener.OnMaxConnectionsReached();
 				}
 			} catch (IOException e) {
-				Log.i(TAG, "IOException in ConnectionService:ConnectionWaiter",
-						e);
+				Log.i(TAG, "IOException in ConnectionWaiter, No more waiting for connections");
 			}
 		}
 	}
@@ -366,7 +361,6 @@ public class ConnectionService {
 		if (mKryo != null) {
 			mKryo.reset();
 		}
-		acceptConnections = true;
 	}
 
 	public String getAddress() throws RemoteException {
@@ -378,7 +372,9 @@ public class ConnectionService {
 	}
 
 	public void stopAcceptingConnections() {
-		connectionWaiter.stopAcceptingConnections();
+		if (connectionWaiter != null) { 
+			connectionWaiter.stopAcceptingConnections();
+		}
 		
 	}
 }
