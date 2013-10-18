@@ -98,9 +98,7 @@ public class ShapeGameScreen extends GameScreen {
 		
 		otherPlayers = model.getOtherPlayerNumbers();
 		
-		for(int i = 0; i < otherPlayers.size(); i++) {
-			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
-		}
+
 
 	}
 
