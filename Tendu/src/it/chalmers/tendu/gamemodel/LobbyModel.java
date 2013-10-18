@@ -72,4 +72,8 @@ public class LobbyModel {
 	public boolean isMaxPlayersConnected() {
 		return players.keySet().size() == maxPlayers;
 	}
+
+	public void removePlayer(String playerMac) {
+		players.remove(playerMac);		
+	}
 }

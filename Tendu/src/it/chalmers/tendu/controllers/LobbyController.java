@@ -89,6 +89,10 @@ public class LobbyController implements Listener {
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
+		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
+			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
+				model.removePlayer((String) message.content);
+			}
 		}
 	}
 
