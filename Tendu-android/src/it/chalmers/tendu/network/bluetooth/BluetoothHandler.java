@@ -315,8 +315,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		if (device.getName() == null)
 			return false;
 		String deviceName = device.getName(); 
-		return deviceName.contains(Constants.SERVER_NAME + '1') || 
-				deviceName.contains(Constants.SERVER_NAME + '2');
+		return deviceName.contains(Constants.SERVER_NAME + hostNumber);
 	}
 
 	private void registerBroadcastReceiver() {

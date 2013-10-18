@@ -335,10 +335,10 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 
-		if (btSocket.isConnected()) {
+		//if (btSocket.isConnected()) {
 			tempKryo.writeObject(out, message);
 			out.flush();
-		}
+		//}
 
 		return Connection.SUCCESS;
 	}
