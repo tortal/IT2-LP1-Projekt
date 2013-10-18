@@ -63,7 +63,6 @@ public class NumberGameSound implements Listener {
 	public void playSoundGameLost(){
 		lostGameSound.play();
 	}
-	
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
