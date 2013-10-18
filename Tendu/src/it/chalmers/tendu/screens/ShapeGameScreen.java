@@ -45,6 +45,7 @@ public class ShapeGameScreen extends GameScreen {
 	ShapeGame shapeGameModel;
 
 	private SimpleTimer gameCompletedTimer;
+	private List<Integer> otherPlayers;
 
 	// For debug
 	int count = 0;
@@ -69,7 +70,7 @@ public class ShapeGameScreen extends GameScreen {
 						.size() + 1) - 100;
 		for (Shape s : controller.getModel().getAllInventory().get(player_num)) {
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 250);
+			sgs.moveShape(x, 500);
 			shapes.add(sgs);
 			x = x
 					+ Constants.SCREEN_WIDTH
@@ -86,13 +87,19 @@ public class ShapeGameScreen extends GameScreen {
 				.getLockSequence()) {
 
 			GraphicalShape sgs = new GraphicalShape(s);
-			sgs.moveShape(x, 500);
+			sgs.moveShape(x, 250);
 			sgs.setRenderAsLock(true);
 			locks.add(sgs);
 			x = x
 					+ Constants.SCREEN_WIDTH
 					/ (controller.getModel().getLock(player_num)
 							.getLockSequence().size() + 1);
+		}
+		
+		otherPlayers = model.getOtherPlayerNumbers();
+		
+		for(int i = 0; i < otherPlayers.size(); i++) {
+			otherPlayers.set(i, otherPlayers.get(i).intValue()+1);
 		}
 
 	}
@@ -122,25 +129,25 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().x <= 160 && getOtherPlayers().size() >= 2) {
+		if (s.getBounds().x <= 160 && otherPlayers.size() >= 2) {
 			Gdx.app.log(TAG, "To ");
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(1) - 1, s.getShape())));
+							otherPlayers.get(1) - 1, s.getShape())));
 		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
-				&& getOtherPlayers().size() >= 3) {
+				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(2) - 1, s.getShape())));
+							otherPlayers.get(2) - 1, s.getShape())));
 
 		} else if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
-				&& getOtherPlayers().size() >= 1) {
+				&& otherPlayers.size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
 					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(
-					getOtherPlayers().get(0) - 1, s.getShape())));
+							otherPlayers.get(0) - 1, s.getShape())));
 		}
 	}
 
@@ -172,6 +179,7 @@ public class ShapeGameScreen extends GameScreen {
 						C.Msg.SOUND_WIN);
 				EventBus.INSTANCE.broadcast(soundMsg);
 				gameCompletedTimer.start(1500);
+				controller.getModel().stopTimer();
 				Gdx.app.log(TAG, "Timer started! game won");
 
 			} else if (controller.getModel().checkGameState() == GameState.LOST) {
@@ -244,14 +252,20 @@ public class ShapeGameScreen extends GameScreen {
 
 		// Removes shapes that are no longer part of the model
 		if (controller.getModel().getLatestSentShapes(player_num).size() >= 1)
-			latestRemovedShape = controller.getModel()
-					.getLatestSentShapes(player_num).get(0);
+			latestRemovedShape = controller
+					.getModel()
+					.getLatestSentShapes(player_num)
+					.get(controller.getModel().getLatestSentShapes(player_num)
+							.size() - 1);
 		if (latestRemovedShape != null) {
 			List<GraphicalShape> removeList = new ArrayList<GraphicalShape>();
 			for (GraphicalShape gs : shapes) {
 				if (latestRemovedShape.equals(gs.getShape())) {
-					removeList.add(gs);
-					Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+					if (!controller.getModel().getAllInventory()
+							.get(player_num).contains(latestRemovedShape)) {
+						removeList.add(gs);
+						Gdx.app.log(TAG, "Added to removeList" + gs.getShape());
+					}
 				}
 			}
 			for (GraphicalShape gs : removeList)
@@ -328,7 +342,6 @@ public class ShapeGameScreen extends GameScreen {
 	 *         scream in utter terror
 	 */
 	public boolean showShapeFromSender(Shape shape, int sender) {
-		List<Integer> otherPlayers = super.getOtherPlayers();
 		GraphicalShape receivedShape = new GraphicalShape(shape);
 		if (!otherPlayers.contains(sender + 1))
 			return false;

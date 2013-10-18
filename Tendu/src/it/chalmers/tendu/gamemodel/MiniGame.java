@@ -2,16 +2,24 @@ package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
-//TODO make none dependent of internal clock
+import com.badlogic.gdx.Gdx;
 
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private final GameId gameId;
 	private long gameTime;
 	private SimpleTimer timer;
-
+	private SimpleTimer startTimer;
+	
+	/**
+	 * Integer = player id String = player MacAddress
+	 */
+	private Map<String, Integer> players;
+	
 	/**
 	 * Creates a new minigame.
 	 * 
@@ -27,13 +35,27 @@ public abstract class MiniGame {
 		this.gameId = gameId;
 		this.players = players;
 		timer = new SimpleTimer();
+		startTimer = new SimpleTimer();
+
 	}
 
 	/** No args constructor for reflection use */
 	protected MiniGame() {
 		gameId = null;
 	}
-
+	
+	public void startGame() {
+		startTimer.start(3000);
+	}
+	
+	public boolean hasStarted() {
+		if(startTimer.isDone()) {
+			return true;
+		}
+		
+		return false;
+	}
+ 
 	public void setGameTime(long gameTime, long extraTime) {
 		this.gameTime = gameTime + extraTime;
 	}
@@ -65,11 +87,6 @@ public abstract class MiniGame {
 	public long getGameTime() {
 		return gameTime;
 	}
-
-	/**
-	 * Integer = player id String = player MacAddress
-	 */
-	private Map<String, Integer> players;
 
 	/**
 	 * Gets the difficulty of the game
@@ -113,6 +130,16 @@ public abstract class MiniGame {
 		String myMac = Player.getInstance().getMac();
 		int playerNbr = players.get(myMac);
 		return playerNbr;
+	}
+	
+	public ArrayList<Integer> getOtherPlayerNumbers() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < getNumberOfPlayers(); i++) {
+			if (!(i == getplayerNbr()))
+				list.add(new Integer(i));
+		}
+		
+		return list;
 	}
 
 	/**
