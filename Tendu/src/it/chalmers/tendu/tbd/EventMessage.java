@@ -5,19 +5,19 @@ import it.chalmers.tendu.gamemodel.GameId;
 public class EventMessage {
 	
 
-	public C.Tag tag;
-	public C.Msg msg;
-	public GameId gameId;
-	public Object content;
-	public String mac;
+	public final C.Tag tag;
+	public final C.Msg msg;
+	public final GameId gameId;
+	public final Object content;
+	public final String mac;
 
 	/** No args constructor for reflection */
 	EventMessage() {
-//		tag = null;
-//		msg = null;
-//		gameId = null;
-//		content = null;
-//		mac = null;
+		tag = null;
+		msg = null;
+		gameId = null;
+		content = null;
+		mac = null;
 	}
 
 	public EventMessage(String mac, C.Tag tag, C.Msg msg, GameId gameId, Object content) {
