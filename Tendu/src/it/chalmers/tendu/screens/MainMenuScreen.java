@@ -13,24 +13,34 @@ import com.badlogic.gdx.math.Vector2;
 public class MainMenuScreen implements Screen {
 
 	private BitmapFont font;
+	private BitmapFont menuFont;
 	private final Tendu tendu;
 	private TextWidget hostGame;
 	private TextWidget joinGame;
 	private TextWidget testStuff;
+	private TextWidget hostType;
+	private int hostNumber;
 
 	private boolean dark;
 
 	public MainMenuScreen(Tendu tendu) {
+		hostNumber = 1;
 
 		this.tendu = tendu;
 		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
 				Gdx.files.internal("fonts/mainMenuTendu.png"), false);
+		
+		menuFont = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
 
 		hostGame = new TextWidget(TextLabels.HOST, new Vector2(90, 270),
 				Constants.MENU_FONT_COLOR);
 		joinGame = new TextWidget(TextLabels.JOIN, new Vector2(90, 150),
 				Constants.MENU_FONT_COLOR);
 		testStuff = new TextWidget("test stuff", new Vector2(785, 680),
+				Constants.MENU_FONT_COLOR);
+		
+		hostType = new TextWidget("Host = " + hostNumber, new Vector2(785, 150),
 				Constants.MENU_FONT_COLOR);
 
 		dark = true;
@@ -50,6 +60,16 @@ public class MainMenuScreen implements Screen {
 			if (testStuff.collided(input.getCoordinates())) {
 				tendu.getNetworkHandler().testStuff();
 			}
+			
+			if(hostType.collided(input.getCoordinates())) {
+				tendu.getCamera().toggleHostNumber();
+				
+				if(hostNumber == 1) {
+					hostNumber = 2;
+				} else {
+					hostNumber = 1;
+				}
+			}
 
 			if (input.x < 100 && input.y > Constants.SCREEN_HEIGHT - 100) {
 
@@ -67,7 +87,7 @@ public class MainMenuScreen implements Screen {
 					Constants.MENU_FONT_COLOR = Color.WHITE;
 					Constants.MENU_FONT_COLOR_PRESSED = Color.LIGHT_GRAY;
 					dark = true;
-				}
+				} 
 			}
 
 			hostGame.setColor(Constants.MENU_FONT_COLOR);

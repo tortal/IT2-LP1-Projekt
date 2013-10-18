@@ -188,7 +188,7 @@ public class Tendu implements ApplicationListener, Listener {
 				setScreen(screen);
 
 			} else if (message.msg == C.Msg.RESTART) {
-				// networkHandler.resetNetwork();
+				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(this);
 				setScreen(screen);
 
