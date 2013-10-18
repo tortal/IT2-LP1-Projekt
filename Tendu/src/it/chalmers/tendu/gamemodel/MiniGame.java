@@ -8,6 +8,13 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 
+ /**
+ * One of many minigames to be played during a {@link GameSession}.
+ * 
+ * All games of Tendu should extend this class.
+ * See {@link NumberGame} or {@link ShapeGame} for examples.
+ *
+ */
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private final GameId gameId;
