@@ -22,7 +22,7 @@ public class SimpleTimer {
 	/**
 	 * Starts a timer with the specified amount of time.
 	 * If the timer is already
-	 * running or has ended calling this method will do nothing
+	 * running or has ended calling this method will do nothing (return false)
 	 * 
 	 * @param time
 	 *            time in milliseconds

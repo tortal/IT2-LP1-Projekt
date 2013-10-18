@@ -6,17 +6,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+
 public abstract class MiniGame {
 	private Difficulty difficulty;
 	private final GameId gameId;
 	private long gameTime;
 	private SimpleTimer timer;
+	private SimpleTimer startTimer;
 	
 	/**
 	 * Integer = player id String = player MacAddress
 	 */
 	private Map<String, Integer> players;
-
+	
 	/**
 	 * Creates a new minigame.
 	 * 
@@ -32,13 +35,27 @@ public abstract class MiniGame {
 		this.gameId = gameId;
 		this.players = players;
 		timer = new SimpleTimer();
+		startTimer = new SimpleTimer();
+
 	}
 
 	/** No args constructor for reflection use */
 	protected MiniGame() {
 		gameId = null;
 	}
-
+	
+	public void startGame() {
+		startTimer.start(3000);
+	}
+	
+	public boolean hasStarted() {
+		if(startTimer.isDone()) {
+			return true;
+		}
+		
+		return false;
+	}
+ 
 	public void setGameTime(long gameTime, long extraTime) {
 		this.gameTime = gameTime + extraTime;
 	}

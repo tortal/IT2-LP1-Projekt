@@ -342,9 +342,8 @@ public class ShapeGameScreen extends GameScreen {
 	 *         scream in utter terror
 	 */
 	public boolean showShapeFromSender(Shape shape, int sender) {
-		List<Integer> others = otherPlayers; //TODO is this really needed?
 		GraphicalShape receivedShape = new GraphicalShape(shape);
-		if (!others.contains(sender + 1))
+		if (!otherPlayers.contains(sender + 1))
 			return false;
 
 		// for (GraphicalShape s : shapes) {
@@ -355,12 +354,12 @@ public class ShapeGameScreen extends GameScreen {
 
 		shapes.add(receivedShape);
 
-		if (others.get(0) == sender + 1) {
+		if (otherPlayers.get(0) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_WIDTH / 2,
 					Constants.SCREEN_HEIGHT - 110);
-		} else if (others.get(1) == sender + 1) {
+		} else if (otherPlayers.get(1) == sender + 1) {
 			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
-		} else if (others.get(2) == sender + 1) {
+		} else if (otherPlayers.get(2) == sender + 1) {
 			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
 					Constants.SCREEN_WIDTH - 110);
 		}
