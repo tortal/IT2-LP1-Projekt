@@ -1,13 +1,18 @@
 package it.chalmers.tendu.network.wifip2p;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.MiniGame;
+import it.chalmers.tendu.gamemodel.SessionResult;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
+import it.chalmers.tendu.gamemodel.SimpleTimer.STATE;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.gamemodel.shapesgame.Color;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
+import it.chalmers.tendu.gamemodel.shapesgame.Lock;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.network.NetworkHandler;
@@ -127,6 +132,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void broadcastMessageOverNetwork(EventMessage message) {
 		if (client != null) {
 			client.sendTCP(message);
+			//client.getKryo().g
 		}
 		if (server != null) {
 			server.sendToAllTCP(message);
@@ -643,6 +649,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(GeometricShape.class);
 		kryo.register(MiniGame.class);
 		kryo.register(NumberGame.class);
+		kryo.register(Lock.class);
+		kryo.register(Difficulty.class);
+		kryo.register(SimpleTimer.class);
+		kryo.register(STATE.class);
+		kryo.register(SessionResult.class);
 
 	}	
 

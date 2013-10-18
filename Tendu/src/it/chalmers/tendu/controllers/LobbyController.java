@@ -25,10 +25,10 @@ public class LobbyController implements EventBusListener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (Player.getInstance().isHost()) {
-			Gdx.app.log(TAG, "Are we host yet?");
+			//Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
