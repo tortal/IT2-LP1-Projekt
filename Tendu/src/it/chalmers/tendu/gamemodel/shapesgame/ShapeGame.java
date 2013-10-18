@@ -39,7 +39,7 @@ public class ShapeGame extends MiniGame {
 	 * shape has been received. <Integer(Receiver), <Integer(Sender),
 	 * Shape(Received Shape)>
 	 */
-	private Map<Integer, Map<Integer, Shape>> latestReceivedShapes;
+	public Map<Integer, Map<Integer, Shape>> latestReceivedShapes; //TODO private
 
 	/**
 	 * Holds every persons last sent shape <Integer(Receiver), <Integer(Sender),
@@ -75,7 +75,7 @@ public class ShapeGame extends MiniGame {
 		switch (difficulty) {
 		case ONE:
 			this.setGameTime(200000, extraTime);
-			lockSize = 2;
+			lockSize = 4;
 			break;
 		case TWO:
 			this.setGameTime(15000, extraTime);

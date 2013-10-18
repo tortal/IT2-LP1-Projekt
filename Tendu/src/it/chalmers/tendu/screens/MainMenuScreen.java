@@ -126,6 +126,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void removed() {
 		font.dispose();
+		menuFont.dispose();
 	}
 
 }

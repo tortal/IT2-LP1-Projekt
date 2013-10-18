@@ -1,6 +1,7 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
@@ -425,11 +426,13 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		} else if(message.tag == C.Tag.REQUEST_AS_CLIENT) {
 			EventMessage changedMessage = new EventMessage(message, C.Tag.CLIENT_REQUESTED);
 			broadcastMessageOverNetwork(changedMessage);
+			Gdx.app.log("BLATANDSMONGOT", "FUNKAR NO?");
 		}
 	}
 
 	/** Broadcast a message on the event bus */
 	private void sendToEventBus(final EventMessage message) {
+		Gdx.app.log(TAG, "recieved messag in host: " + Player.getInstance().isHost());
 		Gdx.app.postRunnable(new Runnable() {
 
 			@Override

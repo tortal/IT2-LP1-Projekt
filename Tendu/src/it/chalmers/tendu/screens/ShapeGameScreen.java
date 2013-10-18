@@ -129,24 +129,20 @@ public class ShapeGameScreen extends GameScreen {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
 		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - 160
 				&& otherPlayers.size() >= 1) {
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+			EventBus.INSTANCE.broadcast(new EventMessage(/*Player.getInstance()
+					.getMac(), */C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
 					.getModel().getGameId(), messageContentFactory(controller
 					.getModel().getOtherPlayerNumbers().get(0), s.getShape())));
-		} else if (s.getBounds().x <= 160 && otherPlayers.size() > 2) {
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(
-
-					otherPlayers.get(1), s.getShape())));
+		} else if (s.getBounds().x <= 160 && otherPlayers.size() >= 2) {
+			EventBus.INSTANCE.broadcast(new EventMessage(/*Player.getInstance()
+					.getMac(),*/ C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(otherPlayers.get(1), s.getShape())));
 		}
 		else if (s.getBounds().x >= Constants.SCREEN_WIDTH - 160
 				&& otherPlayers.size() >= 3) {
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
-					.getModel().getGameId(), messageContentFactory(
-
-					otherPlayers.get(2), s.getShape())));
+			EventBus.INSTANCE.broadcast(new EventMessage(/*Player.getInstance()
+					.getMac(), */C.Tag.TO_SELF, C.Msg.SHAPE_SENT, controller
+					.getModel().getGameId(), messageContentFactory(otherPlayers.get(2), s.getShape())));
 		}
 	}
 
@@ -245,7 +241,7 @@ public class ShapeGameScreen extends GameScreen {
 					latestAddedShape = latestModelReceivedShape;
 				}
 			}
-
+			
 		}
 
 		// Removes shapes that are no longer part of the model
@@ -269,6 +265,7 @@ public class ShapeGameScreen extends GameScreen {
 			for (GraphicalShape gs : removeList)
 				shapes.remove(gs);
 		}
+		
 		// Adds shapes to the gui that are no longer part
 		// of the model.
 		// for (Shape s : shapeGameModel.getAllInventory().get(player_num)) {
@@ -312,8 +309,8 @@ public class ShapeGameScreen extends GameScreen {
 			content.add(shape.getShape());
 
 			// Received by ShapeGameController.
-			EventBus.INSTANCE.broadcast(new EventMessage(Player.getInstance()
-					.getMac(), C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
+			EventBus.INSTANCE.broadcast(new EventMessage(/*Player.getInstance()
+					.getMac(), */C.Tag.TO_SELF, C.Msg.LOCK_ATTEMPT, controller
 					.getModel().getGameId(), content));
 		}
 
