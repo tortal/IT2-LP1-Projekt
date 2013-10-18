@@ -257,15 +257,26 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		if (mBluetoothAdapter.getName() == null) {
 			mBluetoothAdapter.setName("Name");
 		}
-
+		
+//		String newName = "No rename occured";
+//		String oldName = mBluetoothAdapter.getName();
+		
+//		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
+//			newName = oldName + Constants.SERVER_NAME;
+//			mBluetoothAdapter.setName(newName);
+//			while (!mBluetoothAdapter.getName().equals(newName)) {
+//				// Loop while name changes
+//			}
+//		}
+		
+		// Multitestversion
+		removeTenduFromDeviceName();
 		String newName = "No rename occured";
 		String oldName = mBluetoothAdapter.getName();
-		if (isServer && !oldName.contains(Constants.SERVER_NAME)) {
-			newName = oldName + Constants.SERVER_NAME;
-			mBluetoothAdapter.setName(newName);
-			while (!mBluetoothAdapter.getName().equals(newName)) {
-				// Loop while name changes
-			}
+		newName = oldName + Constants.SERVER_NAME + hostNumber;
+		mBluetoothAdapter.setName(newName);
+		while (!mBluetoothAdapter.getName().equals(newName)) {
+			// Loop while name changes
 		}
 	}
 
@@ -276,13 +287,19 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		String oldName = mBluetoothAdapter.getName();
 		String newName = new String(oldName);
 
-		if (oldName.contains(Constants.SERVER_NAME)) {
-			newName = oldName.replace(Constants.SERVER_NAME, "");
-			Log.d(TAG, "Bluetooth name removal successfull? "
-					+ mBluetoothAdapter.setName(newName));
+		if (oldName.contains(Constants.SERVER_NAME + '1')) {
+			newName = oldName.replace(Constants.SERVER_NAME + '1', "");
+			mBluetoothAdapter.setName(newName);
+			while (!mBluetoothAdapter.getName().equals(newName)) {
+				// Loop while name changes
+			}
+		} else if (oldName.contains(Constants.SERVER_NAME + '2')) {
+			newName = oldName.replace(Constants.SERVER_NAME + '2', "");
+			mBluetoothAdapter.setName(newName);
+			while (!mBluetoothAdapter.getName().equals(newName)) {
+				// Loop while name changes
+			}
 		}
-		Log.v(TAG, "Remove: " + oldName + " -> " + newName
-				+ ". Actual adapter name: " + mBluetoothAdapter.getName());
 	}
 
 	/**
@@ -297,7 +314,9 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 			return false;
 		if (device.getName() == null)
 			return false;
-		return device.getName().contains(Constants.SERVER_NAME);
+		String deviceName = device.getName(); 
+		return deviceName.contains(Constants.SERVER_NAME + '1') || 
+				deviceName.contains(Constants.SERVER_NAME + '2');
 	}
 
 	private void registerBroadcastReceiver() {
@@ -444,5 +463,23 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
+	}
+
+	
+	private int hostNumber = 1;
+	@Override
+	public void toggleHostNumber() {
+		if (hostNumber == 1) {
+			hostNumber = 2;
+		} else {
+			hostNumber = 1;
+		}
+		
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+				Toast.makeText(context, "Host: " + hostNumber, Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
 	}
 }
