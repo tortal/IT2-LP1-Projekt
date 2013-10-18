@@ -178,7 +178,7 @@ public class ConnectionService {
 				}
 			}
 		}
-		
+
 		public void run() {
 			try {
 				for (int i = 0; i < Connection.MAX_SUPPORTED
@@ -199,11 +199,11 @@ public class ConnectionService {
 							new BtStreamWatcher(device));
 					mBtStreamWatcherThread.start();
 					mBtStreamWatcherThreads
-							.put(address, mBtStreamWatcherThread);
+					.put(address, mBtStreamWatcherThread);
 					maxConnections = maxConnections - 1;
 					if (mOnIncomingConnectionListener != null) {
 						mOnIncomingConnectionListener
-								.OnIncomingConnection(device);
+						.OnIncomingConnection(device);
 					}
 				}
 				if (mOnMaxConnectionsReachedListener != null) {
@@ -240,10 +240,10 @@ public class ConnectionService {
 		mOnMessageReceivedListener = omrListener;
 		mOnConnectionLostListener = oclListener;
 
-		
+
 		connectionWaiter = (new ConnectionWaiter(maxConnections));
 		(new Thread(connectionWaiter)).start();
-		
+
 		// Be discoverable
 		Intent discoverableIntent = new Intent(
 				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -286,7 +286,7 @@ public class ConnectionService {
 		Thread mBtStreamWatcherThread = new Thread(new BtStreamWatcher(device));
 		mBtStreamWatcherThread.start();
 		mBtStreamWatcherThreads
-				.put(device.getAddress(), mBtStreamWatcherThread);
+		.put(device.getAddress(), mBtStreamWatcherThread);
 		return Connection.SUCCESS;
 	}
 
@@ -335,8 +335,10 @@ public class ConnectionService {
 			return Connection.FAILURE;
 		}
 
-		tempKryo.writeObject(out, message);
-		out.flush();
+		if (tempKryo != null && out != null) {
+			tempKryo.writeObject(out, message);
+			out.flush();
+		}
 
 		return Connection.SUCCESS;
 	}
@@ -352,14 +354,14 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
+			if (out != null) {
+				out.close();
+			}
+			if (mKryo != null) {
+				mKryo.reset();
+			}
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in reset", e);
-		}
-		if (out != null) {
-			out.close();
-		}
-		if (mKryo != null) {
-			mKryo.reset();
 		}
 	}
 
@@ -375,6 +377,6 @@ public class ConnectionService {
 		if (connectionWaiter != null) { 
 			connectionWaiter.stopAcceptingConnections();
 		}
-		
+
 	}
 }
