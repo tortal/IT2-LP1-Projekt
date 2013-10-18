@@ -29,6 +29,7 @@ public class TextLabels {
 	public final static String MEMORIZE_NUMBERS = "MEMORIZE THE NUMBERS";
 	public final static String ENTER_NUMBERS = "ENTER THE CORRECT NUMBERS";
 	public static final String TIME_OUT = "OUT OF TIME";
+	public static final String ME = "ME";
 
 
 
