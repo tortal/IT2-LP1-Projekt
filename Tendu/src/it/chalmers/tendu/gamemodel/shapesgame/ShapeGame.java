@@ -74,7 +74,7 @@ public class ShapeGame extends MiniGame {
 
 		switch (difficulty) {
 		case ONE:
-			this.setGameTime(200000, extraTime);
+			this.setGameTime(20000, extraTime);
 			lockSize = 4;
 			break;
 		case TWO:
@@ -149,6 +149,11 @@ public class ShapeGame extends MiniGame {
 		}
 		Gdx.app.log("This is", "Shapes Game!");
 
+	}
+	
+	public void startGame() {
+		super.startGame();
+		super.startGameTimer();
 	}
 
 	/**

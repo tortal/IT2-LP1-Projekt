@@ -106,21 +106,21 @@ public class ShapeGameScreen extends GameScreen {
 	/** All graphics are drawn here */
 	@Override
 	public void render() {
-		super.render();
-		if (shapeGameModel.checkGameState() == GameState.RUNNING ||
-				gameCompletedTimer.isRunning()) {
-			shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-			// Renders locks
-			for (GraphicalShape sgs : locks) {
-				sgs.render(shapeRenderer);
-			}
-			// Renders shapes
-			for (GraphicalShape sgs : shapes) {
-				sgs.render(shapeRenderer);
-			}
 
-		} else {
-			// showGameResult();
+		if (model.hasStarted()) {
+			super.render();
+			if (shapeGameModel.checkGameState() == GameState.RUNNING
+					|| gameCompletedTimer.isRunning()) {
+				shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
+				// Renders locks
+				for (GraphicalShape sgs : locks) {
+					sgs.render(shapeRenderer);
+				}
+				// Renders shapes
+				for (GraphicalShape sgs : shapes) {
+					sgs.render(shapeRenderer);
+				}
+			}
 		}
 	}
 
@@ -180,22 +180,23 @@ public class ShapeGameScreen extends GameScreen {
 	@Override
 	public void tick(InputController input) {
 		updateShapesFromModel();
+		if (model.hasStarted()) {
+			if (gameCompletedTimer.isDone()) {
+				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.GAME_RESULT, controller.getModel()
+								.getGameResult());
+				EventBus.INSTANCE.broadcast(message);
+			} else if (!gameCompletedTimer.isRunning()) {
+				if (controller.getModel().checkGameState() == GameState.WON) {
+					gameCompletedTimer.start(750);
+					controller.getModel().stopTimer();
+					Gdx.app.log(TAG, "Timer started! game won");
+				} else if (controller.getModel().checkGameState() == GameState.LOST) {
+					gameCompletedTimer.start(1500);
+				}
 
-		if (gameCompletedTimer.isDone()) {
-			Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
-			EventMessage message = new EventMessage(C.Tag.TO_SELF,
-					C.Msg.GAME_RESULT, controller.getModel().getGameResult());
-			EventBus.INSTANCE.broadcast(message);
-		} else if (!gameCompletedTimer.isRunning()) {
-			if (controller.getModel().checkGameState() == GameState.WON) {
-				gameCompletedTimer.start(750);
-				controller.getModel().stopTimer();
-				Gdx.app.log(TAG, "Timer started! game won");
-
-			} else if (controller.getModel().checkGameState() == GameState.LOST) {
-				gameCompletedTimer.start(1500);
 			}
-
 		}
 
 		// TODO nullpointer movingShape
@@ -272,7 +273,6 @@ public class ShapeGameScreen extends GameScreen {
 			for (GraphicalShape gs : removeList)
 				shapes.remove(gs);
 		}
-
 	}
 
 	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
