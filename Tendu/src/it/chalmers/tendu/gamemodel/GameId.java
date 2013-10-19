@@ -22,12 +22,11 @@ public enum GameId {
 
 			), 
 			SHAPE_GAME(
-					/*Difficulty.ONE, 
-					 Difficulty.TWO, 
-					 Difficulty.THREE, 
-					 Difficulty.FOUR, 
-					 Difficulty.FIVE
-					 */
+					Difficulty.ONE, 
+					Difficulty.TWO, 
+					Difficulty.THREE, 
+					Difficulty.FOUR, 
+					Difficulty.FIVE
 					);
 
 
