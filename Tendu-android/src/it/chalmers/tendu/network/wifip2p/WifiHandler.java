@@ -557,7 +557,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	// ********************** Kryo *********************************
 
 	private void startKryoNetServer() {
-		server = new Server();
+		//Creates a Server with a write buffer size of 16384 and an object buffer size of 2048.
+		
+		server = new Server(16384*10, 2048*10);
 		Kryo kryo = server.getKryo();
 		registerKryoClasses(kryo);
 		server.start();
@@ -592,8 +594,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
 		@Override
 		protected Object doInBackground(String... addresses) {
+			//Creates a Client with a write buffer size of 8192 and an object buffer size of 2048.
 			String address = addresses[0];
-			client = new Client();
+			client = new Client(8192*10, 2048*10);
 			Kryo kryo = client.getKryo();
 			registerKryoClasses(kryo);
 			// TODO try reverting to old way of starting thread, see if that solves bufferunderflow crash
