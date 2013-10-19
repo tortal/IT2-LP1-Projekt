@@ -55,23 +55,23 @@ public class NumberGame extends MiniGame {
 		if(playerCount == 1) {
 			switch (difficulty) {
 			case ONE:
-				this.setGameTime(30000, extraTime);
+				this.setGameTime(300000, extraTime);
 				answerList = createAnswer(2);
 				break;
 			case TWO:
-				this.setGameTime(30000, extraTime);
+				this.setGameTime(300000, extraTime);
 				answerList = createAnswer(3);
 				break;
 			case THREE:
-				this.setGameTime(25000, extraTime);
+				this.setGameTime(250000, extraTime);
 				answerList = createAnswer(4);
 				break;
 			case FOUR:
-				this.setGameTime(25000, extraTime);
+				this.setGameTime(250000, extraTime);
 				answerList = createAnswer(6);
 				break;
 			case FIVE:
-				this.setGameTime(25000, extraTime);
+				this.setGameTime(250000, extraTime);
 				answerList = createAnswer(8);
 				break;
 			default:
