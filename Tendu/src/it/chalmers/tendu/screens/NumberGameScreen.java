@@ -217,7 +217,6 @@ public class NumberGameScreen extends GameScreen {
 				model.stopTimer();
 				gameCompletedTimer.start(1500);
 				
-				//TODO ONLY SEND ONCE
 				if (gameCompletedTimer.isDone()) {
 
 					// Received by GameSessionController.
@@ -259,14 +258,6 @@ public class NumberGameScreen extends GameScreen {
 								guessNumbersWidgets.get(i).setY(145);
 							}
 
-						}
-					}
-					
-					if (input.isTouchedUp()) {
-						if(input.x < 100 && input.y > Constants.SCREEN_HEIGHT-100) {
-							EventMessage message = new EventMessage(C.Tag.REQUEST_AS_CLIENT,
-									C.Msg.TEST, new SimpleTimer());
-							EventBus.INSTANCE.broadcast(message);
 						}
 					}
 				}
