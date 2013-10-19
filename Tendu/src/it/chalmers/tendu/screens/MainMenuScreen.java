@@ -45,10 +45,10 @@ public class MainMenuScreen implements Screen {
 		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 130),
 				Constants.MENU_FONT_COLOR);
 		
-		wifi = new TextWidget("   " + TextLabels.WIFI, new Vector2(90, 650),
+		wifi = new TextWidget(TextLabels.WIFI, new Vector2(80, 660),
 				Constants.MENU_FONT_COLOR);
 		
-		blueTooth = new TextWidget(" >   " + TextLabels.BLUETOOTH, new Vector2(90, 580),
+		blueTooth = new TextWidget("> " + TextLabels.BLUETOOTH, new Vector2(80, 580),
 				Constants.MENU_FONT_COLOR);
 
 		dark = true;
