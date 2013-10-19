@@ -217,12 +217,10 @@ public class NumberGameScreen extends GameScreen {
 				model.stopTimer();
 				gameCompletedTimer.start(1500);
 				
-				if (gameCompletedTimer.isDone()) {
-
+				if (gameCompletedTimer.isDone()) {					
+					
 					// Received by GameSessionController.
-					EventMessage message = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.GAME_RESULT, model.getGameResult());
-					EventBus.INSTANCE.broadcast(message);
+					sendEndMessage();
 				}
 
 				return;
@@ -263,6 +261,20 @@ public class NumberGameScreen extends GameScreen {
 				}
 			}
 		}
+	}
+	
+	//TODO not the best solution but it works.
+	//this message must be sent only once
+	private boolean ended = false;
+	private void sendEndMessage() {
+		if(!ended) {
+			// Received by GameSessionController.
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, model.getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		}
+		
+		ended = true;
 	}
 
 	private NumberGame getModel() {

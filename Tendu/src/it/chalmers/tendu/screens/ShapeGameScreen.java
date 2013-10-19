@@ -182,10 +182,8 @@ public class ShapeGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (gameCompletedTimer.isDone()) {
 				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
-				EventMessage message = new EventMessage(C.Tag.TO_SELF,
-						C.Msg.GAME_RESULT, controller.getModel()
-								.getGameResult());
-				EventBus.INSTANCE.broadcast(message);
+				// Received by GameSessionController
+				sendEndMessage();
 			} else if (!gameCompletedTimer.isRunning()) {
 				if (controller.getModel().checkGameState() == GameState.WON) {
 					gameCompletedTimer.start(750);
@@ -339,5 +337,19 @@ public class ShapeGameScreen extends GameScreen {
 		}
 
 		return true;
+	}
+	
+	//TODO not the best solution but it works.
+	//this message must be sent only once
+	private boolean ended = false;
+	private void sendEndMessage() {
+		if(!ended) {
+			// Received by GameSessionController.
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, model.getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		}
+		
+		ended = true;
 	}
 }
