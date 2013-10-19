@@ -158,7 +158,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void testSendMessage() {
-		EventMessage message = new EventMessage(C.Tag.TEST, C.Msg.TEST);
+		Map<String, Integer> players = new HashMap<String, Integer>();
+		players.put("Test", 1);
+		EventMessage message = new EventMessage(C.Tag.TEST, C.Msg.TEST, new GameSession(players));
 		broadcastMessageOverNetwork(message);
 	}
 
