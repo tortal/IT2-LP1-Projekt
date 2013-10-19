@@ -6,7 +6,6 @@ import it.chalmers.tendu.controllers.ShapeGameModelController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
-	private final int SEND_MARGIN = 110;
+	private final int SEND_MARGIN = 5;
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
@@ -129,7 +128,7 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().y >= Constants.SCREEN_HEIGHT - SEND_MARGIN
+		if (s.getBounds().y+s.HEIGHT >= Constants.SCREEN_HEIGHT - SEND_MARGIN
 				&& otherPlayers.size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(/*
 														 * Player.getInstance()
@@ -145,7 +144,7 @@ public class ShapeGameScreen extends GameScreen {
 														 */C.Tag.TO_SELF,
 					C.Msg.SHAPE_SENT, controller.getModel().getGameId(),
 					messageContentFactory(otherPlayers.get(1), s.getShape())));
-		} else if (s.getBounds().x >= Constants.SCREEN_WIDTH - SEND_MARGIN
+		} else if (s.getBounds().x + s.WIDTH >= Constants.SCREEN_WIDTH - SEND_MARGIN
 				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(/*
 														 * Player.getInstance()

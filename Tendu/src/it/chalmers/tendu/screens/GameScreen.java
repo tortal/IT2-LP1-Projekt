@@ -4,14 +4,10 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.PlayerColors;
-import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -24,7 +20,6 @@ public abstract class GameScreen implements Screen {
 	final Tendu tendu; // reference to the main Tendu object
 	MiniGame model; // model of current minigame
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private BitmapFont font;
 	private List<Integer> otherPlayers;
 
 
@@ -39,7 +34,6 @@ public abstract class GameScreen implements Screen {
 		this.tendu = tendu;
 		this.model = model;
 		shapeRenderer = new ShapeRenderer();
-		font = new BitmapFont();
 		
 		otherPlayers = model.getOtherPlayerNumbers();
 	}
@@ -62,7 +56,6 @@ public abstract class GameScreen implements Screen {
 	 */
 	public void removed() {
 		shapeRenderer.dispose();
-		font.dispose();
 	}
 
 	/**
@@ -88,7 +81,6 @@ public abstract class GameScreen implements Screen {
 	 * Renders a visual indicator for respective player
 	 */
 	public void renderPlayerIndicator() {
-		font.scale(-2);
 		// First player
 		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -115,8 +107,6 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 		}
-		font.scale(2);
-
 	}
 
 	/**
