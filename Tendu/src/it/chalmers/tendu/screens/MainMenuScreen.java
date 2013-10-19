@@ -19,8 +19,10 @@ public class MainMenuScreen implements Screen {
 	private TextWidget joinGame;
 	private TextWidget testStuff;
 	private TextWidget hostType;
+	private TextWidget wifi;
+	private TextWidget blueTooth;
 	private int hostNumber;
-
+	
 	private boolean dark;
 
 	public MainMenuScreen(Tendu tendu) {
@@ -42,8 +44,16 @@ public class MainMenuScreen implements Screen {
 		
 		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 130),
 				Constants.MENU_FONT_COLOR);
+		
+		wifi = new TextWidget("   " + TextLabels.WIFI, new Vector2(90, 650),
+				Constants.MENU_FONT_COLOR);
+		
+		blueTooth = new TextWidget(" >   " + TextLabels.BLUETOOTH, new Vector2(90, 580),
+				Constants.MENU_FONT_COLOR);
 
 		dark = true;
+		
+		
 	}
 
 	public void tick(InputController input) {
@@ -56,6 +66,18 @@ public class MainMenuScreen implements Screen {
 
 			if (joinGame.collided(input.getCoordinates())) {
 				tendu.setScreen(new LobbyScreen(tendu, false));
+			}
+			
+			if(wifi.collided(input.getCoordinates())) {
+				wifi.setText(" > " + TextLabels.WIFI);
+				blueTooth.setText(TextLabels.BLUETOOTH);
+				tendu.getNetworkHandler().selectWifi();
+			}
+			
+			if(blueTooth.collided(input.getCoordinates())) {
+				blueTooth.setText(" > " + TextLabels.BLUETOOTH);
+				wifi.setText(TextLabels.WIFI);
+				tendu.getNetworkHandler().selectBluetooth();
 			}
 
 			if (testStuff.collided(input.getCoordinates())) {
@@ -74,7 +96,7 @@ public class MainMenuScreen implements Screen {
 				hostType.setText("Host = " + hostNumber);
 			}
 
-			if (input.x < 100 && input.y > Constants.SCREEN_HEIGHT - 100) {
+			if (input.x > Constants.SCREEN_WIDTH-100 && input.y > Constants.SCREEN_HEIGHT/2-25 && input.y < Constants.SCREEN_HEIGHT/2 + 25) {
 
 				if (dark == true) {
 					Constants.BG_RED = 0.8f;
@@ -121,6 +143,8 @@ public class MainMenuScreen implements Screen {
 		joinGame.draw(tendu.spriteBatch, font);
 		hostType.draw(tendu.spriteBatch, menuFont);
 		testStuff.draw(tendu.spriteBatch, font);
+		wifi.draw(tendu.spriteBatch, menuFont);
+		blueTooth.draw(tendu.spriteBatch, menuFont);
 
 	}
 
