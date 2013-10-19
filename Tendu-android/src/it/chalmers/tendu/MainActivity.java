@@ -1,8 +1,7 @@
 package it.chalmers.tendu;
 
-import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.network.NetworkHandler;
-import it.chalmers.tendu.network.wifip2p.WifiHandler;
+import it.chalmers.tendu.network.INetwork;
+import it.chalmers.tendu.network.Network;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -10,7 +9,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 public class MainActivity extends AndroidApplication {
 
-	private INetworkHandler networkHandler;
+	private INetwork network;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -19,14 +18,14 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        networkHandler = new NetworkHandler(this);
-        Tendu tendu = new Tendu(networkHandler);
+        network =  new Network(this);
+        Tendu tendu = new Tendu(network);
         initialize(tendu, cfg);
     }
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		networkHandler.destroy();
+		network.destroy();
 	}
 }

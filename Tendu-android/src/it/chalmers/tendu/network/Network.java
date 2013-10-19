@@ -5,8 +5,8 @@ import it.chalmers.tendu.network.wifip2p.WifiHandler;
 import it.chalmers.tendu.tbd.EventMessage;
 import android.content.Context;
 
-public class Network implements INetworkHandler {
-	private NetworkHandler networkHandler;
+public class Network implements INetwork {
+	private INetworkHandler networkHandler;
 	private Context context;
 	
 	public Network(Context ctx) {

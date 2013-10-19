@@ -2,7 +2,7 @@ package it.chalmers.tendu.network;
 
 import it.chalmers.tendu.tbd.EventMessage;
 
-public interface INetworkHandler {
+public interface INetwork {
 	/**
 	 * Host game that other players can search for.
 	 */
@@ -47,6 +47,9 @@ public interface INetworkHandler {
 	/** Method for easing multiple simultaneous testing of app 
 	 * @return */ 
 	public int toggleHostNumber();
-
+	
+	public void selectWifi();
+	
+	public void selectBluetooth();
 	
 }

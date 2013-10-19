@@ -6,7 +6,7 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
-import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.INetwork;
 import it.chalmers.tendu.screens.GameOverScreen;
 import it.chalmers.tendu.screens.InterimScreen;
 import it.chalmers.tendu.screens.MainMenuScreen;
@@ -54,7 +54,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 	 * Network controller. All networking is implemented through the
 	 * {@link INetworkHandler} interface.
 	 */
-	private INetworkHandler networkHandler;
+	private INetwork networkHandler;
 
 	/**
 	 * All drawing is normally done on this canvas.
@@ -65,7 +65,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 	 * @param networkHandler
 	 *            Platform-specific implementation of the network communication.
 	 */
-	public Tendu(INetworkHandler networkHandler) {
+	public Tendu(INetwork networkHandler) {
 		this.networkHandler = networkHandler;
 		EventBus.INSTANCE.addListener(this);
 	}
@@ -157,7 +157,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 	}
 
 	// screens need access to the network
-	public INetworkHandler getNetworkHandler() {
+	public INetwork getNetworkHandler() {
 		return networkHandler;
 	}
 
