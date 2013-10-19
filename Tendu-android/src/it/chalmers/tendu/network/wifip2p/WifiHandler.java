@@ -661,7 +661,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	}
 
 	@Override
-	public void toggleHostNumber() {
+	public int toggleHostNumber() {
+		return 1;
 		// TODO Auto-generated method stub
 
 	}

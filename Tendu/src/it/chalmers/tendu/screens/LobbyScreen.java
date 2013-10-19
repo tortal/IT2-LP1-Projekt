@@ -68,6 +68,7 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initClient() {
+		Player.getInstance().setHost(false);
 		tendu.getNetworkHandler().joinGame();
 		statusText = new TextWidget(TextLabels.SEARCHING_FOR_SESSION, new Vector2(
 				40, 620), Constants.MENU_FONT_COLOR);
@@ -118,7 +119,7 @@ public class LobbyScreen implements Screen {
 			if(p.getKey().equals(Player.getInstance().getMac())) {
 				playerText.setText(TextLabels.ME + " - " + TextLabels.PLAYER + ": " + (p.getValue()+1)); 
 			} else {
-				playerText.setText(TextLabels.PLAYER + ": " + (p.getValue()+1) + " Mac = " + p.getKey()); 
+				playerText.setText(TextLabels.PLAYER + ": " + (p.getValue()+1)); 
 			}
 			playerText.addToY(-65);
 			playerText.setColor(PlayerColors.getPlayerColor(p.getValue()));

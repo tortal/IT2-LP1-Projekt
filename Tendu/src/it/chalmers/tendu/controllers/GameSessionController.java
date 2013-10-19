@@ -11,10 +11,8 @@ import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventBusListener;
 import it.chalmers.tendu.tbd.EventMessage;
 
-import com.badlogic.gdx.Gdx;
 
 public class GameSessionController implements EventBusListener {
-
 	private String TAG = getClass().getSimpleName();
 
 	private GameSession gameSession;
@@ -32,7 +30,8 @@ public class GameSessionController implements EventBusListener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
-			if(message.msg == C.Msg.PLAYER_DISCONNECTED || message.msg == C.Msg.CONNECTION_LOST){
+			if (message.msg == C.Msg.PLAYER_DISCONNECTED
+					|| message.msg == C.Msg.CONNECTION_LOST) {
 				returnToMainMenu();
 			}
 		} else if (Player.getInstance().isHost()) {
@@ -201,7 +200,6 @@ public class GameSessionController implements EventBusListener {
 		// Received in Tendu.
 		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
 		EventBus.INSTANCE.broadcast(message);
-
 		unregister();
 	}
 

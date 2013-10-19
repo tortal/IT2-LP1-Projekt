@@ -47,22 +47,33 @@ public class NumberGameSound implements EventBusListener {
 		}
 		
 	}
-	
+	/**
+	 * Plays sound when player succeed
+	 */
 	public void playSoundSuccess(){
 		succeededSound.play();
 	}
-	
+	/**
+	 * Plays sound when player fail
+	 */
 	public void playSoundFail(){
 		failSound.play();
 	}
-	
+	/**
+	 * Plays sound when player win
+	 */
 	public void playSoundGameWon(){
 		completedGameSound.play();
 	}
-	
+	/**
+	 * Plays sound when player loose
+	 */
 	public void playSoundGameLost(){
 		lostGameSound.play();
 	}
+	/**
+	 * Releases all the sound resources.
+	 */
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
