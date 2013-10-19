@@ -49,7 +49,6 @@ import android.net.wifi.p2p.WifiP2pManager.DnsSdTxtRecordListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -81,7 +80,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	WifiP2pManager mManager;
 	Channel mChannel;
-	//BroadcastReceiver mReceiver;
 
 	IntentFilter mIntentFilter;
 
@@ -92,7 +90,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 		mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
-		// mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, context);
 
 		mIntentFilter = new IntentFilter();
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -111,9 +108,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void hostSession() {
 		isReadyToConnect = true;
-		//discoverPeers();
 		createNewWifiGroup();
-
 		startRegistration();
 	}
 
@@ -220,7 +215,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	};
 
 	private void unregisterBroadcastReceiver() {
-		/* unregister the broadcast receiver */
 		if (mReceiver != null) {
 			try {
 				context.unregisterReceiver(mReceiver);				
@@ -237,7 +231,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			Log.d(TAG, "Not ready to connect");
 			return;
 		}
-		// InetAddress from WifiP2pInfo struct.
 		String groupOwnerAddress = null;
 		if (info.groupOwnerAddress != null) {
 			groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
@@ -282,8 +275,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		@Override
 		public void onPeersAvailable(WifiP2pDeviceList peerList) {
 			peers.clear();
-			peers.addAll(peerList.getDeviceList());
-			// Log.d(TAG, peers.toString());			
+			peers.addAll(peerList.getDeviceList());		
 			if (peers.size() == 0) {
 				Log.d(TAG, "No devices found");
 				return;
@@ -459,7 +451,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		mManager.addLocalService(mChannel, serviceInfo, new ActionListener() {
 			@Override
 			public void onSuccess() {
-				// Command successful!
 				Log.d(TAG, "Adding local service");
 			}
 
@@ -507,7 +498,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				new ActionListener() {
 			@Override
 			public void onSuccess() {
-				// Success!
 				Log.d(TAG, "Adding service request");
 			}
 
@@ -564,7 +554,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		registerKryoClasses(kryo);
 		server.start();
 		try {
-			server.bind(TCP_PORT); //, 54777); // other figure is for UDP
+			server.bind(TCP_PORT);	
 			Log.d(TAG, "Kryonet server started");
 		} catch (IOException e) {
 			Log.d(TAG, "KryoNet Server creation failure");
@@ -661,10 +651,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(SessionResult.class);
 
 	}	
-
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private void test() {
-	}
 
 	@Override
 	public void stopAcceptingConnections() {
