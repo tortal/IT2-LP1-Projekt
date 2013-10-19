@@ -9,7 +9,7 @@ public class EventMessage {
 	public final C.Msg msg;
 	public final GameId gameId;
 	public final Object content;
-	public final String mac;
+//	public final String mac;
 
 	/** No args constructor for reflection */
 	EventMessage() {
@@ -17,11 +17,11 @@ public class EventMessage {
 		msg = null;
 		gameId = null;
 		content = null;
-		mac = null;
+//		mac = null;
 	}
 
-	public EventMessage(String mac, C.Tag tag, C.Msg msg, GameId gameId, Object content) {
-		this.mac = mac;
+	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content) {
+//		this.mac = mac;
 		this.tag = tag;
 		this.msg = msg;
 		this.gameId = gameId;
@@ -31,25 +31,25 @@ public class EventMessage {
 	public EventMessage(EventMessage message, C.Tag newTag) {
 		this.tag = newTag;
 		this.msg = message.msg;
-		this.mac = message.mac;
+//		this.mac = message.mac;
 		this.gameId = message.gameId;
 		this.content = message.content;
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg, Object content) {
-		this(null, tag, msg, null, content);
+		this(tag, msg, null, content);
 	}
 
 	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId) {
-		this(null, tag, msg, gameId, null);
+		this(tag, msg, gameId, null);
 	}
 	
-	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content){
-		this(null, tag, msg, gameId, content);
-	}
+//	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content){
+//		this(tag, msg, gameId, content);
+//	}
 
 	public EventMessage(C.Tag tag, C.Msg msg) {
-		this(null, tag, msg, null, null);
+		this(tag, msg, null, null);
 	}
 
 	@Override

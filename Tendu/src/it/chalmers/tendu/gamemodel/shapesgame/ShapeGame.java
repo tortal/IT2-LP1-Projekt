@@ -39,7 +39,7 @@ public class ShapeGame extends MiniGame {
 	 * shape has been received. <Integer(Receiver), <Integer(Sender),
 	 * Shape(Received Shape)>
 	 */
-	private Map<Integer, Map<Integer, Shape>> latestReceivedShapes;
+	public Map<Integer, Map<Integer, Shape>> latestReceivedShapes; //TODO private
 
 	/**
 	 * Holds every persons last sent shape <Integer(Receiver), <Integer(Sender),
@@ -64,7 +64,7 @@ public class ShapeGame extends MiniGame {
 
 	/**
 	 * This will create a ShapesGame. It creates a list of all possible
-	 * combinations of the enums {@link GeometricShape} and link {@link Color}
+	 * combinations of the enums {@link GeometricShape} and link {@link ShapeColor}
 	 * and then reduces this randomly to a subset that suffice for the game
 	 * settings (player count and lock seqeuence length)
 	 */
@@ -75,7 +75,7 @@ public class ShapeGame extends MiniGame {
 		switch (difficulty) {
 		case ONE:
 			this.setGameTime(200000, extraTime);
-			lockSize = 2;
+			lockSize = 4;
 			break;
 		case TWO:
 			this.setGameTime(15000, extraTime);
@@ -295,7 +295,7 @@ public class ShapeGame extends MiniGame {
 		lock.addSlot(allShapes.remove(0));
 		lock.addSlot(allShapes.remove(0));
 
-		Shape myShape = new Shape(Color.GREEN, GeometricShape.CIRCLE);
+		Shape myShape = new Shape(ShapeColor.GREEN, GeometricShape.CIRCLE);
 		// System.out.println(lock.fillSlot(myShape));
 
 		System.out.println(lock);

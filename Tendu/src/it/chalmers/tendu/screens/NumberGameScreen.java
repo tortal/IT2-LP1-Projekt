@@ -215,18 +215,8 @@ public class NumberGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				model.stopTimer();
-				if (model.checkGameState() == GameState.WON
-						&& gameCompletedTimer.start(1500)) {
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.SOUND_WIN);
-					EventBus.INSTANCE.broadcast(soundMsg);
-				} else if (model.checkGameState() == GameState.LOST
-						&& gameCompletedTimer.start(1500)) {
-					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.SOUND_LOST);
-					EventBus.INSTANCE.broadcast(soundMsg);
-				}
-
+				gameCompletedTimer.start(1500);
+				
 				if (gameCompletedTimer.isDone()) {
 
 					// Received by GameSessionController.

@@ -76,7 +76,7 @@ public class ConnectionService {
 			.fromString("a60f35f0-b93a-11de-8a39-08002009c666");
 
 	/** Kryo Variables */
-	private Kryo mKryo;
+	//private Kryo mKryo;
 
 	private Output out;
 
@@ -88,7 +88,7 @@ public class ConnectionService {
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
 
 		this.context = context;
-		mKryo = kryoFactory();
+		//mKryo = kryoFactory();
 	}
 
 	private Kryo kryoFactory() {
@@ -103,6 +103,7 @@ public class ConnectionService {
 		private final String address;
 		private final BluetoothDevice device;
 		private final Input in;
+		private final Kryo kryo = kryoFactory(); 
 
 		private final InputStream mmInStream;
 
@@ -131,13 +132,13 @@ public class ConnectionService {
 
 			while (true) {
 				try {
-					receivedObject = mKryo.readObject(in, EventMessage.class);
+					receivedObject = kryo.readObject(in, EventMessage.class);
 					mOnMessageReceivedListener.OnMessageReceived(device,
 							(EventMessage) receivedObject);
 
 				} catch (KryoException k) {
 					Log.e(TAG, "The connection has most probably been lost");
-					// k.printStackTrace();
+					 k.printStackTrace();
 					break;
 				}
 			}
@@ -156,6 +157,7 @@ public class ConnectionService {
 					e.printStackTrace();
 				}
 			}
+			
 		}
 	}
 
@@ -357,9 +359,9 @@ public class ConnectionService {
 			if (out != null) {
 				//out.close();
 			}
-			if (mKryo != null) {
-				mKryo.reset();
-			}
+//			if (mKryo != null) {
+//				mKryo.reset();
+//			}
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in reset", e);
 		}

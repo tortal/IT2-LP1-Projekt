@@ -120,13 +120,14 @@ public class MainMenuScreen implements Screen {
 		hostGame.draw(tendu.spriteBatch, font);
 		joinGame.draw(tendu.spriteBatch, font);
 		hostType.draw(tendu.spriteBatch, menuFont);
-		// testStuff.draw(tendu.spriteBatch, font);
+		testStuff.draw(tendu.spriteBatch, font);
 
 	}
 
 	@Override
 	public void removed() {
 		font.dispose();
+		menuFont.dispose();
 	}
 
 }

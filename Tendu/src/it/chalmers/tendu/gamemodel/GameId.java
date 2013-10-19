@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Every implementation of {@link MiniGame} has an enum associated with with it.
+ * Every implementation of {@link MiniGame} has an enum associated with it.
  * Abstractions and game-balance can be controlled with the parameters of
  * difficulty in these constructors.
  * 
@@ -30,8 +30,9 @@ public enum GameId {
 					 */
 					);
 
+
 	/**
-	 * Levels that are needed to possible this game.
+	 * Levels that are needed to make this game possible.
 	 */
 	private List<Difficulty> acceptedDifficulties;
 

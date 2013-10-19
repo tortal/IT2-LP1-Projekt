@@ -4,6 +4,7 @@ import it.chalmers.tendu.defaults.Constants;
 
 import it.chalmers.tendu.network.NetworkHandler;
 
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
@@ -434,6 +435,7 @@ public class BluetoothHandler extends NetworkHandler {
 	}
 
 	
+
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
 		final EventMessage message = new EventMessage(C.Tag.COMMAND_AS_HOST,

@@ -8,11 +8,11 @@ import java.util.List;
  */
 public class Shape {
 
-	public final Color color;
+	public final ShapeColor color;
 	public final GeometricShape geometricShape;
 	private boolean locked;
 
-	public Shape(Color color, GeometricShape geometricShape) {
+	public Shape(ShapeColor color, GeometricShape geometricShape) {
 		this.color = color;
 		this.geometricShape = geometricShape;
 	}
@@ -21,9 +21,9 @@ public class Shape {
 	 * No args constructor for reflection use
 	 */
 	private Shape(){
-		this.color = Color.BLUE;
-		this.geometricShape = GeometricShape.CIRCLE;
-		this.locked = true;
+		this.color = null;
+		this.geometricShape = null;
+//		this.locked = true;
 	}
 	/**
 	 * @return a list containing all combinations possible with the enumerators
@@ -33,7 +33,7 @@ public class Shape {
 		List<Shape> allShapes = new ArrayList<Shape>();
 
 		for (GeometricShape g : GeometricShape.values()) {
-			for (Color c : Color.values()) {
+			for (ShapeColor c : ShapeColor.values()) {
 				Shape s = new Shape(c, g);
 				allShapes.add(s); // Add this unique combination to list
 			}
