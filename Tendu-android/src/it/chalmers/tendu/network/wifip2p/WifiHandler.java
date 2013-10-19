@@ -3,7 +3,9 @@ package it.chalmers.tendu.network.wifip2p;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
 import it.chalmers.tendu.gamemodel.GameId;
+import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.SessionResult;
@@ -519,6 +521,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Service discovery failed: " + translateErrorCodeToMessage(reason));
+				toastMessage("Something went wrong. Try again.");
 			}
 		});
 	}
@@ -651,7 +654,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(STATE.class);
 		kryo.register(SessionResult.class);
 		kryo.register(NetworkShape.class);
-
+		kryo.register(GameResult.class);
+		kryo.register(GameState.class);
 	}	
 
 	@Override
