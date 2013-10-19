@@ -98,7 +98,7 @@ public class LobbyScreen implements Screen {
 			
 			if (testStuff.collided(input.getCoordinates())) {				
 				// Received by host and client in LobbyController.
-				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.CLIENT_REQUESTED,
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.REQUEST_AS_CLIENT,
 						C.Msg.TEST, new SimpleTimer()));
 			}
 
