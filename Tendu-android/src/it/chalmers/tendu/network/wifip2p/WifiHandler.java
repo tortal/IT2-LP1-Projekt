@@ -12,6 +12,7 @@ import it.chalmers.tendu.gamemodel.SimpleTimer.STATE;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Lock;
+import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeColor;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
@@ -649,6 +650,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		kryo.register(SimpleTimer.class);
 		kryo.register(STATE.class);
 		kryo.register(SessionResult.class);
+		kryo.register(NetworkShape.class);
 
 	}	
 
