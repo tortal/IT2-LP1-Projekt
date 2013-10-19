@@ -1,9 +1,9 @@
 package it.chalmers.tendu.gamemodel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Model of the network lobby. When users are connecting, before game has
@@ -14,7 +14,7 @@ import java.util.Map;
 public class LobbyModel {
 
 	public Map<String, Integer> players;
-	public List<String> playerReady;
+	public Set<String> playerReady;
 	public int maxPlayers;
 
 	/**
@@ -24,7 +24,7 @@ public class LobbyModel {
 	 */
 	public LobbyModel(int maxPlayers) {
 		players = new HashMap<String, Integer>();
-		playerReady = new ArrayList<String>();
+		playerReady = new HashSet<String>();
 		this.maxPlayers = maxPlayers;
 	}
 
@@ -36,12 +36,10 @@ public class LobbyModel {
 	/**
 	 * Enter a player as ready to start a game.
 	 * 
-	 * @param player
+	 * @param mAC MAC of this player
 	 */
-	public void playerReady(String player) {
-		if (!playerReady.contains(player)) {
-			playerReady.add(player);
-		}
+	public void playerReady(String mAC) {
+		playerReady.add(mAC);
 	}
 
 	/**
@@ -50,7 +48,12 @@ public class LobbyModel {
 	 * @return
 	 */
 	public boolean arePlayersReady() {
-		return (players.size() == playerReady.size());
+		for (String s : players.keySet()){
+			if (!playerReady.contains(s)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -80,7 +83,7 @@ public class LobbyModel {
 		return players.keySet().size() == maxPlayers;
 	}
 
-	public void removePlayer(String playerMac) {
+	public void unreadyPlayer(String playerMac) {
 		players.remove(playerMac);
 	}
 }

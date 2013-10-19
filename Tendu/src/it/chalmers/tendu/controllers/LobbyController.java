@@ -85,13 +85,19 @@ public class LobbyController implements Listener {
 					EventBus.INSTANCE.removeListener(this);
 				}
 				break;
+			case PLAYER_DISCONNECTED:
+				Gdx.app.log(TAG, "Player disconnected");
+				
+				String mac = (String) message.content;
+				model.unreadyPlayer(mac);
+				break;
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
 		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
 			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
-				model.removePlayer((String) message.content);
+				model.unreadyPlayer((String) message.content);
 			}
 		}
 	}
