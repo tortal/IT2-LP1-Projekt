@@ -28,12 +28,12 @@ public enum EventBus {
 	}
 
 	public synchronized void addListener(Listener l) {
-		Gdx.app.log(TAG, "added listener: " + l);
+		//Gdx.app.log(TAG, "added listener: " + l);
 		listeners.add(l);
 	}
 
-	public synchronized void removeListener(Listener l) {
-		Gdx.app.log(TAG, "removed listener: " + l);
+	public  synchronized void removeListener(Listener l) {
+		//Gdx.app.log(TAG, "removed listener: " + l);
 		listeners.remove(l);
 	}
 }
