@@ -38,7 +38,8 @@ public interface INetworkHandler {
 	 * more incoming connections. No more matchmaking */
 	public void stopAcceptingConnections();
 	
-	/** Method for easing multiple simultaneous testing of app */ 
-	public void toggleHostNumber();
+	/** Method for easing multiple simultaneous testing of app 
+	 * @return */ 
+	public int toggleHostNumber();
 	
 }

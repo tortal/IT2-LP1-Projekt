@@ -383,6 +383,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	
 	@Override
 	public void resetNetwork() {
+		hostNumber = 1;
 		removeTenduFromDeviceName();
 		connection.reset();
 	}
@@ -470,7 +471,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	
 	private int hostNumber = 1;
 	@Override
-	public void toggleHostNumber() {
+	public int toggleHostNumber() {
 		if (hostNumber == 1) {
 			hostNumber = 2;
 		} else {
@@ -483,5 +484,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 						.show();
 			}
 		});
+		
+		return hostNumber;
 	}
 }

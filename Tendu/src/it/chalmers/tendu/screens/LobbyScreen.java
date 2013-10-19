@@ -68,6 +68,7 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initClient() {
+		Player.getInstance().setHost(false);
 		tendu.getNetworkHandler().joinGame();
 		statusText = new TextWidget(TextLabels.SEARCHING_FOR_SESSION, new Vector2(
 				40, 620), Constants.MENU_FONT_COLOR);
