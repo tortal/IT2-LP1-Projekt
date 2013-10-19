@@ -380,7 +380,7 @@ public class BluetoothHandler extends NetworkHandler {
 	 */
 	@Override
 	public void destroy() {
-		Log.d(TAG, "++++++ON DESTROY++++");
+		//Log.d(TAG, "++++++ON DESTROY++++");
 
 		unregisterBroadcastReceiver();
 		resetNetwork();
@@ -399,7 +399,7 @@ public class BluetoothHandler extends NetworkHandler {
 	
 	@Override
 	public void resetNetwork() {
-		hostNumber = 1;
+		super.resetNetwork();
 		removeTenduFromDeviceName();
 		connection.reset();
 	}
@@ -460,25 +460,5 @@ public class BluetoothHandler extends NetworkHandler {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
-	}
-
-	
-	private int hostNumber = 1;
-	@Override
-	public int toggleHostNumber() {
-		if (hostNumber == 1) {
-			hostNumber = 2;
-		} else {
-			hostNumber = 1;
-		}
-		
-		((AndroidApplication) context).runOnUiThread(new Runnable() {
-			public void run() {
-				Toast.makeText(context, "Host: " + hostNumber, Toast.LENGTH_SHORT)
-						.show();
-			}
-		});
-		
-		return hostNumber;
 	}
 }

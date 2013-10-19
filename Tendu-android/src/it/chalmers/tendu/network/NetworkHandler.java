@@ -95,5 +95,22 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 		}
 	}
 
+	protected int hostNumber = 1;
+	@Override
+	public int toggleHostNumber() {
+		if (hostNumber == 1) {
+			hostNumber = 2;
+		} else {
+			hostNumber = 1;
+		}
+		
+		toastMessage("Host: " + hostNumber);
+		return hostNumber;
+	}
 
+	@Override
+	public void resetNetwork() {
+		hostNumber = 1;
+		
+	}
 }
