@@ -12,7 +12,7 @@ public class Network implements INetwork {
 	public Network(Context ctx) {
 		context = ctx;
 
-		selectBluetooth();
+		selectWifi();
 	}
 	
 	@Override
