@@ -35,6 +35,18 @@ public class LobbyController implements Listener {
 
 	private void handleAsHost(EventMessage message) {
 
+		if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
+			switch (message.msg) {
+			
+			case PLAYER_DISCONNECTED:
+				Gdx.app.log(TAG, "Player disconnected");
+
+				String mac = (String) message.content;
+				model.unreadyPlayer(mac);
+				break;
+			}
+		}
+
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
 			switch (message.msg) {
@@ -62,17 +74,18 @@ public class LobbyController implements Listener {
 				// Start the game for all players if they are ready.
 				if (model.arePlayersReady()) {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
-					
+
 					// Received by Tendu.
-					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
+					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.STOP_ACCEPTING_CONNECTIONS);
 					EventBus.INSTANCE.broadcast(stopMessage);
-					
+
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
-					
+
 					// MiniGame miniGame = gameSession.getNextMiniGame();
 					// gameSession.setCurrentMiniGame(miniGame);
-					
+
 					new GameSessionController(gameSession);
 
 					// Received by clients in LobbyController through the
@@ -85,18 +98,12 @@ public class LobbyController implements Listener {
 					EventBus.INSTANCE.removeListener(this);
 				}
 				break;
-			case PLAYER_DISCONNECTED:
-				Gdx.app.log(TAG, "Player disconnected");
-				
-				String mac = (String) message.content;
-				model.unreadyPlayer(mac);
-				break;
 			default:
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
-		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
-			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
+		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
+			if (message.msg == C.Msg.PLAYER_DISCONNECTED) {
 				model.unreadyPlayer((String) message.content);
 			}
 		}
