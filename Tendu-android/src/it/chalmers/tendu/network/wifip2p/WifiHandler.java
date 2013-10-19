@@ -16,6 +16,7 @@ import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeColor;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.network.NetworkHandler;
+import it.chalmers.tendu.screens.ShapeGameScreen;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.C.Msg;
 import it.chalmers.tendu.tbd.C.Tag;
@@ -55,6 +56,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -130,11 +132,24 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void broadcastMessageOverNetwork(EventMessage message) {
+		Log.d(TAG, "Sending over network: " + message);
 		if (client != null) {
 			client.sendTCP(message);
+//			try {
+//				client.update(10);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		if (server != null) {
 			server.sendToAllTCP(message);
+//			try {
+//				server.update(10);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 
 	}
@@ -158,7 +173,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void testSendMessage() {
-		EventMessage message = new EventMessage(C.Tag.TEST, C.Msg.TEST);
+		Map<String, Integer> players = new HashMap<String,Integer>();
+		players.put("Test", 1);
+		EventMessage message = new EventMessage(C.Tag.TEST, C.Msg.TEST, new GameSession(players));
 		broadcastMessageOverNetwork(message);
 	}
 
@@ -555,7 +572,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	// ********************** Kryo *********************************
 
 	private void startKryoNetServer() {
-		server = new Server();
+		//Creates a Server with a write buffer size of 16384 and an object buffer size of 2048.
+		
+		server = new Server();//16384,2048);
 		Kryo kryo = server.getKryo();
 		registerKryoClasses(kryo);
 		server.start();
@@ -591,7 +610,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		@Override
 		protected Object doInBackground(String... addresses) {
 			String address = addresses[0];
-			client = new Client();
+			// Standard buffer sizes: write 8192 and an object buffer size of 2048.
+			client = new Client();//8192, 2048);
 			Kryo kryo = client.getKryo();
 			registerKryoClasses(kryo);
 			// TODO try reverting to old way of starting thread, see if that solves bufferunderflow crash
