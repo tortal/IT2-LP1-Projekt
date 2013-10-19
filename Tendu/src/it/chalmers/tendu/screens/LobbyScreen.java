@@ -8,6 +8,7 @@ import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;
@@ -28,6 +29,7 @@ public class LobbyScreen implements Screen {
 	private BitmapFont font;
 	private int playersConnected;
 	private final int maximumPlayers;
+	private TextWidget testStuff;
 	private boolean ready;
 
 	public LobbyScreen(Tendu tendu, boolean isHost) {
@@ -49,6 +51,9 @@ public class LobbyScreen implements Screen {
 			initHost();
 		else
 			initClient();
+		
+		testStuff = new TextWidget("test stuff", new Vector2(785, 100),
+				Constants.MENU_FONT_COLOR);
 	}
 
 	private void initHost() {
@@ -90,6 +95,12 @@ public class LobbyScreen implements Screen {
 				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_READY, Player.getInstance().getMac()));
 			}
+			
+			if (testStuff.collided(input.getCoordinates())) {				
+				// Received by host and client in LobbyController.
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.CLIENT_REQUESTED,
+						C.Msg.TEST, new SimpleTimer()));
+			}
 
 			readyText.setColor(Constants.MENU_FONT_COLOR);
 		}
@@ -99,6 +110,7 @@ public class LobbyScreen implements Screen {
 	public void render() {
 
 		statusText.draw(tendu.spriteBatch, font);
+		testStuff.draw(tendu.spriteBatch, font);
 		
 		playerText.setY(580);
 
