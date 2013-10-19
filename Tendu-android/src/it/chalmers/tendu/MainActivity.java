@@ -1,6 +1,7 @@
 package it.chalmers.tendu;
 
 import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandler;
 import android.os.Bundle;
 
@@ -18,7 +19,7 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        networkHandler = new WifiHandler(this);
+        networkHandler = new NetworkHandler(this);
         Tendu tendu = new Tendu(networkHandler);
         initialize(tendu, cfg);
     }

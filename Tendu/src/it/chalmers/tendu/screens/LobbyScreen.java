@@ -8,7 +8,6 @@ import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.tbd.C;
 import it.chalmers.tendu.tbd.EventBus;
 import it.chalmers.tendu.tbd.EventMessage;

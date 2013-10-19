@@ -48,4 +48,8 @@ public interface INetworkHandler {
 	 * @return */ 
 	public int toggleHostNumber();
 	
+	public void selectWifi();
+	
+	public void selectBluetooth();
+	
 }
