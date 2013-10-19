@@ -664,26 +664,12 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void test() {
-		mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
-
-			@Override
-			public void onSuccess() {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onFailure(int reason) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 	}
 
 	@Override
 	public void stopAcceptingConnections() {
-		// TODO Auto-generated method stub
-
+		// Removes the server name broadcasting service so no one else will find the game
+		clearServices();
 	}
 
 	@Override
