@@ -17,7 +17,7 @@ public class Network implements INetworkHandler {
 	
 	@Override
 	public void selectBluetooth() {
-		if (networkHandler != null) {
+		if (networkHandler != null && !(networkHandler instanceof BluetoothHandler)) {
 			networkHandler.destroy();
 		}
 		networkHandler = new BluetoothHandler(context);
@@ -25,7 +25,7 @@ public class Network implements INetworkHandler {
 	
 	@Override
 	public void selectWifi() {
-		if (networkHandler != null) {
+		if (networkHandler != null && !(networkHandler instanceof WifiHandler))  {
 			networkHandler.destroy();
 		}
 		networkHandler = new WifiHandler(context);
