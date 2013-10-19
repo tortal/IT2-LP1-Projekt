@@ -13,11 +13,11 @@ import java.util.List;
  */
 public enum GameId {
 
-	NUMBER_GAME(/*
+	NUMBER_GAME(
 				  Difficulty.ONE, Difficulty.TWO, Difficulty.THREE,
-				  Difficulty.FOUR, Difficulty.FIVE*/
-				 ), SHAPE_GAME(Difficulty.ONE, Difficulty.TWO,
-			Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE);
+				  Difficulty.FOUR, Difficulty.FIVE
+				 ), SHAPE_GAME(/*Difficulty.ONE, Difficulty.TWO,
+			Difficulty.THREE, Difficulty.FOUR, Difficulty.FIVE*/);
 
 	/**
 	 * Levels that are needed to possible this game.
