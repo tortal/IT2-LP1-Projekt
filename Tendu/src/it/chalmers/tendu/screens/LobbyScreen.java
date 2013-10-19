@@ -52,7 +52,7 @@ public class LobbyScreen implements Screen {
 		else
 			initClient();
 		
-		testStuff = new TextWidget("test stuff", new Vector2(785, 100),
+		testStuff = new TextWidget("test stuff", new Vector2(870, 120),
 				Constants.MENU_FONT_COLOR);
 	}
 
