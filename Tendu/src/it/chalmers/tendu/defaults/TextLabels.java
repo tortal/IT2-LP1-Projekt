@@ -1,6 +1,8 @@
 package it.chalmers.tendu.defaults;
 
 public class TextLabels {
+	public static final String TENDU = "TENDU";
+
 	//MainMenuScreen
 	public final static String HOST = "HOST GAME";
 	public final static String JOIN = "JOIN GAME";
