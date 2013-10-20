@@ -1,5 +1,7 @@
 package it.chalmers.tendu.controllers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -17,14 +19,17 @@ public class InputController implements InputProcessor {
 	private OrthographicCamera camera;
 	private Vector3 vector3;
 	private Vector2 vector2;
+	private boolean backPressed;
 
 	public int screenX, screenY, x, y;
 
 	public InputController(OrthographicCamera camera) {
+		Gdx.input.setCatchBackKey(true); //makes sure the android back button "belongs" to the game and not the system
 		this.camera = camera;
 		touchedUp = false;
 		touchedDown = false;
 		dragged = false;
+		backPressed = false;
 		vector3 = new Vector3(0, 0, 0);
 		vector2 = new Vector2(0, 0);
 	}
@@ -32,18 +37,20 @@ public class InputController implements InputProcessor {
 	public void tick() {
 		touchedUp = false;
 		touchedDown = false;
+		backPressed = false;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
+        if(keycode == Keys.BACK){
+    		backPressed = true;
+         }
+        return false;
 	}
 
 	@Override
@@ -73,6 +80,10 @@ public class InputController implements InputProcessor {
 
 	public boolean isTouchedDown() {
 		return touchedDown;
+	}
+	
+	public boolean isPackPressed() {
+		return backPressed;
 	}
 
 	@Override

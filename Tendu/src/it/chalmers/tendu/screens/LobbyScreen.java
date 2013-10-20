@@ -105,6 +105,11 @@ public class LobbyScreen implements Screen {
 
 			readyText.setColor(Constants.MENU_FONT_COLOR);
 		}
+		
+		if(input.isPackPressed()) {
+			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
+			EventBus.INSTANCE.broadcast(message);
+		}
 	}
 
 	@Override
