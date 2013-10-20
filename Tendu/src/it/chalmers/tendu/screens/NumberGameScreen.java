@@ -211,7 +211,7 @@ public class NumberGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
-
+		
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				model.stopTimer();

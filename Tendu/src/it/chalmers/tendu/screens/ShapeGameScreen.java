@@ -4,6 +4,7 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controllers.InputController;
 import it.chalmers.tendu.controllers.ShapeGameModelController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
@@ -21,12 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
 	private final int SEND_MARGIN = 5;
+	private int timeForInstructions;
 
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
@@ -45,8 +49,17 @@ public class ShapeGameScreen extends GameScreen {
 
 	ShapeGame shapeGameModel;
 
+	private TextWidget instructions;
+	private TextWidget teamInstructions;
+	private TextWidget teamInstructionsContinued;
+	private BitmapFont font;
+
 	private SimpleTimer gameCompletedTimer;
+	private SimpleTimer instructionsTimer; // used to time how long the
+											// instructions should be displayed
 	private List<Integer> otherPlayers;
+
+	private static int timesPlayed = 0;
 
 	//
 	// // For debug
@@ -66,6 +79,7 @@ public class ShapeGameScreen extends GameScreen {
 
 		shapes = new ArrayList<GraphicalShape>();
 		gameCompletedTimer = new SimpleTimer();
+		instructionsTimer = new SimpleTimer();
 
 		int x = Constants.SCREEN_WIDTH
 				/ (controller.getModel().getLock(player_num).getLockSequence()
@@ -100,6 +114,26 @@ public class ShapeGameScreen extends GameScreen {
 
 		otherPlayers = controller.getModel().getOtherPlayerNumbers();
 
+		// setup the instructions
+		instructions = new TextWidget(TextLabels.PLACE_THE_SHAPE, new Vector2(
+				90, 595), Constants.MENU_FONT_COLOR);
+
+		teamInstructions = new TextWidget(TextLabels.SEND_SHAPE_BY,
+				new Vector2(65, 400), Constants.MENU_FONT_COLOR);
+		teamInstructionsContinued = new TextWidget(
+				TextLabels.SEND_SHAPE_TEAMMATES, new Vector2(65, 300),
+				Constants.MENU_FONT_COLOR);
+		// load the font
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+
+		// hack, we only need to show the instructions once
+		if (timesPlayed > 0) {
+			timeForInstructions = 0;
+		} else {
+			timeForInstructions = 3500;
+			timesPlayed++;
+		}
 	}
 
 	/** All graphics are drawn here */
@@ -108,16 +142,28 @@ public class ShapeGameScreen extends GameScreen {
 
 		if (model.hasStarted()) {
 			super.render();
-			if (shapeGameModel.checkGameState() == GameState.RUNNING
-					|| gameCompletedTimer.isRunning()) {
-				shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-				// Renders locks
-				for (GraphicalShape sgs : locks) {
-					sgs.render(shapeRenderer);
+			instructionsTimer.start(timeForInstructions);
+			if (!instructionsTimer.isDone()) {
+				instructions.draw(tendu.spriteBatch, font);
+				if (otherPlayers.size() > 0) {
+					teamInstructions.draw(tendu.spriteBatch, font);
+					teamInstructionsContinued.draw(tendu.spriteBatch, font);
 				}
-				// Renders shapes
-				for (GraphicalShape sgs : shapes) {
-					sgs.render(shapeRenderer);
+
+			} else {
+				controller.getModel().startGameTimer();
+				if (shapeGameModel.checkGameState() == GameState.RUNNING
+						|| gameCompletedTimer.isRunning()) {
+					shapeRenderer
+							.setProjectionMatrix(tendu.getCamera().combined);
+					// Renders locks
+					for (GraphicalShape sgs : locks) {
+						sgs.render(shapeRenderer);
+					}
+					// Renders shapes
+					for (GraphicalShape sgs : shapes) {
+						sgs.render(shapeRenderer);
+					}
 				}
 			}
 		}
@@ -128,7 +174,7 @@ public class ShapeGameScreen extends GameScreen {
 	 */
 	private void sendToTeamMate(GraphicalShape s) {
 		Gdx.app.log(TAG, "SHAPE SENDING!!!!!!!!");
-		if (s.getBounds().y+s.HEIGHT >= Constants.SCREEN_HEIGHT - SEND_MARGIN
+		if (s.getBounds().y + s.HEIGHT >= Constants.SCREEN_HEIGHT - SEND_MARGIN
 				&& otherPlayers.size() >= 1) {
 			EventBus.INSTANCE.broadcast(new EventMessage(/*
 														 * Player.getInstance()
@@ -144,7 +190,8 @@ public class ShapeGameScreen extends GameScreen {
 														 */C.Tag.TO_SELF,
 					C.Msg.SHAPE_SENT, controller.getModel().getGameId(),
 					messageContentFactory(otherPlayers.get(1), s.getShape())));
-		} else if (s.getBounds().x + s.WIDTH >= Constants.SCREEN_WIDTH - SEND_MARGIN
+		} else if (s.getBounds().x + s.WIDTH >= Constants.SCREEN_WIDTH
+				- SEND_MARGIN
 				&& otherPlayers.size() >= 3) {
 			EventBus.INSTANCE.broadcast(new EventMessage(/*
 														 * Player.getInstance()
@@ -180,48 +227,50 @@ public class ShapeGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		updateShapesFromModel();
 		if (model.hasStarted()) {
-			if (gameCompletedTimer.isDone()) {
-				Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
-				// Received by GameSessionController
-				sendEndMessage();
-			} else if (!gameCompletedTimer.isRunning()) {
-				if (controller.getModel().checkGameState() == GameState.WON) {
-					gameCompletedTimer.start(750);
-					controller.getModel().stopTimer();
-					Gdx.app.log(TAG, "Timer started! game won");
-				} else if (controller.getModel().checkGameState() == GameState.LOST) {
-					gameCompletedTimer.start(1500);
-				}
+			if (instructionsTimer.isDone()) {
+				if (gameCompletedTimer.isDone()) {
+					Gdx.app.log(TAG, "Brodcasting gameresult! timer done");
+					// Received by GameSessionController
+					sendEndMessage();
+				} else if (!gameCompletedTimer.isRunning()) {
+					if (controller.getModel().checkGameState() == GameState.WON) {
+						gameCompletedTimer.start(750);
+						controller.getModel().stopTimer();
+						Gdx.app.log(TAG, "Timer started! game won");
+					} else if (controller.getModel().checkGameState() == GameState.LOST) {
+						gameCompletedTimer.start(1500);
+					}
 
-			}
-		}
-
-		// TODO nullpointer movingShape
-		if (input.isTouchedDown()) {
-			for (GraphicalShape s : shapes) {
-				if (s.getBounds().contains(input.x, input.y)
-						&& !s.getShape().isLocked()) {
-					movingShape = s;
 				}
 			}
-		}
 
-		if (input.isTouchedUp()) {
-			if (movingShape != null) {
-				for (GraphicalShape lock : locks) {
-					snapIntoPlace(movingShape, lock);
+			// TODO nullpointer movingShape
+			if (input.isTouchedDown()) {
+				for (GraphicalShape s : shapes) {
+					if (s.getBounds().contains(input.x, input.y)
+							&& !s.getShape().isLocked()) {
+						movingShape = s;
+					}
 				}
-				sendToTeamMate(movingShape);
-				movingShape = null;
 			}
-		}
 
-		if (input.isDragged()) {
-			if (movingShape != null) {
-				if (!movingShape.getShape().isLocked()) {
-					movingShape.moveShape(input.x
-							- movingShape.getBounds().width / 2, input.y
-							- movingShape.getBounds().height / 2);
+			if (input.isTouchedUp()) {
+				if (movingShape != null) {
+					for (GraphicalShape lock : locks) {
+						snapIntoPlace(movingShape, lock);
+					}
+					sendToTeamMate(movingShape);
+					movingShape = null;
+				}
+			}
+
+			if (input.isDragged()) {
+				if (movingShape != null) {
+					if (!movingShape.getShape().isLocked()) {
+						movingShape.moveShape(input.x
+								- movingShape.getBounds().width / 2, input.y
+								- movingShape.getBounds().height / 2);
+					}
 				}
 			}
 		}
@@ -307,6 +356,7 @@ public class ShapeGameScreen extends GameScreen {
 		shapeRenderer.dispose();
 		sound.unregister();
 		controller.unregister();
+		font.dispose();
 	}
 
 	/**
@@ -338,18 +388,19 @@ public class ShapeGameScreen extends GameScreen {
 
 		return true;
 	}
-	
-	//TODO not the best solution but it works.
-	//this message must be sent only once
+
+	// TODO not the best solution but it works.
+	// this message must be sent only once
 	private boolean ended = false;
+
 	private void sendEndMessage() {
-		if(!ended) {
+		if (!ended) {
 			// Received by GameSessionController.
 			EventMessage message = new EventMessage(C.Tag.TO_SELF,
 					C.Msg.GAME_RESULT, model.getGameResult());
 			EventBus.INSTANCE.broadcast(message);
 		}
-		
+
 		ended = true;
 	}
 }

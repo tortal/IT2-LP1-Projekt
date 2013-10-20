@@ -39,7 +39,7 @@ public class GameOverScreen implements Screen {
 		levelText = new TextWidget(TextLabels.LEVEL_REACHED +": " + level, new Vector2(
 				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2 + 60), Constants.MENU_FONT_COLOR);
 
-		mainMenu = new TextWidget(TextLabels.RETURN_TO_MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
+		mainMenu = new TextWidget(TextLabels.MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
 		
 		replay = new TextWidget(TextLabels.PLAY_AGAIN, new Vector2(800, 150), Constants.MENU_FONT_COLOR);
 	}

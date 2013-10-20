@@ -106,7 +106,7 @@ public class LobbyScreen implements Screen {
 			readyText.setColor(Constants.MENU_FONT_COLOR);
 		}
 		
-		if(input.isPackPressed()) {
+		if(input.isBackPressed()) {
 			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
 			EventBus.INSTANCE.broadcast(message);
 		}
@@ -116,7 +116,7 @@ public class LobbyScreen implements Screen {
 	public void render() {
 
 		statusText.draw(tendu.spriteBatch, font);
-		testStuff.draw(tendu.spriteBatch, font);
+		//testStuff.draw(tendu.spriteBatch, font);
 		
 		playerText.setY(580);
 

@@ -85,9 +85,8 @@ public class Tendu implements ApplicationListener, Listener {
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
 
-		// create an inputController and register it with Gdx
+		// create an inputController
 		input = new InputController(camera);
-		Gdx.input.setInputProcessor(input);
 	}
 
 	// clean up

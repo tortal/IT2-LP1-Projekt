@@ -153,7 +153,6 @@ public class ShapeGame extends MiniGame {
 	
 	public void startGame() {
 		super.startGame();
-		super.startGameTimer();
 	}
 
 	/**

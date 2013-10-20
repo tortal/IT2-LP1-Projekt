@@ -24,6 +24,7 @@ public class InputController implements InputProcessor {
 	public int screenX, screenY, x, y;
 
 	public InputController(OrthographicCamera camera) {
+		Gdx.input.setInputProcessor(this); //register inputController with Gdx
 		Gdx.input.setCatchBackKey(true); //makes sure the android back button "belongs" to the game and not the system
 		this.camera = camera;
 		touchedUp = false;
@@ -82,7 +83,7 @@ public class InputController implements InputProcessor {
 		return touchedDown;
 	}
 	
-	public boolean isPackPressed() {
+	public boolean isBackPressed() {
 		return backPressed;
 	}
 
