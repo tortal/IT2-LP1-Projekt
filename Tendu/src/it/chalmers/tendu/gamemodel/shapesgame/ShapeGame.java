@@ -74,23 +74,23 @@ public class ShapeGame extends MiniGame {
 
 		switch (difficulty) {
 		case ONE:
-			this.setGameTime(20000, extraTime);
-			lockSize = 4;
+			this.setGameTime(30000, extraTime);
+			lockSize = 2;
 			break;
 		case TWO:
-			this.setGameTime(15000, extraTime);
+			this.setGameTime(25000, extraTime);
 			lockSize = 3;
 			break;
 		case THREE:
-			this.setGameTime(10000, extraTime);
+			this.setGameTime(20000, extraTime);
 			lockSize = 4;
 			break;
 		case FOUR:
-			this.setGameTime(7000, extraTime);
+			this.setGameTime(20000, extraTime);
 			lockSize = 5;
 			break;
 		case FIVE:
-			this.setGameTime(7000, extraTime);
+			this.setGameTime(12000, extraTime);
 			lockSize = 5;
 			break;
 		default:
@@ -213,7 +213,7 @@ public class ShapeGame extends MiniGame {
 			Gdx.app.log(TAG, "" + this.checkGameState());
 			return true;
 		}
-		super.changeTime(-3000);
+		//super.changeTime(-3000);
 		return false;
 	}
 
