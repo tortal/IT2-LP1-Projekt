@@ -399,7 +399,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 
 	// Message handler - not used atmo
-	private final Handler mHandler = new Handler() {
+	private final static Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			// Do nothing for now
