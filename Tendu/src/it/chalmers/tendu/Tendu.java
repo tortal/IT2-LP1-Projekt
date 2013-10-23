@@ -52,14 +52,15 @@ public class Tendu implements ApplicationListener, Listener {
 
 	/**
 	 * Network controller. All networking is implemented through the
-	 * {@link INetworkHandler} interface.
+	 * {@link INetworkHandler} interface. (e.g. see BluetoothHandler class in
+	 * android project for example implementation)
 	 */
 	private INetworkHandler networkHandler;
 
 	/**
 	 * All drawing is normally done on this canvas.
 	 */
-	public SpriteBatch spriteBatch; // used for drawing of graphics
+	public SpriteBatch spriteBatch;
 
 	/**
 	 * @param networkHandler

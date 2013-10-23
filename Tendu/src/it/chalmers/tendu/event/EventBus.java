@@ -1,21 +1,39 @@
 package it.chalmers.tendu.event;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * EventBus broadcasts {@link EventMessage}s to any registered {@link Listener}.
+ * Connects Model-View-Controller (especially network controllers on separate
+ * threads)
+ * 
+ */
 public enum EventBus {
 
 	INSTANCE;
 
 	public final static String TAG = "EventBus";
 
-	private List<Listener> listeners = new ArrayList<Listener>();
+	private List<Listener> listeners;
 
+	private EventBus() {
+		List<Listener> l = new ArrayList<Listener>();
+		listeners = Collections.synchronizedList(l);
+	}
+
+	/**
+	 * Sends a message to all listeners registered to this singleton.
+	 * 
+	 * @param message
+	 *            to broadcast
+	 */
 	public void broadcast(EventMessage message) {
 		synchronized (listeners) {
-			Gdx.app.log(TAG, "broadcasting" + message);
+			Gdx.app.log(TAG, "broadcasting: " + message);
 			// for (Listener l : listeners){
 			// l.onBroadcast(message);
 			// }
@@ -27,14 +45,24 @@ public enum EventBus {
 		}
 	}
 
-	public synchronized void addListener(Listener l) {
-		//Gdx.app.log(TAG, "added listener: " + l);
-		listeners.add(l);
+	/**
+	 * @param l
+	 *            listener to be added.
+	 */
+	public void addListener(Listener l) {
+		synchronized (listeners) {
+			listeners.add(l);
+		}
 	}
 
-	public  synchronized void removeListener(Listener l) {
-		//Gdx.app.log(TAG, "removed listener: " + l);
-		listeners.remove(l);
+	/**
+	 * @param l
+	 *            listener to be removed.
+	 */
+	public void removeListener(Listener l) {
+		synchronized (listeners) {
+			listeners.remove(l);
+		}
 	}
 }
 
