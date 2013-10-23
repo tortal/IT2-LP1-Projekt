@@ -42,7 +42,6 @@ public class GameSession {
 		sessionResult = new SessionResult();
 		playerReplayReady = new ArrayList<String>();
 
-
 	}
 
 	// for reflection
@@ -125,7 +124,12 @@ public class GameSession {
 	}
 
 	public boolean arePlayersReady() {
-		return (players.size() == playerReplayReady.size());
+		if (players.size() == playerReplayReady.size()) {
+			playerReplayReady.clear();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void enterResult(GameResult gameResult) {
