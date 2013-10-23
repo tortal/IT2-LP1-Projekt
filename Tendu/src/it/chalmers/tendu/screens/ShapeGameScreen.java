@@ -382,8 +382,7 @@ public class ShapeGameScreen extends GameScreen {
 		} else if (otherPlayers.get(1) == sender) {
 			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
 		} else if (otherPlayers.get(2) == sender) {
-			receivedShape.moveShape(Constants.SCREEN_HEIGHT / 2,
-					Constants.SCREEN_WIDTH - 110);
+			receivedShape.moveShape(Constants.SCREEN_WIDTH - 110, Constants.SCREEN_HEIGHT / 2);
 		}
 
 		return true;
