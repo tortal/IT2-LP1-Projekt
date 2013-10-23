@@ -16,7 +16,7 @@
 
 package it.chalmers.tendu.network.bluetooth.clicklinkcompete;
 
-import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.event.EventMessage;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.RemoteException;
