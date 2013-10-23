@@ -1,4 +1,4 @@
-package it.chalmers.tendu.tbd;
+package it.chalmers.tendu.event;
 
 /**
  * A listener receives events from the {@link EventBus}. Be sure to register the

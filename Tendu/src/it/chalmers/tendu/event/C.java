@@ -1,4 +1,4 @@
-package it.chalmers.tendu.tbd;
+package it.chalmers.tendu.event;
 
 /** Constants for Eventmessage use */ 
 public class C {

@@ -1,15 +1,15 @@
 package it.chalmers.tendu.controllers;
 
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.event.Listener;
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Tag;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.Listener;
 
 import com.badlogic.gdx.Gdx;
 

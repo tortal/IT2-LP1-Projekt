@@ -1,4 +1,4 @@
-package it.chalmers.tendu.tbd;
+package it.chalmers.tendu.event;
 
 import it.chalmers.tendu.gamemodel.GameId;
 

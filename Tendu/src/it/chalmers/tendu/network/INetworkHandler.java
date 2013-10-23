@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network;
 
-import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.event.EventMessage;
 
 public interface INetworkHandler {
 	/**

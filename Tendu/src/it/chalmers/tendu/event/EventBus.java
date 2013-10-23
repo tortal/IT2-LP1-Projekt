@@ -1,4 +1,4 @@
-package it.chalmers.tendu.tbd;
+package it.chalmers.tendu.event;
 
 import java.util.ArrayList;
 import java.util.List;

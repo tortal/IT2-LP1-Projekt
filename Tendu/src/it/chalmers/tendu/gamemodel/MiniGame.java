@@ -1,12 +1,11 @@
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
+import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
-
-import com.badlogic.gdx.Gdx;
 
  /**
  * One of many minigames to be played during a {@link GameSession}.
