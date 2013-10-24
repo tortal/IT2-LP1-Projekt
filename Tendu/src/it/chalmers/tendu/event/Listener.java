@@ -2,22 +2,22 @@ package it.chalmers.tendu.event;
 
 /**
  * A listener receives events from the {@link EventBus}. Be sure to register the
- * listener with the {@link EventBus} addListener() method.
- * 
+ * listener with the {@link EventBus#addListener(Listener)} method.
  */
 public interface Listener {
 
 	/**
-	 * This method is called when {@link EventBus} broadcast() method is called.
+	 * This method will be called on all listeners when
+	 * {@link EventBus#broadcast(EventMessage)} is invoked.
 	 * 
 	 * @param message
 	 *            that was broadcasted
 	 */
-	void onBroadcast(EventMessage message);
+	public void onBroadcast(EventMessage message);
 
 	/**
 	 * Unregister this listener from the {@link EventBus}
 	 */
-	void unregister();
+	public void unregister();
 
 }

@@ -7,16 +7,20 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 
 /**
- * EventBus broadcasts {@link EventMessage}s to any registered {@link Listener}.
- * Connects Model-View-Controller (especially network controllers on separate
- * threads)
+ * The EventBus broadcasts {@link EventMessage}s to any registered
+ * {@link Listener}. Parallel connects Model-View-Controller in such way that
+ * these OOP objects may communicated with each other through a "dynamic"
+ * self-defined protocol. Tendu uses the bus mainly for inter-controller
  * 
  */
 public enum EventBus {
 
+	/**
+	 * The {@link EventBus} singleton
+	 */
 	INSTANCE;
 
-	public final static String TAG = "EventBus";
+	public static final String TAG = "EventBus";
 
 	private List<Listener> listeners;
 
@@ -26,7 +30,7 @@ public enum EventBus {
 	}
 
 	/**
-	 * Sends a message to all listeners registered to this singleton.
+	 * Sends a message to all listeners registered to the EventBus.
 	 * 
 	 * @param message
 	 *            to broadcast
@@ -34,9 +38,6 @@ public enum EventBus {
 	public void broadcast(EventMessage message) {
 		synchronized (listeners) {
 			Gdx.app.log(TAG, "broadcasting: " + message);
-			// for (Listener l : listeners){
-			// l.onBroadcast(message);
-			// }
 
 			for (int i = 0; i < listeners.size(); i++) {
 				listeners.get(i).onBroadcast(message);
@@ -64,47 +65,11 @@ public enum EventBus {
 			listeners.remove(l);
 		}
 	}
+
+	/**
+	 * @return a list of all currently registered {@link Listener}s.
+	 */
+	public List<Listener> getListeners() {
+		return new ArrayList<Listener>(listeners);
+	}
 }
-
-// /////////////////////////////////////////////////////
-
-// public enum EventBus {
-//
-// INSTANCE;
-//
-// public final static String TAG = "EventBus";
-//
-// private Map<Listener, Void> listeners;
-//
-// EventBus() {
-// WeakHashMap<Listener, Void> l = new WeakHashMap<Listener, Void>();
-// listeners = Collections.synchronizedMap(l);
-// }
-//
-// public void broadcast(EventMessage message) {
-// synchronized (this) {
-// Gdx.app.log(TAG, "broadcasting" + message);
-//
-// Set<Listener> allListeners = listeners.keySet();
-// synchronized (listeners) {
-// for (Listener l : allListeners) {
-// l.onBroadcast(message);
-// }
-// }
-//
-// }
-// }
-//
-// public void addListener(Listener l) {
-// synchronized (this) {
-// listeners.put(l, null);
-// }
-// }
-//
-// public void removeListener(Listener l) {
-// synchronized (this) {
-// listeners.remove(l);
-// }
-//
-// }
-// }
