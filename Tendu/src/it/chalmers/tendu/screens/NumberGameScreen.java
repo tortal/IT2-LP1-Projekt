@@ -282,8 +282,8 @@ public class NumberGameScreen extends GameScreen {
 	}
 
 	@Override
-	public void removed() {
-		super.removed();
+	public void dispose() {
+		super.dispose();
 		font.dispose();
 		numberFont.dispose();
 		sound.unregister();

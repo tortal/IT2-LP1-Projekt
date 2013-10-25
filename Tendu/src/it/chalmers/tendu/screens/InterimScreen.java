@@ -57,7 +57,7 @@ public class InterimScreen implements Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void dispose() {
 		font.dispose();
 	}
 

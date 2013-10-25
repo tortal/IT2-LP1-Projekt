@@ -144,7 +144,7 @@ public class Tendu implements ApplicationListener, Listener {
 	// sets a new screen and cleans up the previous one
 	public void setScreen(Screen newScreen) {
 		if (screen != null) {
-			screen.removed();
+			screen.dispose();
 		}
 		screen = newScreen;
 	}

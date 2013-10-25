@@ -54,7 +54,7 @@ public abstract class GameScreen implements Screen {
 	/**
 	 * clean up goes here make sure to call super() if overriden
 	 */
-	public void removed() {
+	public void dispose() {
 		shapeRenderer.dispose();
 	}
 

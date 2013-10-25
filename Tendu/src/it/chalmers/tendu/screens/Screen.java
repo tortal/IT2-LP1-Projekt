@@ -2,17 +2,31 @@ package it.chalmers.tendu.screens;
 
 import it.chalmers.tendu.controllers.InputController;
 
+/**
+ * A Screen represents the presentation layer. (As in Model-View-Presentation)
+ * 
+ * Every presentation-layer (View-Controller) in Tendu should implement this
+ * interface.
+ * 
+ */
 public interface Screen {
 
-	/** all rendering goes here **/
-	public abstract void render();
-
-	/** All game logic goes here */
-	public abstract void tick(InputController input);
+	/**
+	 * Renders the graphic of the implemented Screen.
+	 */
+	public void render();
 
 	/**
-	 * clean up goes here make sure to call super() if overriden
+	 * Every tick will perform a logic update.
+	 * 
+	 * @param input
+	 *            controller associated with this screen.
 	 */
-	public abstract void removed();
+	public void tick(InputController input);
+
+	/**
+	 * Releases any resources associated with this screen.
+	 */
+	public void dispose();
 
 }

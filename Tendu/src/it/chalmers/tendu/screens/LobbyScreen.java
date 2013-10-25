@@ -145,7 +145,7 @@ public class LobbyScreen implements Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void dispose() {
 		font.dispose();
 		lobbyController.unregister();
 	}
