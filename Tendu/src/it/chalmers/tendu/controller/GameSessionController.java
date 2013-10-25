@@ -1,4 +1,4 @@
-package it.chalmers.tendu.controllers;
+package it.chalmers.tendu.controller;
 
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Tag;

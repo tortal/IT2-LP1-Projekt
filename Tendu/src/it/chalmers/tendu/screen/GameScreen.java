@@ -1,7 +1,7 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.gamemodel.MiniGame;

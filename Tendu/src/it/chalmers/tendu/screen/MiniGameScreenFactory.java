@@ -1,4 +1,4 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.MiniGame;

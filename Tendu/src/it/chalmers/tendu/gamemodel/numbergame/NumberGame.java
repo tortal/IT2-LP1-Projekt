@@ -11,6 +11,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * NumberGame lists a numeric sequence for a short duration and then requires
+ * players to memorize them by entering the sequence in the correct order.
+ * 
+ * The numbers are distributed randomly among players along with dummy numbers
+ * that did not exist in the correct sequence. Any failed attempt (i.e. an
+ * incorrect guess) will penalize the team by removing time.
+ * 
+ */
 public class NumberGame extends MiniGame {
 	public final static String TAG = "MiniGame";
 
@@ -22,7 +31,7 @@ public class NumberGame extends MiniGame {
 
 	private ArrayList<Integer> listOfNumbers;
 
-	// For reflection.
+	/** No-args constructor for reflection */
 	@SuppressWarnings("unused")
 	private NumberGame() {
 	};
@@ -52,7 +61,90 @@ public class NumberGame extends MiniGame {
 		playerLists = divideAndConquer(answerList);
 	}
 
-	public void setUpGamePlay(Difficulty difficulty, long extraTime) {
+	/**
+	 * Changes the state of the game to running However it does not start the
+	 * timer
+	 */
+	@Override
+	public void startGameTimer() {
+		super.startGameTimer();
+	}
+
+	/**
+	 * Check if the number chosen is the right one according to the answerList
+	 * and sets gamestate to gameWon if all the numbers in answerList have been
+	 * correctly guessed.
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public boolean checkNbr(int num) {
+		return (answerList.get(nbrCorrectAnswer) == num);
+	}
+
+	/**
+	 * Plusing counter for number of correct answers.
+	 */
+	public void guessedCorrectly() {
+		nbrCorrectAnswer++;
+	}
+
+	/**
+	 * return the list with the correct answers.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getAnswerList() {
+		return answerList;
+	}
+
+	/**
+	 * Return a players list of numbers.
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public ArrayList<Integer> getMyList() {
+		int playerNbr = getplayerNbr();
+		return playerLists.get(playerNbr);
+	}
+
+	/**
+	 * Returns the numbers that have been answered correctly.
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getAnsweredNbrs() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < nbrCorrectAnswer; i++) {
+			list.add(answerList.get(i));
+		}
+		return list;
+	}
+
+	@Override
+	public GameState checkGameState() {
+		if (answerList.size() == nbrCorrectAnswer) {
+			return GameState.WON;
+		} else if (timerIsDone()) {
+			return GameState.LOST;
+		}
+		return GameState.RUNNING;
+	}
+
+	@Override
+	public GameResult getGameResult() {
+		if (checkGameState() == GameState.WON
+				|| checkGameState() == GameState.LOST) {
+			long spentTime = (getGameTime() - getRemainingTime());
+			GameResult result = new GameResult(getGameId(), spentTime,
+					getRemainingTime(), checkGameState());
+			return result;
+		}
+		return null;
+	}
+
+	private void setUpGamePlay(Difficulty difficulty, long extraTime) {
 		if (playerCount == 1) {
 			switch (difficulty) {
 			case ONE:
@@ -158,89 +250,6 @@ public class NumberGame extends MiniGame {
 				break;
 			}
 		}
-	}
-
-	/**
-	 * Changes the state of the game to running However it does not start the
-	 * timer
-	 */
-	@Override
-	public void startGameTimer() {
-		super.startGameTimer();
-	}
-
-	/**
-	 * Check if the number chosen is the right one according to the answerList
-	 * and sets gamestate to gameWon if all the numbers in answerList have been
-	 * correctly guessed.
-	 * 
-	 * @param num
-	 * @return
-	 */
-	public boolean checkNbr(int num) {
-		return (answerList.get(nbrCorrectAnswer) == num);
-	}
-
-	/**
-	 * Plusing counter for number of correct answers.
-	 */
-	public void guessedCorrectly() {
-		nbrCorrectAnswer++;
-	}
-
-	/**
-	 * return the list with the correct answers.
-	 * 
-	 * @return
-	 */
-	public ArrayList<Integer> getAnswerList() {
-		return answerList;
-	}
-
-	/**
-	 * Return a players list of numbers.
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public ArrayList<Integer> getMyList() {
-		int playerNbr = getplayerNbr();
-		return playerLists.get(playerNbr);
-	}
-
-	/**
-	 * Returns the numbers that have been answered correctly.
-	 * 
-	 * @return
-	 */
-	public ArrayList<Integer> getAnsweredNbrs() {
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < nbrCorrectAnswer; i++) {
-			list.add(answerList.get(i));
-		}
-		return list;
-	}
-
-	@Override
-	public GameState checkGameState() {
-		if (answerList.size() == nbrCorrectAnswer) {
-			return GameState.WON;
-		} else if (timerIsDone()) {
-			return GameState.LOST;
-		}
-		return GameState.RUNNING;
-	}
-
-	@Override
-	public GameResult getGameResult() {
-		if (checkGameState() == GameState.WON
-				|| checkGameState() == GameState.LOST) {
-			long spentTime = (getGameTime() - getRemainingTime());
-			GameResult result = new GameResult(getGameId(), spentTime,
-					getRemainingTime(), checkGameState());
-			return result;
-		}
-		return null;
 	}
 
 	/**

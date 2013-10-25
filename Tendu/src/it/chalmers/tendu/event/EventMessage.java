@@ -13,7 +13,8 @@ import it.chalmers.tendu.gamemodel.GameId;
  */
 public class EventMessage {
 
-	// TOOD: make eventmessage pass strings instead of enums.
+	// TOOD: These are the new member vars. underscore is used to distinguish
+	// them from the old protocol.
 	public String _tag;
 	public String _msg;
 	public Object _obj;

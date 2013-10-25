@@ -7,63 +7,81 @@ import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import java.util.ArrayList;
 import java.util.Map;
 
- /**
- * One of many minigames to be played during a {@link GameSession}.
+/**
+ * All games during a {@link GameSession} is a subclass of {@link MiniGame}.
  * 
- * All games of Tendu should extend this class.
- * See {@link NumberGame} or {@link ShapeGame} for examples.
- *
+ * Every playable minigame of Tendu should extend this class. See
+ * {@link NumberGame} or {@link ShapeGame} for examples.
+ * 
  */
 public abstract class MiniGame {
-	private Difficulty difficulty;
-	private final GameId gameId;
-	private long gameTime;
-	private SimpleTimer timer;
-	private SimpleTimer startTimer;
-	private boolean started;
-	
+	public final static String TAG = "MiniGame";
+
 	/**
-	 * Integer = player id String = player MacAddress
+	 * Difficulty level.
+	 */
+	private final Difficulty difficulty;
+
+	/**
+	 * GameID Associated with this game.
+	 */
+	private final GameId gameId;
+
+	/**
+	 * Total time given to complete the minigame.
+	 */
+	private long gameTime;
+
+	/**
+	 * Timer (stop-watch) object.
+	 */
+	private final SimpleTimer simpleTimer;
+
+	private boolean isStarted;
+
+	/**
+	 * Mapping of MAC as key to player ID values.
 	 */
 	private Map<String, Integer> players;
-	
+
 	/**
 	 * Creates a new minigame.
 	 * 
 	 * @param addTime
-	 *            > 0 if extra time should be added
+	 *            should be greater than 0 if extra time should be added to the game
 	 * @param difficulty
 	 *            the game's difficulty
-	 * @param gameId
+	 * @param gameId associated with this minigame, see {@link GameId}.
 	 */
 	public MiniGame(Difficulty difficulty, GameId gameId,
 			Map<String, Integer> players) {
 		this.difficulty = difficulty;
 		this.gameId = gameId;
 		this.players = players;
-		timer = new SimpleTimer();
-		startTimer = new SimpleTimer();
-		started = false;
+		simpleTimer = new SimpleTimer();
+
+		isStarted = false;
 	}
 
-	/** No args constructor for reflection use */
+	/** No args constructor for reflection */
 	protected MiniGame() {
+		simpleTimer = null;
+		difficulty = null;
 		gameId = null;
 	}
-	
+
 	public void startGame() {
-		//startTimer.start(3000);
-		started = true;
+		isStarted = true;
 	}
-	
+
 	public boolean hasStarted() {
-//		if(startTimer.isDone()) {
-//			return true;
-//		}
-		
-		return started;
+		// if(startTimer.isDone()) {
+		// return true;
+		// }
+
+		return isStarted;
 	}
- 
+
 	public void setGameTime(long gameTime, long extraTime) {
 		this.gameTime = gameTime + extraTime;
 	}
@@ -74,14 +92,14 @@ public abstract class MiniGame {
 	 * @return time left in millis seconds
 	 */
 	public long getRemainingTime() {
-		return timer.getRemainingTime();
+		return simpleTimer.getRemainingTime();
 	}
 
 	/**
 	 * Call if host pushed new model
 	 */
 	public void reInit() {
-		timer.restart(timer.getRemainingTime());
+		simpleTimer.restart(simpleTimer.getRemainingTime());
 	}
 
 	/**
@@ -89,7 +107,7 @@ public abstract class MiniGame {
 	 *            the change in milliseconds, can be positive or negative;
 	 */
 	public void changeTime(long time) {
-		timer.change(time);
+		simpleTimer.change(time);
 	}
 
 	public long getGameTime() {
@@ -106,17 +124,6 @@ public abstract class MiniGame {
 	}
 
 	/**
-	 * Sets the difficulty
-	 * 
-	 * @param difficulty
-	 *            the difficulty
-	 */
-	public void setDifficulty(Difficulty difficulty) {
-		this.difficulty = difficulty;
-	}
-
-
-	/**
 	 * Gets the game id.
 	 * 
 	 * @return the game's id
@@ -126,7 +133,7 @@ public abstract class MiniGame {
 	}
 
 	public void startGameTimer() {
-		timer.start(gameTime);
+		simpleTimer.start(gameTime);
 	}
 
 	/**
@@ -139,14 +146,14 @@ public abstract class MiniGame {
 		int playerNbr = players.get(myMac);
 		return playerNbr;
 	}
-	
+
 	public ArrayList<Integer> getOtherPlayerNumbers() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < getNumberOfPlayers(); i++) {
-			if (!(i == getplayerNbr()))
+			if (i != getplayerNbr())
 				list.add(new Integer(i));
 		}
-		
+
 		return list;
 	}
 
@@ -158,9 +165,10 @@ public abstract class MiniGame {
 	public int getNumberOfPlayers() {
 		return players.size();
 	}
+
 	public boolean timerIsDone() {
-		
-		return timer.isDone();
+
+		return simpleTimer.isDone();
 	}
 
 	/**
@@ -168,16 +176,9 @@ public abstract class MiniGame {
 	 */
 	public abstract GameResult getGameResult();
 
-
-	public abstract GameState checkGameState(); 
-//		if(timer.isDone()) {
-//			return GameState.LOST;
-//		} 
-//		
-//		return GameState.RUNNING;
-//	}
+	public abstract GameState checkGameState();
 
 	public void stopTimer() {
-		timer.stop();
+		simpleTimer.stop();
 	}
 }

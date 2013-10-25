@@ -1,7 +1,6 @@
-//***Main entry of the libgdx-project****
 package it.chalmers.tendu;
 
-import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
@@ -11,11 +10,11 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.network.INetworkHandler;
-import it.chalmers.tendu.screens.GameOverScreen;
-import it.chalmers.tendu.screens.InterimScreen;
-import it.chalmers.tendu.screens.MainMenuScreen;
-import it.chalmers.tendu.screens.MiniGameScreenFactory;
-import it.chalmers.tendu.screens.Screen;
+import it.chalmers.tendu.screen.GameOverScreen;
+import it.chalmers.tendu.screen.InterimScreen;
+import it.chalmers.tendu.screen.MainMenuScreen;
+import it.chalmers.tendu.screen.MiniGameScreenFactory;
+import it.chalmers.tendu.screen.Screen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -24,7 +23,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * ENTRY CLASS.
+ * ENTRY CLASS of Tendu.
+ * 
  */
 public class Tendu implements ApplicationListener, Listener {
 	public static final String TAG = "Tendu";
@@ -73,12 +73,14 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void create() {
-		String mac = networkHandler.getMacAddress();
-		Player.getInstance().setMac(mac);
-		Gdx.app.log(TAG, Player.getInstance().getMac());
+
+		// Update Player singleton with this device's MAC.
+		Player.getInstance().setMac(networkHandler.getMacAddress());
+		Gdx.app.debug(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
 
+		// First screen is the MainMenuScreen.
 		setScreen(new MainMenuScreen(this));
 
 		// setup the camera
@@ -86,11 +88,10 @@ public class Tendu implements ApplicationListener, Listener {
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
 
-		// create an inputController
+		// Input is adjusted to the device's aspect ratio and resolution
 		input = new InputController(camera);
 	}
 
-	// clean up
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
@@ -101,20 +102,17 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void render() {
 
-		// clear the entire screen
-		// setScreenByNetworkState(); //changes to some error screen if
-		// connections is lost?
-		// clear the entire screen
+		// Clear screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		// Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
 		// Gdx.gl.glClearColor(1f, 1f, 0f, 1);
 		Gdx.gl.glClearColor(Constants.BG_RED, Constants.BG_GREEN,
-				Constants.BG_BLUE, 1);
+				Constants.BG_BLUE, 1); // TODO: what does this do?
 
-		// makes sure the game runs in 60 fps
+		// Lock FPS at max of 60.
 		accum += Gdx.graphics.getDeltaTime();
 		while (accum > 1.0f / 60.0f) {
-			screen.tick(input); // runs tick in the current screen witch should
+			screen.tick(input); // runs tick in the current screen which should
 								// handle all input and game logic for that
 								// specific minigame/menu
 			input.tick(); // updates input
@@ -123,8 +121,12 @@ public class Tendu implements ApplicationListener, Listener {
 
 		camera.update();
 		spriteBatch.setProjectionMatrix(camera.combined);
+
+		// Initiate spriteBatch.
 		spriteBatch.begin();
-		screen.render(); // draw all graphic for the current frame
+		// Let Screen manipulate the batch.
+		screen.render();
+		// Render batch.
 		spriteBatch.end();
 	}
 
@@ -141,9 +143,14 @@ public class Tendu implements ApplicationListener, Listener {
 
 	}
 
-	// sets a new screen and cleans up the previous one
+	/**
+	 * @param newScreen
+	 *            the new Screen which will replace the old one.
+	 */
 	public void setScreen(Screen newScreen) {
-		if (screen != null) {
+		if (screen != null) { // TODO: will screen ever be null? if not, this
+								// check should be removed in order to have a
+								// fail-fast mechanism.
 			screen.dispose();
 		}
 		screen = newScreen;

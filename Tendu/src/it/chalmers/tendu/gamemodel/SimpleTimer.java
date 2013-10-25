@@ -1,10 +1,15 @@
 package it.chalmers.tendu.gamemodel;
 
+
+/**
+ * A Timer class - used by {@link MiniGame}s and controllers to keep track of
+ * the remaining time in a given minigame.
+ * 
+ */
 public class SimpleTimer {
 
 	public static enum STATE {
 		RUNNING, PAUSED, DONE
-
 	}
 
 	private long totalTime;
@@ -13,19 +18,20 @@ public class SimpleTimer {
 	private SimpleTimer.STATE state;
 
 	/**
-	 * Creates a simple timer
+	 * Creates a SimpleTimer with its state initially set to
+	 * {@link STATE#PAUSED}.
 	 */
 	public SimpleTimer() {
 		state = STATE.PAUSED;
 	}
 
 	/**
-	 * Starts a timer with the specified amount of time.
-	 * If the timer is already
+	 * Starts a timer with the specified amount of time. If the timer is already
 	 * running or has ended calling this method will do nothing (return false)
 	 * 
 	 * @param time
 	 *            time in milliseconds
+	 * @return <code>true</code> if timer was started.
 	 */
 	public boolean start(long time) {
 		if (state == STATE.RUNNING || state == STATE.DONE) {
@@ -40,14 +46,14 @@ public class SimpleTimer {
 	}
 
 	/**
-	 * Restarts the timer with the specified amount of time.
-	 * Will overwrite any previously running timer
+	 * Restarts the timer with the specified amount of time. Will overwrite any
+	 * previously running timer
 	 * 
 	 * @param time
 	 *            time in milliseconds
 	 */
 	public void restart(long time) {
-		state = STATE.PAUSED; //start timer will change this to running
+		state = STATE.PAUSED; // start timer will change this to running
 		start(time);
 	}
 
@@ -55,7 +61,7 @@ public class SimpleTimer {
 	 * Pause the timer
 	 */
 	public void pause() {
-		if(state == STATE.DONE) { //can't pause if done
+		if (state == STATE.DONE) { // can't pause if done
 			return;
 		}
 		getRemainingTime();
@@ -98,21 +104,21 @@ public class SimpleTimer {
 	private void setEndTime(long time) {
 		this.endTime = time + System.currentTimeMillis();
 	}
-	
+
 	public boolean isRunning() {
 		getRemainingTime();
-		if(state == STATE.RUNNING) {
+		if (state == STATE.RUNNING) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean isDone() {
 		getRemainingTime();
-		if(state == STATE.DONE) {
+		if (state == STATE.DONE) {
 			return true;
-		}	
+		}
 		return false;
 	}
 

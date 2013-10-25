@@ -1,8 +1,8 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.NumberGameController;
+import it.chalmers.tendu.controller.InputController;
+import it.chalmers.tendu.controller.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.event.C;

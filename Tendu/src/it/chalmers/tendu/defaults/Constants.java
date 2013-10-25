@@ -9,7 +9,6 @@ public class Constants {
 
 	public static enum Difficulty {
 		ONE, TWO, THREE, FOUR, FIVE;
-
 	}
 
 	public static final String APP_NAME = "Tendu";

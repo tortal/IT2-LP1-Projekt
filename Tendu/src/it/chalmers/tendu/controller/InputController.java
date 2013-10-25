@@ -1,4 +1,4 @@
-package it.chalmers.tendu.controllers;
+package it.chalmers.tendu.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
