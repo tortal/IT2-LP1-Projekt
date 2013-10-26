@@ -96,6 +96,7 @@ public class Tendu implements ApplicationListener, Listener {
 	public void dispose() {
 		spriteBatch.dispose();
 		networkHandler.destroy();
+		unregister();
 	}
 
 	// **The games main loop, everything but early setup happens here
@@ -104,10 +105,10 @@ public class Tendu implements ApplicationListener, Listener {
 
 		// Clear screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
-		// Gdx.gl.glClearColor(1f, 1f, 0f, 1);
+
+		// Sets the background colour of the entire app
 		Gdx.gl.glClearColor(Constants.BG_RED, Constants.BG_GREEN,
-				Constants.BG_BLUE, 1); // TODO: what does this do?
+				Constants.BG_BLUE, 1);
 
 		// Lock FPS at max of 60.
 		accum += Gdx.graphics.getDeltaTime();
@@ -203,7 +204,6 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void unregister() {
-		// TODO: Will this ever be called? ( maybe on dispose() )
 		EventBus.INSTANCE.removeListener(this);
 	}
 }
