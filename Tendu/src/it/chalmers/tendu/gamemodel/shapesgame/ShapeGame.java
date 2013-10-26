@@ -68,7 +68,7 @@ public class ShapeGame extends MiniGame {
 	 * This will create a ShapesGame. It creates a list of all possible
 	 * combinations of the enums {@link GeometricShape} and link
 	 * {@link ShapeColor} and then reduces this randomly to a subset that
-	 * suffice for the game settings (player count and lock seqeuence length)
+	 * suffice for the game settings (player count and lock sequence length)
 	 */
 	public ShapeGame(long extraTime, Difficulty difficulty,
 			Map<String, Integer> players) {
@@ -196,6 +196,15 @@ public class ShapeGame extends MiniGame {
 		}
 	}
 
+	/**
+	 * Finds out if it is possible to put a specific shape 
+	 * into a slot, without actually changing anything. 
+	 * 
+	 * @param player The player that attempts the locking
+	 * @param shape The shape to put into the lock
+	 * @param lockShape the lock to put the shape in
+	 * @return
+	 */
 	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape) {
 		return allLocks.get(player).fitsIntoSlot(shape, lockShape);
 	}
@@ -325,10 +334,29 @@ public class ShapeGame extends MiniGame {
 		return GameState.RUNNING;
 	}
 
+	/**
+	 * Receives a map of the latest shapes received mapped to
+	 * the player they where sent from. 
+	 * 
+	 * for a specific player.
+	 * 
+	 * @param player The players number 
+	 * 
+	 * @return A map with all the shapes received of a player mapped
+	 * to the player they where sent from.
+	 */
 	public Map<Integer, Shape> getLatestReceivedShape(int player) {
 		return latestReceivedShapes.get(player);
 	}
 
+	/**
+	 * Receives a list of the latest sent shapes
+	 * of a specific player. 
+	 * 
+	 * @param player The players number
+	 * 
+	 * @return A list of the latest sent shapes for a specific player.
+	 */
 	public List<Shape> getLatestSentShapes(int player) {
 		return latestSentShapes.get(player);
 	}
