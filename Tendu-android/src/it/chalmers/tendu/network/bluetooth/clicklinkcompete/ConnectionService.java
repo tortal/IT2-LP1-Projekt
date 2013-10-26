@@ -78,7 +78,7 @@ public class ConnectionService {
 	/** Kryo Variables */
 	//private Kryo mKryo;
 
-	private Output out;
+	//private Output out;
 
 	public ConnectionService(Context context) {
 		// mSelf = this;
@@ -325,7 +325,8 @@ public class ConnectionService {
 				"sendMessage: " + message.toString() + " to "
 						+ destination.getAddress());
 		Kryo tempKryo = kryoFactory();
-
+		Output out;
+		
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
@@ -340,6 +341,7 @@ public class ConnectionService {
 		//if (btSocket.isConnected()) {
 			tempKryo.writeObject(out, message);
 			out.flush();
+			
 		//}
 
 		return Connection.SUCCESS;
@@ -356,9 +358,9 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
-			if (out != null) {
-				//out.close();
-			}
+//			if (out != null) {
+//				//out.close();
+//			}
 //			if (mKryo != null) {
 //				mKryo.reset();
 //			}
