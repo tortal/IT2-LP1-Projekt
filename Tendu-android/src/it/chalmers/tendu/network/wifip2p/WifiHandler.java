@@ -56,7 +56,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -69,7 +68,6 @@ import com.esotericsoftware.kryonet.Server;
  * @author johnpetersson
  *
  */
-// TODO Is wifi available- method
 public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
@@ -109,6 +107,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void hostSession() {
 		isReadyToConnect = true;
+		forgetAnyExistingWifiGroup();
 		createNewWifiGroup();
 		startRegistration();
 	}
@@ -116,7 +115,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void joinLobby() {
 		isReadyToConnect = true;
-
+		forgetAnyExistingWifiGroup();
 		resetConnection();
 		mManager.requestConnectionInfo(mChannel, this);
 	}
