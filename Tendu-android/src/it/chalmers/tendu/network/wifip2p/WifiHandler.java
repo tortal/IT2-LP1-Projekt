@@ -373,11 +373,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 		if (server != null) {
 			server.stop();
-			server.close();
+			server = null;
 		}
 		if (client != null) {
 			client.stop();
-			client.close();
+			client = null;
 		}
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 	}
@@ -580,11 +580,13 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void disconnected(Connection connection) {
 				connection.close();
-				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 				if (server.getConnections().length == 0) {
 					displayConnectionLostAlert();
 					resetNetwork();
 					//server.close();
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+				} else {
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_DISCONNECTED));
 				}
 			}
 		});
@@ -623,11 +625,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				@Override
 				public void disconnected(Connection connection) {
 					connection.close();
-					client.stop();
+					//client.stop();
 					displayConnectionLostAlert();
 					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 					resetNetwork();
-					//client.close();
 				}
 			});
 			// Send own mac address to host
