@@ -3,7 +3,7 @@ package it.chalmers.tendu.gamemodel.numbergame;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
+import it.chalmers.tendu.event.EventBusListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.audio.Sound;
  *
  */
 
-public class NumberGameSound implements Listener {
+public class NumberGameSound implements EventBusListener {
 	
 	private Sound completedGameSound;
 	private Sound lostGameSound;

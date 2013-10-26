@@ -1,20 +1,19 @@
-package it.chalmers.tendu.controller;
+package it.chalmers.tendu.controllers;
 
-import it.chalmers.tendu.event.C;
-import it.chalmers.tendu.event.C.Tag;
-import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
 
-import com.badlogic.gdx.Gdx;
 
 public class GameSessionController implements EventBusListener {
-	private static final String TAG = "GameSessionController";
+	private String TAG = getClass().getSimpleName();
 
 	private GameSession gameSession;
 
@@ -38,7 +37,7 @@ public class GameSessionController implements EventBusListener {
 		} else if (Player.getInstance().isHost()) {
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
@@ -112,7 +111,7 @@ public class GameSessionController implements EventBusListener {
 			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
 
 				String playerMac = (String) message.content;
-				gameSession.playerPlayAgainReady(playerMac);
+				gameSession.playerReplayReady(playerMac);
 
 				if (gameSession.arePlayersReady()) {
 

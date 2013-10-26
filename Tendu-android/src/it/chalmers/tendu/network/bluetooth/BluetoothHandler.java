@@ -2,13 +2,16 @@ package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.event.C;
-import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
 import it.chalmers.tendu.event.C.Msg;
 import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.Player;
+
+import it.chalmers.tendu.network.NetworkHandler;
 import it.chalmers.tendu.network.INetworkHandler;
+
+
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
@@ -40,19 +43,15 @@ import android.widget.Toast;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class BluetoothHandler implements INetworkHandler, Listener {
+public class BluetoothHandler extends NetworkHandler {
 	private boolean D = true; // Debug flag
 	private String TAG = "BluetoothHandler"; // Logging tag
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
-	private static final int MAX_NUMBER_OF_PLAYERS = 3; // Not including host
-	private static final int CONNECTION_DELAY = 5000;
 
 	// Handles the bluetooth connections
 	private Connection connection;
-	/** Context in which the handler was declared */
-	private Context context;
 	/** Connection to android bluetooth hardware */
 	private BluetoothAdapter mBluetoothAdapter;
 	/** All devices that has been discovered */
@@ -69,7 +68,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	 */
 
 	public BluetoothHandler(Context context) {
-		this.context = context;
+		super(context);
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -79,10 +78,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		connection = new Connection(this.context);
 		availableDevices = new HashSet<BluetoothDevice>();
 		connectedDevices = new HashSet<BluetoothDevice>();
+		
 		registerBroadcastReceiver();
-
-		// Register as listener on the eventbus
-		EventBus.INSTANCE.addListener(this);
 
 	}
 
@@ -327,6 +324,17 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		// unregister during
 		// onDestroy
 	}
+	
+	private void unregisterBroadcastReceiver() {
+		/* unregister the broadcast receiver */
+		if (mReceiver != null) {
+			try {
+				context.unregisterReceiver(mReceiver);				
+			} catch(IllegalArgumentException e) {
+				Log.d(TAG, "Receiver not registered, can't be deleted");
+			}
+		}
+	}
 
 	// Create a BroadcastReceiver for ACTION_FOUND
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -372,18 +380,26 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	 */
 	@Override
 	public void destroy() {
-		Log.d(TAG, "++++++ON DESTROY++++");
+		//Log.d(TAG, "++++++ON DESTROY++++");
+
+		unregisterBroadcastReceiver();
 		resetNetwork();
-		
-		if (mReceiver != null) {
-			context.unregisterReceiver(mReceiver);
-		}
-		
+
+	}
+
+	@Override
+	public void onPause() {
+		unregisterBroadcastReceiver();
+	}
+	
+	@Override
+	public void onResume() {
+		registerBroadcastReceiver();
 	}
 	
 	@Override
 	public void resetNetwork() {
-		hostNumber = 1;
+		super.resetNetwork();
 		removeTenduFromDeviceName();
 		connection.reset();
 		mBluetoothAdapter.disable();
@@ -396,8 +412,9 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 	
 	// Test Method
-	public void testStuff() {
-		connection.broadcastMessage(new EventMessage(C.Tag.TEST, C.Msg.TEST));
+	public void testSendMessage() {
+		connection.broadcastMessage(new EventMessage(C.Tag.TEST,
+				C.Msg.TEST));
 	}
 
 	// Message handler - not used atmo
@@ -421,29 +438,6 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	}
 
 	
-	@Override
-	public void onBroadcast(final EventMessage message) {
-		if(message.tag == C.Tag.COMMAND_AS_HOST) {
-			EventMessage changedMessage = new EventMessage(message, C.Tag.HOST_COMMANDED);
-			broadcastMessageOverNetwork(changedMessage);
-		} else if(message.tag == C.Tag.REQUEST_AS_CLIENT) {
-			EventMessage changedMessage = new EventMessage(message, C.Tag.CLIENT_REQUESTED);
-			broadcastMessageOverNetwork(changedMessage);
-			Gdx.app.log("BLATANDSMONGOT", "FUNKAR NO?");
-		}
-	}
-
-	/** Broadcast a message on the event bus */
-	private void sendToEventBus(final EventMessage message) {
-		Gdx.app.log(TAG, "recieved messag in host: " + Player.getInstance().isHost());
-		Gdx.app.postRunnable(new Runnable() {
-
-			@Override
-			public void run() {
-				EventBus.INSTANCE.broadcast(message);
-			}
-		});
-	}
 
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {
@@ -468,25 +462,5 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	@Override
 	public void unregister() {
 		EventBus.INSTANCE.removeListener(this);
-	}
-
-	
-	private int hostNumber = 1;
-	@Override
-	public int toggleHostNumber() {
-		if (hostNumber == 1) {
-			hostNumber = 2;
-		} else {
-			hostNumber = 1;
-		}
-		
-		((AndroidApplication) context).runOnUiThread(new Runnable() {
-			public void run() {
-				Toast.makeText(context, "Host: " + hostNumber, Toast.LENGTH_SHORT)
-						.show();
-			}
-		});
-		
-		return hostNumber;
 	}
 }

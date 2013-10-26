@@ -21,8 +21,14 @@ public class InputController implements InputProcessor {
 	private Vector2 vector2;
 	private boolean backPressed;
 
+	// Last known position on the screen
 	public int screenX, screenY, x, y;
 
+	/**
+	 * Creates a new input controller
+	 * 
+	 * @param camera Used to translate from screen-coordinates to game-coordinates. 
+	 */
 	public InputController(OrthographicCamera camera) {
 		Gdx.input.setInputProcessor(this); //register inputController with Gdx
 		Gdx.input.setCatchBackKey(true); //makes sure the android back button "belongs" to the game and not the system
@@ -35,6 +41,10 @@ public class InputController implements InputProcessor {
 		vector2 = new Vector2(0, 0);
 	}
 
+	/**
+	 * Called on every frame of the game 
+	 * to reset all fields. 
+	 */
 	public void tick() {
 		touchedUp = false;
 		touchedDown = false;
@@ -75,14 +85,31 @@ public class InputController implements InputProcessor {
 		return touchedUp;
 	}
 
+	/**
+	 * Returns true if the users has let go of the screen 
+	 * 
+	 * @return true if the users has let go of the screen 
+	 */
 	public boolean isTouchedUp() {
 		return touchedUp;
 	}
 
+
+	/**
+	 * Returns true if the users has touched the screen 
+	 * 
+	 * @return true if the users has touched the screen. 
+	 */
 	public boolean isTouchedDown() {
 		return touchedDown;
 	}
 	
+
+	/**
+	 * Returns true if the users has pressed the back key 
+	 * 
+	 * @return true if the users has pressed the back key 
+	 */
 	public boolean isBackPressed() {
 		return backPressed;
 	}
@@ -106,10 +133,19 @@ public class InputController implements InputProcessor {
 		return false;
 	}
 
+	/**
+	 * Returns true if the user is dragging the screen.
+	 * @return true if the user is dragging the screen.
+	 */
 	public boolean isDragged() {
 		return dragged;
 	}
 
+	/**
+	 * Sets the coordinates
+	 * @param screenX the x value measured in screen-pixels.
+	 * @param screenY the y value measured in screen-pixels.
+	 */
 	private void setCoordinates(int screenX, int screenY) {
 		this.screenX = screenX;
 		this.screenY = screenY;
@@ -120,12 +156,20 @@ public class InputController implements InputProcessor {
 
 	}
 
+	/**
+	 * Gets the coordinates in game-units.
+	 * @return the coordinates in game-units
+	 */
 	public Vector2 getCoordinates() {
 		vector2.x = x;
 		vector2.y = y;
 		return vector2;
 	}
 
+	/**
+	 * Gets the coordinates in screen-pixels.
+	 * @return the coordinates in screen-pixels
+	 */
 	public Vector2 getScreenCoordinates() {
 		vector2.x = screenX;
 		vector2.y = screenY;

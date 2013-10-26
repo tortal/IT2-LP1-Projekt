@@ -149,7 +149,6 @@ public class ShapeGame extends MiniGame {
 			}
 
 		}
-		Gdx.app.log("This is", "Shapes Game!");
 
 	}
 
@@ -183,13 +182,10 @@ public class ShapeGame extends MiniGame {
 
 			// Adds shape to the list of sent shapes
 			latestSentShapes.get(sender).add(shape);
-			Gdx.app.log(TAG, "" + latestSentShapes.get(super.getplayerNbr()));
 
 			// Added to new owners latestReceivedShape
 			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
 
-			Gdx.app.log(TAG, "Added to latestSentShapes: from " + sender + " "
-					+ shape);
 			senderShapePack.put(sender, shape);
 			latestReceivedShapes.put(recipiant, senderShapePack);
 			return sender;
@@ -213,19 +209,14 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-	 *            <<<<<<< HEAD ======= to be inserted into the players slot.
-	 *            >>>>>>> branch 'Majormerge' of
-	 *            https://github.com/tortal/IT2-LP1-Tendu.git >>>>>>>
-	 *            refs/heads/Majormerge
+
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
 		Lock lock = this.allLocks.get(player);
 		if (lock.fillSlot(shape, lockShape)) {
-			Gdx.app.log(TAG, "" + this.checkGameState());
 			return true;
 		}
-		// super.changeTime(-3000);
 		return false;
 	}
 

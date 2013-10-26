@@ -1,14 +1,14 @@
-package it.chalmers.tendu.controller;
+package it.chalmers.tendu.controllers;
 
+import it.chalmers.tendu.gamemodel.GameSession;
+import it.chalmers.tendu.gamemodel.LobbyModel;
+import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Msg;
 import it.chalmers.tendu.event.C.Tag;
 import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.event.EventBusListener;
-import it.chalmers.tendu.gamemodel.GameSession;
-import it.chalmers.tendu.gamemodel.LobbyModel;
-import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.event.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 
@@ -25,10 +25,10 @@ public class LobbyController implements EventBusListener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (Player.getInstance().isHost()) {
-			Gdx.app.log(TAG, "Are we host yet?");
+			//Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
-			Gdx.app.log(TAG, "Message: " + (message == null));
+			//Gdx.app.log(TAG, "Message: " + (message == null));
 			handleAsClient(message);
 		}
 	}
@@ -39,10 +39,10 @@ public class LobbyController implements EventBusListener {
 				|| message.tag == C.Tag.TO_SELF) {
 			switch (message.msg) {
 			case PLAYER_CONNECTED:
+				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				if (model.isMaxPlayersConnected())
 					break;
 
-				Gdx.app.log(TAG, "Player connected should be seen on screen");
 				model.addPlayer((String) message.content);
 				EventBus.INSTANCE
 						.broadcast(new EventMessage(C.Tag.COMMAND_AS_HOST,
@@ -86,7 +86,7 @@ public class LobbyController implements EventBusListener {
 				}
 				break;
 			default:
-				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
+				//Gdx.app.error(TAG, "Incorrect C.msg broadcasted: " + message.toString());
 				break;
 			}
 		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
