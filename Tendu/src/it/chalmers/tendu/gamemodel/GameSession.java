@@ -1,4 +1,5 @@
-/*-******THIS IS OUR GAME MODEL*********/
+//TODO add comments/javadoc
+
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
