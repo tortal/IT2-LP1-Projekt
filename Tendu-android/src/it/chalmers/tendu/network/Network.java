@@ -10,6 +10,7 @@ import android.os.Build;
 import android.view.Gravity;
 import android.widget.Toast;
 
+/** Class responsible for the network on android */ 
 public class Network implements INetwork {
 	private INetworkHandler networkHandler;
 	private Context context;
@@ -34,8 +35,8 @@ public class Network implements INetwork {
 	@Override
 	public void selectWifi() {
 		if (networkHandler == null) {
-			networkHandler = new BluetoothHandler(context);
-		} else if (!(networkHandler instanceof BluetoothHandler)) {
+			networkHandler = new WifiHandler(context);
+		} else if (!(networkHandler instanceof WifiHandler)) {
 			networkHandler.destroy();
 			networkHandler = new WifiHandler(context);
 		}
