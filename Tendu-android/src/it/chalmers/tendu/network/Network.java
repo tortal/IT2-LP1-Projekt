@@ -5,6 +5,7 @@ import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandler;
 //import it.chalmers.tendu.tbd.EventMessage;
 import android.content.Context;
+import android.os.Build;
 
 public class Network implements INetwork {
 	private INetworkHandler networkHandler;
@@ -31,6 +32,11 @@ public class Network implements INetwork {
 			networkHandler.destroy();
 		}
 		networkHandler = new WifiHandler(context);
+	}
+	
+	@Override
+	public boolean isWifip2pAvailable() {
+		return (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN);
 	}
 	
 	@Override
