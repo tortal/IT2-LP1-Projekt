@@ -130,6 +130,7 @@ public class NumberGameController implements MiniGameController {
 
 	}
 
+	@Override
 	public NumberGame getModel() {
 		return numberGame;
 	}

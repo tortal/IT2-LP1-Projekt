@@ -13,8 +13,8 @@ import java.util.Map;
  */
 public class LobbyModel {
 
-	public Map<String, Integer> players;
-	public List<String> playerReady;
+	public final Map<String, Integer> players;
+	public final List<String> playerReady;
 	public int maxPlayers;
 
 	/**
@@ -28,9 +28,11 @@ public class LobbyModel {
 		this.maxPlayers = maxPlayers;
 	}
 
-	// For reflection
+	/** Used for reflection */
 	@SuppressWarnings("unused")
 	private LobbyModel() {
+		playerReady = null;
+		players = null;
 	}
 
 	/**

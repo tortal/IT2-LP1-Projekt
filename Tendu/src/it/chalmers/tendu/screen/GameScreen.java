@@ -49,11 +49,13 @@ public abstract class GameScreen implements Screen {
 	}
 
 	/** All game logic goes here */
+	@Override
 	public abstract void tick(InputController input);
 
 	/**
 	 * clean up goes here make sure to call super() if overriden
 	 */
+	@Override
 	public void dispose() {
 		shapeRenderer.dispose();
 	}

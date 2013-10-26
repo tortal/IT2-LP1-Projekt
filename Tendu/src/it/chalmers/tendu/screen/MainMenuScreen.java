@@ -46,6 +46,7 @@ public class MainMenuScreen implements Screen {
 		dark = true;
 	}
 
+	@Override
 	public void tick(InputController input) {
 		// process user input
 		if (input.isTouchedUp()) {

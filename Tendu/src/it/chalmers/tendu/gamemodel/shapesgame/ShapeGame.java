@@ -153,6 +153,7 @@ public class ShapeGame extends MiniGame {
 
 	}
 
+	@Override
 	public void startGame() {
 		super.startGame();
 	}

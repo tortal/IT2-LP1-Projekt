@@ -201,7 +201,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 	 * device running a server within the list of devices close-by 3. Attempts
 	 * to establish a connection between this device and found server device
 	 */
-	public void joinGame() {
+	public void joinLobby() {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)

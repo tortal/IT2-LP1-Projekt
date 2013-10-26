@@ -10,68 +10,76 @@ import com.badlogic.gdx.audio.Sound;
 
 /**
  * Class for sounds in ShapesGame
- * @author johannahartman
  * 
  */
 public class ShapeGameSound implements Listener {
 
-	private Sound completedGameSound;
-	private Sound lostGameSound;
-	private Sound succeededSound;
-	private Sound failSound;
+	private static final String FAIL_WAV = "fail.wav";
+	private static final String SUCCESS_WAV = "success.wav";
+	private static final String GAMELOST_WAV = "gamelost.wav";
+	private static final String COMPLETED_WAV = "completed.wav";
+
+	private final Sound completedGameSound;
+	private final Sound lostGameSound;
+	private final Sound succeededSound;
+	private final Sound failSound;
 
 	public ShapeGameSound() {
 
 		EventBus.INSTANCE.addListener(this);
 
 		completedGameSound = Gdx.audio.newSound(Gdx.files
-				.internal("completed.wav"));
-		lostGameSound = Gdx.audio.newSound(Gdx.files.internal("gamelost.wav"));
-		succeededSound = Gdx.audio.newSound(Gdx.files.internal("success.wav"));
-		failSound = Gdx.audio.newSound(Gdx.files.internal("fail.wav"));
+				.internal(COMPLETED_WAV));
+		lostGameSound = Gdx.audio.newSound(Gdx.files.internal(GAMELOST_WAV));
+		succeededSound = Gdx.audio.newSound(Gdx.files.internal(SUCCESS_WAV));
+		failSound = Gdx.audio.newSound(Gdx.files.internal(FAIL_WAV));
 	}
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-		
+
 		if (message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.SOUND_WIN) {
 				playSoundGameWon();
-			}else if(message.msg == C.Msg.SOUND_LOST){
+			} else if (message.msg == C.Msg.SOUND_LOST) {
 				playSoundGameLost();
-			}else if(message.msg == C.Msg.SOUND_SUCCEED){
+			} else if (message.msg == C.Msg.SOUND_SUCCEED) {
 				playSoundSuccess();
-			}else if(message.msg == C.Msg.SOUND_FAIL){
+			} else if (message.msg == C.Msg.SOUND_FAIL) {
 				playSoundFail();
 			}
 		}
 
 	}
+
 	/**
 	 * Plays sound when player succeed
 	 */
 	public void playSoundSuccess() {
 		succeededSound.play();
 	}
+
 	/**
 	 * Plays sound when player fail
 	 */
 	public void playSoundFail() {
 		failSound.play();
 	}
+
 	/**
 	 * Plays sound when player win
 	 */
 	public void playSoundGameWon() {
 		completedGameSound.play();
 	}
+
 	/**
-	 * Plays sound when player loose 
+	 * Plays sound when player loose
 	 */
 	public void playSoundGameLost() {
 		lostGameSound.play();
 	}
-	
+
 	/**
 	 * Releases all the sound resources.
 	 */

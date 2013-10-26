@@ -24,6 +24,7 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.addListener(this);
 	}
 
+	@Override
 	public ShapeGame getModel() {
 		return shapeGame;
 	}
