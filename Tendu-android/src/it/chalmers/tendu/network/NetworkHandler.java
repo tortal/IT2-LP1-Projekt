@@ -1,12 +1,13 @@
 package it.chalmers.tendu.network;
 
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.event.C;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventBusListener;
-import it.chalmers.tendu.tbd.EventMessage;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;

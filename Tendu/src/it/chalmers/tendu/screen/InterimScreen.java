@@ -1,14 +1,14 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -57,7 +57,7 @@ public class InterimScreen implements Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void dispose() {
 		font.dispose();
 	}
 

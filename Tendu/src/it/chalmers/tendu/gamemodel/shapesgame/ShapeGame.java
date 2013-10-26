@@ -6,7 +6,7 @@ import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,53 +20,55 @@ import com.badlogic.gdx.Gdx;
  * Every player has n slots (default is 4) on their screen that are initially
  * empty and are to be replaced by shapes. One uses objects (Shape class object)
  * to fill ones' individual slot puzzle. Moreover, every player has an inventory
- * of shapes, the union of all players' inventory contain all shapes needed to
- * fully fill the missing slots.
+ * of shapes and the union of all players' inventory contain all shapes needed
+ * to fully fill the missing slots.
  * 
- * When beginning the game, you might have to trade shapes without fellow team
- * players until you will be able to solve YOUR puzzle.
+ * A player does not start of with all shapes needed to fill their slots.
+ * Players must therefore send shapes to other team mates in order to complete
+ * the game.
  * 
  */
 public class ShapeGame extends MiniGame {
-
-	public final String TAG = this.getClass().getName();
+	public static final String TAG = "ShapeGame";
 
 	private int playerCount;
 	private int lockSize;
 
 	/**
-	 * Holds every persons latest received shape. Replaces the value when a new
-	 * shape has been received. <Integer(Receiver), <Integer(Sender),
-	 * Shape(Received Shape)>
+	 * The most recent shape sent by a player. Key: The PlayerID who received
+	 * the shape. Value: The PlayerID who sent the shape, and what shape it was.
 	 */
-	public Map<Integer, Map<Integer, Shape>> latestReceivedShapes; //TODO private
+	private final Map<Integer, Map<Integer, Shape>> latestReceivedShapes;
 
 	/**
 	 * Holds every persons last sent shape <Integer(Receiver), <Integer(Sender),
 	 * Shape(Received Shape)>
 	 */
-	private Map<Integer, List<Shape>> latestSentShapes;
+	private final Map<Integer, List<Shape>> latestSentShapes;
 
 	/**
 	 * All shapes for all players mapped by player number (Integer).
 	 */
-	private Map<Integer, List<Shape>> allInventory;
+	private final Map<Integer, List<Shape>> allInventory;
 
 	/**
-	 * Every players lock, mapped by player number (Integer)
+	 * Every players {@link Lock}, mapped by playerID.
 	 */
 	private Map<Integer, Lock> allLocks;
 
-	/** No args constructor for reflection use */
-	protected ShapeGame() {
-		super();
-	};
+	/** No-args constructor for reflection use */
+	@SuppressWarnings("unused")
+	private ShapeGame() {
+		allInventory = null;
+		latestSentShapes = null;
+		latestReceivedShapes = null;
+	}
 
 	/**
 	 * This will create a ShapesGame. It creates a list of all possible
-	 * combinations of the enums {@link GeometricShape} and link {@link ShapeColor}
-	 * and then reduces this randomly to a subset that suffice for the game
-	 * settings (player count and lock seqeuence length)
+	 * combinations of the enums {@link GeometricShape} and link
+	 * {@link ShapeColor} and then reduces this randomly to a subset that
+	 * suffice for the game settings (player count and lock sequence length)
 	 */
 	public ShapeGame(long extraTime, Difficulty difficulty,
 			Map<String, Integer> players) {
@@ -74,23 +76,23 @@ public class ShapeGame extends MiniGame {
 
 		switch (difficulty) {
 		case ONE:
-			this.setGameTime(20000, extraTime);
-			lockSize = 4;
+			this.setGameTime(30000, extraTime);
+			lockSize = 2;
 			break;
 		case TWO:
-			this.setGameTime(15000, extraTime);
+			this.setGameTime(25000, extraTime);
 			lockSize = 3;
 			break;
 		case THREE:
-			this.setGameTime(10000, extraTime);
+			this.setGameTime(20000, extraTime);
 			lockSize = 4;
 			break;
 		case FOUR:
-			this.setGameTime(7000, extraTime);
+			this.setGameTime(20000, extraTime);
 			lockSize = 5;
 			break;
 		case FIVE:
-			this.setGameTime(7000, extraTime);
+			this.setGameTime(12000, extraTime);
 			lockSize = 5;
 			break;
 		default:
@@ -150,10 +152,10 @@ public class ShapeGame extends MiniGame {
 		Gdx.app.log("This is", "Shapes Game!");
 
 	}
-	
+
+	@Override
 	public void startGame() {
 		super.startGame();
-		super.startGameTimer();
 	}
 
 	/**
@@ -186,13 +188,23 @@ public class ShapeGame extends MiniGame {
 			// Added to new owners latestReceivedShape
 			Map<Integer, Shape> senderShapePack = new HashMap<Integer, Shape>();
 
-			Gdx.app.log(TAG, "Added to latestSentShapes: from " + sender + " " + shape);
+			Gdx.app.log(TAG, "Added to latestSentShapes: from " + sender + " "
+					+ shape);
 			senderShapePack.put(sender, shape);
 			latestReceivedShapes.put(recipiant, senderShapePack);
 			return sender;
 		}
 	}
 
+	/**
+	 * Finds out if it is possible to put a specific shape 
+	 * into a slot, without actually changing anything. 
+	 * 
+	 * @param player The player that attempts the locking
+	 * @param shape The shape to put into the lock
+	 * @param lockShape the lock to put the shape in
+	 * @return
+	 */
 	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape) {
 		return allLocks.get(player).fitsIntoSlot(shape, lockShape);
 	}
@@ -201,11 +213,10 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-<<<<<<< HEAD
-=======
-	 *            to be inserted into the players slot. >>>>>>> branch
-	 *            'Majormerge' of https://github.com/tortal/IT2-LP1-Tendu.git
->>>>>>> refs/heads/Majormerge
+	 *            <<<<<<< HEAD ======= to be inserted into the players slot.
+	 *            >>>>>>> branch 'Majormerge' of
+	 *            https://github.com/tortal/IT2-LP1-Tendu.git >>>>>>>
+	 *            refs/heads/Majormerge
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -214,7 +225,7 @@ public class ShapeGame extends MiniGame {
 			Gdx.app.log(TAG, "" + this.checkGameState());
 			return true;
 		}
-		super.changeTime(-3000);
+		// super.changeTime(-3000);
 		return false;
 	}
 
@@ -291,22 +302,6 @@ public class ShapeGame extends MiniGame {
 	}
 
 	/**
-	 * TODO: DEBUG MAIN and testing.
-	 */
-	public static void main(String[] a) {
-		Lock lock = new Lock();
-
-		List<Shape> allShapes = Shape.getAllShapes();
-		lock.addSlot(allShapes.remove(0));
-		lock.addSlot(allShapes.remove(0));
-
-		Shape myShape = new Shape(ShapeColor.GREEN, GeometricShape.CIRCLE);
-		// System.out.println(lock.fillSlot(myShape));
-
-		System.out.println(lock);
-	}
-
-	/**
 	 * Gets all the players shapes.
 	 * 
 	 * @return All the players
@@ -331,18 +326,37 @@ public class ShapeGame extends MiniGame {
 
 	@Override
 	public GameState checkGameState() {
-		if(checkIfGameWon()) {
+		if (checkIfGameWon()) {
 			return GameState.WON;
-		}else if (timerIsDone()) {
+		} else if (timerIsDone()) {
 			return GameState.LOST;
 		}
 		return GameState.RUNNING;
 	}
 
+	/**
+	 * Receives a map of the latest shapes received mapped to
+	 * the player they where sent from. 
+	 * 
+	 * for a specific player.
+	 * 
+	 * @param player The players number 
+	 * 
+	 * @return A map with all the shapes received of a player mapped
+	 * to the player they where sent from.
+	 */
 	public Map<Integer, Shape> getLatestReceivedShape(int player) {
 		return latestReceivedShapes.get(player);
 	}
 
+	/**
+	 * Receives a list of the latest sent shapes
+	 * of a specific player. 
+	 * 
+	 * @param player The players number
+	 * 
+	 * @return A list of the latest sent shapes for a specific player.
+	 */
 	public List<Shape> getLatestSentShapes(int player) {
 		return latestSentShapes.get(player);
 	}

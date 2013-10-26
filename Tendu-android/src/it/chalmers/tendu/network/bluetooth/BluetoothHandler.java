@@ -1,22 +1,22 @@
 package it.chalmers.tendu.network.bluetooth;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Msg;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.gamemodel.Player;
 
 import it.chalmers.tendu.network.NetworkHandler;
-
-import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.network.INetworkHandler;
+
+
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
-
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
-import it.chalmers.tendu.tbd.C.Tag;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -138,30 +138,30 @@ public class BluetoothHandler extends NetworkHandler {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
 			// Show a dialogue notifying user it got disconnected
-			class displayConnectionLostAlert implements Runnable {
-				public void run() {
-					Builder connectionLostAlert = new Builder(context);
-
-					connectionLostAlert.setTitle("Connection lost");
-					connectionLostAlert
-							.setMessage("Your connection with the other players has been lost.");
-
-					connectionLostAlert.setPositiveButton("Ok",
-							new OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Let app terminate itself?
-									// finish();
-								}
-							});
-					connectionLostAlert.setCancelable(false);
-					try {
-						connectionLostAlert.show();
-					} catch (BadTokenException e) {
-						Log.e(TAG, "BadTokenException", e);
-					}
-				}
-			}
+//			class displayConnectionLostAlert implements Runnable {
+//				public void run() {
+//					Builder connectionLostAlert = new Builder(context);
+//
+//					connectionLostAlert.setTitle("Connection lost");
+//					connectionLostAlert
+//							.setMessage("Your connection with the other players has been lost.");
+//
+//					connectionLostAlert.setPositiveButton("Ok",
+//							new OnClickListener() {
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//									// TODO Let app terminate itself?
+//									// finish();
+//								}
+//							});
+//					connectionLostAlert.setCancelable(false);
+//					try {
+//						connectionLostAlert.show();
+//					} catch (BadTokenException e) {
+//						Log.e(TAG, "BadTokenException", e);
+//					}
+//				}
+//			}
 
 			connectedDevices.remove(device);
 			if (connectedDevices.isEmpty()) {
@@ -169,8 +169,8 @@ public class BluetoothHandler extends NetworkHandler {
 				// otherwise we just broadcast that a player is gone
 				
 				// Display on UI-thread
-				((AndroidApplication) context)
-				.runOnUiThread(new displayConnectionLostAlert());
+//				((AndroidApplication) context)
+//				.runOnUiThread(new displayConnectionLostAlert());
 
 				resetNetwork();
 				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
@@ -198,7 +198,7 @@ public class BluetoothHandler extends NetworkHandler {
 	 * device running a server within the list of devices close-by 3. Attempts
 	 * to establish a connection between this device and found server device
 	 */
-	public void joinGame() {
+	public void joinLobby() {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)
@@ -402,6 +402,8 @@ public class BluetoothHandler extends NetworkHandler {
 		super.resetNetwork();
 		removeTenduFromDeviceName();
 		connection.reset();
+		mBluetoothAdapter.disable();
+		mBluetoothAdapter.enable();
 	}
 	
 	@Override
@@ -416,7 +418,7 @@ public class BluetoothHandler extends NetworkHandler {
 	}
 
 	// Message handler - not used atmo
-	private final Handler mHandler = new Handler() {
+	private final static Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			// Do nothing for now

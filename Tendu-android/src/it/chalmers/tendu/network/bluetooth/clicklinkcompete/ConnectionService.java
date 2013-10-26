@@ -17,11 +17,11 @@
 package it.chalmers.tendu.network.bluetooth.clicklinkcompete;
 
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnConnectionLostListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnIncomingConnectionListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMaxConnectionsReachedListener;
 import it.chalmers.tendu.network.bluetooth.clicklinkcompete.Connection.OnMessageReceivedListener;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +78,7 @@ public class ConnectionService {
 	/** Kryo Variables */
 	//private Kryo mKryo;
 
-	private Output out;
+	//private Output out;
 
 	public ConnectionService(Context context) {
 		// mSelf = this;
@@ -143,6 +143,7 @@ public class ConnectionService {
 				}
 			}
 			// If we end up outside the loop we have lost connection
+			
 			mBtDevices.remove(address);
 			mBtSockets.remove(address);
 			mBtStreamWatcherThreads.remove(address);
@@ -157,7 +158,6 @@ public class ConnectionService {
 					e.printStackTrace();
 				}
 			}
-			
 		}
 	}
 
@@ -325,7 +325,8 @@ public class ConnectionService {
 				"sendMessage: " + message.toString() + " to "
 						+ destination.getAddress());
 		Kryo tempKryo = kryoFactory();
-
+		Output out;
+		
 		String address = destination.getAddress();
 		BluetoothSocket btSocket = mBtSockets.get(address);
 		try {
@@ -340,6 +341,7 @@ public class ConnectionService {
 		//if (btSocket.isConnected()) {
 			tempKryo.writeObject(out, message);
 			out.flush();
+			
 		//}
 
 		return Connection.SUCCESS;
@@ -356,9 +358,9 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
-			if (out != null) {
-				//out.close();
-			}
+//			if (out != null) {
+//				//out.close();
+//			}
 //			if (mKryo != null) {
 //				mKryo.reset();
 //			}

@@ -1,23 +1,22 @@
-//***Main entry of the libgdx-project****
 package it.chalmers.tendu;
 
-import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
+
 import it.chalmers.tendu.network.INetwork;
-import it.chalmers.tendu.screens.GameOverScreen;
-import it.chalmers.tendu.screens.InterimScreen;
-import it.chalmers.tendu.screens.MainMenuScreen;
-import it.chalmers.tendu.screens.MiniGameScreenFactory;
-import it.chalmers.tendu.screens.Screen;
-import it.chalmers.tendu.tbd.C;
-
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventBusListener;
-import it.chalmers.tendu.tbd.EventMessage;
-
+import it.chalmers.tendu.network.INetworkHandler;
+import it.chalmers.tendu.screen.GameOverScreen;
+import it.chalmers.tendu.screen.InterimScreen;
+import it.chalmers.tendu.screen.MainMenuScreen;
+import it.chalmers.tendu.screen.MiniGameScreenFactory;
+import it.chalmers.tendu.screen.Screen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -26,6 +25,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
+
+/**
+ * ENTRY CLASS of Tendu.
+ * 
+ */
 public class Tendu implements ApplicationListener, EventBusListener {
 	public static final String TAG = "Tendu";
 
@@ -52,14 +56,15 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 	/**
 	 * Network controller. All networking is implemented through the
-	 * {@link INetworkHandler} interface.
+	 * {@link INetworkHandler} interface. (e.g. see BluetoothHandler class in
+	 * android project for example implementation)
 	 */
 	private INetwork networkHandler;
 
 	/**
 	 * All drawing is normally done on this canvas.
 	 */
-	public SpriteBatch spriteBatch; // used for drawing of graphics
+	public SpriteBatch spriteBatch;
 
 	/**
 	 * @param networkHandler
@@ -72,12 +77,14 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 	@Override
 	public void create() {
-		String mac = networkHandler.getMacAddress();
-		Player.getInstance().setMac(mac);
-		Gdx.app.log(TAG, Player.getInstance().getMac());
+
+		// Update Player singleton with this device's MAC.
+		Player.getInstance().setMac(networkHandler.getMacAddress());
+		Gdx.app.debug(TAG, Player.getInstance().getMac());
 
 		spriteBatch = new SpriteBatch();
 
+		// First screen is the MainMenuScreen.
 		setScreen(new MainMenuScreen(this));
 
 		// setup the camera
@@ -85,35 +92,32 @@ public class Tendu implements ApplicationListener, EventBusListener {
 		camera.setToOrtho(false, Constants.SCREEN_WIDTH,
 				Constants.SCREEN_HEIGHT);
 
-		// create an inputController and register it with Gdx
+		// Input is adjusted to the device's aspect ratio and resolution
 		input = new InputController(camera);
-		Gdx.input.setInputProcessor(input);
 	}
 
-	// clean up
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
 		networkHandler.destroy();
+		unregister();
 	}
 
 	// **The games main loop, everything but early setup happens here
 	@Override
 	public void render() {
 
-		// clear the entire screen
-		// setScreenByNetworkState(); //changes to some error screen if
-		// connections is lost?
-		// clear the entire screen
+		// Clear screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
-		// Gdx.gl.glClearColor(1f, 1f, 0f, 1);
-		Gdx.gl.glClearColor(Constants.BG_RED, Constants.BG_GREEN, Constants.BG_BLUE, 1);
 
-		// makes sure the game runs in 60 fps
+		// Sets the background colour of the entire app
+		Gdx.gl.glClearColor(Constants.BG_RED, Constants.BG_GREEN,
+				Constants.BG_BLUE, 1);
+
+		// Lock FPS at max of 60.
 		accum += Gdx.graphics.getDeltaTime();
 		while (accum > 1.0f / 60.0f) {
-			screen.tick(input); // runs tick in the current screen witch should
+			screen.tick(input); // runs tick in the current screen which should
 								// handle all input and game logic for that
 								// specific minigame/menu
 			input.tick(); // updates input
@@ -122,8 +126,12 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 		camera.update();
 		spriteBatch.setProjectionMatrix(camera.combined);
+
+		// Initiate spriteBatch.
 		spriteBatch.begin();
-		screen.render(); // draw all graphic for the current frame
+		// Let Screen manipulate the batch.
+		screen.render();
+		// Render batch.
 		spriteBatch.end();
 	}
 
@@ -142,10 +150,17 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 	}
 
-	// sets a new screen and cleans up the previous one
+	/**
+	 * @param newScreen
+	 *            the new Screen which will replace the old one.
+	 */
 	public void setScreen(Screen newScreen) {
-		if (screen != null) {
-			screen.removed();
+		if (screen != null) { // TODO: will screen ever be null? if not, this
+								// check should be removed in order to have a
+								// fail-fast mechanism.
+								// it is null the first time it's called.
+								// it can be avoided by sett the Main Menu screen directly the at game startup
+			screen.dispose();
 		}
 		screen = newScreen;
 	}
@@ -164,6 +179,11 @@ public class Tendu implements ApplicationListener, EventBusListener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
+
+			// Received from gameSession
+			// creates the screen with the received mini game and broadcasts a
+			// message that it's finished loading (handled by
+			// GameSessionController)
 			if (message.msg == C.Msg.CREATE_SCREEN) {
 				MiniGame game = (MiniGame) message.content;
 				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
@@ -174,22 +194,33 @@ public class Tendu implements ApplicationListener, EventBusListener {
 								.getMac());
 				EventBus.INSTANCE.broadcast(msg);
 
-			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+			}
+			// Show a screen between games with current results...
+			else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new InterimScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+			} 
+			
+			// Show the game over screen
+			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new GameOverScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.RESTART) {
+			} 
+			//Resets the network and loads the Main menu screen
+			//The message is received when the connection to the other players is lost (a better solution would be to show a connection lost screen first)
+			//It's also received if you go back from the lobby or pressing Main menu when the game is over
+			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(this);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
+			} 
+			//Stop accepting more connections if a game session has started
+			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
 				networkHandler.stopAcceptingConnections();
 			}
 		}
@@ -197,7 +228,6 @@ public class Tendu implements ApplicationListener, EventBusListener {
 
 	@Override
 	public void unregister() {
-		// TODO: Will this ever be called? ( maybe on dispose() )
 		EventBus.INSTANCE.removeListener(this);
 	}
 }

@@ -1,29 +1,36 @@
-package it.chalmers.tendu.controllers;
+package it.chalmers.tendu.controller;
 
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Tag;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 
-public class ShapeGameModelController implements MiniGameController {
+public class ShapeGameController implements MiniGameController {
 
 	private final String TAG = "ShapeGameModelController";
 	private ShapeGame shapeGame;
 
-	public ShapeGameModelController(ShapeGame model) {
+	/**
+	 * Creates a new Controller for shapeGame. 
+	 * Changes the model and receives broadcasts from the 
+	 * network.
+	 * @param model
+	 */
+	public ShapeGameController(ShapeGame model) {
 		shapeGame = model;
 		EventBus.INSTANCE.addListener(this);
 	}
 
+	@Override
 	public ShapeGame getModel() {
 		return shapeGame;
 	}
@@ -126,26 +133,25 @@ public class ShapeGameModelController implements MiniGameController {
 		}
 	}
 	
-	private boolean fitsIntoSlot(Object content) {
-		List<Object> messageContent = (List) content;
-		int player = (Integer) messageContent.get(0);
-		Shape lockShape = (Shape) messageContent.get(1);
-		Shape shape = (Shape) messageContent.get(2);
 
-		return shapeGame.shapeFitIntoLock(player, shape, lockShape);
-	}
-
+	/**
+	 * Tells the model to try to lock a shape 
+	 * into a lock.
+	 * @param content Contains the shape, the lock and the players 
+	 * that is making the attempt.
+	 * @return True if the attempt was successful.
+	 */
 	private boolean insertIntoSlot(Object content) {
 		List<Object> messageContent = (List) content;
 		int player = (Integer) messageContent.get(0);
 		Shape lockShape = (Shape) messageContent.get(1);
+		
 		// Since we send objects, their references no longer matches our model
 		// we have to see which of the objects in "our" model that was sent. 
 		for (Shape l : shapeGame.getLock(player).getLockSequence()) {
 			if (l.equals(lockShape))
 				lockShape = l;
 		}
-		Gdx.app.log(TAG, (messageContent.get(2) + ""));
 		Shape shape = (Shape) messageContent.get(2);
 		for (Shape s : shapeGame.getAllInventory().get(player)) {
 			if (s.equals(shape))
@@ -159,26 +165,16 @@ public class ShapeGameModelController implements MiniGameController {
 		EventBus.INSTANCE.removeListener(this);
 	}
 
-	// TODO Shape should appear on the proper pos
+	/**
+	 * Tells the model to move a shape
+	 * @param content Contains a shape and a players number
+	 */
 	private void sendShape(Object content) {
-		Gdx.app.log(TAG, "Host is in sendShapess: "+Player.getInstance().isHost());
-		
 		NetworkShape networkShape = (NetworkShape) content;
 		
 		Shape shape = networkShape.shape;
 		int player = networkShape.player;
 		
-//		List<Object> messageContent = (List) content;
-//		int player = (Integer) messageContent.get(0);
-//		// Since we send objects, their references no longer matches our model
-//				// we have to see which of the objects in "our" model that was sent.
-//		Shape shape = (Shape) messageContent.get(1);
-//		
-		// TODO: this is very fishy...
-//		for (Shape s : shapeGame.getAllInventory().get(player)) {
-//			if (s.equals(shape))
-//				shape = s;
-//		}
 		shapeGame.move(shape, player);
 		
 	}

@@ -46,7 +46,6 @@ public enum GameId {
 
 	/**
 	 * @param difficulty
-	 *            That you search for.
 	 * @return a list of GameIds that accepts the given {@link Difficulty} value
 	 */
 	public static List<GameId> getGameIdsFor(Difficulty difficulty) {

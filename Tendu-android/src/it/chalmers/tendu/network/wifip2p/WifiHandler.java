@@ -2,6 +2,11 @@ package it.chalmers.tendu.network.wifip2p;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Msg;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
@@ -19,11 +24,6 @@ import it.chalmers.tendu.gamemodel.shapesgame.Shape;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeColor;
 import it.chalmers.tendu.gamemodel.shapesgame.ShapeGame;
 import it.chalmers.tendu.network.NetworkHandler;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
-import it.chalmers.tendu.tbd.C.Tag;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	}
 
 	@Override
-	public void joinGame() {
+	public void joinLobby() {
 		isReadyToConnect = true;
 
 		// TODO Check if already connected by wifi and if so start kryo connection
@@ -667,6 +667,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void unregister() {
 		// TODO Auto-generated method stub
-
+		
 	}
 }

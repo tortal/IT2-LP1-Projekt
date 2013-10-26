@@ -1,13 +1,13 @@
-package it.chalmers.tendu.controllers;
+package it.chalmers.tendu.controller;
 
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.C.Msg;
+import it.chalmers.tendu.event.C.Tag;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.C.Msg;
-import it.chalmers.tendu.tbd.C.Tag;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 
@@ -130,6 +130,7 @@ public class NumberGameController implements MiniGameController {
 
 	}
 
+	@Override
 	public NumberGame getModel() {
 		return numberGame;
 	}

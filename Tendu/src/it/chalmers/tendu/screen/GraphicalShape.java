@@ -1,4 +1,4 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.gamemodel.shapesgame.GeometricShape;

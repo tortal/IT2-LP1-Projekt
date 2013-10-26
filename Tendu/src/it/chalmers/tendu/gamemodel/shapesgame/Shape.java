@@ -8,23 +8,35 @@ import java.util.List;
  */
 public class Shape {
 
+	/**
+	 * Color of this shape.
+	 */
 	public final ShapeColor color;
+
+	/**
+	 * The enum describing the shape.
+	 */
 	public final GeometricShape geometricShape;
-	private boolean locked;
+
+	/**
+	 * If this shape has been locked into a its corresponding slot.
+	 */
+	private boolean isLocked;
 
 	public Shape(ShapeColor color, GeometricShape geometricShape) {
 		this.color = color;
 		this.geometricShape = geometricShape;
 	}
-	
+
 	/**
 	 * No args constructor for reflection use
 	 */
-	private Shape(){
+	@SuppressWarnings("unused")
+	private Shape() {
 		this.color = null;
 		this.geometricShape = null;
-//		this.locked = true;
 	}
+
 	/**
 	 * @return a list containing all combinations possible with the enumerators
 	 *         Color and GeometricShape.
@@ -77,13 +89,14 @@ public class Shape {
 	 * @return the locked
 	 */
 	public boolean isLocked() {
-		return locked;
+		return isLocked;
 	}
 
 	/**
-	 * @param locked the locked to set
+	 * @param locked
+	 *            the locked to set
 	 */
 	public void setLocked(boolean locked) {
-		this.locked = locked;
+		this.isLocked = locked;
 	}
 }

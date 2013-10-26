@@ -1,16 +1,17 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.LobbyController;
+import it.chalmers.tendu.controller.InputController;
+import it.chalmers.tendu.controller.LobbyController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.PlayerColors;
 import it.chalmers.tendu.defaults.TextLabels;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.gamemodel.SimpleTimer;
 
 import java.util.Map;
 
@@ -68,11 +69,12 @@ public class LobbyScreen implements Screen {
 
 	private void initClient() {
 		Player.getInstance().setHost(false);
-		tendu.getNetworkHandler().joinGame();
+		tendu.getNetworkHandler().joinLobby();
 		statusText = new TextWidget(TextLabels.SEARCHING_FOR_SESSION, new Vector2(
 				40, 620), Constants.MENU_FONT_COLOR);
 	}
 
+	@Override
 	public void tick(InputController input) {
 		playersConnected = getModel().getLobbyMembers().entrySet().size();
 
@@ -97,10 +99,17 @@ public class LobbyScreen implements Screen {
 			}
 			
 			if (testStuff.collided(input.getCoordinates())) {				
-				tendu.getNetworkHandler().testSendMessage();
+				// Received by host and client in LobbyController.
+				EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.REQUEST_AS_CLIENT,
+						C.Msg.TEST, new SimpleTimer()));
 			}
 
 			readyText.setColor(Constants.MENU_FONT_COLOR);
+		}
+		
+		if(input.isBackPressed()) {
+			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
+			EventBus.INSTANCE.broadcast(message);
 		}
 	}
 
@@ -108,7 +117,7 @@ public class LobbyScreen implements Screen {
 	public void render() {
 
 		statusText.draw(tendu.spriteBatch, font);
-		testStuff.draw(tendu.spriteBatch, font);
+		//testStuff.draw(tendu.spriteBatch, font);
 		
 		playerText.setY(580);
 
@@ -137,7 +146,7 @@ public class LobbyScreen implements Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void dispose() {
 		font.dispose();
 		lobbyController.unregister();
 	}

@@ -1,34 +1,41 @@
 package it.chalmers.tendu.network;
 
-import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.gamemodel.LobbyModel;
 
 public interface INetworkHandler {
-	/**
-	 * Host game that other players can search for.
-	 */
-	void hostSession();
 
 	/**
-	 * Joins a team.
+	 * Starts a Game Lobby that other players can connect to. See
+	 * {@link LobbyModel}.
 	 */
-	void joinGame(); // Should probably have a game or a player as argument.
+	public void hostSession();
 
 	/**
-	 * Send object to remote device
+	 * Connects the client to a lobby.
+	 */
+	public void joinLobby(); // TODO: Why? ->
+						// "Should probably have a game or a player as argument."
+
+	/**
+	 * Transmits an {@link EventMessage} to connected devices.
 	 * 
-	 * @param o
+	 * @param message
+	 *            to be sent over the implemented network.
 	 */
-	void broadcastMessageOverNetwork(EventMessage message);
+	public void broadcastMessageOverNetwork(EventMessage message);
 
 	/**
-	 * Method to be called when exiting app
+	 * Method to be called when exiting the application.
 	 */
-	void destroy();
+	public void destroy();
 
 	/** Test method */
 	void testSendMessage();
 
-	/** Returns the units mac address */
+	/**
+	 * Returns this unit's MAC address
+	 */
 	public String getMacAddress();
 
 	/** Gets called in onPause() in the libgdx lifecycle */
@@ -37,16 +44,22 @@ public interface INetworkHandler {
 	/** Gets called in onPause() in the libgdx lifecycle */
 	void onResume();
 
-	/** Returns network to virgin state */
+	/**
+	 * Returns network to virgin state (i.e. release all threads and dispose all
+	 * connections)
+	 */
 	public void resetNetwork();
-	
-	/** Stops the network from accepting any 
-	 * more incoming connections. No more matchmaking */
-	public void stopAcceptingConnections();
-	
-	/** Method for easing multiple simultaneous testing of app 
-	 * @return */ 
-	public int toggleHostNumber();
 
-	
+	/**
+	 * Halts this device from accepting any additional connection attempts. No more
+	 * matchmaking!
+	 */
+	public void stopAcceptingConnections();
+
+	/**
+	 * Method for easing multiple simultaneous testing of app
+	 * 
+	 * @return
+	 */
+	public int toggleHostNumber();
 }

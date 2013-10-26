@@ -1,6 +1,6 @@
 package it.chalmers.tendu.network;
 
-import it.chalmers.tendu.tbd.EventMessage;
+import it.chalmers.tendu.event.EventMessage;
 
 public interface INetwork {
 	/**
@@ -11,7 +11,7 @@ public interface INetwork {
 	/**
 	 * Joins a team.
 	 */
-	void joinGame(); // Should probably have a game or a player as argument.
+	void joinLobby(); // Should probably have a game or a player as argument.
 
 	/**
 	 * Send object to remote device

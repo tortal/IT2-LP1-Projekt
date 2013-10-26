@@ -1,18 +1,18 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
-import it.chalmers.tendu.controllers.NumberGameController;
+import it.chalmers.tendu.controller.InputController;
+import it.chalmers.tendu.controller.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.GameState;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGame;
 import it.chalmers.tendu.gamemodel.numbergame.NumberGameSound;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -211,18 +211,16 @@ public class NumberGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
-
+		
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				model.stopTimer();
 				gameCompletedTimer.start(1500);
 				
-				if (gameCompletedTimer.isDone()) {
-
+				if (gameCompletedTimer.isDone()) {					
+					
 					// Received by GameSessionController.
-					EventMessage message = new EventMessage(C.Tag.TO_SELF,
-							C.Msg.GAME_RESULT, model.getGameResult());
-					EventBus.INSTANCE.broadcast(message);
+					sendEndMessage();
 				}
 
 				return;
@@ -264,14 +262,28 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 	}
+	
+	//TODO not the best solution but it works.
+	//this message must be sent only once
+	private boolean ended = false;
+	private void sendEndMessage() {
+		if(!ended) {
+			// Received by GameSessionController.
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.GAME_RESULT, model.getGameResult());
+			EventBus.INSTANCE.broadcast(message);
+		}
+		
+		ended = true;
+	}
 
 	private NumberGame getModel() {
 		return controller.getModel();
 	}
 
 	@Override
-	public void removed() {
-		super.removed();
+	public void dispose() {
+		super.dispose();
 		font.dispose();
 		numberFont.dispose();
 		sound.unregister();

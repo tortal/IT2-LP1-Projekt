@@ -1,14 +1,14 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
-import it.chalmers.tendu.controllers.InputController;
+import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
-import it.chalmers.tendu.tbd.C;
-import it.chalmers.tendu.tbd.EventBus;
-import it.chalmers.tendu.tbd.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -39,7 +39,7 @@ public class GameOverScreen implements Screen {
 		levelText = new TextWidget(TextLabels.LEVEL_REACHED +": " + level, new Vector2(
 				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2 + 60), Constants.MENU_FONT_COLOR);
 
-		mainMenu = new TextWidget(TextLabels.RETURN_TO_MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
+		mainMenu = new TextWidget(TextLabels.MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
 		
 		replay = new TextWidget(TextLabels.PLAY_AGAIN, new Vector2(800, 150), Constants.MENU_FONT_COLOR);
 	}
@@ -90,7 +90,7 @@ public class GameOverScreen implements Screen {
 	}
 
 	@Override
-	public void removed() {
+	public void dispose() {
 		font.dispose();
 	}
 

@@ -1,4 +1,4 @@
-package it.chalmers.tendu.screens;
+package it.chalmers.tendu.screen;
 
 //TODO no longer used
 import com.badlogic.gdx.graphics.Color;
