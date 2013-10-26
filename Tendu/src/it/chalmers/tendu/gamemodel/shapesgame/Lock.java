@@ -110,7 +110,6 @@ public class Lock {
 		if (shape.equals(lockShape)) {
 			slotLock.put(shape, true);
 			shape.setLocked(true);
-			Gdx.app.log("Locked", "" + shape.isLocked());
 			return true;
 		}
 		return false;
