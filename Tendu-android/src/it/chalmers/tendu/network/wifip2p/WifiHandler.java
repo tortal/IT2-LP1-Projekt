@@ -317,7 +317,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}, CONNECTION_DELAY);
 	}
 
-	private String hostMacAddress = null;
 	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
@@ -328,7 +327,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			public void onSuccess() {
 				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 				Log.d(TAG, "Connection initiated to: " + device.deviceName);
-				hostMacAddress = device.deviceAddress;
 			}
 
 			@Override
@@ -526,7 +524,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (object instanceof EventMessage) {
 					EventMessage message = (EventMessage)object;
 					Log.d(TAG, "Received: " + message.toString());
-					toastMessage(message);
 					sendToEventBus(message);
 				}
 			}
@@ -568,16 +565,15 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					if (object instanceof EventMessage) {
 						EventMessage message = (EventMessage)object;
 						Log.d(TAG, "Received: " + message.toString());
-						toastMessage(message);
 						sendToEventBus(message);
 					}
 				}
 				@Override
 				public void disconnected(Connection connection) {
-					connection.close();
 					displayConnectionLostAlert();
-					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+					connection.close();
 					resetNetwork();
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 				}
 			});
 			// Send own mac address to host

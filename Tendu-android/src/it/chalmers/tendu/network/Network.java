@@ -14,8 +14,8 @@ public class Network implements INetwork {
 	public Network(Context ctx) {
 		context = ctx;
 
-		//selectWifi();
-		selectBluetooth();
+		selectWifi();
+		//selectBluetooth();
 	}
 	
 	@Override
