@@ -119,6 +119,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void joinLobby() {
 		isReadyToConnect = true;
 
+		resetConnection();
 		// TODO Check if already connected by wifi and if so start kryo connection
 		mManager.requestConnectionInfo(mChannel, this);
 		//discoverPeers();
@@ -378,6 +379,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			client.stop();
 			client.close();
 		}
+		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 	}
 
 	private void removeWifiGroup() {
