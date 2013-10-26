@@ -139,7 +139,7 @@ public abstract class MiniGame {
 	/**
 	 * Get the player number corresponding to your own macAddress.
 	 * 
-	 * @return
+	 * @return playerNbr corresponding to you macAdress
 	 */
 	public int getplayerNbr() {
 		String myMac = Player.getInstance().getMac();
@@ -147,6 +147,9 @@ public abstract class MiniGame {
 		return playerNbr;
 	}
 
+	/**
+	 * @return list with teammates playerNbrs
+	 */
 	public ArrayList<Integer> getOtherPlayerNumbers() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < getNumberOfPlayers(); i++) {
@@ -176,8 +179,15 @@ public abstract class MiniGame {
 	 */
 	public abstract GameResult getGameResult();
 
+	/**
+	 * Returns the GameState of the game
+	 */
 	public abstract GameState checkGameState();
 
+	/**
+	 * Stops the timer of the miniGame
+	 * Call when game won
+	 */
 	public void stopTimer() {
 		simpleTimer.stop();
 	}

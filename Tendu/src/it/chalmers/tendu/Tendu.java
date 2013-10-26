@@ -96,6 +96,7 @@ public class Tendu implements ApplicationListener, Listener {
 	public void dispose() {
 		spriteBatch.dispose();
 		networkHandler.destroy();
+		unregister();
 	}
 
 	// **The games main loop, everything but early setup happens here
@@ -104,10 +105,10 @@ public class Tendu implements ApplicationListener, Listener {
 
 		// Clear screen
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// Gdx.gl.glClearColor(0.12f, 0.6f, 0.98f, 1);
-		// Gdx.gl.glClearColor(1f, 1f, 0f, 1);
+
+		// Sets the background colour of the entire app
 		Gdx.gl.glClearColor(Constants.BG_RED, Constants.BG_GREEN,
-				Constants.BG_BLUE, 1); // TODO: what does this do?
+				Constants.BG_BLUE, 1);
 
 		// Lock FPS at max of 60.
 		accum += Gdx.graphics.getDeltaTime();
@@ -151,6 +152,8 @@ public class Tendu implements ApplicationListener, Listener {
 		if (screen != null) { // TODO: will screen ever be null? if not, this
 								// check should be removed in order to have a
 								// fail-fast mechanism.
+								// it is null the first time it's called.
+								// it can be avoided by sett the Main Menu screen directly the at game startup
 			screen.dispose();
 		}
 		screen = newScreen;
@@ -170,6 +173,11 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
+
+			// Received from gameSession
+			// creates the screen with the received mini game and broadcasts a
+			// message that it's finished loading (handled by
+			// GameSessionController)
 			if (message.msg == C.Msg.CREATE_SCREEN) {
 				MiniGame game = (MiniGame) message.content;
 				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
@@ -180,22 +188,33 @@ public class Tendu implements ApplicationListener, Listener {
 								.getMac());
 				EventBus.INSTANCE.broadcast(msg);
 
-			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+			}
+			// Show a screen between games with current results...
+			else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new InterimScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+			} 
+			
+			// Show the game over screen
+			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new GameOverScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.RESTART) {
+			} 
+			//Resets the network and loads the Main menu screen
+			//The message is received when the connection to the other players is lost (a better solution would be to show a connection lost screen first)
+			//It's also received if you go back from the lobby or pressing Main menu when the game is over
+			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(this);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
+			} 
+			//Stop accepting more connections if a game session has started
+			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
 				networkHandler.stopAcceptingConnections();
 			}
 		}
@@ -203,7 +222,6 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void unregister() {
-		// TODO: Will this ever be called? ( maybe on dispose() )
 		EventBus.INSTANCE.removeListener(this);
 	}
 }
