@@ -2,7 +2,7 @@ package it.chalmers.tendu.screen;
 
 import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
-import it.chalmers.tendu.controller.ShapeGameModelController;
+import it.chalmers.tendu.controller.ShapeGameController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
 import it.chalmers.tendu.event.C;
@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+/** GameScreen for the Shape minigame. Contains all graphics, sounds etc. **/
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
@@ -35,24 +36,17 @@ public class ShapeGameScreen extends GameScreen {
 	private int player_num;
 	private ShapeRenderer shapeRenderer; // used to render vector graphics
 
+	// Fields used to render shapes and to compare
+	// shapes in the gui to shapes in the model
 	private List<GraphicalShape> shapes;
 	private List<GraphicalShape> locks;
-
-	private GraphicalShape movingShape;
-
-	private ShapeGameModelController controller;
-
-	private ShapeGameSound sound;
-
 	private Map<Integer, Shape> latestAddedShape;
 	private Shape latestRemovedShape;
+	private GraphicalShape movingShape;
 
-	ShapeGame shapeGameModel;
-
-	private TextWidget instructions;
-	private TextWidget teamInstructions;
-	private TextWidget teamInstructionsContinued;
-	private BitmapFont font;
+	private ShapeGameController controller;
+	private ShapeGame shapeGameModel;
+	private ShapeGameSound soundController;
 
 	private SimpleTimer gameCompletedTimer;
 	private SimpleTimer instructionsTimer; // used to time how long the
@@ -61,26 +55,58 @@ public class ShapeGameScreen extends GameScreen {
 
 	private static int timesPlayed = 0;
 
-	//
-	// // For debug
-	// int count = 0;
+	// Assets
+	private TextWidget instructions;
+	private TextWidget teamInstructions;
+	private TextWidget teamInstructionsContinued;
+	private BitmapFont font;
 
 	public ShapeGameScreen(Tendu game, MiniGame model) {
 		super(game, model);
 
-		controller = new ShapeGameModelController((ShapeGame) model);
+		controller = new ShapeGameController((ShapeGame) model);
 		shapeGameModel = controller.getModel();
 		this.shapeRenderer = new ShapeRenderer();
 
 		latestAddedShape = new HashMap<Integer, Shape>();
 
 		player_num = shapeGameModel.getplayerNbr();
-		sound = new ShapeGameSound();
+		soundController = new ShapeGameSound();
 
-		shapes = new ArrayList<GraphicalShape>();
 		gameCompletedTimer = new SimpleTimer();
 		instructionsTimer = new SimpleTimer();
 
+		initShapes();
+
+		otherPlayers = controller.getModel().getOtherPlayerNumbers();
+
+		// setup the instructions
+		instructions = new TextWidget(TextLabels.PLACE_THE_SHAPE, new Vector2(
+				90, 595), Constants.MENU_FONT_COLOR);
+
+		teamInstructions = new TextWidget(TextLabels.SEND_SHAPE_BY,
+				new Vector2(65, 400), Constants.MENU_FONT_COLOR);
+		teamInstructionsContinued = new TextWidget(
+				TextLabels.SEND_SHAPE_TEAMMATES, new Vector2(65, 300),
+				Constants.MENU_FONT_COLOR);
+		// load the font
+		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
+				Gdx.files.internal("fonts/menuFont.png"), false);
+
+		// We only need to show the instructions once
+		if (timesPlayed > 0) {
+			timeForInstructions = 0;
+		} else {
+			timeForInstructions = 3500;
+			timesPlayed++;
+		}
+	}
+
+	/**
+	 * Gets the shapes from the model and sets their initital positions.
+	 */
+	private void initShapes() {
+		shapes = new ArrayList<GraphicalShape>();
 		int x = Constants.SCREEN_WIDTH
 				/ (controller.getModel().getLock(player_num).getLockSequence()
 						.size() + 1) - 100;
@@ -110,29 +136,6 @@ public class ShapeGameScreen extends GameScreen {
 					+ Constants.SCREEN_WIDTH
 					/ (controller.getModel().getLock(player_num)
 							.getLockSequence().size() + 1);
-		}
-
-		otherPlayers = controller.getModel().getOtherPlayerNumbers();
-
-		// setup the instructions
-		instructions = new TextWidget(TextLabels.PLACE_THE_SHAPE, new Vector2(
-				90, 595), Constants.MENU_FONT_COLOR);
-
-		teamInstructions = new TextWidget(TextLabels.SEND_SHAPE_BY,
-				new Vector2(65, 400), Constants.MENU_FONT_COLOR);
-		teamInstructionsContinued = new TextWidget(
-				TextLabels.SEND_SHAPE_TEAMMATES, new Vector2(65, 300),
-				Constants.MENU_FONT_COLOR);
-		// load the font
-		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
-				Gdx.files.internal("fonts/menuFont.png"), false);
-
-		// hack, we only need to show the instructions once
-		if (timesPlayed > 0) {
-			timeForInstructions = 0;
-		} else {
-			timeForInstructions = 3500;
-			timesPlayed++;
 		}
 	}
 
@@ -211,15 +214,7 @@ public class ShapeGameScreen extends GameScreen {
 	 * @return
 	 */
 	private NetworkShape messageContentFactory(int player, Shape shape) {
-
-		// List<Object> l = new ArrayList<Object>();
-		// l.add(player);
-		// l.add(shape);
-		// return l;
-
-		// return Player.getInstance();
 		return new NetworkShape(player, shape);
-		// return 1;
 	}
 
 	/** All game logic goes here (within the model...) */
@@ -244,7 +239,6 @@ public class ShapeGameScreen extends GameScreen {
 				}
 			}
 
-			// TODO nullpointer movingShape
 			if (input.isTouchedDown()) {
 				for (GraphicalShape s : shapes) {
 					if (s.getBounds().contains(input.x, input.y)
@@ -276,29 +270,19 @@ public class ShapeGameScreen extends GameScreen {
 		}
 	}
 
-	// TODO : Adds a new shape if any shape has changed color.
+	/**
+	 * Adds and the latest received shape from model to gui and removes shapes
+	 * from the gui that are no longer part of the model.
+	 */
 	private void updateShapesFromModel() {
+		addLatestReceivedShape();
+		removeLastSentShape();
+	}
 
-		Map<Integer, Shape> latestModelReceivedShape = shapeGameModel
-				.getLatestReceivedShape(player_num);
-
-		// if(!shapeGameModel.getLatestReceivedShape(player_num).isEmpty()){
-		// Gdx.app.log(TAG, shapeGameModel
-		// .getLatestReceivedShape(player_num).toString() + "");
-		// }
-
-		if (!latestModelReceivedShape.isEmpty()) {
-			if (!latestModelReceivedShape.equals(latestAddedShape)) {
-				for (Map.Entry<Integer, Shape> entry : latestModelReceivedShape
-						.entrySet()) {
-					showShapeFromSender(entry.getValue(), entry.getKey());
-					latestAddedShape = latestModelReceivedShape;
-				}
-			}
-
-		}
-
-		// Removes shapes that are no longer part of the model
+	/**
+	 * Removes shapes that are no longer part of the model
+	 */
+	private void removeLastSentShape() {
 		if (controller.getModel().getLatestSentShapes(player_num).size() >= 1)
 			latestRemovedShape = controller
 					.getModel()
@@ -321,42 +305,54 @@ public class ShapeGameScreen extends GameScreen {
 		}
 	}
 
-	public boolean snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
-		boolean result = false;
+	/**
+	 * Get that latest received shape from the model
+	 */
+	private void addLatestReceivedShape() {
+		Map<Integer, Shape> latestModelReceivedShape = shapeGameModel
+				.getLatestReceivedShape(player_num);
+		if (!latestModelReceivedShape.isEmpty()) {
+			if (!latestModelReceivedShape.equals(latestAddedShape)) {
+				for (Map.Entry<Integer, Shape> entry : latestModelReceivedShape
+						.entrySet()) {
+					showShapeFromSender(entry.getValue(), entry.getKey());
+					latestAddedShape = latestModelReceivedShape;
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * Tries to snap a shape in a lock. If the model is ok with this the shape
+	 * will move to the same position as the lock is. Either way, the try will
+	 * be broadcasted to the network.
+	 * 
+	 * @param shape
+	 *            The shape to put in the lock
+	 * @param lock
+	 *            The lock to put the shape in.
+	 */
+	private void snapIntoPlace(GraphicalShape shape, GraphicalShape lock) {
+		// checks to see if the shape fits, and moves it if it does.
 		if (shape.getBounds().overlaps(lock.getBounds())) {
 			if (shapeGameModel.shapeFitIntoLock(player_num, shape.getShape(),
 					lock.getShape())) {
 				shape.moveShape(lock.getBounds().x, lock.getBounds().y);
-				result = true;
 				Gdx.app.log(TAG, "Animated" + "x=" + lock.getBounds().x + "y="
 						+ lock.getBounds().getY());
-
 			}
+			// Creates a list the send over the network
 			List<Object> content = new ArrayList<Object>();
 			content.add(player_num);
 			content.add(lock.getShape());
 			content.add(shape.getShape());
 
 			// Received by ShapeGameController.
-			EventBus.INSTANCE.broadcast(new EventMessage(/*
-														 * Player.getInstance()
-														 * .getMac(),
-														 */C.Tag.TO_SELF,
+			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
 					C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(),
 					content));
 		}
-
-		return result;
-
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		shapeRenderer.dispose();
-		sound.unregister();
-		controller.unregister();
-		font.dispose();
 	}
 
 	/**
@@ -369,7 +365,7 @@ public class ShapeGameScreen extends GameScreen {
 	 *         relax. <code>false</code> something went wrong, run around and
 	 *         scream in utter terror
 	 */
-	public boolean showShapeFromSender(Shape shape, int sender) {
+	private boolean showShapeFromSender(Shape shape, int sender) {
 		GraphicalShape receivedShape = new GraphicalShape(shape);
 		if (!otherPlayers.contains(sender))
 			return false;
@@ -382,7 +378,8 @@ public class ShapeGameScreen extends GameScreen {
 		} else if (otherPlayers.get(1) == sender) {
 			receivedShape.moveShape(110, Constants.SCREEN_HEIGHT / 2);
 		} else if (otherPlayers.get(2) == sender) {
-			receivedShape.moveShape(Constants.SCREEN_WIDTH - 110, Constants.SCREEN_HEIGHT / 2);
+			receivedShape.moveShape(Constants.SCREEN_WIDTH - 110,
+					Constants.SCREEN_HEIGHT / 2);
 		}
 
 		return true;
@@ -401,5 +398,14 @@ public class ShapeGameScreen extends GameScreen {
 		}
 
 		ended = true;
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		shapeRenderer.dispose();
+		soundController.unregister();
+		controller.unregister();
+		font.dispose();
 	}
 }

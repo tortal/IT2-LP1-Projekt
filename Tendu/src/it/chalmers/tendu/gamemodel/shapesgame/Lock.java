@@ -77,6 +77,13 @@ public class Lock {
 		return true;
 	}
 
+	/**
+	 * Checks if it is possible to lock a shape into a lock
+	 * 
+	 * @param shape The shape to lock
+	 * @param lockShape The lock to lock the shape in
+	 * @return true if it is possible. 
+	 */
 	public boolean fitsIntoSlot(Shape shape, Shape lockShape) {
 		if (this.lockSequence.contains(lockShape)) {
 			if (shape.geometricShape.equals(lockShape.geometricShape)

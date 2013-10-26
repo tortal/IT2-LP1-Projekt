@@ -37,7 +37,7 @@ public class ShapeGameSound implements Listener {
 
 	@Override
 	public void onBroadcast(EventMessage message) {
-
+		// When a broadcast, checks what sound to play
 		if (message.tag == C.Tag.TO_SELF) {
 			if (message.msg == C.Msg.SOUND_WIN) {
 				playSoundGameWon();
