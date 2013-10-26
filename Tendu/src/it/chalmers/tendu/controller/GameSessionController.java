@@ -112,7 +112,7 @@ public class GameSessionController implements Listener {
 			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
 
 				String playerMac = (String) message.content;
-				gameSession.playerReplayReady(playerMac);
+				gameSession.playerPlayAgainReady(playerMac);
 
 				if (gameSession.arePlayersReady()) {
 
