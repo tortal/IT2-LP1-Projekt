@@ -141,30 +141,30 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
 			// Show a dialogue notifying user it got disconnected
-			class displayConnectionLostAlert implements Runnable {
-				public void run() {
-					Builder connectionLostAlert = new Builder(context);
-
-					connectionLostAlert.setTitle("Connection lost");
-					connectionLostAlert
-							.setMessage("Your connection with the other players has been lost.");
-
-					connectionLostAlert.setPositiveButton("Ok",
-							new OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// TODO Let app terminate itself?
-									// finish();
-								}
-							});
-					connectionLostAlert.setCancelable(false);
-					try {
-						connectionLostAlert.show();
-					} catch (BadTokenException e) {
-						Log.e(TAG, "BadTokenException", e);
-					}
-				}
-			}
+//			class displayConnectionLostAlert implements Runnable {
+//				public void run() {
+//					Builder connectionLostAlert = new Builder(context);
+//
+//					connectionLostAlert.setTitle("Connection lost");
+//					connectionLostAlert
+//							.setMessage("Your connection with the other players has been lost.");
+//
+//					connectionLostAlert.setPositiveButton("Ok",
+//							new OnClickListener() {
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//									// TODO Let app terminate itself?
+//									// finish();
+//								}
+//							});
+//					connectionLostAlert.setCancelable(false);
+//					try {
+//						connectionLostAlert.show();
+//					} catch (BadTokenException e) {
+//						Log.e(TAG, "BadTokenException", e);
+//					}
+//				}
+//			}
 
 			connectedDevices.remove(device);
 			if (connectedDevices.isEmpty()) {
@@ -172,8 +172,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 				// otherwise we just broadcast that a player is gone
 				
 				// Display on UI-thread
-				((AndroidApplication) context)
-				.runOnUiThread(new displayConnectionLostAlert());
+//				((AndroidApplication) context)
+//				.runOnUiThread(new displayConnectionLostAlert());
 
 				resetNetwork();
 				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
@@ -386,6 +386,8 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		hostNumber = 1;
 		removeTenduFromDeviceName();
 		connection.reset();
+		mBluetoothAdapter.disable();
+		mBluetoothAdapter.enable();
 	}
 	
 	@Override

@@ -4,7 +4,7 @@ package it.chalmers.tendu.gamemodel;
 /**
  * A Timer class - used by {@link MiniGame}s and controllers to keep track of
  * the remaining time in a given minigame.
- * Also used by screens to time different gui stuff
+ * Also used by screens to time different gui related stuff
  * 
  */
 public class SimpleTimer {
@@ -106,6 +106,11 @@ public class SimpleTimer {
 		this.endTime = time + System.currentTimeMillis();
 	}
 
+	/**
+	 * Check if the timer is running
+	 * 
+	 * @return true if timer is running
+	 */
 	public boolean isRunning() {
 		getRemainingTime();
 		if (state == STATE.RUNNING) {
@@ -115,6 +120,11 @@ public class SimpleTimer {
 		return false;
 	}
 
+	/**
+	 * Check if the timer is done
+	 * 
+	 * @return true if timer is done
+	 */
 	public boolean isDone() {
 		getRemainingTime();
 		if (state == STATE.DONE) {
@@ -123,6 +133,9 @@ public class SimpleTimer {
 		return false;
 	}
 
+	/**
+	 * Stop the timer
+	 */
 	public void stop() {
 		getRemainingTime();
 		state = STATE.DONE;
