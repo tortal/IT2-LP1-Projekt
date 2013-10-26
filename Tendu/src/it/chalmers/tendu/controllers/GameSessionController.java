@@ -111,7 +111,7 @@ public class GameSessionController implements EventBusListener {
 			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
 
 				String playerMac = (String) message.content;
-				gameSession.playerReplayReady(playerMac);
+				gameSession.playerPlayAgainReady(playerMac);
 
 				if (gameSession.arePlayersReady()) {
 
