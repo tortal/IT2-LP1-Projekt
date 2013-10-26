@@ -48,13 +48,13 @@ public class GameSession {
 	}
 
 	private GameId getNextGameId() {
-		if (completedLvls < 2) {
+		if (completedLvls < 3) {
 			difficulty = Difficulty.ONE;
-		} else if (completedLvls < 4) {
-			difficulty = Difficulty.TWO;
 		} else if (completedLvls < 6) {
+			difficulty = Difficulty.TWO;
+		} else if (completedLvls < 9) {
 			difficulty = Difficulty.THREE;
-		} else if (completedLvls < 8) {
+		} else if (completedLvls < 12) {
 			difficulty = Difficulty.FOUR;
 		} else {
 			difficulty = Difficulty.FIVE;

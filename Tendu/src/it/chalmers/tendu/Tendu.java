@@ -152,6 +152,8 @@ public class Tendu implements ApplicationListener, Listener {
 		if (screen != null) { // TODO: will screen ever be null? if not, this
 								// check should be removed in order to have a
 								// fail-fast mechanism.
+								// it is null the first time it's called.
+								// it can be avoided by sett the Main Menu screen directly the at game startup
 			screen.dispose();
 		}
 		screen = newScreen;
@@ -171,6 +173,11 @@ public class Tendu implements ApplicationListener, Listener {
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
+
+			// Received from gameSession
+			// creates the screen with the received mini game and broadcasts a
+			// message that it's finished loading (handled by
+			// GameSessionController)
 			if (message.msg == C.Msg.CREATE_SCREEN) {
 				MiniGame game = (MiniGame) message.content;
 				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
@@ -181,22 +188,33 @@ public class Tendu implements ApplicationListener, Listener {
 								.getMac());
 				EventBus.INSTANCE.broadcast(msg);
 
-			} else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
+			}
+			// Show a screen between games with current results...
+			else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new InterimScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
+			} 
+			
+			// Show the game over screen
+			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new GameOverScreen(this, sessionResult);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.RESTART) {
+			} 
+			//Resets the network and loads the Main menu screen
+			//The message is received when the connection to the other players is lost (a better solution would be to show a connection lost screen first)
+			//It's also received if you go back from the lobby or pressing Main menu when the game is over
+			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(this);
 				setScreen(screen);
 
-			} else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
+			} 
+			//Stop accepting more connections if a game session has started
+			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
 				networkHandler.stopAcceptingConnections();
 			}
 		}
