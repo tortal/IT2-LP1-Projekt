@@ -6,6 +6,8 @@ public class TextLabels {
 	//MainMenuScreen
 	public final static String HOST = "HOST GAME";
 	public final static String JOIN = "JOIN GAME";
+	public final static String WIFI = "WIFI";
+	public final static String BLUETOOTH = "BLUETOOTH";
 	
 	//LobbyScreen
 	public final static String READY = "I AM READY";

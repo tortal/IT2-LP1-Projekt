@@ -5,10 +5,12 @@ import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
+import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
+
+import it.chalmers.tendu.network.INetwork;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screen.GameOverScreen;
 import it.chalmers.tendu.screen.InterimScreen;
@@ -22,11 +24,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
+
 /**
  * ENTRY CLASS of Tendu.
  * 
  */
-public class Tendu implements ApplicationListener, Listener {
+public class Tendu implements ApplicationListener, EventBusListener {
 	public static final String TAG = "Tendu";
 
 	/**
@@ -55,7 +59,7 @@ public class Tendu implements ApplicationListener, Listener {
 	 * {@link INetworkHandler} interface. (e.g. see BluetoothHandler class in
 	 * android project for example implementation)
 	 */
-	private INetworkHandler networkHandler;
+	private INetwork networkHandler;
 
 	/**
 	 * All drawing is normally done on this canvas.
@@ -66,7 +70,7 @@ public class Tendu implements ApplicationListener, Listener {
 	 * @param networkHandler
 	 *            Platform-specific implementation of the network communication.
 	 */
-	public Tendu(INetworkHandler networkHandler) {
+	public Tendu(INetwork networkHandler) {
 		this.networkHandler = networkHandler;
 		EventBus.INSTANCE.addListener(this);
 	}
@@ -137,10 +141,12 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void pause() {
+		networkHandler.onPause();
 	}
 
 	@Override
 	public void resume() {
+		networkHandler.onResume();
 
 	}
 
@@ -166,7 +172,7 @@ public class Tendu implements ApplicationListener, Listener {
 	}
 
 	// screens need access to the network
-	public INetworkHandler getNetworkHandler() {
+	public INetwork getNetworkHandler() {
 		return networkHandler;
 	}
 

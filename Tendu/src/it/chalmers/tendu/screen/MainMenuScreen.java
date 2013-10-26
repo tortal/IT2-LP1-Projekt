@@ -59,7 +59,7 @@ public class MainMenuScreen implements Screen {
 			}
 
 			if (testStuff.collided(input.getCoordinates())) {
-				tendu.getNetworkHandler().testStuff();
+				tendu.getNetworkHandler().testSendMessage();
 			}
 			
 			if(hostType.collided(input.getCoordinates())) {

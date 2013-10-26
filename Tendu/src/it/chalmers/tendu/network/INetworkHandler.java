@@ -31,13 +31,18 @@ public interface INetworkHandler {
 	public void destroy();
 
 	/** Test method */
-	// TODO: WHAT IS THIS?!
-	public void testStuff();
+	void testSendMessage();
 
 	/**
 	 * Returns this unit's MAC address
 	 */
 	public String getMacAddress();
+
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onPause();
+
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onResume();
 
 	/**
 	 * Returns network to virgin state (i.e. release all threads and dispose all
@@ -57,5 +62,4 @@ public interface INetworkHandler {
 	 * @return
 	 */
 	public int toggleHostNumber();
-
 }
