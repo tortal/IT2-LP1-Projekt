@@ -22,15 +22,10 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
-	// private List<GameResult> gameResults;
 	private SessionResult sessionResult;
 
 	public List<String> playerReplayReady;
 
-	// public GameSession(Map<String, Integer> players, String hostMac) {
-	// this.players = players;
-	// hostMacAddress = hostMac;
-	// }
 	public GameSession(Map<String, Integer> players) {
 		completedLvls = 0;
 		this.players = players;
