@@ -14,34 +14,44 @@ import android.widget.Toast;
 public class Network implements INetwork {
 	private INetworkHandler networkHandler;
 	private Context context;
-	
+
 	public Network(Context ctx) {
 		context = ctx;
 
 		//selectWifi();
 		selectBluetooth();
 	}
-	
+
 	@Override
 	public void selectBluetooth() {
-		if (networkHandler == null) {
-			networkHandler = new BluetoothHandler(context);
-		} else if (!(networkHandler instanceof BluetoothHandler)) {
-			networkHandler.destroy();
-			networkHandler = new BluetoothHandler(context);
-		}
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+
+
+				if (networkHandler == null) {
+					networkHandler = new BluetoothHandler(context);
+				} else if (!(networkHandler instanceof BluetoothHandler)) {
+					networkHandler.destroy();
+					networkHandler = new BluetoothHandler(context);
+				}
+			}
+		});
 	}
-	
+
 	@Override
 	public void selectWifi() {
-		if (networkHandler == null) {
-			networkHandler = new WifiHandler(context);
-		} else if (!(networkHandler instanceof WifiHandler)) {
-			networkHandler.destroy();
-			networkHandler = new WifiHandler(context);
-		}
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
+				if (networkHandler == null) {
+					networkHandler = new WifiHandler(context);
+				} else if (!(networkHandler instanceof WifiHandler)) {
+					networkHandler.destroy();
+					networkHandler = new WifiHandler(context);
+				}
+			}
+		});
 	}
-	
+
 	@Override
 	public boolean isWifip2pAvailable() {
 		boolean isAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
@@ -57,7 +67,7 @@ public class Network implements INetwork {
 		}
 		return isAvailable;
 	}
-	
+
 	@Override
 	public void hostSession() {
 		networkHandler.hostSession();
