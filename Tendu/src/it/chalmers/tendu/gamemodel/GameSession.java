@@ -25,16 +25,15 @@ public class GameSession {
 	private Map<String, Boolean> playersWaitingToStart;
 	private SessionResult sessionResult;
 
-	public List<String> playerReplayReady;
+	public List<String> playerPlayAgainReady;
 
 	public GameSession(Map<String, Integer> players) {
 		completedLvls = 0;
 		this.players = players;
 		playersWaitingToStart = new HashMap<String, Boolean>();
 		currentMiniGame = getNextMiniGame();
-		// gameResults = new ArrayList<GameResult>();
 		sessionResult = new SessionResult();
-		playerReplayReady = new ArrayList<String>();
+		playerPlayAgainReady = new ArrayList<String>();
 
 	}
 
@@ -111,15 +110,15 @@ public class GameSession {
 		completedLvls = (sessionResult.gamesPlayed());
 	}
 
-	public void playerReplayReady(String player) {
-		if (!playerReplayReady.contains(player)) {
-			playerReplayReady.add(player);
+	public void playerPlayAgainReady(String player) {
+		if (!playerPlayAgainReady.contains(player)) {
+			playerPlayAgainReady.add(player);
 		}
 	}
 
 	public boolean arePlayersReady() {
-		if (players.size() == playerReplayReady.size()) {
-			playerReplayReady.clear();
+		if (players.size() == playerPlayAgainReady.size()) {
+			playerPlayAgainReady.clear();
 			return true;
 		} else {
 			return false;

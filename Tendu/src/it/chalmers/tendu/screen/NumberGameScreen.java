@@ -263,7 +263,6 @@ public class NumberGameScreen extends GameScreen {
 		}
 	}
 	
-	//TODO not the best solution but it works.
 	//this message must be sent only once
 	private boolean ended = false;
 	private void sendEndMessage() {
