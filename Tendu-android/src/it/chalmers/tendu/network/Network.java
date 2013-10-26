@@ -1,10 +1,14 @@
 package it.chalmers.tendu.network;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
 import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandler;
 import android.content.Context;
 import android.os.Build;
+import android.view.Gravity;
+import android.widget.Toast;
 
 public class Network implements INetwork {
 	private INetworkHandler networkHandler;
@@ -39,7 +43,18 @@ public class Network implements INetwork {
 	
 	@Override
 	public boolean isWifip2pAvailable() {
-		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
+		boolean isAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+		if (!isAvailable) {
+			((AndroidApplication) context).runOnUiThread(new Runnable() {
+				public void run() {
+					Toast toast = Toast.makeText(context, "[Jelly Bean] needed for this feature",
+							Toast.LENGTH_SHORT); 
+					toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+					toast.show();
+				}
+			});
+		}
+		return isAvailable;
 	}
 	
 	@Override
