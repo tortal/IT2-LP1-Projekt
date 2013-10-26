@@ -44,8 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class BluetoothHandler extends NetworkHandler {
-	private boolean D = true; // Debug flag
-	private String TAG = "BluetoothHandler"; // Logging tag
+	private String TAG = "BluetoothHandler";
 
 	/** Identifying Variables */
 	public static final int REQUEST_ENABLE_BT = 666;
@@ -137,15 +136,12 @@ public class BluetoothHandler extends NetworkHandler {
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
-			// Show a dialogue notifying user it got disconnected
-			
 
 			connectedDevices.remove(device);
 			if (connectedDevices.isEmpty()) {
-				// If all devices are disconnected we notify and reset the network
+				// If all devices are disconnected we notify the user and reset the network
 				// otherwise we just broadcast that a player is gone
 				displayConnectionLostAlert();
-
 				resetNetwork();
 				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 			} else {
@@ -173,14 +169,7 @@ public class BluetoothHandler extends NetworkHandler {
 	 * to establish a connection between this device and found server device
 	 */
 	public void joinLobby() {
-		((AndroidApplication) context).runOnUiThread(new Runnable() {
-			public void run() {
-				Toast.makeText(context, "Joining Game", Toast.LENGTH_SHORT)
-						.show();
-			}
-		});
-		if (D)
-			Log.d(TAG, "joinGame() called");
+		Log.d(TAG, "joinGame() called");
 		this.mBluetoothAdapter.startDiscovery();
 
 		// Wait awhile for the handset to discover units
@@ -294,9 +283,6 @@ public class BluetoothHandler extends NetworkHandler {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		context.registerReceiver(mReceiver, filter);
-		// Don't forget to
-		// unregister during
-		// onDestroy
 	}
 	
 	private void unregisterBroadcastReceiver() {
@@ -319,7 +305,6 @@ public class BluetoothHandler extends NetworkHandler {
 				// Get the BluetoothDevice object from the Intent
 				BluetoothDevice device = intent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				if (D)
 					Log.v(TAG, "Device found: " + device.getName() + "Adress: "
 							+ device.getAddress());
 				// Add the device to a list
@@ -354,8 +339,6 @@ public class BluetoothHandler extends NetworkHandler {
 	 */
 	@Override
 	public void destroy() {
-		//Log.d(TAG, "++++++ON DESTROY++++");
-
 		unregisterBroadcastReceiver();
 		resetNetwork();
 
@@ -410,8 +393,6 @@ public class BluetoothHandler extends NetworkHandler {
 	public String getMacAddress() {
 		return connection.getAddress();
 	}
-
-	
 
 	/** Send the mac-addresses of all connected units to the main controller */
 	private void broadcastPlayersReadyMessage(final List<String> addresses) {

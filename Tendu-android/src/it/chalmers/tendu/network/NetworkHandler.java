@@ -44,9 +44,7 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	}
 
 	@Override
-	public void onBroadcast(EventMessage message) {
-		// TODO Hook up to event bus	
-
+	public void onBroadcast(EventMessage message) {	
 		switch (message.tag) {
 		case COMMAND_AS_HOST: 
 			// Set new tag to prevent
@@ -62,24 +60,7 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	}
 
 	protected void toastMessage(final EventMessage message) {
-		((AndroidApplication) context).runOnUiThread(new Runnable() {
-			public void run() {
-				Toast toast = Toast.makeText(context, message.toString(),
-						Toast.LENGTH_SHORT); 
-				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
-				toast.show();
-			}
-		});
-
-		//		Gdx.app.postRunnable(new Runnable() {
-		//		
-		//			@Override
-		//			public void run() {
-		//				Toast toast = Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT);
-		//				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
-		//				toast.show();
-		//			}
-		//		});
+		toastMessage(message.toString());
 	}
 
 	protected void toastMessage(final String message) {
@@ -93,7 +74,7 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 		});
 	}
 
-	/** Translates the network error codes into something interpretable */
+	/** Translates the network error codes into something readable */
 	protected String translateErrorCodeToMessage(int eCode) {
 		switch (eCode) {
 		case 0: return "ERROR";
@@ -119,11 +100,9 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 	@Override
 	public void resetNetwork() {
 		hostNumber = 1;
-
 	}
 
 	public void displayConnectionLostAlert() {
-
 		class displayConnectionLostAlert implements Runnable {
 			public void run() {
 				Builder connectionLostAlert = new Builder(context);
@@ -136,8 +115,7 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 						new OnClickListener() {
 					public void onClick(DialogInterface dialog,
 							int which) {
-						// TODO Let app terminate itself?
-						// finish();
+						// do nothing
 					}
 				});
 				connectionLostAlert.setCancelable(false);
