@@ -19,18 +19,22 @@ public class Network implements INetwork {
 	
 	@Override
 	public void selectBluetooth() {
-		if (networkHandler != null && !(networkHandler instanceof BluetoothHandler)) {
+		if (networkHandler == null) {
+			networkHandler = new BluetoothHandler(context);
+		} else if (!(networkHandler instanceof BluetoothHandler)) {
 			networkHandler.destroy();
+			networkHandler = new BluetoothHandler(context);
 		}
-		networkHandler = new BluetoothHandler(context);
 	}
 	
 	@Override
 	public void selectWifi() {
-		if (networkHandler != null && !(networkHandler instanceof WifiHandler))  {
+		if (networkHandler == null) {
+			networkHandler = new BluetoothHandler(context);
+		} else if (!(networkHandler instanceof BluetoothHandler)) {
 			networkHandler.destroy();
+			networkHandler = new WifiHandler(context);
 		}
-		networkHandler = new WifiHandler(context);
 	}
 	
 	@Override
