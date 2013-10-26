@@ -9,7 +9,8 @@ import com.badlogic.gdx.Gdx;
  * 
  * @author
  * 
- *         Keeps track of all the results during the current game session
+ *         Keeps track of all the {@link GameResult} during the current game
+ *         session
  */
 public class SessionResult {
 	private List<GameResult> gameResults;
@@ -19,7 +20,7 @@ public class SessionResult {
 	}
 
 	/**
-	 * Add new result
+	 * Add new {@link GameResult}
 	 * 
 	 * @param result
 	 */
@@ -29,7 +30,7 @@ public class SessionResult {
 
 	/**
 	 * 
-	 * @return total mini games played this session
+	 * @return total {@link MiniGame}s played this session
 	 */
 	public int gamesPlayed() {
 		return gameResults.size();
@@ -44,27 +45,27 @@ public class SessionResult {
 		for (GameResult result : gameResults) {
 			time = time + result.getTimePlayed();
 		}
-		
+
 		return time;
 	}
 
 	/**
 	 * 
-	 * @return result of the last mini game played
+	 * @return result of the last {@link MiniGame} played
 	 */
 	public GameResult getLastResult() {
-		if(gameResults.size() == 0) {
+		if (gameResults.size() == 0) {
 			Gdx.app.log("SessionResult", "there is no result");
 			return null;
 		}
-		
+
 		int lastIndex = gameResults.size() - 1;
 		return gameResults.get(lastIndex);
 	}
 
 	/**
-	 * 
-	 * @return result of the last mini game played
+	 * @param index index of result wanted
+	 * @return the specified {@link GameResult}
 	 */
 	public GameResult getResult(int index) {
 		if (index < 0 || index > (gameResults.size() - 1)) {
@@ -76,17 +77,17 @@ public class SessionResult {
 
 	/**
 	 * 
-	 * @return time spent playing previous game
+	 * @return time spent playing previous {@link MiniGame}
 	 */
 	public long timePlayedLastGame() {
-		if(gameResults.size() == 0) {
+		if (gameResults.size() == 0) {
 			return 0;
 		}
-		
+
 		long time = getLastResult().getTimePlayed();
 		return time;
 	}
-	
+
 	/**
 	 * clears all results for the current session
 	 */

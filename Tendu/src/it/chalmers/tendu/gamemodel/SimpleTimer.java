@@ -4,6 +4,7 @@ package it.chalmers.tendu.gamemodel;
 /**
  * A Timer class - used by {@link MiniGame}s and controllers to keep track of
  * the remaining time in a given minigame.
+ * Also used by screens to time different gui stuff
  * 
  */
 public class SimpleTimer {

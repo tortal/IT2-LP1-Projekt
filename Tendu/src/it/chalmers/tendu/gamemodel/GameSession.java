@@ -1,4 +1,5 @@
-/*-******THIS IS OUR GAME MODEL*********/
+//TODO add comments/javadoc
+
 package it.chalmers.tendu.gamemodel;
 
 import it.chalmers.tendu.defaults.Constants.Difficulty;
@@ -22,15 +23,10 @@ public class GameSession {
 	 */
 	private Map<String, Integer> players;
 	private Map<String, Boolean> playersWaitingToStart;
-	// private List<GameResult> gameResults;
 	private SessionResult sessionResult;
 
 	public List<String> playerReplayReady;
 
-	// public GameSession(Map<String, Integer> players, String hostMac) {
-	// this.players = players;
-	// hostMacAddress = hostMac;
-	// }
 	public GameSession(Map<String, Integer> players) {
 		completedLvls = 0;
 		this.players = players;
@@ -48,13 +44,13 @@ public class GameSession {
 	}
 
 	private GameId getNextGameId() {
-		if (completedLvls < 2) {
+		if (completedLvls < 3) {
 			difficulty = Difficulty.ONE;
-		} else if (completedLvls < 4) {
-			difficulty = Difficulty.TWO;
 		} else if (completedLvls < 6) {
+			difficulty = Difficulty.TWO;
+		} else if (completedLvls < 9) {
 			difficulty = Difficulty.THREE;
-		} else if (completedLvls < 8) {
+		} else if (completedLvls < 12) {
 			difficulty = Difficulty.FOUR;
 		} else {
 			difficulty = Difficulty.FIVE;
