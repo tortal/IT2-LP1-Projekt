@@ -42,6 +42,16 @@ public class Network implements INetwork {
 	public void selectWifi() {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
+				Toast toast = Toast.makeText(context, "Wifi is in beta mode. Use at your own discretion",
+						Toast.LENGTH_SHORT); 
+				toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, 0);
+				toast.show();
+			}
+		});
+		
+		
+		((AndroidApplication) context).runOnUiThread(new Runnable() {
+			public void run() {
 				if (networkHandler == null) {
 					networkHandler = new WifiHandler(context);
 				} else if (!(networkHandler instanceof WifiHandler)) {
