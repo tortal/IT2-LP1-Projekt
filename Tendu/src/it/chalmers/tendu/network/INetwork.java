@@ -48,8 +48,13 @@ public interface INetwork {
 	 * @return */ 
 	public int toggleHostNumber();
 	
+	/** Selects wifi for use in network communication */
 	public void selectWifi();
 	
+	/** Selects bluetooth for use in network communication */
 	public void selectBluetooth();
+
+	/** Returns whether handset supports wifip2p */
+	boolean isWifip2pAvailable();
 	
 }
