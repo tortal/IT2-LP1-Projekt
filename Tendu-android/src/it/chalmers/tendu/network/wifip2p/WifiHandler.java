@@ -56,7 +56,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -69,7 +68,6 @@ import com.esotericsoftware.kryonet.Server;
  * @author johnpetersson
  *
  */
-// TODO Is wifi available- method
 public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
@@ -109,6 +107,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void hostSession() {
 		isReadyToConnect = true;
+		forgetAnyExistingWifiGroup();
 		createNewWifiGroup();
 		startRegistration();
 	}
@@ -116,7 +115,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	@Override
 	public void joinLobby() {
 		isReadyToConnect = true;
-
+		forgetAnyExistingWifiGroup();
 		resetConnection();
 		mManager.requestConnectionInfo(mChannel, this);
 	}
@@ -317,7 +316,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}, CONNECTION_DELAY);
 	}
 
-	private String hostMacAddress = null;
 	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
@@ -328,7 +326,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			public void onSuccess() {
 				// WiFiDirectBroadcastReceiver will notify us. Ignore for now.
 				Log.d(TAG, "Connection initiated to: " + device.deviceName);
-				hostMacAddress = device.deviceAddress;
 			}
 
 			@Override
@@ -526,7 +523,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (object instanceof EventMessage) {
 					EventMessage message = (EventMessage)object;
 					Log.d(TAG, "Received: " + message.toString());
-					toastMessage(message);
 					sendToEventBus(message);
 				}
 			}
@@ -568,16 +564,15 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					if (object instanceof EventMessage) {
 						EventMessage message = (EventMessage)object;
 						Log.d(TAG, "Received: " + message.toString());
-						toastMessage(message);
 						sendToEventBus(message);
 					}
 				}
 				@Override
 				public void disconnected(Connection connection) {
-					connection.close();
 					displayConnectionLostAlert();
-					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+					connection.close();
 					resetNetwork();
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 				}
 			});
 			// Send own mac address to host

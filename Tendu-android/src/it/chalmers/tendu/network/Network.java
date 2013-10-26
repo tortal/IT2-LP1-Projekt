@@ -3,7 +3,6 @@ package it.chalmers.tendu.network;
 import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandler;
-//import it.chalmers.tendu.tbd.EventMessage;
 import android.content.Context;
 import android.os.Build;
 
@@ -14,29 +13,33 @@ public class Network implements INetwork {
 	public Network(Context ctx) {
 		context = ctx;
 
-		selectWifi();
-		//selectBluetooth();
+		//selectWifi();
+		selectBluetooth();
 	}
 	
 	@Override
 	public void selectBluetooth() {
-		if (networkHandler != null && !(networkHandler instanceof BluetoothHandler)) {
+		if (networkHandler == null) {
+			networkHandler = new BluetoothHandler(context);
+		} else if (!(networkHandler instanceof BluetoothHandler)) {
 			networkHandler.destroy();
+			networkHandler = new BluetoothHandler(context);
 		}
-		networkHandler = new BluetoothHandler(context);
 	}
 	
 	@Override
 	public void selectWifi() {
-		if (networkHandler != null && !(networkHandler instanceof WifiHandler))  {
+		if (networkHandler == null) {
+			networkHandler = new BluetoothHandler(context);
+		} else if (!(networkHandler instanceof BluetoothHandler)) {
 			networkHandler.destroy();
+			networkHandler = new WifiHandler(context);
 		}
-		networkHandler = new WifiHandler(context);
 	}
 	
 	@Override
 	public boolean isWifip2pAvailable() {
-		return (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN);
+		return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
 	}
 	
 	@Override
