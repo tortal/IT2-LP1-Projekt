@@ -3,7 +3,6 @@ package it.chalmers.tendu.network;
 import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.network.bluetooth.BluetoothHandler;
 import it.chalmers.tendu.network.wifip2p.WifiHandler;
-//import it.chalmers.tendu.tbd.EventMessage;
 import android.content.Context;
 import android.os.Build;
 
