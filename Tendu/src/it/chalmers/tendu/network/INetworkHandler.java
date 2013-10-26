@@ -14,8 +14,7 @@ public interface INetworkHandler {
 	/**
 	 * Connects the client to a lobby.
 	 */
-	public void joinLobby(); // TODO: Why? ->
-						// "Should probably have a game or a player as argument."
+	public void joinLobby();
 
 	/**
 	 * Transmits an {@link EventMessage} to connected devices.

@@ -69,6 +69,7 @@ import com.esotericsoftware.kryonet.Server;
  * @author johnpetersson
  *
  */
+// TODO Is wifi available- method
 public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
@@ -77,8 +78,8 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private Client client;
 	private Server server;
 
-	// Client/Server logic gets loaded prematurely when listeners fire on startup
-	// this flag should prevent this
+	// Client/Server logic gets loaded prematurely when listeners fire on startup,
+	// this flag prevents this
 	private boolean isReadyToConnect = false; 
 
 	WifiP2pManager mManager;
@@ -100,12 +101,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
 		mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-		context.registerReceiver(mReceiver, mIntentFilter); // Not necessary when we start calling onResume()
-
 		forgetAnyExistingWifiGroup();
 
 		notfiyIfApiLevelTooLow();
-
 	}
 
 	@Override
@@ -120,11 +118,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		isReadyToConnect = true;
 
 		resetConnection();
-		// TODO Check if already connected by wifi and if so start kryo connection
 		mManager.requestConnectionInfo(mChannel, this);
-		//discoverPeers();
-		//connectToFirstAvailable();
-
 	}
 
 	@Override
@@ -135,7 +129,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		if (server != null) {
 			server.sendToAllTCP(message);
 		}
-
 	}
 
 	@Override
@@ -200,13 +193,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					return;
 				}
 
-
 				NetworkInfo networkInfo = (NetworkInfo) intent
 						.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
 
 				if (networkInfo.isConnected()) {
-					//Log.d(TAG, "Connected to: " + networkInfo.getDetailedState());
-
 					// We are connected with the other device, request connection
 					// info to find group owner IP
 					mManager.requestConnectionInfo(mChannel, WifiHandler.this); // (This is done once in join() already)
@@ -240,36 +230,19 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			groupOwnerAddress = info.groupOwnerAddress.getHostAddress();
 		}
 
-
 		// After the group negotiation, we can determine the group owner.
 		if (info.groupFormed && info.isGroupOwner) {
-			// Do whatever tasks are specific to the group owner.
-			// One common case is creating a server thread and accepting
-			// incoming connections.
 			Log.d(TAG, "Acting as server");
-			Toast.makeText(context, "Acting as server", Toast.LENGTH_SHORT).show();
-
 			if (server == null) {
 				startKryoNetServer();
 			}
-
 		} else if (info.groupFormed) {
-			// The other device acts as the host. In this case,
-			// you'll want to create a client thread that connects to the group
-			// owner.
 			Log.d(TAG, "Acting as client");
-			Toast.makeText(context, "Acting as Client", Toast.LENGTH_SHORT).show();
-
 			new StartKryoNetClientTask().execute(groupOwnerAddress); // Has to be run in another thread for now
-
-
 		} else { 
-			// No group is formed, wait a while and then connect to the first unit available
+			// No group is formed, connect to the first unit broadcasting the Tendu service
 			Log.d(TAG, "No group formed, doing discovery/connect");
 			discoverService();
-			//discoverPeers();
-			//connectToFirstAvailable();
-
 		}
 	}
 
@@ -302,7 +275,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 					Log.d(TAG, "Couldn't stop peer deiscovery: " + translateErrorCodeToMessage(reason));
 				}
 			});
-
 		}
 	}
 
@@ -373,11 +345,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 		if (server != null) {
 			server.stop();
-			server.close();
+			server = null;
 		}
 		if (client != null) {
 			client.stop();
-			client.close();
+			client = null;
 		}
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 	}
@@ -389,9 +361,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Failed to remove group: " + translateErrorCodeToMessage(reason));
-				//				if (reason == WifiP2pManager.BUSY) {
-				//					removeWifiGroup();
-				//				}
 			}
 
 			@Override
@@ -407,14 +376,11 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void onSuccess() {
 				// Do nothing
-
 			}
+			
 			@Override
 			public void onFailure(int reason) {
 				Log.d(TAG, "Group creation failed: " + translateErrorCodeToMessage(reason));
-				if (reason == WifiP2pManager.BUSY) {
-					createNewWifiGroup();
-				}
 			}
 		});
 	}
@@ -428,7 +394,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				if (group != null) {
 					removeWifiGroup();
 				}
-
 			}
 		});
 	}
@@ -439,20 +404,14 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void startRegistration() {
-		//  Create a string map containing information about your service.
+		//  String map containing information about the service.
 		Map<String, String> record = new HashMap<String, String>();
 		record.put("name", Constants.SERVER_NAME);
 
-		// Service information.  Pass it an instance name, service type
-		// _protocol._transportlayer , and the map containing
-		// information other devices will want once they connect to this one.
+		// Service information.
 		WifiP2pDnsSdServiceInfo serviceInfo =
 				WifiP2pDnsSdServiceInfo.newInstance("Temp instance", "temp protocol name", record);
 
-
-		// Add the local service, sending the service info, network channel,
-		// and listener that will be used to indicate success or failure of
-		// the request.
 		mManager.addLocalService(mChannel, serviceInfo, new ActionListener() {
 			@Override
 			public void onSuccess() {
@@ -470,15 +429,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	private void discoverService() {
 		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
 			@Override
-			/* Callback includes:
-			 * record: TXT record dta as a map of key/value pairs.
-			 * device: The device running the advertised service.
-			 */
 
 			public void onDnsSdTxtRecordAvailable(
 					String fullDomain, Map<String, String> record, WifiP2pDevice device) {
 				Log.d(TAG, "DnsSdTxtRecord available -" + record.toString());
-				//buddies.put(device.deviceAddress, (String) record.get("name"));
 
 				if (record.get("name").equals(Constants.SERVER_NAME)) {
 					// Connect to the service found if eligible 
@@ -516,7 +470,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 			@Override
 			public void onSuccess() {
-				// Success!
 				Log.d(TAG, "Trying to discover a service");
 			}
 
@@ -580,11 +533,12 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			@Override
 			public void disconnected(Connection connection) {
 				connection.close();
-				EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 				if (server.getConnections().length == 0) {
 					displayConnectionLostAlert();
 					resetNetwork();
-					//server.close();
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
+				} else {
+					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.PLAYER_DISCONNECTED));
 				}
 			}
 		});
@@ -598,12 +552,10 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 			client = new Client(8192*10, 2048*10);
 			Kryo kryo = client.getKryo();
 			registerKryoClasses(kryo);
-			// TODO try reverting to old way of starting thread, see if that solves bufferunderflow crash
 			new Thread(client).start(); // Possible daemon thread-related bug fix
-			//client.start();
 			try {
 				Log.d(TAG, "KryoNet will now connct to address: " + address);
-				client.connect(MAX_KRYONET_BLOCKING_TIME, address, TCP_PORT);//, 54777); other figure is for UDP
+				client.connect(MAX_KRYONET_BLOCKING_TIME, address, TCP_PORT);
 			} catch (IOException e) {
 				Log.d(TAG, "Error in connecting via KryoNet");
 				e.printStackTrace();
@@ -623,11 +575,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 				@Override
 				public void disconnected(Connection connection) {
 					connection.close();
-					client.stop();
 					displayConnectionLostAlert();
 					EventBus.INSTANCE.broadcast(new EventMessage(Tag.NETWORK_NOTIFICATION, Msg.CONNECTION_LOST));
 					resetNetwork();
-					//client.close();
 				}
 			});
 			// Send own mac address to host
@@ -672,7 +622,6 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	@Override
 	public void unregister() {
-		// TODO Auto-generated method stub
-		
+		EventBus.INSTANCE.removeListener(this);
 	}
 }
