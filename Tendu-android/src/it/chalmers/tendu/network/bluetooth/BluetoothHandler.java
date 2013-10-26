@@ -386,6 +386,7 @@ public class BluetoothHandler implements INetworkHandler, Listener {
 		hostNumber = 1;
 		removeTenduFromDeviceName();
 		connection.reset();
+		connection = new Connection(context);
 	}
 	
 	@Override

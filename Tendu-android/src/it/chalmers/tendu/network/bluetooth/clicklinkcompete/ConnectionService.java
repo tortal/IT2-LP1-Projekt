@@ -143,6 +143,7 @@ public class ConnectionService {
 				}
 			}
 			// If we end up outside the loop we have lost connection
+			
 			mBtDevices.remove(address);
 			mBtSockets.remove(address);
 			mBtStreamWatcherThreads.remove(address);
@@ -157,7 +158,6 @@ public class ConnectionService {
 					e.printStackTrace();
 				}
 			}
-			
 		}
 	}
 
