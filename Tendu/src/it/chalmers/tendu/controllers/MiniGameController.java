@@ -1,8 +1,8 @@
 package it.chalmers.tendu.controllers;
 
 import it.chalmers.tendu.gamemodel.MiniGame;
-import it.chalmers.tendu.tbd.EventMessage;
-import it.chalmers.tendu.tbd.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.event.EventBusListener;
 
 public interface MiniGameController extends EventBusListener {
 	
