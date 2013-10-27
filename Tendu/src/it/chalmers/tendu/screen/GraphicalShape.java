@@ -10,8 +10,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * Class that represents a graphical shape in the 
+ * game shapeGame, based on a shape, or a lock, in the model.
  * 
- * @author Markus
  * 
  */
 public class GraphicalShape {
@@ -25,8 +26,17 @@ public class GraphicalShape {
 	private Color color;
 	private Shape shape;
 
+	/**
+	 * Is true if the shape is a lock, and should be rendered as a lock. 
+	 */
 	private boolean renderAsLock;
 
+	/**
+	 * Creates a new graphical shape at the center of the screen, 
+	 * based on a Shape. 
+	 * 
+	 * @param shape The shape to base the graphical shape on. 
+	 */
 	public GraphicalShape(Shape shape) {
 		this.shape = shape;
 		bounds = new Rectangle();
@@ -38,12 +48,25 @@ public class GraphicalShape {
 
 	}
 
+	/**
+	 * Creates a new graphical shape at the position x,y
+	 * 
+	 * @param shape shape The shape to base the graphical shape on. 
+	 * @param x the x value
+	 * @param y the y value
+	 */
 	public GraphicalShape(Shape shape, int x, int y) {
 		this(shape);
 		moveShape(x, y);
 
 	}
 
+	/**
+	 * Render the graphical shape at its position
+	 * using provided ShapeRenderer.
+	 * 
+	 * @param sr the ShapeRenderer to render with
+	 */
 	public void render(ShapeRenderer sr) {
 		if (renderAsLock)
 			renderAsLock(sr);
@@ -52,7 +75,12 @@ public class GraphicalShape {
 	}
 
 	/**
-	 * @param sr
+	 * If the shape is not a lock, it will use this
+	 * method to render itself with. This is cause a 
+	 * shape and a lock should look different, even though
+	 * they both have the same color and shape. 
+	 * 
+	 * @param sr The shapeRenderer to render with
 	 */
 	private void renderAsShape(ShapeRenderer sr) {
 		GeometricShape gs = shape.geometricShape;
@@ -115,7 +143,12 @@ public class GraphicalShape {
 	}
 
 	/**
-	 * @param sr
+	 * If the shape is a lock, it will use this
+	 * method to render itself with. This is cause a 
+	 * shape and a lock should look different, even though
+	 * they both have the same color and shape. 
+	 * 
+	 * @param sr The shapeRenderer to render with
 	 */
 	private void renderAsLock(ShapeRenderer sr) {
 		GeometricShape gs = shape.geometricShape;
@@ -188,43 +221,41 @@ public class GraphicalShape {
 		}
 	}
 
-	public void moveShape(float f, float g) {
-		bounds.x = f;
-		bounds.y = g;
+	/**
+	 * Move the shape to the given position
+	 * 
+	 * @param x the x value.
+ 	 * @param y the x value.
+	 */
+	public void moveShape(float x, float y) {
+		bounds.x = x;
+		bounds.y = y;
 	}
 
-	// public static ShapeType determineGeometricShape(Shape s) {
-	// GeometricShape gs = s.geometricShape;
-	// switch (gs) {
-	// case CIRCLE:
-	// return ShapeType.FilledCircle;
-	// case OCTAGON:
-	// return ShapeType.Circle;
-	// case RHOMBOID:
-	// return ShapeType.Rectangle;
-	// case SQUARE:
-	// return ShapeType.FilledRectangle;
-	// case TRIANGLE:
-	// return ShapeType.FilledTriangle;
-	// }
-	// return ShapeType.FilledCircle;
-	// }
 
 	/**
-	 * @return the renderAsLock
+	 * Lets the caller know if the shape is a lock or not. 
+	 * 
+	 * @return true if the shape should be rendered as a lock. 
 	 */
 	public boolean isRenderAsLock() {
 		return renderAsLock;
 	}
 
 	/**
-	 * @param renderAsLock
-	 *            the renderAsLock to set
+	 * Sets if the shape should be rendered as a lock or not.
+	 * @param renderAsLock if set to true, the shape will be rendered as a 
+	 * lock.
 	 */
 	public void setRenderAsLock(boolean renderAsLock) {
 		this.renderAsLock = renderAsLock;
 	}
 
+	/**
+	 * Decided what color the shape should be rendered as, based on the model. 
+	 * 
+	 * @return the color the shape should be rendered with. 
+	 */
 	private Color determineColor() {
 		// if(s.isLocked())
 		// return com.badlogic.gdx.graphics.Color.GRAY;
@@ -243,6 +274,8 @@ public class GraphicalShape {
 	}
 
 	/**
+	 * Gets the bounds of the shape, containing size and position. 
+	 * 
 	 * @return the bounds
 	 */
 	public Rectangle getBounds() {
