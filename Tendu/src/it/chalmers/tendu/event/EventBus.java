@@ -8,8 +8,8 @@ import com.badlogic.gdx.Gdx;
 
 /**
  * The EventBus broadcasts {@link EventMessage}s to any registered
- * {@link Listener}. Parallel connects Model-View-Controller in such way that
- * these OOP objects may communicated with each other through a "dynamic"
+ * {@link EventBusListener}. Parallel connects Model-View-Controller in such way
+ * that these OOP objects may communicated with each other through a "dynamic"
  * self-defined protocol. Tendu uses the bus mainly for inter-controller
  * 
  */
@@ -22,10 +22,10 @@ public enum EventBus {
 
 	public static final String TAG = "EventBus";
 
-	private List<Listener> listeners;
+	private List<EventBusListener> listeners;
 
 	private EventBus() {
-		List<Listener> l = new ArrayList<Listener>();
+		List<EventBusListener> l = new ArrayList<EventBusListener>();
 		listeners = Collections.synchronizedList(l);
 	}
 
@@ -50,7 +50,7 @@ public enum EventBus {
 	 * @param l
 	 *            listener to be added.
 	 */
-	public void addListener(Listener l) {
+	public void addListener(EventBusListener l) {
 		synchronized (listeners) {
 			listeners.add(l);
 		}
@@ -60,16 +60,16 @@ public enum EventBus {
 	 * @param l
 	 *            listener to be removed.
 	 */
-	public void removeListener(Listener l) {
+	public void removeListener(EventBusListener l) {
 		synchronized (listeners) {
 			listeners.remove(l);
 		}
 	}
 
 	/**
-	 * @return a list of all currently registered {@link Listener}s.
+	 * @return a list of all currently registered {@link EventBusListener}s.
 	 */
-	public List<Listener> getListeners() {
-		return new ArrayList<Listener>(listeners);
+	public List<EventBusListener> getListeners() {
+		return new ArrayList<EventBusListener>(listeners);
 	}
 }

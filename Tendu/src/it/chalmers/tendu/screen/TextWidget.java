@@ -15,7 +15,7 @@ public class TextWidget {
 	private float scale;
 	private int expandHitboxX;
 	private int expandHitboxY;
-	
+
 	private boolean drawAtCenter;
 
 	public TextWidget(String text, Vector2 position) {
@@ -35,15 +35,13 @@ public class TextWidget {
 		this.position = position;
 		this.color = color;
 		this.scale = scale;
-		
+
 		// TODO add constructor for this
 		expandHitboxX = 0;
 		expandHitboxY = 0;
 		drawAtCenter = false;
-		this.centerPosition = new Vector2(0,0);
+		this.centerPosition = new Vector2(0, 0);
 	}
-	
-	
 
 	public void draw(SpriteBatch spriteBatch, BitmapFont font) {
 		drawAtCenter = false;
@@ -85,15 +83,17 @@ public class TextWidget {
 	}
 
 	public boolean collided(Vector2 touchPos) {
-		if(!drawAtCenter) {
+		if (!drawAtCenter) {
 			if (touchPos.x > position.x && touchPos.x < position.x + width) {
 				if (touchPos.y < position.y && touchPos.y > position.y - height) {
 					return true;
 				}
 			}
-		} else if(drawAtCenter) {
-			if (touchPos.x > centerPosition.x && touchPos.x < centerPosition.x + width) {
-				if (touchPos.y < centerPosition.y && touchPos.y > centerPosition.y - height) {
+		} else if (drawAtCenter) {
+			if (touchPos.x > centerPosition.x
+					&& touchPos.x < centerPosition.x + width) {
+				if (touchPos.y < centerPosition.y
+						&& touchPos.y > centerPosition.y - height) {
 					return true;
 				}
 			}

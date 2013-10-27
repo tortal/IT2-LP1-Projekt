@@ -4,28 +4,41 @@ import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Msg;
 import it.chalmers.tendu.event.C.Tag;
 import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
 
 import com.badlogic.gdx.Gdx;
 
-public class LobbyController implements Listener {
+/**
+ * Lobby controller handles the lobby model and creates a game session when all
+ * player are connected and ready.
+ */
+public class LobbyController implements EventBusListener {
 	public static final String TAG = "LobbyController";
 
 	private LobbyModel model;
 
+	/**
+	 * Creates a new Controller for LobbyModel. Changes the model and receives
+	 * broadcasts from the network.
+	 * 
+	 * @param model
+	 */
 	public LobbyController(LobbyModel model) {
 		EventBus.INSTANCE.addListener(this);
 		this.model = model;
 	}
 
+	/**
+	 * Receives messages from the eventbus and directs them to the appropriate
+	 * methods.
+	 */
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (Player.getInstance().isHost()) {
-			Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));
@@ -33,6 +46,12 @@ public class LobbyController implements Listener {
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is host.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsHost(EventMessage message) {
 
 		if (message.tag == C.Tag.CLIENT_REQUESTED
@@ -62,17 +81,18 @@ public class LobbyController implements Listener {
 				// Start the game for all players if they are ready.
 				if (model.arePlayersReady()) {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
-					
+
 					// Received by Tendu.
-					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
+					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.STOP_ACCEPTING_CONNECTIONS);
 					EventBus.INSTANCE.broadcast(stopMessage);
-					
+
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
-					
+
 					// MiniGame miniGame = gameSession.getNextMiniGame();
 					// gameSession.setCurrentMiniGame(miniGame);
-					
+
 					new GameSessionController(gameSession);
 
 					// Received by clients in LobbyController through the
@@ -89,13 +109,19 @@ public class LobbyController implements Listener {
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
-		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
-			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
+		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
+			if (message.msg == C.Msg.PLAYER_DISCONNECTED) {
 				model.removePlayer((String) message.content);
 			}
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is client.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 
@@ -119,6 +145,9 @@ public class LobbyController implements Listener {
 		}
 	}
 
+	/**
+	 * @return the current lobby model.
+	 */
 	public LobbyModel getModel() {
 		return model;
 	}

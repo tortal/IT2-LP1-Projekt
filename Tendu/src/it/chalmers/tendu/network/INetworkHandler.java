@@ -14,8 +14,7 @@ public interface INetworkHandler {
 	/**
 	 * Connects the client to a lobby.
 	 */
-	public void joinLobby(); // TODO: Why? ->
-						// "Should probably have a game or a player as argument."
+	public void joinLobby();
 
 	/**
 	 * Transmits an {@link EventMessage} to connected devices.
@@ -31,13 +30,18 @@ public interface INetworkHandler {
 	public void destroy();
 
 	/** Test method */
-	// TODO: WHAT IS THIS?!
-	public void testStuff();
+	void testSendMessage();
 
 	/**
 	 * Returns this unit's MAC address
 	 */
 	public String getMacAddress();
+
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onPause();
+
+	/** Gets called in onPause() in the libgdx lifecycle */
+	void onResume();
 
 	/**
 	 * Returns network to virgin state (i.e. release all threads and dispose all
@@ -46,8 +50,8 @@ public interface INetworkHandler {
 	public void resetNetwork();
 
 	/**
-	 * Halts this device from accepting any additional connection attempts. No more
-	 * matchmaking!
+	 * Halts this device from accepting any additional connection attempts. No
+	 * more matchmaking!
 	 */
 	public void stopAcceptingConnections();
 
@@ -57,5 +61,4 @@ public interface INetworkHandler {
 	 * @return
 	 */
 	public int toggleHostNumber();
-
 }

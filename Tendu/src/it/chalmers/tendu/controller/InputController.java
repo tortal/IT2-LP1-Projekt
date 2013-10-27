@@ -27,11 +27,14 @@ public class InputController implements InputProcessor {
 	/**
 	 * Creates a new input controller
 	 * 
-	 * @param camera Used to translate from screen-coordinates to game-coordinates. 
+	 * @param camera
+	 *            Used to translate from screen-coordinates to game-coordinates.
 	 */
 	public InputController(OrthographicCamera camera) {
-		Gdx.input.setInputProcessor(this); //register inputController with Gdx
-		Gdx.input.setCatchBackKey(true); //makes sure the android back button "belongs" to the game and not the system
+		Gdx.input.setInputProcessor(this); // register inputController with Gdx
+		Gdx.input.setCatchBackKey(true); // makes sure the android back button
+											// "belongs" to the game and not the
+											// system
 		this.camera = camera;
 		touchedUp = false;
 		touchedDown = false;
@@ -42,8 +45,7 @@ public class InputController implements InputProcessor {
 	}
 
 	/**
-	 * Called on every frame of the game 
-	 * to reset all fields. 
+	 * Called on every frame of the game to reset all fields.
 	 */
 	public void tick() {
 		touchedUp = false;
@@ -58,10 +60,10 @@ public class InputController implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-        if(keycode == Keys.BACK){
-    		backPressed = true;
-         }
-        return false;
+		if (keycode == Keys.BACK) {
+			backPressed = true;
+		}
+		return false;
 	}
 
 	@Override
@@ -86,29 +88,27 @@ public class InputController implements InputProcessor {
 	}
 
 	/**
-	 * Returns true if the users has let go of the screen 
+	 * Returns true if the users has let go of the screen
 	 * 
-	 * @return true if the users has let go of the screen 
+	 * @return true if the users has let go of the screen
 	 */
 	public boolean isTouchedUp() {
 		return touchedUp;
 	}
 
-
 	/**
-	 * Returns true if the users has touched the screen 
+	 * Returns true if the users has touched the screen
 	 * 
-	 * @return true if the users has touched the screen. 
+	 * @return true if the users has touched the screen.
 	 */
 	public boolean isTouchedDown() {
 		return touchedDown;
 	}
-	
 
 	/**
-	 * Returns true if the users has pressed the back key 
+	 * Returns true if the users has pressed the back key
 	 * 
-	 * @return true if the users has pressed the back key 
+	 * @return true if the users has pressed the back key
 	 */
 	public boolean isBackPressed() {
 		return backPressed;
@@ -135,6 +135,7 @@ public class InputController implements InputProcessor {
 
 	/**
 	 * Returns true if the user is dragging the screen.
+	 * 
 	 * @return true if the user is dragging the screen.
 	 */
 	public boolean isDragged() {
@@ -143,8 +144,11 @@ public class InputController implements InputProcessor {
 
 	/**
 	 * Sets the coordinates
-	 * @param screenX the x value measured in screen-pixels.
-	 * @param screenY the y value measured in screen-pixels.
+	 * 
+	 * @param screenX
+	 *            the x value measured in screen-pixels.
+	 * @param screenY
+	 *            the y value measured in screen-pixels.
 	 */
 	private void setCoordinates(int screenX, int screenY) {
 		this.screenX = screenX;
@@ -158,6 +162,7 @@ public class InputController implements InputProcessor {
 
 	/**
 	 * Gets the coordinates in game-units.
+	 * 
 	 * @return the coordinates in game-units
 	 */
 	public Vector2 getCoordinates() {
@@ -168,6 +173,7 @@ public class InputController implements InputProcessor {
 
 	/**
 	 * Gets the coordinates in screen-pixels.
+	 * 
 	 * @return the coordinates in screen-pixels
 	 */
 	public Vector2 getScreenCoordinates() {

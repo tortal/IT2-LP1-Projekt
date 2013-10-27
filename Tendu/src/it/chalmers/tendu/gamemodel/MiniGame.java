@@ -48,10 +48,12 @@ public abstract class MiniGame {
 	 * Creates a new minigame.
 	 * 
 	 * @param addTime
-	 *            should be greater than 0 if extra time should be added to the game
+	 *            should be greater than 0 if extra time should be added to the
+	 *            game
 	 * @param difficulty
 	 *            the game's difficulty
-	 * @param gameId associated with this minigame, see {@link GameId}.
+	 * @param gameId
+	 *            associated with this minigame, see {@link GameId}.
 	 */
 	public MiniGame(Difficulty difficulty, GameId gameId,
 			Map<String, Integer> players) {
@@ -185,8 +187,7 @@ public abstract class MiniGame {
 	public abstract GameState checkGameState();
 
 	/**
-	 * Stops the timer of the miniGame
-	 * Call when game won
+	 * Stops the timer of the miniGame Call when game won
 	 */
 	public void stopTimer() {
 		simpleTimer.stop();

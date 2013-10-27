@@ -4,14 +4,16 @@ import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
+import it.chalmers.tendu.network.INetwork;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screen.GameOverScreen;
 import it.chalmers.tendu.screen.InterimScreen;
+import it.chalmers.tendu.screen.LobbyScreen;
 import it.chalmers.tendu.screen.MainMenuScreen;
 import it.chalmers.tendu.screen.MiniGameScreenFactory;
 import it.chalmers.tendu.screen.Screen;
@@ -26,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * ENTRY CLASS of Tendu.
  * 
  */
-public class Tendu implements ApplicationListener, Listener {
+public class Tendu implements ApplicationListener, EventBusListener {
 	public static final String TAG = "Tendu";
 
 	/**
@@ -55,7 +57,7 @@ public class Tendu implements ApplicationListener, Listener {
 	 * {@link INetworkHandler} interface. (e.g. see BluetoothHandler class in
 	 * android project for example implementation)
 	 */
-	private INetworkHandler networkHandler;
+	private INetwork networkHandler;
 
 	/**
 	 * All drawing is normally done on this canvas.
@@ -66,7 +68,7 @@ public class Tendu implements ApplicationListener, Listener {
 	 * @param networkHandler
 	 *            Platform-specific implementation of the network communication.
 	 */
-	public Tendu(INetworkHandler networkHandler) {
+	public Tendu(INetwork networkHandler) {
 		this.networkHandler = networkHandler;
 		EventBus.INSTANCE.addListener(this);
 	}
@@ -81,7 +83,7 @@ public class Tendu implements ApplicationListener, Listener {
 		spriteBatch = new SpriteBatch();
 
 		// First screen is the MainMenuScreen.
-		setScreen(new MainMenuScreen(this));
+		setScreen(new MainMenuScreen(networkHandler));
 
 		// setup the camera
 		camera = new OrthographicCamera();
@@ -126,7 +128,7 @@ public class Tendu implements ApplicationListener, Listener {
 		// Initiate spriteBatch.
 		spriteBatch.begin();
 		// Let Screen manipulate the batch.
-		screen.render();
+		screen.render(spriteBatch, camera);
 		// Render batch.
 		spriteBatch.end();
 	}
@@ -137,10 +139,12 @@ public class Tendu implements ApplicationListener, Listener {
 
 	@Override
 	public void pause() {
+		networkHandler.onPause();
 	}
 
 	@Override
 	public void resume() {
+		networkHandler.onResume();
 
 	}
 
@@ -153,7 +157,8 @@ public class Tendu implements ApplicationListener, Listener {
 								// check should be removed in order to have a
 								// fail-fast mechanism.
 								// it is null the first time it's called.
-								// it can be avoided by sett the Main Menu screen directly the at game startup
+								// it can be avoided by sett the Main Menu
+								// screen directly the at game startup
 			screen.dispose();
 		}
 		screen = newScreen;
@@ -166,7 +171,7 @@ public class Tendu implements ApplicationListener, Listener {
 	}
 
 	// screens need access to the network
-	public INetworkHandler getNetworkHandler() {
+	public INetwork getNetworkHandler() {
 		return networkHandler;
 	}
 
@@ -180,8 +185,7 @@ public class Tendu implements ApplicationListener, Listener {
 			// GameSessionController)
 			if (message.msg == C.Msg.CREATE_SCREEN) {
 				MiniGame game = (MiniGame) message.content;
-				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
-						this, game);
+				Screen screen = MiniGameScreenFactory.createMiniGameScreen(game);
 				setScreen(screen);
 				EventMessage msg = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.WAITING_TO_START_GAME, Player.getInstance()
@@ -192,28 +196,35 @@ public class Tendu implements ApplicationListener, Listener {
 			// Show a screen between games with current results...
 			else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
-				Screen screen = new InterimScreen(this, sessionResult);
+				Screen screen = new InterimScreen(sessionResult);
 				setScreen(screen);
 
-			} 
-			
+			}
+
 			// Show the game over screen
 			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
-				Screen screen = new GameOverScreen(this, sessionResult);
+				Screen screen = new GameOverScreen(sessionResult);
 				setScreen(screen);
 
-			} 
-			//Resets the network and loads the Main menu screen
-			//The message is received when the connection to the other players is lost (a better solution would be to show a connection lost screen first)
-			//It's also received if you go back from the lobby or pressing Main menu when the game is over
+			}
+			// Show the lobby screen.
+			else if(message.msg == C.Msg.CREATE_LOBBY_SCREEN){
+				setScreen(new LobbyScreen());
+			}
+			// Resets the network and loads the Main menu screen
+			// The message is received when the connection to the other players
+			// is lost (a better solution would be to show a connection lost
+			// screen first)
+			// It's also received if you go back from the lobby or pressing Main
+			// menu when the game is over
 			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
-				Screen screen = new MainMenuScreen(this);
+				Screen screen = new MainMenuScreen(networkHandler);
 				setScreen(screen);
 
-			} 
-			//Stop accepting more connections if a game session has started
+			}
+			// Stop accepting more connections if a game session has started
 			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
 				networkHandler.stopAcceptingConnections();
 			}

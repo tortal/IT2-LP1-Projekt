@@ -8,20 +8,25 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
- * GameScreen is the main rendering class of a {@link MiniGame}.
- * 
+ * GameScreen is the main rendering class of a {@link MiniGame}. And should be
+ * extended by most minigame screens. It renders the game timer and visual
+ * indicators for all other players. If a certain mini game would not benefit
+ * from extending this class its mini game screen could choose to just implement
+ * screen instead.
  */
 public abstract class GameScreen implements Screen {
 
-	final Tendu tendu; // reference to the main Tendu object
 	MiniGame model; // model of current minigame
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private List<Integer> otherPlayers;
-
+	private List<Integer> otherPlayers; // list of other participating players,
+										// used to render their visual
+										// indicators
 
 	/**
 	 * Returns a {@link Screen} of the given {@link MiniGame}.
@@ -30,20 +35,19 @@ public abstract class GameScreen implements Screen {
 	 * @param model
 	 *            The game to draw.
 	 */
-	public GameScreen(Tendu tendu, MiniGame model) {
-		this.tendu = tendu;
+	public GameScreen(MiniGame model) {
 		this.model = model;
 		shapeRenderer = new ShapeRenderer();
-		
+
 		otherPlayers = model.getOtherPlayerNumbers();
 	}
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 		// draw common graphics while game runs, hud, timer etc...
-		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-		
-		//Draw the timer
+		shapeRenderer.setProjectionMatrix(camera.combined);
+
+		// Draw the timer
 		drawTimer();
 		renderPlayerIndicator();
 	}
@@ -70,15 +74,18 @@ public abstract class GameScreen implements Screen {
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
 	}
-	
+
+	/**
+	 * Draws the timer
+	 */
 	private void drawTimer() {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
+		shapeRenderer
+				.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
 		shapeRenderer.filledRect(50, 40, calculateTimerWidth(), 10);
 		shapeRenderer.end();
 	}
 
-	// TODO: could probably look better.
 	/**
 	 * Renders a visual indicator for respective player
 	 */
@@ -86,7 +93,8 @@ public abstract class GameScreen implements Screen {
 		// First player
 		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(0)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(0)));
 			shapeRenderer.filledRect(0, Constants.SCREEN_HEIGHT - 5,
 					Constants.SCREEN_WIDTH, 5);
 			shapeRenderer.end();
@@ -95,7 +103,8 @@ public abstract class GameScreen implements Screen {
 		if (otherPlayers.size() >= 2) {
 			// second player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(1)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(1)));
 			shapeRenderer.filledRect(0, 0, 5, Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();
 
@@ -103,17 +112,12 @@ public abstract class GameScreen implements Screen {
 		if (otherPlayers.size() >= 3) {
 			// third player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(2)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(2)));
 			shapeRenderer.filledRect(Constants.SCREEN_WIDTH - 5, 0, 5,
 					Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();
 
 		}
-	}
-
-	/**
-	 * Called every frame. Make sure to call super() from subclass
-	 */
-	public void tick() {
 	}
 }

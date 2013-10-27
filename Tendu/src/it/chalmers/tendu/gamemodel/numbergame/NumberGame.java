@@ -23,17 +23,26 @@ import java.util.Map;
 public class NumberGame extends MiniGame {
 	public final static String TAG = "MiniGame";
 
+	/**
+	 * Number of players participating.
+	 */
 	private int playerCount;
+
 	private int playerListSize;
+
 	private ArrayList<Integer> answerList;
-	private Map<Integer, ArrayList<Integer>> playerLists;
+
+	private final Map<Integer, ArrayList<Integer>> playerLists;
+
 	private int nbrCorrectAnswer;
 
-	private ArrayList<Integer> listOfNumbers;
+	private final ArrayList<Integer> listOfNumbers;
 
 	/** No-args constructor for reflection */
 	@SuppressWarnings("unused")
 	private NumberGame() {
+		playerLists = null;
+		listOfNumbers = null;
 	};
 
 	public NumberGame(long extraTime, Difficulty difficulty,
@@ -44,17 +53,15 @@ public class NumberGame extends MiniGame {
 		playerListSize = 8;
 		playerCount = players.size();
 
-		// Create a list of numbers containing all numbers 1-99 an then shuffle
-		// it.
+		// Create a shuffled list of integers in the range [1,99]
 		listOfNumbers = new ArrayList<Integer>();
-		for (int i = 1; i < 100; i++) {
+		for (int i = 1; i <= 99; i++) {
 			listOfNumbers.add(i);
 		}
 		Collections.shuffle(listOfNumbers);
 
-		// Create an answerList and set the game time according to difficulty.
-
-		setUpGamePlay(difficulty, extraTime);
+		// Create integer sequence based on difficulty and set any extra time
+		initDifficulty(difficulty, extraTime);
 
 		// Populate the player lists with their own correct numbers and then
 		// fill it up with dummy numbers.
@@ -71,15 +78,13 @@ public class NumberGame extends MiniGame {
 	}
 
 	/**
-	 * Check if the number chosen is the right one according to the answerList
-	 * and sets gamestate to gameWon if all the numbers in answerList have been
-	 * correctly guessed.
 	 * 
-	 * @param num
-	 * @return
+	 * @param nbr
+	 * @return <code>true</code> if the number corresponds to the next one in
+	 *         the sequence.
 	 */
-	public boolean checkNbr(int num) {
-		return (answerList.get(nbrCorrectAnswer) == num);
+	public boolean checkNbr(int nbr) {
+		return answerList.get(nbrCorrectAnswer) == nbr;
 	}
 
 	/**
@@ -144,7 +149,7 @@ public class NumberGame extends MiniGame {
 		return null;
 	}
 
-	private void setUpGamePlay(Difficulty difficulty, long extraTime) {
+	private void initDifficulty(Difficulty difficulty, long extraTime) {
 		if (playerCount == 1) {
 			switch (difficulty) {
 			case ONE:

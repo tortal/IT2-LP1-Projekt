@@ -23,15 +23,15 @@ public class ShapesGameTest {
 		Map<String, Integer> players = new HashMap<String, Integer>();
 		players.put("player1", 0);
 		players.put("player2", 1);
-		
+
 		shapeGameEasy = new ShapeGame(30000, Difficulty.ONE, players);
 		shapeGameHard = new ShapeGame(30000, Difficulty.TWO, players);
 	}
 
 	@Test
 	public void testShapesGame() {
-		
-		//Checks so that all of the shapes has a color and a form.
+
+		// Checks so that all of the shapes has a color and a form.
 		List<Shape> shapes = shapeGameEasy.getAllInventory().get(0);
 		for (Shape s : shapes) {
 			assertTrue(s.color != null);

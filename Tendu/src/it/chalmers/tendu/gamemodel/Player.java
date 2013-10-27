@@ -6,8 +6,8 @@ package it.chalmers.tendu.gamemodel;
 public class Player {
 	private static Player instance = null;
 
-	private String mac; //macAdress of device/player
-	private boolean host; //is the player host
+	private String mac; // macAdress of device/player
+	private boolean host; // is the player host
 
 	private Player() {
 		mac = "";
@@ -30,11 +30,11 @@ public class Player {
 	public String getMac() {
 		return mac;
 	}
-	
+
 	public void setHost(boolean isHost) {
 		host = isHost;
 	}
-	
+
 	public boolean isHost() {
 		return host;
 	}

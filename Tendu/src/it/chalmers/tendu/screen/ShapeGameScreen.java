@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -61,8 +63,8 @@ public class ShapeGameScreen extends GameScreen {
 	private TextWidget teamInstructionsContinued;
 	private BitmapFont font;
 
-	public ShapeGameScreen(Tendu game, MiniGame model) {
-		super(game, model);
+	public ShapeGameScreen(MiniGame model) {
+		super(model);
 
 		controller = new ShapeGameController((ShapeGame) model);
 		shapeGameModel = controller.getModel();
@@ -141,16 +143,16 @@ public class ShapeGameScreen extends GameScreen {
 
 	/** All graphics are drawn here */
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 
 		if (model.hasStarted()) {
-			super.render();
+			super.render(spriteBatch, camera);
 			instructionsTimer.start(timeForInstructions);
 			if (!instructionsTimer.isDone()) {
-				instructions.draw(tendu.spriteBatch, font);
+				instructions.draw(spriteBatch, font);
 				if (otherPlayers.size() > 0) {
-					teamInstructions.draw(tendu.spriteBatch, font);
-					teamInstructionsContinued.draw(tendu.spriteBatch, font);
+					teamInstructions.draw(spriteBatch, font);
+					teamInstructionsContinued.draw(spriteBatch, font);
 				}
 
 			} else {
@@ -158,7 +160,7 @@ public class ShapeGameScreen extends GameScreen {
 				if (shapeGameModel.checkGameState() == GameState.RUNNING
 						|| gameCompletedTimer.isRunning()) {
 					shapeRenderer
-							.setProjectionMatrix(tendu.getCamera().combined);
+							.setProjectionMatrix(camera.combined);
 					// Renders locks
 					for (GraphicalShape sgs : locks) {
 						sgs.render(shapeRenderer);

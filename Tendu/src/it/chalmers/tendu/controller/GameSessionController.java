@@ -3,8 +3,8 @@ package it.chalmers.tendu.controller;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Tag;
 import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventBusListener;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.event.Listener;
 import it.chalmers.tendu.gamemodel.GameResult;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.GameState;
@@ -13,21 +13,40 @@ import it.chalmers.tendu.gamemodel.Player;
 
 import com.badlogic.gdx.Gdx;
 
-public class GameSessionController implements Listener {
+/**
+ * GameSession controller handles the GameSession model.
+ * 
+ */
+public class GameSessionController implements EventBusListener {
 	private static final String TAG = "GameSessionController";
 
 	private GameSession gameSession;
 
-	public GameSessionController(GameSession gameSession) {
-		this.gameSession = gameSession;
+	/**
+	 * Creates a new Controller for gameSession. Changes the model and receives
+	 * broadcasts from the network.
+	 * 
+	 * @param session
+	 */
+	public GameSessionController(GameSession model) {
+		this.gameSession = model;
 		EventBus.INSTANCE.addListener(this);
 		gameSession.nextScreen();
 	}
 
-	public void setModel(GameSession session) {
-		this.gameSession = session;
+	/**
+	 * Sets current game session to the one sent in.
+	 * 
+	 * @param model
+	 */
+	public void setModel(GameSession model) {
+		this.gameSession = model;
 	}
 
+	/**
+	 * Receives messages from the eventbus and directs them to the appropriate
+	 * methods.
+	 */
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
@@ -43,6 +62,12 @@ public class GameSessionController implements Listener {
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is host.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
@@ -109,10 +134,10 @@ public class GameSessionController implements Listener {
 
 				gameSession.nextScreen();
 
-			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+			} else if (message.msg == C.Msg.PLAY_AGAIN_READY) {
 
 				String playerMac = (String) message.content;
-				gameSession.playerReplayReady(playerMac);
+				gameSession.playerPlayAgainReady(playerMac);
 
 				if (gameSession.arePlayersReady()) {
 
@@ -140,6 +165,12 @@ public class GameSessionController implements Listener {
 		}
 	}
 
+	/**
+	 * Message are handled here if the player is client.
+	 * 
+	 * @param message
+	 *            from the eventbus.
+	 */
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 
@@ -161,7 +192,7 @@ public class GameSessionController implements Listener {
 						C.Tag.REQUEST_AS_CLIENT);
 				EventBus.INSTANCE.broadcast(changedMessage);
 
-			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+			} else if (message.msg == C.Msg.PLAY_AGAIN_READY) {
 				// Received by host in gameSessionController through the
 				// network.
 				EventMessage changedMessage = new EventMessage(message,
@@ -197,6 +228,10 @@ public class GameSessionController implements Listener {
 		}
 	}
 
+	/**
+	 * Tells tendu to reset the application, then unregisters itself from the
+	 * eventbus.
+	 */
 	private void returnToMainMenu() {
 		// Received in Tendu.
 		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
