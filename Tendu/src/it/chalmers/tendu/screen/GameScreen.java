@@ -12,15 +12,20 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
- * GameScreen is the main rendering class of a {@link MiniGame}.
- * 
+ * GameScreen is the main rendering class of a {@link MiniGame}. And should be
+ * extended by most minigame screens. It renders the game timer and visual
+ * indicators for all other players. If a certain mini game would not benefit
+ * from extending this class its mini game screen could choose to just implement
+ * screen instead.
  */
 public abstract class GameScreen implements Screen {
 
 	final Tendu tendu; // reference to the main Tendu object
 	MiniGame model; // model of current minigame
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
-	private List<Integer> otherPlayers;
+	private List<Integer> otherPlayers; // list of other participating players,
+										// used to render their visual
+										// indicators
 
 	/**
 	 * Returns a {@link Screen} of the given {@link MiniGame}.
@@ -70,6 +75,9 @@ public abstract class GameScreen implements Screen {
 		return (int) timerWitdth;
 	}
 
+	/**
+	 * Draws the timer
+	 */
 	private void drawTimer() {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer
@@ -78,7 +86,6 @@ public abstract class GameScreen implements Screen {
 		shapeRenderer.end();
 	}
 
-	// TODO: could probably look better.
 	/**
 	 * Renders a visual indicator for respective player
 	 */
@@ -112,11 +119,5 @@ public abstract class GameScreen implements Screen {
 			shapeRenderer.end();
 
 		}
-	}
-
-	/**
-	 * Called every frame. Make sure to call super() from subclass
-	 */
-	public void tick() {
 	}
 }

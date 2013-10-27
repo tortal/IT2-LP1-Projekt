@@ -13,6 +13,10 @@ import it.chalmers.tendu.gamemodel.Player;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * GameSession controller deluxe
+ *
+ */
 public class GameSessionController implements EventBusListener {
 	private static final String TAG = "GameSessionController";
 
@@ -109,7 +113,7 @@ public class GameSessionController implements EventBusListener {
 
 				gameSession.nextScreen();
 
-			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+			} else if (message.msg == C.Msg.PLAY_AGAIN_READY) {
 
 				String playerMac = (String) message.content;
 				gameSession.playerPlayAgainReady(playerMac);
@@ -161,7 +165,7 @@ public class GameSessionController implements EventBusListener {
 						C.Tag.REQUEST_AS_CLIENT);
 				EventBus.INSTANCE.broadcast(changedMessage);
 
-			} else if (message.msg == C.Msg.PLAYER_REPLAY_READY) {
+			} else if (message.msg == C.Msg.PLAY_AGAIN_READY) {
 				// Received by host in gameSessionController through the
 				// network.
 				EventMessage changedMessage = new EventMessage(message,
