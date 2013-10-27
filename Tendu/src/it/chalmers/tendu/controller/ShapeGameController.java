@@ -53,64 +53,59 @@ public class ShapeGameController implements MiniGameController {
 				shapeGame.startGame();
 			}
 
-			if (message.gameId == GameId.SHAPE_GAME) {
-				// Lock attempt
-				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					if (insertIntoSlot(message.content)) {
+			// Lock attempt
+			if (message.msg == C.Msg.LOCK_ATTEMPT) {
+				if (insertIntoSlot(message.content)) {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					} else {
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_SUCCEED);
+					EventBus.INSTANCE.broadcast(soundMsg);
+				} else {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					}
-
-					// Received by clients in ShapeGameController through the
-					// network.
-					EventMessage changedMessage = new EventMessage(message,
-							C.Tag.COMMAND_AS_HOST);
-					EventBus.INSTANCE.broadcast(changedMessage);
-
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_FAIL);
+					EventBus.INSTANCE.broadcast(soundMsg);
 				}
-				// Send object
-				if (message.msg == C.Msg.SHAPE_SENT) {
-					sendShape(message.content);
 
-					// Received by clients in ShapeGameController through the
-					// network.
-					EventMessage changedMessage = new EventMessage(message,
-							C.Tag.COMMAND_AS_HOST);
-					EventBus.INSTANCE.broadcast(changedMessage);
+				// Received by clients in ShapeGameController through the
+				// network.
+				EventMessage changedMessage = new EventMessage(message,
+						C.Tag.COMMAND_AS_HOST);
+				EventBus.INSTANCE.broadcast(changedMessage);
 
-				}
 			}
+			// Send object
+			if (message.msg == C.Msg.SHAPE_SENT) {
+				sendShape(message.content);
 
+				// Received by clients in ShapeGameController through the
+				// network.
+				EventMessage changedMessage = new EventMessage(message,
+						C.Tag.COMMAND_AS_HOST);
+				EventBus.INSTANCE.broadcast(changedMessage);
+
+			}
 		}
 	}
 
 	@Override
 	public void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
-			if (message.gameId == GameId.SHAPE_GAME) {
-				if (message.msg == C.Msg.LOCK_ATTEMPT
-						|| message.msg == C.Msg.SHAPE_SENT) {
-					Gdx.app.log(TAG, "Sending shape to host, i am client"
-							+ Player.getInstance().isHost());
-					// Received by host in ShapeGameController through the
-					// network.
-					EventMessage changedMessage = new EventMessage(message,
-							C.Tag.REQUEST_AS_CLIENT);
-					EventBus.INSTANCE.broadcast(changedMessage);
-				}
-
-			} else if (message.msg == C.Msg.START_MINI_GAME) {
-				shapeGame.startGame();
+			if (message.msg == C.Msg.LOCK_ATTEMPT
+					|| message.msg == C.Msg.SHAPE_SENT) {
+				Gdx.app.log(TAG, "Sending shape to host, i am client"
+						+ Player.getInstance().isHost());
+				// Received by host in ShapeGameController through the
+				// network.
+				EventMessage changedMessage = new EventMessage(message,
+						C.Tag.REQUEST_AS_CLIENT);
+				EventBus.INSTANCE.broadcast(changedMessage);
 			}
+
+		} else if (message.msg == C.Msg.START_MINI_GAME) {
+			shapeGame.startGame();
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {

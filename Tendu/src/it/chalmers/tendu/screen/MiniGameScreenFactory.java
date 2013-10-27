@@ -16,14 +16,14 @@ public class MiniGameScreenFactory {
 	 * @param miniGame the miniGame which screen you want
 	 * @return
 	 */
-	public static Screen createMiniGameScreen(Tendu tendu, MiniGame miniGame) {
+	public static Screen createMiniGameScreen(MiniGame miniGame) {
 		Gdx.app.log("MiniGameScreenFactory",
 				"gameId = " + miniGame.getGameId());
 		switch (miniGame.getGameId()) {
 		case NUMBER_GAME:
-			return new NumberGameScreen(tendu, miniGame);
+			return new NumberGameScreen(miniGame);
 		case SHAPE_GAME:
-			return new ShapeGameScreen(tendu, miniGame);
+			return new ShapeGameScreen(miniGame);
 		}
 		return null;
 	}

@@ -12,7 +12,9 @@ import it.chalmers.tendu.gamemodel.SessionResult;
 import it.chalmers.tendu.gamemodel.SimpleTimer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -24,7 +26,6 @@ import com.badlogic.gdx.math.Vector2;
  * the host)
  */
 public class InterimScreen implements Screen {
-	private Tendu tendu;
 	private BitmapFont font;
 	private final int level;
 	private float time;
@@ -40,8 +41,7 @@ public class InterimScreen implements Screen {
 	 * @param sessionResult
 	 *            results from the current session so far
 	 */
-	public InterimScreen(Tendu tendu, SessionResult sessionResult) {
-		this.tendu = tendu;
+	public InterimScreen(SessionResult sessionResult) {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 
@@ -65,9 +65,9 @@ public class InterimScreen implements Screen {
 	}
 
 	@Override
-	public void render() {
-		levelText.draw(tendu.spriteBatch, font);
-		timeText.draw(tendu.spriteBatch, font);
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+		levelText.draw(spriteBatch, font);
+		timeText.draw(spriteBatch, font);
 	}
 
 	@Override

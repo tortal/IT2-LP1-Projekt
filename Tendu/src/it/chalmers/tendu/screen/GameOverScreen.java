@@ -12,7 +12,9 @@ import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -26,7 +28,6 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GameOverScreen implements Screen {
 
-	private Tendu tendu;
 	private BitmapFont font;
 	private final int level;
 	private TextWidget gameOver;
@@ -41,9 +42,7 @@ public class GameOverScreen implements Screen {
 	 * @param sessionResult
 	 *            all the results of the current game round/session
 	 */
-	public GameOverScreen(Tendu tendu, SessionResult sessionResult) {
-
-		this.tendu = tendu;
+	public GameOverScreen(SessionResult sessionResult) {
 
 		// load resources and create som TextWidgets for on screen text
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
@@ -67,13 +66,13 @@ public class GameOverScreen implements Screen {
 	}
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 		// some simple TextWidgets offering the players information and options
 		// to take new actions
-		gameOver.drawAtCenterPoint(tendu.spriteBatch, font);
-		levelText.drawAtCenterPoint(tendu.spriteBatch, font);
-		mainMenu.draw(tendu.spriteBatch, font);
-		playAgain.draw(tendu.spriteBatch, font);
+		gameOver.drawAtCenterPoint(spriteBatch, font);
+		levelText.drawAtCenterPoint(spriteBatch, font);
+		mainMenu.draw(spriteBatch, font);
+		playAgain.draw(spriteBatch, font);
 	}
 
 	@Override

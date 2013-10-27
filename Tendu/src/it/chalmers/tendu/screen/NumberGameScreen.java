@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.controller.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
@@ -19,7 +18,9 @@ import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /** GameScreen for {@link NumberGame}. Contains graphics, sounds etc. **/
@@ -58,8 +59,8 @@ public class NumberGameScreen extends GameScreen {
 	 * @param model
 	 *            a NumberGame model
 	 */
-	public NumberGameScreen(Tendu tendu, MiniGame model) {
-		super(tendu, model);
+	public NumberGameScreen(MiniGame model) {
+		super(model);
 
 		// create the controller and load the resources
 		controller = new NumberGameController((NumberGame) model);
@@ -160,11 +161,10 @@ public class NumberGameScreen extends GameScreen {
 	/**
 	 * Draw the numbers we've guessed correctly on
 	 */
-	private void drawCorrectlyGuessedNumbers() {
+	private void drawCorrectlyGuessedNumbers(SpriteBatch spriteBatch) {
 		for (int i = 0; i < numbers.size(); i++) {
 			if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
-						numberFont);
+				numberWidgets.get(i).drawAtCenterPoint(spriteBatch, numberFont);
 			}
 		}
 	}
@@ -172,47 +172,48 @@ public class NumberGameScreen extends GameScreen {
 	/**
 	 * Draw all the correct numberss
 	 */
-	private void drawAllNumbers() {
+	private void drawAllNumbers(SpriteBatch spriteBatch) {
 		for (int i = 0; i < numbers.size(); i++) {
-			numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
-					numberFont);
+			numberWidgets.get(i).drawAtCenterPoint(spriteBatch, numberFont);
 		}
 	}
 
 	/**
 	 * Draws all number we can guess among
 	 */
-	private void drawGuessNumbers() {
+	private void drawGuessNumbers(SpriteBatch spriteBatch) {
 		for (int i = 0; i < guessNumbers.size(); i++) {
-			guessNumbersWidgets.get(i).draw(tendu.spriteBatch, numberFont);
+			guessNumbersWidgets.get(i).draw(spriteBatch, numberFont);
 		}
 	}
 
 	/** Draw all graphics from here */
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 		// the game won't start to render anything until the controller "starts"
 		// the model
 		if (model.hasStarted()) {
-			super.render(); // draws common ui-stuff
+			super.render(spriteBatch, camera); // draws common ui-stuff
 
 			if (!instructionsTimer.isDone()) {
+
 				// Show all number and inform the player of what to do
-				memorizeText.draw(tendu.spriteBatch, font);
-				drawAllNumbers();
+				memorizeText.draw(spriteBatch, font);
+				drawAllNumbers(spriteBatch);
+
 			} else {
 				font.setColor(Color.BLUE);
-				instructionText.draw(tendu.spriteBatch, font);
+				instructionText.draw(spriteBatch, font);
 
 				if (model.checkGameState() == GameState.LOST) {
-					timeOutText.draw(tendu.spriteBatch, font); // inform the
-																// player that
-																// he/she is out
-																// of time
+
+					// inform the player that he/she is out of time
+					timeOutText.draw(spriteBatch, font);
+
 				} else {
-					drawCorrectlyGuessedNumbers();
+					drawCorrectlyGuessedNumbers(spriteBatch);
 				}
-				drawGuessNumbers();
+				drawGuessNumbers(spriteBatch);
 			}
 		}
 	}

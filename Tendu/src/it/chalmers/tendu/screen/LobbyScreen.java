@@ -16,14 +16,15 @@ import it.chalmers.tendu.gamemodel.SimpleTimer;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
  */
 public class LobbyScreen implements Screen {
 	private LobbyController lobbyController;
-	private Tendu tendu;
 	private TextWidget statusText;
 	private TextWidget readyText;
 	private TextWidget playerText;
@@ -34,9 +35,8 @@ public class LobbyScreen implements Screen {
 	private TextWidget testStuff;
 	private boolean ready;
 
-	public LobbyScreen(Tendu tendu, boolean isHost) {
+	public LobbyScreen() {
 		maximumPlayers = 4;
-		this.tendu = tendu;
 		LobbyModel model = new LobbyModel(maximumPlayers);
 		lobbyController = new LobbyController(model);
 
@@ -52,7 +52,7 @@ public class LobbyScreen implements Screen {
 
 		ready = false;
 
-		if (isHost)
+		if (Player.getInstance().isHost())
 			initHost();
 		else
 			initClient();
@@ -62,9 +62,6 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initHost() {
-		Player.getInstance().setHost(true);
-		tendu.getNetworkHandler().hostSession();
-
 		String myMac = Player.getInstance().getMac();
 		lobbyController.getModel().addPlayer(myMac);
 
@@ -73,8 +70,6 @@ public class LobbyScreen implements Screen {
 	}
 
 	private void initClient() {
-		Player.getInstance().setHost(false);
-		tendu.getNetworkHandler().joinLobby();
 		statusText = new TextWidget(TextLabels.SEARCHING_FOR_SESSION,
 				new Vector2(40, 620), Constants.MENU_FONT_COLOR);
 	}
@@ -122,9 +117,9 @@ public class LobbyScreen implements Screen {
 	}
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 
-		statusText.draw(tendu.spriteBatch, font);
+		statusText.draw(spriteBatch, font);
 		// testStuff.draw(tendu.spriteBatch, font);
 
 		playerText.setY(580);
@@ -141,13 +136,13 @@ public class LobbyScreen implements Screen {
 			}
 			playerText.addToY(-65);
 			playerText.setColor(PlayerColors.getPlayerColor(p.getValue()));
-			playerText.draw(tendu.spriteBatch, font);
+			playerText.draw(spriteBatch, font);
 		}
 
 		if (playersConnected > 0 && !ready) {
-			readyText.drawAtCenterPoint(tendu.spriteBatch, font);
+			readyText.drawAtCenterPoint(spriteBatch, font);
 		} else if (playersConnected > 0 && ready) {
-			waitingText.draw(tendu.spriteBatch, font);
+			waitingText.draw(spriteBatch, font);
 		}
 	}
 

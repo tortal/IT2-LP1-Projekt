@@ -15,12 +15,17 @@ public class Network implements INetwork {
 	private INetworkHandler networkHandler;
 	private Context context;
 
+	/** Constructor
+	 * 
+	 * @param ctx The android context
+	 */
 	public Network(Context ctx) {
 		context = ctx;
 
 		//selectWifi();
 		selectBluetooth();
 	}
+
 
 	@Override
 	public void selectBluetooth() {
