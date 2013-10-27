@@ -227,7 +227,7 @@ public class NumberGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				// the game is finished
-				model.stopTimer(); // TODO do in controller
+				model.stopTimer(); //TODO do from controller instead
 				gameCompletedTimer.start(1500); // let the game run for a brief
 												// time before it's ended
 
@@ -246,9 +246,9 @@ public class NumberGameScreen extends GameScreen {
 												// starts
 
 				if (instructionsTimer.isDone()) {
-					model.startGameTimer(); // TODO do in controller
-					
-					//check input and tell controller what needs to be done
+					model.startGameTimer(); //TODO do from controller instead
+
+					// check input and tell controller what needs to be done
 					if (input.isTouchedUp()) {
 						for (int i = 0; i < guessNumbers.size(); i++) {
 							if (guessNumbersWidgets.get(i).collided(
@@ -260,7 +260,7 @@ public class NumberGameScreen extends GameScreen {
 														.getGameId(),
 												guessNumbers.get(i)));
 							}
-							//reset scale on guessed number
+							// reset scale on guessed number
 							guessNumbersWidgets.get(i).setScale(-0.15f);
 							guessNumbersWidgets.get(i).setY(130);
 
@@ -268,7 +268,8 @@ public class NumberGameScreen extends GameScreen {
 					}
 
 					if (input.isTouchedDown()) {
-						//give visual and haptic feedback when you guess on a number
+						// give visual and haptic feedback when you guess on a
+						// number
 						for (int i = 0; i < guessNumbers.size(); i++) {
 							if (guessNumbersWidgets.get(i).collided(
 									input.getCoordinates())) {
