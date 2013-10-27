@@ -49,40 +49,46 @@ public class NumberGameController implements MiniGameController {
 			}
 
 			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					if (numberGame.checkNbr((Integer) message.content)) {
+			if (message.msg == C.Msg.NUMBER_GUESS) {
+				if (numberGame.checkNbr((Integer) message.content)) {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_SUCCEED);
+					EventBus.INSTANCE.broadcast(soundMsg);
 
-						// Received by clients in NumberGameController through
-						// the network.
-						EventMessage changedMessage = new EventMessage(message,
-								C.Tag.COMMAND_AS_HOST);
-						EventBus.INSTANCE.broadcast(changedMessage);
+					// Received by clients in NumberGameController through
+					// the network.
+					EventMessage changedMessage = new EventMessage(message,
+							C.Tag.COMMAND_AS_HOST);
+					EventBus.INSTANCE.broadcast(changedMessage);
 
-						numberGame.guessedCorrectly();
-					} else {
+					numberGame.guessedCorrectly();
+				} else {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_FAIL);
+					EventBus.INSTANCE.broadcast(soundMsg);
 
-						// Received by clients in NumberGameController through
-						// the network.
-						EventMessage newMessage = new EventMessage(
-								Tag.COMMAND_AS_HOST, Msg.REMOVE_TIME,
-								GameId.NUMBER_GAME);
-						EventBus.INSTANCE.broadcast(newMessage);
+					// Received by clients in NumberGameController through
+					// the network.
+					EventMessage newMessage = new EventMessage(
+							Tag.COMMAND_AS_HOST, Msg.REMOVE_TIME,
+							GameId.NUMBER_GAME);
+					EventBus.INSTANCE.broadcast(newMessage);
 
-						numberGame.changeTime(PENALTY_TIME);
-					}
+					numberGame.changeTime(PENALTY_TIME);
 				}
 			}
+
+//			else if (message.msg == C.Msg.START_MINI_GAME_TIMER) {
+//				numberGame.startGameTimer();
+//			}
+//
+//			else if (message.msg == C.Msg.STOP_MINI_GAME_TIMER) {
+//				numberGame.stopTimer();
+//			}
 		}
 	}
 
@@ -90,50 +96,52 @@ public class NumberGameController implements MiniGameController {
 	public void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
-				if (message.msg == C.Msg.NUMBER_GUESS) {
-					EventMessage changedMessage = new EventMessage(message,
-							C.Tag.REQUEST_AS_CLIENT);
-					EventBus.INSTANCE.broadcast(changedMessage);
-				}
-
-			} else if (message.msg == C.Msg.START_MINI_GAME) {
-				numberGame.startGame();
+			if (message.msg == C.Msg.NUMBER_GUESS) {
+				EventMessage changedMessage = new EventMessage(message,
+						C.Tag.REQUEST_AS_CLIENT);
+				EventBus.INSTANCE.broadcast(changedMessage);
 			}
+
+		} else if (message.msg == C.Msg.START_MINI_GAME) {
+			numberGame.startGame();
 		}
+
+//		else if (message.msg == C.Msg.START_MINI_GAME_TIMER) {
+//			numberGame.startGameTimer();
+//		}
+//
+//		else if (message.msg == C.Msg.STOP_MINI_GAME_TIMER) {
+//			numberGame.stopTimer();
+//		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
 			// *********NUMBER GAME***********
-			if (message.gameId == GameId.NUMBER_GAME) {
+			if (message.msg == Msg.UPDATE_MODEL) {
+				// TODO: Not used
+				// Gdx.app.log(TAG, " Time left = " +
+				// gameSession.currentMiniGame.getTimeLeft());
 
-				if (message.msg == Msg.UPDATE_MODEL) {
-					// TODO: Not used
-					// Gdx.app.log(TAG, " Time left = " +
-					// gameSession.currentMiniGame.getTimeLeft());
+			} else if (message.msg == Msg.REMOVE_TIME) {
+				numberGame.changeTime(PENALTY_TIME);
 
-				} else if (message.msg == Msg.REMOVE_TIME) {
-					numberGame.changeTime(PENALTY_TIME);
+			} else if (message.msg == Msg.NUMBER_GUESS) {
+				if (numberGame.checkNbr((Integer) message.content)) {
 
-				} else if (message.msg == Msg.NUMBER_GUESS) {
-					if (numberGame.checkNbr((Integer) message.content)) {
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_SUCCEED);
+					EventBus.INSTANCE.broadcast(soundMsg);
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
+					numberGame.guessedCorrectly();
+				} else {
 
-						numberGame.guessedCorrectly();
-					} else {
-
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					}
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_FAIL);
+					EventBus.INSTANCE.broadcast(soundMsg);
 				}
 			}
 		}
-
 	}
 
 	@Override

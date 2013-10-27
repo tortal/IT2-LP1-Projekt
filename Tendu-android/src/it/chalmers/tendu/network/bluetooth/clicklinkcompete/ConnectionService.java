@@ -47,19 +47,25 @@ import com.esotericsoftware.kryo.io.Output;
 /**
  * Service for simplifying the process of establishing Bluetooth connections and
  * sending data in a way that is geared towards multi-player games.
+ * 
+ * Stolen and modified
  */
-
 public class ConnectionService {
 	public static final String TAG = "ConnectionService";
 
+	/** Thread waiting for new connections */
 	private ConnectionWaiter connectionWaiter;
 
+	/** The connected bluetooth devices */
 	private ArrayList<BluetoothDevice> mBtDevices;
 
+	/** The connected bluetooth sockets */
 	private HashMap<String, BluetoothSocket> mBtSockets;
 
+	/** The threads waiting for messages from connected devices */
 	private HashMap<String, Thread> mBtStreamWatcherThreads;
 
+	/** Connection to android bluetooth hardware */
 	private BluetoothAdapter mBtAdapter;
 
 	private OnIncomingConnectionListener mOnIncomingConnectionListener;
@@ -70,27 +76,27 @@ public class ConnectionService {
 
 	private OnConnectionLostListener mOnConnectionLostListener;
 
+	/** Android context */
 	private Context context;
 
+	/** Unique identifier for app */
 	private UUID APP_UUID = UUID
 			.fromString("a60f35f0-b93a-11de-8a39-08002009c666");
 
-	/** Kryo Variables */
-	//private Kryo mKryo;
-
-	//private Output out;
-
+	/**
+	 * Creates a new <code>ConnectionService</code> object
+	 * @param context The android context
+	 */
 	public ConnectionService(Context context) {
-		// mSelf = this;
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		mBtSockets = new HashMap<String, BluetoothSocket>();
 		mBtDevices = new ArrayList<BluetoothDevice>();
 		mBtStreamWatcherThreads = new HashMap<String, Thread>();
 
 		this.context = context;
-		//mKryo = kryoFactory();
 	}
 
+	/** Makes shure both sender and receiver have the same version kryo object */
 	private Kryo kryoFactory() {
 		Kryo kryo = new Kryo();
 
@@ -99,10 +105,16 @@ public class ConnectionService {
 		return kryo;
 	}
 
+	/**
+	 * Runnable waiting for input from a bluetooth device.
+	 * It establishes an input stream and wraps it in a Kryo deserializer object
+	 */
 	private class BtStreamWatcher implements Runnable {
 		private final String address;
 		private final BluetoothDevice device;
 		private final Input in;
+		
+		/** Kryo is a serializer/deserializer */
 		private final Kryo kryo = kryoFactory(); 
 
 		private final InputStream mmInStream;
@@ -161,6 +173,11 @@ public class ConnectionService {
 		}
 	}
 
+	/**
+	 * Runnable waiting for incoming connections. 
+	 * Establishes the connection and starts a new thread to listen to messages from it.  
+	 * Sets of the onIncomingConnectionListener on establishment of connection.
+	 */
 	private class ConnectionWaiter implements Runnable {
 		private String srcApp = Constants.APP_NAME;
 
@@ -217,6 +234,12 @@ public class ConnectionService {
 		}
 	}
 
+	/**
+	 * Returns a connected bluetoothsocket
+	 * @param myBtServer The server device to connect to 
+	 * @param uuidToTry The unique app id to look for
+	 * @return The connected socket
+	 */
 	private BluetoothSocket getConnectedSocket(BluetoothDevice myBtServer,
 			UUID uuidToTry) {
 		BluetoothSocket myBSock;
@@ -231,6 +254,16 @@ public class ConnectionService {
 		return null;
 	}
 
+	/**
+	 * Starts a server
+	 * @param maxConnections maximum allowed connections
+	 * @param oicListener Listener for incoming connections
+	 * @param omcrListener Listener for when max connections are reached
+	 * @param omrListener Listener for received messages
+	 * @param oclListener Listener for when a connection is lost
+	 * @return Whether the creation was successful or not
+	 * @throws RemoteException
+	 */
 	public int startServer(int maxConnections,
 			OnIncomingConnectionListener oicListener,
 			OnMaxConnectionsReachedListener omcrListener,
@@ -256,6 +289,14 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
+	/**
+	 * Attempts to establish a connection to a bluetooth device
+	 * @param device The bluetooth device
+	 * @param omrListener Listener for received messages
+	 * @param oclListener Listener for when the connection is lost
+	 * @return Whether the connection was successful or not
+	 * @throws RemoteException
+	 */
 	public int connect(BluetoothDevice device,
 			OnMessageReceivedListener omrListener,
 			OnConnectionLostListener oclListener) throws RemoteException {
@@ -292,6 +333,12 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
+	
+	/**
+	 * Send a message to all connected bluetooth devices
+	 * @param message The message to be sent
+	 * @return Whether the broadcast was successful or not
+	 */
 	public int broadcastMessage(EventMessage message) throws RemoteException {
 		for (int i = 0; i < mBtDevices.size(); i++) {
 			Log.d(TAG, "sendMessage(): " + mBtDevices.get(i).getAddress()
@@ -301,16 +348,8 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
-	public String getConnections() throws RemoteException {
-		String connections = "";
-		for (int i = 0; i < mBtDevices.size(); i++) {
-			connections = connections + mBtDevices.get(i) + ",";
-		}
-		return connections;
-	}
-
 	/**
-	 * Sends a message to a specific bluetoothdevice
+	 * Sends a message to a specific bluetooth device
 	 * 
 	 * @param destination
 	 *            The destination device
@@ -347,6 +386,10 @@ public class ConnectionService {
 		return Connection.SUCCESS;
 	}
 
+	/**
+	 * Resets the <code>ConnectionService</code>
+	 * @throws RemoteException
+	 */
 	public void reset() throws RemoteException {
 		try {
 			for (int i = 0; i < mBtDevices.size(); i++) {
@@ -358,25 +401,32 @@ public class ConnectionService {
 			mBtSockets = new HashMap<String, BluetoothSocket>();
 			mBtStreamWatcherThreads = new HashMap<String, Thread>();
 			mBtDevices = new ArrayList<BluetoothDevice>();
-//			if (out != null) {
-//				//out.close();
-//			}
-//			if (mKryo != null) {
-//				mKryo.reset();
-//			}
 		} catch (IOException e) {
 			Log.i(TAG, "IOException in reset", e);
 		}
 	}
 
+	/**
+	 * Returns the local mac-address
+	 * @return The mac-address
+	 * @throws RemoteException
+	 */
 	public String getAddress() throws RemoteException {
 		return mBtAdapter.getAddress();
 	}
-
+	
+	/**
+	 * Returns the local device friendly name
+	 * @return The name
+	 */
 	public String getName() throws RemoteException {
 		return mBtAdapter.getName();
 	}
 
+	/**
+	 * Cease to listen for incoming connections 
+	 * No more matchmaking.
+	 */
 	public void stopAcceptingConnections() {
 		if (connectionWaiter != null) { 
 			connectionWaiter.stopAcceptingConnections();

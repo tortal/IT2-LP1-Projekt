@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.controller.NumberGameController;
 import it.chalmers.tendu.defaults.Constants;
@@ -229,7 +228,7 @@ public class NumberGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				// the game is finished
-				model.stopTimer(); // TODO do in controller
+				model.stopTimer(); //TODO do from controller instead
 				gameCompletedTimer.start(1500); // let the game run for a brief
 												// time before it's ended
 
@@ -248,7 +247,7 @@ public class NumberGameScreen extends GameScreen {
 												// starts
 
 				if (instructionsTimer.isDone()) {
-					model.startGameTimer(); // TODO do in controller
+					model.startGameTimer(); //TODO do from controller instead
 
 					// check input and tell controller what needs to be done
 					if (input.isTouchedUp()) {

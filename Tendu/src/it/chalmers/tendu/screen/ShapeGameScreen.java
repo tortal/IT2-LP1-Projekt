@@ -385,10 +385,12 @@ public class ShapeGameScreen extends GameScreen {
 		return true;
 	}
 
-	// TODO not the best solution but it works.
 	// this message must be sent only once
 	private boolean ended = false;
-
+	
+	/**
+	 * BroadCasts a message to the controller that the game is done
+	 */
 	private void sendEndMessage() {
 		if (!ended) {
 			// Received by GameSessionController.

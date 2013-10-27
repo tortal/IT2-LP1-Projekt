@@ -33,6 +33,11 @@ import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
+/**
+ * Class dealing with the android bluetooth connectivity
+ * @author johnpetersson
+ *
+ */
 public class BluetoothHandler extends NetworkHandler {
 	private String TAG = "BluetoothHandler";
 
@@ -55,7 +60,6 @@ public class BluetoothHandler extends NetworkHandler {
 	 * 
 	 * @param <code>Context</code> in which the handler was declared
 	 */
-
 	public BluetoothHandler(Context context) {
 		super(context);
 
@@ -71,6 +75,7 @@ public class BluetoothHandler extends NetworkHandler {
 		registerBroadcastReceiver();
 	}
 
+	/** Gets called on messages received from connected bluetooth devices */
 	private OnMessageReceivedListener dataReceivedListener = new OnMessageReceivedListener() {
 		public void OnMessageReceived(BluetoothDevice device,
 				final EventMessage message) {
@@ -80,6 +85,7 @@ public class BluetoothHandler extends NetworkHandler {
 		}
 	};
 
+	/** Gets called when the maximum amount of connections has been reached */ 
 	private OnMaxConnectionsReachedListener maxConnectionsListener = new OnMaxConnectionsReachedListener() {
 		public void OnMaxConnectionsReached() {
 			Log.d(TAG, "Max connections reached");
@@ -92,6 +98,8 @@ public class BluetoothHandler extends NetworkHandler {
 			broadcastPlayersReadyMessage(addresses);
 		}
 	};
+	
+	/** Gets called when a connection has been established */
 	private OnIncomingConnectionListener connectedListener = new OnIncomingConnectionListener() {
 		public void OnIncomingConnection(final BluetoothDevice device) {
 			Log.d(TAG, "Incoming connection: " + device.getName());
@@ -101,6 +109,7 @@ public class BluetoothHandler extends NetworkHandler {
 		}
 	};
 
+	/** Gets called when the connection to a unit has been lost */ 
 	private OnConnectionLostListener disconnectedListener = new OnConnectionLostListener() {
 		public void OnConnectionLost(BluetoothDevice device) {
 			Log.d(TAG, "Connection lost: " + device);
@@ -247,11 +256,13 @@ public class BluetoothHandler extends NetworkHandler {
 		return deviceName.contains(Constants.SERVER_NAME + hostNumber);
 	}
 
+	/** Registers a broadcastreceiver for when a device has been found */
 	private void registerBroadcastReceiver() {
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		context.registerReceiver(mReceiver, filter);
 	}
 	
+	/** Unregisters the broadcastreceiver */
 	private void unregisterBroadcastReceiver() {
 		if (mReceiver != null) {
 			try {
@@ -262,6 +273,7 @@ public class BluetoothHandler extends NetworkHandler {
 		}
 	}
 
+	/** This will act on when a devic has been found */
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
@@ -277,8 +289,7 @@ public class BluetoothHandler extends NetworkHandler {
 			}
 		}
 	};
-
-	// Temporary test method
+	
 	/**
 	 * Goes through all available nearby devices and looks valid server devices
 	 * 
@@ -297,9 +308,6 @@ public class BluetoothHandler extends NetworkHandler {
 		return null;
 	}
 
-	/**
-	 * Resets the network
-	 */
 	@Override
 	public void destroy() {
 		unregisterBroadcastReceiver();
@@ -330,13 +338,13 @@ public class BluetoothHandler extends NetworkHandler {
 		connection.stopAcceptingConnections();
 	}
 	
-	// Test Method
+	@Override
 	public void testSendMessage() {
 		connection.broadcastMessage(new EventMessage(C.Tag.TEST,
 				C.Msg.TEST));
 	}
 
-	// Message handler - not used atmo
+	/** Handler for posting runnables to the ui-threads message queue */ 
 	private final static Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -372,6 +380,7 @@ public class BluetoothHandler extends NetworkHandler {
 		connection.broadcastMessage(message);
 	}
 
+	/** Sends a message to a specific bluetooth device */
 	public void sendMessageToPlayer(BluetoothDevice device, EventMessage message) {
 		connection.sendMessage(device, message);
 	}
