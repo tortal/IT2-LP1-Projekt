@@ -17,14 +17,23 @@ import android.view.Gravity;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
+/** Abstract parent class for network handling */
 public abstract class NetworkHandler implements INetworkHandler, EventBusListener {
+	private static final String TAG = "NetworkHandler";
+	
+	/** Android context */
 	protected Context context;
 
+	/** Maximum number of connections */
 	public static final int MAX_NUMBER_OF_PLAYERS = 3;
+	/** The delay before starting to connect in millis */
 	public static final int CONNECTION_DELAY = 5000;
-	private static final String TAG = "NetworkHandler";
 
 
+	/**
+	 * Creates a networkhandler
+	 * @param ctx The android context
+	 */
 	public NetworkHandler(Context ctx) {
 		context = ctx;
 
@@ -59,10 +68,12 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 		}
 	}
 
+	/** Toasts an EventMessage to the screen */
 	protected void toastMessage(final EventMessage message) {
 		toastMessage(message.toString());
 	}
 
+	/** Toasts an String to the screen */
 	protected void toastMessage(final String message) {
 		((AndroidApplication) context).runOnUiThread(new Runnable() {
 			public void run() {
@@ -102,6 +113,9 @@ public abstract class NetworkHandler implements INetworkHandler, EventBusListene
 		hostNumber = 1;
 	}
 
+	/**
+	 * Displays a pop up to inform user that connection has been lost
+	 */
 	public void displayConnectionLostAlert() {
 		class displayConnectionLostAlert implements Runnable {
 			public void run() {

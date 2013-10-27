@@ -71,22 +71,34 @@ import com.esotericsoftware.kryonet.Server;
 public class WifiHandler extends NetworkHandler implements WifiP2pManager.ConnectionInfoListener {
 	public static final String TAG = "WifiHandler";
 
+	/** Maximum time kryonet waits for a connection to work, in millis*/
 	private static final int MAX_KRYONET_BLOCKING_TIME = 5000;
+	/** Tcp port to use */
 	private static final int TCP_PORT = 54555;
+	/** Kryonet client */
 	private Client client;
+	/** Kryonet server */
 	private Server server;
 
 	// Client/Server logic gets loaded prematurely when listeners fire on startup,
 	// this flag prevents this
 	private boolean isReadyToConnect = false; 
 
+	/** Connection to android wifi p2p */
 	WifiP2pManager mManager;
+	/** Connection to android wifi p2p */
 	Channel mChannel;
 
+	/** The actions for the broadcastreceiver to look for */
 	IntentFilter mIntentFilter;
 
+	/** Handler for posting runnables to the ui-threads message queue */
 	private Handler mHandler = new Handler();
 
+	/**
+	 * Creates a <code>WifiHandler</code> object
+	 * @param ctx The android context
+	 */
 	public WifiHandler(Context ctx) {
 		super(ctx);
 
@@ -116,7 +128,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	public void joinLobby() {
 		isReadyToConnect = true;
 		forgetAnyExistingWifiGroup();
-		resetConnection();
+		stopDiscovery();
 		mManager.requestConnectionInfo(mChannel, this);
 	}
 
@@ -163,6 +175,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		return macAddress;
 	}
 
+	/** Handles the wifi events broadcasted by the android hardware */
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -207,6 +220,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}
 	};
 
+	/** Unregisters the broadcastreceiver */
 	private void unregisterBroadcastReceiver() {
 		if (mReceiver != null) {
 			try {
@@ -245,7 +259,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}
 	}
 
+	/** List of dicovered peers */
 	private List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+	/** Listener for what to do when a peer is detected */
 	private PeerListListener myPeerListListener = new PeerListListener() {
 
 		@Override
@@ -259,8 +275,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}
 	};
 
+	/** Stops discovering peers */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private void resetConnection() {
+	private void stopDiscovery() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			mManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
 
@@ -316,6 +333,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		}, CONNECTION_DELAY);
 	}
 
+	/** Attempts to connect do a wifi p2p device */
 	private void connectToDevice(final WifiP2pDevice device) {
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
@@ -336,6 +354,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	/** Resets network */
 	public void resetNetwork() {
 		removeWifiGroup();
 		clearServices();
@@ -351,6 +370,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		mChannel = mManager.initialize(context, context.getMainLooper(), null);
 	}
 
+	/** Removes the wifi p2p group */
 	private void removeWifiGroup() {
 		Log.d(TAG, "Removing wifi group");
 		mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
@@ -367,6 +387,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});		
 	}
 
+	/** Creates a new Wifi p2p group */
 	private void createNewWifiGroup() {
 		mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 
@@ -382,6 +403,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	/** Removes wifi p2p group if it exists */
 	private void forgetAnyExistingWifiGroup() {
 		Log.d(TAG, "Requesting group info to forget");
 		mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
@@ -399,6 +421,9 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 	// This all requires Api level 16 - Jelly Bean
 	// More or less Copy and pasted from developer.android.com 
 
+	/** Registers a DnsSdService broadcasting the Tendu name,
+	 * so clients will know who to connect to
+	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void startRegistration() {
 		//  String map containing information about the service.
@@ -422,6 +447,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	/** Discover any units broadcasting the Tendu service and connects to the first one found */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void discoverService() {
 		DnsSdTxtRecordListener txtListener = new DnsSdTxtRecordListener() {
@@ -478,6 +504,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	/** Delete any services that are broadcasting */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void clearServices() {
 		mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
@@ -494,6 +521,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	}
 
+	/** Displays a notification i api level is too low to support wifi p2p */
 	private void notfiyIfApiLevelTooLow() {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			toastMessage("Api version too low. Need Jelly Bean (Api level 16)");
@@ -502,6 +530,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 
 	// ********************** Kryo *********************************
 
+	/** Initiates a Kryonet server */
 	private void startKryoNetServer() {
 		//Creates a Server with a write buffer size of 16384 and an object buffer size of 2048.
 		
@@ -540,6 +569,7 @@ public class WifiHandler extends NetworkHandler implements WifiP2pManager.Connec
 		});
 	}
 
+	/** Initiates a Kryonet client */
 	private class StartKryoNetClientTask extends AsyncTask<String, Void, Object> {
 		@Override
 		protected Object doInBackground(String... addresses) {
