@@ -5,16 +5,25 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * Factory class for creating screens corresponding to a specified {@link MiniGame}
+ */
 public class MiniGameScreenFactory {
 
-	public static Screen createMiniGameScreen(Tendu game, MiniGame miniModel) {
+	/**
+	 * 
+	 * @param tendu main tendu object
+	 * @param miniGame the miniGame which screen you want
+	 * @return
+	 */
+	public static Screen createMiniGameScreen(Tendu tendu, MiniGame miniGame) {
 		Gdx.app.log("MiniGameScreenFactory",
-				"gameId = " + miniModel.getGameId());
-		switch (miniModel.getGameId()) {
+				"gameId = " + miniGame.getGameId());
+		switch (miniGame.getGameId()) {
 		case NUMBER_GAME:
-			return new NumberGameScreen(game, miniModel);
+			return new NumberGameScreen(tendu, miniGame);
 		case SHAPE_GAME:
-			return new ShapeGameScreen(game, miniModel);
+			return new ShapeGameScreen(tendu, miniGame);
 		}
 		return null;
 	}

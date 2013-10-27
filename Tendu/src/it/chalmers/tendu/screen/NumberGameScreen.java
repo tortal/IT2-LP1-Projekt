@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 
-/** GameScreen for the number minigame. Contains all graphics, sounds etc. **/
+/** GameScreen for {@link NumberGame}. Contains graphics, sounds etc. **/
 public class NumberGameScreen extends GameScreen {
 	private ArrayList<Color> colors; // list with colors for all numbers
 	private ArrayList<Integer> guessNumbers; // the correct numbers
@@ -34,16 +34,17 @@ public class NumberGameScreen extends GameScreen {
 	private SimpleTimer gameCompletedTimer; // makes sure the game does not end
 											// the millisecond you've one or
 											// lost
-	int numberSpacing;
-	int numberAlignment;
+	int numberSpacing; // used for graphical placement of number
+	int numberAlignment; // used for graphical placement of number
 
-	private NumberGameController controller;
+	private NumberGameController controller; // controller for the game
 
 	private NumberGameSound sound;
 
 	private BitmapFont font;
 	private BitmapFont numberFont;
 
+	// some TextWidgets for on screen text
 	private TextWidget memorizeText;
 	private TextWidget instructionText;
 	private TextWidget timeOutText;
@@ -53,13 +54,14 @@ public class NumberGameScreen extends GameScreen {
 
 	/**
 	 * @param tendu
-	 *            the applicationlistener
+	 *            the main tendu object
 	 * @param model
-	 *            the MiniGame model associated with the screen
+	 *            a NumberGame model
 	 */
 	public NumberGameScreen(Tendu tendu, MiniGame model) {
 		super(tendu, model);
 
+		// create the controller and load the resources
 		controller = new NumberGameController((NumberGame) model);
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
@@ -68,16 +70,20 @@ public class NumberGameScreen extends GameScreen {
 				Gdx.files.internal("fonts/digitalTendu.png"), false);
 		sound = new NumberGameSound();
 
+		// run initial setup
 		setUpGame();
 	}
 
+	// TODO divide in smaller functions
 	/**
 	 * Initial setup
 	 */
 	private void setUpGame() {
+		// timers for gui related stuff
 		instructionsTimer = new SimpleTimer();
 		gameCompletedTimer = new SimpleTimer();
 
+		// instruction and information TextWidgets
 		memorizeText = new TextWidget(TextLabels.MEMORIZE_NUMBERS, new Vector2(
 				250, 595), Constants.MENU_FONT_COLOR);
 		instructionText = new TextWidget(TextLabels.ENTER_NUMBERS, new Vector2(
@@ -90,7 +96,8 @@ public class NumberGameScreen extends GameScreen {
 		guessNumbersWidgets = new ArrayList<TextWidget>();
 		numberWidgets = new ArrayList<TextWidget>();
 
-		// TODO more natural colors
+		// create a list of colors which we shuffle so all numbers gets random
+		// colorss
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -137,7 +144,7 @@ public class NumberGameScreen extends GameScreen {
 			guessNumbersWidgets.get(i).expandWidth(15);
 		}
 
-		// TODO fewer players should have more time for better game balance
+		// fewer players should have more time for better game balance
 		if (numbers.size() <= 2) {
 			time = 2000;
 		} else if (numbers.size() <= 4) {
@@ -151,30 +158,29 @@ public class NumberGameScreen extends GameScreen {
 	}
 
 	/**
-	 * Draws the correct numbers list to the screen
-	 * 
-	 * @param showAll
-	 *            set to false if only correctly answered numbers should be
-	 *            drawn
+	 * Draw the numbers we've guessed correctly on
 	 */
-	private void drawNumbers(boolean showAll) {
-		if (showAll) {
-			for (int i = 0; i < numbers.size(); i++) {
+	private void drawCorrectlyGuessedNumbers() {
+		for (int i = 0; i < numbers.size(); i++) {
+			if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
 				numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
 						numberFont);
-			}
-		} else {
-			for (int i = 0; i < numbers.size(); i++) {
-				if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-					numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
-							numberFont);
-				}
 			}
 		}
 	}
 
 	/**
-	 * Draws all guess numbers
+	 * Draw all the correct numberss
+	 */
+	private void drawAllNumbers() {
+		for (int i = 0; i < numbers.size(); i++) {
+			numberWidgets.get(i).drawAtCenterPoint(tendu.spriteBatch,
+					numberFont);
+		}
+	}
+
+	/**
+	 * Draws all number we can guess among
 	 */
 	private void drawGuessNumbers() {
 		for (int i = 0; i < guessNumbers.size(); i++) {
@@ -190,8 +196,7 @@ public class NumberGameScreen extends GameScreen {
 
 			if (!instructionsTimer.isDone()) {
 				memorizeText.draw(tendu.spriteBatch, font);
-				drawNumbers(true);
-
+				drawAllNumbers();
 			} else {
 				font.setColor(Color.BLUE);
 				instructionText.draw(tendu.spriteBatch, font);
@@ -199,7 +204,7 @@ public class NumberGameScreen extends GameScreen {
 				if (model.checkGameState() == GameState.LOST) {
 					timeOutText.draw(tendu.spriteBatch, font);
 				} else {
-					drawNumbers(false);
+					drawCorrectlyGuessedNumbers();
 				}
 				drawGuessNumbers();
 			}
