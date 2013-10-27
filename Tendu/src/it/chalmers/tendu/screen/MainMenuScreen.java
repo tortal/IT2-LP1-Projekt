@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
@@ -44,7 +43,7 @@ public class MainMenuScreen implements Screen {
 
 	public MainMenuScreen(INetwork networkHandler) {
 		hostNumber = 1;
-		
+
 		this.networkHandler = networkHandler;
 
 		// load resources and create som TextWidgets for on screen text
@@ -84,7 +83,8 @@ public class MainMenuScreen implements Screen {
 				// start the lobby as host
 				Player.getInstance().setHost(true);
 				networkHandler.hostSession();
-				EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_LOBBY_SCREEN);
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.CREATE_LOBBY_SCREEN);
 				EventBus.INSTANCE.broadcast(message);
 			}
 
@@ -92,7 +92,8 @@ public class MainMenuScreen implements Screen {
 				// start the lobby as client
 				Player.getInstance().setHost(false);
 				networkHandler.joinLobby();
-				EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_LOBBY_SCREEN);
+				EventMessage message = new EventMessage(C.Tag.TO_SELF,
+						C.Msg.CREATE_LOBBY_SCREEN);
 				EventBus.INSTANCE.broadcast(message);
 			}
 

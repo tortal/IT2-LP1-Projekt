@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.controller.ShapeGameController;
 import it.chalmers.tendu.defaults.Constants;
@@ -28,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-/** GameScreen for the Shape minigame. Contains all graphics, sounds etc. **/
+/** GameScreen for {@link ShapeGame}. Contains all graphics, sounds etc. **/
 public class ShapeGameScreen extends GameScreen {
 
 	public final String TAG = this.getClass().getName();
@@ -159,8 +158,7 @@ public class ShapeGameScreen extends GameScreen {
 				controller.getModel().startGameTimer();
 				if (shapeGameModel.checkGameState() == GameState.RUNNING
 						|| gameCompletedTimer.isRunning()) {
-					shapeRenderer
-							.setProjectionMatrix(camera.combined);
+					shapeRenderer.setProjectionMatrix(camera.combined);
 					// Renders locks
 					for (GraphicalShape sgs : locks) {
 						sgs.render(shapeRenderer);
@@ -389,7 +387,7 @@ public class ShapeGameScreen extends GameScreen {
 
 	// this message must be sent only once
 	private boolean ended = false;
-	
+
 	/**
 	 * BroadCasts a message to the controller that the game is done
 	 */

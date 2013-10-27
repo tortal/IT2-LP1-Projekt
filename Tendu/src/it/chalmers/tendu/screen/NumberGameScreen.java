@@ -228,7 +228,7 @@ public class NumberGameScreen extends GameScreen {
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				// the game is finished
-				model.stopTimer(); //TODO do from controller instead
+				model.stopTimer(); // TODO do from controller instead
 				gameCompletedTimer.start(1500); // let the game run for a brief
 												// time before it's ended
 
@@ -247,7 +247,7 @@ public class NumberGameScreen extends GameScreen {
 												// starts
 
 				if (instructionsTimer.isDone()) {
-					model.startGameTimer(); //TODO do from controller instead
+					model.startGameTimer(); // TODO do from controller instead
 
 					// check input and tell controller what needs to be done
 					if (input.isTouchedUp()) {

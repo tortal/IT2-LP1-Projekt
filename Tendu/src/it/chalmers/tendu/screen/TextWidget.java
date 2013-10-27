@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * Conveniance class for displaying text on screen
+ * 
+ */
 public class TextWidget {
 	private String text;
 	private Vector2 position;
@@ -18,18 +22,54 @@ public class TextWidget {
 
 	private boolean drawAtCenter;
 
+	/**
+	 * 
+	 * @param text
+	 *            text to draw
+	 * @param position
+	 *            position of text on screen
+	 */
 	public TextWidget(String text, Vector2 position) {
 		this(text, position, Color.WHITE, 0f);
 	}
 
+	/**
+	 * 
+	 * @param text
+	 *            text to draw
+	 * @param position
+	 *            position of text on screen
+	 * @param color
+	 *            color of text
+	 */
 	public TextWidget(String text, Vector2 position, Color color) {
 		this(text, position, color, 0f);
 	}
 
+	/**
+	 * 
+	 * @param text
+	 *            text to draw
+	 * @param position
+	 *            position of text on screen
+	 * @param scale
+	 *            scale of font
+	 */
 	public TextWidget(String text, Vector2 position, float scale) {
 		this(text, position, Color.WHITE, scale);
 	}
 
+	/**
+	 * 
+	 * @param text
+	 *            text to draw
+	 * @param position
+	 *            position of text on screen
+	 * @param color
+	 *            color of text
+	 * @param scale
+	 *            scale of font
+	 */
 	public TextWidget(String text, Vector2 position, Color color, float scale) {
 		this.text = text;
 		this.position = position;
@@ -43,6 +83,15 @@ public class TextWidget {
 		this.centerPosition = new Vector2(0, 0);
 	}
 
+	/**
+	 * Draws the text on screen. X = Left of first letter of text, Y = bottom of
+	 * the text
+	 * 
+	 * @param spriteBatch
+	 *            spriteBatch to draw on
+	 * @param font
+	 *            font to draw with
+	 */
 	public void draw(SpriteBatch spriteBatch, BitmapFont font) {
 		drawAtCenter = false;
 		font.setColor(color);
@@ -62,6 +111,14 @@ public class TextWidget {
 		font.scale(-scale);
 	}
 
+	/**
+	 * Draws the text on screen. X = center of the text, Y = center of the text
+	 * 
+	 * @param spriteBatch
+	 *            spriteBatch to draw on
+	 * @param font
+	 *            font to draw with
+	 */
 	public void drawAtCenterPoint(SpriteBatch spriteBatch, BitmapFont font) {
 		drawAtCenter = true;
 		font.setColor(color);
@@ -82,6 +139,12 @@ public class TextWidget {
 		font.scale(-scale);
 	}
 
+	/**
+	 * 
+	 * @param touchPos
+	 *            Vector2 to check if collided
+	 * @return true if collided, else false
+	 */
 	public boolean collided(Vector2 touchPos) {
 		if (!drawAtCenter) {
 			if (touchPos.x > position.x && touchPos.x < position.x + width) {
@@ -146,10 +209,22 @@ public class TextWidget {
 		position.y = y;
 	}
 
+	/**
+	 * Use if moving placement of text
+	 * 
+	 * @param x
+	 *            add relative to current x position
+	 */
 	public void addToX(float x) {
 		position.x = position.x + x;
 	}
 
+	/**
+	 * Use if moving placement of text
+	 * 
+	 * @param y
+	 *            add relative to current y position
+	 */
 	public void addToY(float y) {
 		position.y = position.y + y;
 	}
