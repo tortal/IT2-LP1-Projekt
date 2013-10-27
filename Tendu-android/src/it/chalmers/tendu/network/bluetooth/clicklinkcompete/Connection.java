@@ -29,14 +29,15 @@ import android.util.Log;
  * 
  * Tailored to size by the Tendu crew
  */
-
 public class Connection {
+	
 	public static final String TAG = "Connection";
 
 	public static final int SUCCESS = 0;
 
 	public static final int FAILURE = 1;
 
+	/** Maximum number of bluetooth connections supported by android */
 	public static final int MAX_SUPPORTED = 7;
 
 	public interface OnIncomingConnectionListener {
@@ -56,13 +57,26 @@ public class Connection {
 		public void OnConnectionLost(BluetoothDevice device);
 	}
 
+	/** The "service" handling all the connection threads */
 	private ConnectionService connectionService;
 
+	/**
+	 * Creates a <code>Connection</code> object
+	 * @param ctx The android context
+	 */
 	public Connection(Context ctx) {
-
 		connectionService = new ConnectionService(ctx);
 	}
 
+	/**
+	 * Starts a server
+	 * @param maxConnections maximum allowed connections
+	 * @param oicListener Listener for incoming connections
+	 * @param omcrListener Listener for when max connections are reached
+	 * @param omrListener Listener for received messages
+	 * @param oclListener Listener for when a connection is lost
+	 * @return Whether the creation was successful or not
+	 */
 	public int startServer(final int maxConnections,
 			OnIncomingConnectionListener oicListener,
 			OnMaxConnectionsReachedListener omcrListener,
@@ -85,6 +99,13 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
+	/**
+	 * Attempts to establish a connection to a bluetooth device
+	 * @param device The bluetooth device
+	 * @param omrListener Listener for received messages
+	 * @param oclListener Listener for when the connection is lost
+	 * @return
+	 */
 	public int connect(BluetoothDevice device,
 			OnMessageReceivedListener omrListener,
 			OnConnectionLostListener oclListener) {
@@ -98,6 +119,12 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
+	/**
+	 * Sends a message to a specific bluetooth device
+	 * @param device The bluetooth device
+	 * @param message The message to be sent
+	 * @return
+	 */
 	public int sendMessage(BluetoothDevice device, EventMessage message) {
 
 		try {
@@ -108,6 +135,11 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
+	/**
+	 * Send a message to all connected bluetooth devices
+	 * @param message The message to be sent
+	 * @return Whether the broadcast was successful or not
+	 */
 	public int broadcastMessage(EventMessage message) {
 		Log.d(TAG, "broadcastMessage: " + message.toString());
 		try {
@@ -118,6 +150,10 @@ public class Connection {
 		return Connection.FAILURE;
 	}
 
+	/**
+	 * Returns the local mac-address
+	 * @return The mac-address
+	 */
 	public String getAddress() {
 
 		try {
@@ -128,6 +164,10 @@ public class Connection {
 		return "";
 	}
 
+	/**
+	 * Returns the local device friendly name
+	 * @return The name
+	 */
 	public String getName() {
 
 		try {
@@ -138,15 +178,21 @@ public class Connection {
 		return "";
 	}
 
+	/**
+	 * Resets the <code>Connection</code>
+	 */
 	public void reset() {
 		try {
 			connectionService.reset();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Cease to listen for incoming connections 
+	 * No more matchmaking.
+	 */
 	public void stopAcceptingConnections() {
 		connectionService.stopAcceptingConnections();
 		
