@@ -1,9 +1,9 @@
 package it.chalmers.tendu.screen;
 
+import it.chalmers.tendu.controller.InputController;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import it.chalmers.tendu.controller.InputController;
 
 /**
  * A Screen represents the presentation layer. (As in Model-View-Presentation)
@@ -16,8 +16,9 @@ public interface Screen {
 
 	/**
 	 * Renders the graphic of the implemented Screen.
-	 * @param camera 
-	 * @param spriteBatch 
+	 * 
+	 * @param camera
+	 * @param spriteBatch
 	 */
 	public void render(SpriteBatch spriteBatch, OrthographicCamera camera);
 

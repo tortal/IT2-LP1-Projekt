@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;

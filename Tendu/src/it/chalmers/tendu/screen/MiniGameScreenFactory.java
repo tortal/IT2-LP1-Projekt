@@ -1,6 +1,5 @@
 package it.chalmers.tendu.screen;
 
-import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.gamemodel.MiniGame;
 
 import com.badlogic.gdx.Gdx;
