@@ -17,6 +17,12 @@ public class NumberGameController implements MiniGameController {
 	private static final int PENALTY_TIME = -3000;
 	private NumberGame numberGame;
 
+	/**
+	 * Creates a new Controller for NumberGame. Changes the model and receives
+	 * broadcasts from the network.
+	 * 
+	 * @param model
+	 */
 	public NumberGameController(NumberGame model) {
 		numberGame = model;
 		EventBus.INSTANCE.addListener(this);

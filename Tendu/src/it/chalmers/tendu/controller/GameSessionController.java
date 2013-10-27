@@ -14,24 +14,39 @@ import it.chalmers.tendu.gamemodel.Player;
 import com.badlogic.gdx.Gdx;
 
 /**
- * GameSession controller deluxe
- *
+ * GameSession controller handles the GameSession model.
+ * 
  */
 public class GameSessionController implements EventBusListener {
 	private static final String TAG = "GameSessionController";
 
 	private GameSession gameSession;
 
-	public GameSessionController(GameSession gameSession) {
-		this.gameSession = gameSession;
+	/**
+	 * Creates a new Controller for gameSession. Changes the model and receives
+	 * broadcasts from the network.
+	 * 
+	 * @param session
+	 */
+	public GameSessionController(GameSession model) {
+		this.gameSession = model;
 		EventBus.INSTANCE.addListener(this);
 		gameSession.nextScreen();
 	}
 
-	public void setModel(GameSession session) {
-		this.gameSession = session;
+	/**
+	 * Sets current game session to the one sent in.
+	 * 
+	 * @param model
+	 */
+	public void setModel(GameSession model) {
+		this.gameSession = model;
 	}
 
+	/**
+	 * Receives messages from the eventbus and directs them to the appropriate
+	 * methods.
+	 */
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
@@ -47,6 +62,12 @@ public class GameSessionController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is host.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsHost(EventMessage message) {
 		if (message.tag == C.Tag.CLIENT_REQUESTED
 				|| message.tag == C.Tag.TO_SELF) {
@@ -144,6 +165,12 @@ public class GameSessionController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * Message are handled here if the player is client.
+	 * 
+	 * @param message
+	 *            from the eventbus.
+	 */
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 
@@ -201,6 +228,10 @@ public class GameSessionController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * Tells tendu to reset the application, then unregisters itself from the
+	 * eventbus.
+	 */
 	private void returnToMainMenu() {
 		// Received in Tendu.
 		EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.RESTART);
