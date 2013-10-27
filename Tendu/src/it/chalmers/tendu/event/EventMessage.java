@@ -22,7 +22,6 @@ public class EventMessage {
 	// TODO old protocol, let's replace this with the above!
 	public C.Tag tag;
 	public C.Msg msg;
-	public GameId gameId;
 	public Object content;
 
 	/** Only used by reflection */
@@ -30,7 +29,6 @@ public class EventMessage {
 	private EventMessage() {
 		tag = null;
 		msg = null;
-		gameId = null;
 		content = null;
 	}
 
@@ -65,7 +63,6 @@ public class EventMessage {
 		this.tag = newTag;
 		this.msg = message.msg;
 		// this.mac = message.mac;
-		this.gameId = message.gameId;
 		this.content = message.content;
 	}
 

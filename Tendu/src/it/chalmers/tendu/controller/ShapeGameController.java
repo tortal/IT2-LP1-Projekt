@@ -109,28 +109,27 @@ public class ShapeGameController implements MiniGameController {
 		}
 
 		if (message.tag == Tag.HOST_COMMANDED) {
-			if (message.gameId == GameId.SHAPE_GAME) {
-				// Gdx.app.log(TAG, "Recived from host");
-				// Lock attempt
-				if (message.msg == C.Msg.LOCK_ATTEMPT) {
-					if (insertIntoSlot(message.content)) {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_SUCCEED);
-						EventBus.INSTANCE.broadcast(soundMsg);
-						Gdx.app.log(TAG, "Client changed model");
-					} else {
+			// Gdx.app.log(TAG, "Recived from host");
+			// Lock attempt
+			if (message.msg == C.Msg.LOCK_ATTEMPT) {
+				if (insertIntoSlot(message.content)) {
 
-						// Received by NumberGameSound.
-						EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
-								C.Msg.SOUND_FAIL);
-						EventBus.INSTANCE.broadcast(soundMsg);
-					}
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_SUCCEED);
+					EventBus.INSTANCE.broadcast(soundMsg);
+					Gdx.app.log(TAG, "Client changed model");
+				} else {
+
+					// Received by NumberGameSound.
+					EventMessage soundMsg = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.SOUND_FAIL);
+					EventBus.INSTANCE.broadcast(soundMsg);
 				}
-				if (message.msg == C.Msg.SHAPE_SENT) {
-					sendShape(message.content);
-				}
+			}
+			if (message.msg == C.Msg.SHAPE_SENT) {
+				sendShape(message.content);
 			}
 		}
 	}
