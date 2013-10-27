@@ -12,20 +12,33 @@ import it.chalmers.tendu.gamemodel.Player;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * Lobby controller handles the lobby model and creates a game session when all
+ * player are connected and ready.
+ */
 public class LobbyController implements EventBusListener {
 	public static final String TAG = "LobbyController";
 
 	private LobbyModel model;
 
+	/**
+	 * Creates a new Controller for LobbyModel. Changes the model and receives
+	 * broadcasts from the network.
+	 * 
+	 * @param model
+	 */
 	public LobbyController(LobbyModel model) {
 		EventBus.INSTANCE.addListener(this);
 		this.model = model;
 	}
 
+	/**
+	 * Receives messages from the eventbus and directs them to the appropriate
+	 * methods.
+	 */
 	@Override
 	public void onBroadcast(EventMessage message) {
 		if (Player.getInstance().isHost()) {
-			Gdx.app.log(TAG, "Are we host yet?");
 			handleAsHost(message);
 		} else {
 			Gdx.app.log(TAG, "Message: " + (message == null));
@@ -33,6 +46,12 @@ public class LobbyController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is host.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsHost(EventMessage message) {
 
 		if (message.tag == C.Tag.CLIENT_REQUESTED
@@ -97,6 +116,12 @@ public class LobbyController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * Messages from eventbus are handled here if the player is client.
+	 * 
+	 * @param message
+	 *            from eventbus.
+	 */
 	private void handleAsClient(EventMessage message) {
 		if (message.tag == C.Tag.TO_SELF) {
 
@@ -120,6 +145,9 @@ public class LobbyController implements EventBusListener {
 		}
 	}
 
+	/**
+	 * @return the current lobby model.
+	 */
 	public LobbyModel getModel() {
 		return model;
 	}
