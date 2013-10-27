@@ -257,8 +257,7 @@ public class NumberGameScreen extends GameScreen {
 								EventBus.INSTANCE
 										.broadcast(new EventMessage(
 												C.Tag.TO_SELF,
-												C.Msg.NUMBER_GUESS, model
-														.getGameId(),
+												C.Msg.NUMBER_GUESS,
 												guessNumbers.get(i)));
 							}
 							// reset scale on guessed number

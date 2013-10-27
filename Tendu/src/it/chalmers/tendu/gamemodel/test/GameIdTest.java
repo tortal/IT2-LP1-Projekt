@@ -1,7 +1,8 @@
-package it.chalmers.tendu.gamemodel;
+package it.chalmers.tendu.gamemodel.test;
 
 import static org.junit.Assert.assertTrue;
 import it.chalmers.tendu.defaults.Constants.Difficulty;
+import it.chalmers.tendu.gamemodel.GameId;
 
 import java.util.Collections;
 import java.util.List;

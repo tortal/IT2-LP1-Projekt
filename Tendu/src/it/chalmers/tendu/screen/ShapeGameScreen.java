@@ -183,16 +183,16 @@ public class ShapeGameScreen extends GameScreen {
 														 * Player.getInstance()
 														 * .getMac(),
 														 */C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, controller.getModel().getGameId(),
-					messageContentFactory(controller.getModel()
-							.getOtherPlayerNumbers().get(0), s.getShape())));
+					C.Msg.SHAPE_SENT, messageContentFactory(controller
+							.getModel().getOtherPlayerNumbers().get(0),
+							s.getShape())));
 		} else if (s.getBounds().x <= SEND_MARGIN && otherPlayers.size() >= 2) {
 			EventBus.INSTANCE.broadcast(new EventMessage(/*
 														 * Player.getInstance()
 														 * .getMac(),
 														 */C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, controller.getModel().getGameId(),
-					messageContentFactory(otherPlayers.get(1), s.getShape())));
+					C.Msg.SHAPE_SENT, messageContentFactory(
+							otherPlayers.get(1), s.getShape())));
 		} else if (s.getBounds().x + s.WIDTH >= Constants.SCREEN_WIDTH
 				- SEND_MARGIN
 				&& otherPlayers.size() >= 3) {
@@ -200,8 +200,8 @@ public class ShapeGameScreen extends GameScreen {
 														 * Player.getInstance()
 														 * .getMac(),
 														 */C.Tag.TO_SELF,
-					C.Msg.SHAPE_SENT, controller.getModel().getGameId(),
-					messageContentFactory(otherPlayers.get(2), s.getShape())));
+					C.Msg.SHAPE_SENT, messageContentFactory(
+							otherPlayers.get(2), s.getShape())));
 		}
 	}
 
@@ -350,8 +350,7 @@ public class ShapeGameScreen extends GameScreen {
 
 			// Received by ShapeGameController.
 			EventBus.INSTANCE.broadcast(new EventMessage(C.Tag.TO_SELF,
-					C.Msg.LOCK_ATTEMPT, controller.getModel().getGameId(),
-					content));
+					C.Msg.LOCK_ATTEMPT, content));
 		}
 	}
 

@@ -22,7 +22,6 @@ public class EventMessage {
 	// TODO old protocol, let's replace this with the above!
 	public C.Tag tag;
 	public C.Msg msg;
-	public GameId gameId;
 	public Object content;
 
 	/** Only used by reflection */
@@ -30,7 +29,6 @@ public class EventMessage {
 	private EventMessage() {
 		tag = null;
 		msg = null;
-		gameId = null;
 		content = null;
 	}
 
@@ -55,10 +53,9 @@ public class EventMessage {
 
 	// TODO: Below here is the old protocol. i call it Tendu Legacy. :)
 
-	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content) {
+	public EventMessage(C.Tag tag, C.Msg msg, Object content) {
 		this.tag = tag;
 		this.msg = msg;
-		this.gameId = gameId;
 		this.content = content;
 	}
 
@@ -66,16 +63,7 @@ public class EventMessage {
 		this.tag = newTag;
 		this.msg = message.msg;
 		// this.mac = message.mac;
-		this.gameId = message.gameId;
 		this.content = message.content;
-	}
-
-	public EventMessage(C.Tag tag, C.Msg msg, Object content) {
-		this(tag, msg, null, content);
-	}
-
-	public EventMessage(C.Tag tag, C.Msg msg, GameId gameId) {
-		this(tag, msg, gameId, null);
 	}
 
 	// public EventMessage(C.Tag tag, C.Msg msg, GameId gameId, Object content){
@@ -83,7 +71,7 @@ public class EventMessage {
 	// }
 
 	public EventMessage(C.Tag tag, C.Msg msg) {
-		this(tag, msg, null, null);
+		this(tag, msg, null);
 	}
 
 }

@@ -194,9 +194,10 @@ public class MainMenuScreen implements Screen {
 		hostGame.draw(spriteBatch, font);
 		joinGame.draw(spriteBatch, font);
 
-		bluetooth.draw(spriteBatch, menuFont);
-		wifi.draw(spriteBatch, menuFont);
-		selected.draw(spriteBatch, menuFont);
+		// These three lines left for when we want to reinstate the wifi/bluetooth choice
+		//bluetooth.draw(spriteBatch, menuFont);
+		//wifi.draw(spriteBatch, menuFont);
+		//selected.draw(spriteBatch, menuFont);
 
 		// only for testing
 		// hostType.draw(tendu.spriteBatch, menuFont);
