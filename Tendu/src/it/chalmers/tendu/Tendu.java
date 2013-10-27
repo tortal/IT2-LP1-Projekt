@@ -214,7 +214,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 			}
 			// Resets the network and loads the Main menu screen
 			// The message is received when the connection to the other players
-			// is lost (a better solution would be to show a connection lost
+			// is lost (a better long time solution would be to show a connection lost
 			// screen first)
 			// It's also received if you go back from the lobby or pressing Main
 			// menu when the game is over
@@ -222,7 +222,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(networkHandler);
 				setScreen(screen);
-
+				
 			}
 			// Stop accepting more connections if a game session has started
 			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {

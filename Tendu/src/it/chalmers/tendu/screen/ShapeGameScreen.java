@@ -54,8 +54,6 @@ public class ShapeGameScreen extends GameScreen {
 											// instructions should be displayed
 	private List<Integer> otherPlayers;
 
-	private static int timesPlayed = 0;
-
 	// Assets
 	private TextWidget instructions;
 	private TextWidget teamInstructions;
@@ -94,13 +92,8 @@ public class ShapeGameScreen extends GameScreen {
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 
-		// We only need to show the instructions once
-		if (timesPlayed > 0) {
-			timeForInstructions = 0;
-		} else {
-			timeForInstructions = 3500;
-			timesPlayed++;
-		}
+
+		timeForInstructions = 3500;
 	}
 
 	/**

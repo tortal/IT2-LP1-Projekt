@@ -1,6 +1,5 @@
 package it.chalmers.tendu.event;
 
-import it.chalmers.tendu.gamemodel.GameId;
 
 /**
  * An EventMessage may be sent using the

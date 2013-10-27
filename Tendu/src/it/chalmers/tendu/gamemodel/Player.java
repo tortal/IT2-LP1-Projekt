@@ -6,14 +6,24 @@ package it.chalmers.tendu.gamemodel;
 public class Player {
 	private static Player instance = null;
 
-	private String mac; // macAdress of device/player
-	private boolean host; // is the player host
+	/**
+	 * MAC-address of this device. To be set manually by the platform-specific
+	 * network implementation.
+	 */
+	private String mac;
+	/**
+	 * TRUE if this device is acting as server.
+	 */
+	private boolean isHost;
 
 	private Player() {
 		mac = "";
-		host = false;
+		isHost = false;
 	}
 
+	/**
+	 * @return the Player singleton.
+	 */
 	public static Player getInstance() {
 		if (instance != null) {
 			return instance;
@@ -32,11 +42,11 @@ public class Player {
 	}
 
 	public void setHost(boolean isHost) {
-		host = isHost;
+		this.isHost = isHost;
 	}
 
 	public boolean isHost() {
-		return host;
+		return isHost;
 	}
 
 }

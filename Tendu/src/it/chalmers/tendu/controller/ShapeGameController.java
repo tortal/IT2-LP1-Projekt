@@ -4,7 +4,6 @@ import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Tag;
 import it.chalmers.tendu.event.EventBus;
 import it.chalmers.tendu.event.EventMessage;
-import it.chalmers.tendu.gamemodel.GameId;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.shapesgame.NetworkShape;
 import it.chalmers.tendu.gamemodel.shapesgame.Shape;
