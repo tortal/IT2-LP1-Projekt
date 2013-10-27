@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class GameSession {
 
-	// public String hostMacAddress;
 	public MiniGame currentMiniGame = null;
 	private int completedLvls;
 	private Difficulty difficulty = Difficulty.ONE;

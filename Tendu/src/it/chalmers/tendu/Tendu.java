@@ -13,6 +13,7 @@ import it.chalmers.tendu.network.INetwork;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screen.GameOverScreen;
 import it.chalmers.tendu.screen.InterimScreen;
+import it.chalmers.tendu.screen.LobbyScreen;
 import it.chalmers.tendu.screen.MainMenuScreen;
 import it.chalmers.tendu.screen.MiniGameScreenFactory;
 import it.chalmers.tendu.screen.Screen;
@@ -82,7 +83,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 		spriteBatch = new SpriteBatch();
 
 		// First screen is the MainMenuScreen.
-		setScreen(new MainMenuScreen(this));
+		setScreen(new MainMenuScreen(networkHandler));
 
 		// setup the camera
 		camera = new OrthographicCamera();
@@ -127,7 +128,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 		// Initiate spriteBatch.
 		spriteBatch.begin();
 		// Let Screen manipulate the batch.
-		screen.render();
+		screen.render(spriteBatch, camera);
 		// Render batch.
 		spriteBatch.end();
 	}
@@ -184,8 +185,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 			// GameSessionController)
 			if (message.msg == C.Msg.CREATE_SCREEN) {
 				MiniGame game = (MiniGame) message.content;
-				Screen screen = MiniGameScreenFactory.createMiniGameScreen(
-						this, game);
+				Screen screen = MiniGameScreenFactory.createMiniGameScreen(game);
 				setScreen(screen);
 				EventMessage msg = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.WAITING_TO_START_GAME, Player.getInstance()
@@ -196,7 +196,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 			// Show a screen between games with current results...
 			else if (message.msg == C.Msg.SHOW_INTERIM_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
-				Screen screen = new InterimScreen(this, sessionResult);
+				Screen screen = new InterimScreen(sessionResult);
 				setScreen(screen);
 
 			}
@@ -204,9 +204,13 @@ public class Tendu implements ApplicationListener, EventBusListener {
 			// Show the game over screen
 			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
-				Screen screen = new GameOverScreen(this, sessionResult);
+				Screen screen = new GameOverScreen(sessionResult);
 				setScreen(screen);
 
+			}
+			// Show the lobby screen.
+			else if(message.msg == C.Msg.CREATE_LOBBY_SCREEN){
+				setScreen(new LobbyScreen());
 			}
 			// Resets the network and loads the Main menu screen
 			// The message is received when the connection to the other players
@@ -216,7 +220,7 @@ public class Tendu implements ApplicationListener, EventBusListener {
 			// menu when the game is over
 			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
-				Screen screen = new MainMenuScreen(this);
+				Screen screen = new MainMenuScreen(networkHandler);
 				setScreen(screen);
 
 			}

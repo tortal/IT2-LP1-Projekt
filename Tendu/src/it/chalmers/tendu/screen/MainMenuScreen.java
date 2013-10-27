@@ -4,10 +4,17 @@ import it.chalmers.tendu.Tendu;
 import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.defaults.TextLabels;
+import it.chalmers.tendu.event.C;
+import it.chalmers.tendu.event.EventBus;
+import it.chalmers.tendu.event.EventMessage;
+import it.chalmers.tendu.gamemodel.Player;
+import it.chalmers.tendu.network.INetwork;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -18,9 +25,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class MainMenuScreen implements Screen {
 
+	private INetwork networkHandler;
 	private BitmapFont font;
 	private BitmapFont menuFont;
-	private final Tendu tendu;
 	private TextWidget hostGame;
 	private TextWidget joinGame;
 	private TextWidget testStuff;
@@ -35,10 +42,10 @@ public class MainMenuScreen implements Screen {
 	private boolean dark; // used for a secret option to change the colors of
 							// the game
 
-	public MainMenuScreen(Tendu tendu) {
+	public MainMenuScreen(INetwork networkHandler) {
 		hostNumber = 1;
-
-		this.tendu = tendu;
+		
+		this.networkHandler = networkHandler;
 
 		// load resources and create som TextWidgets for on screen text
 		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
@@ -75,22 +82,28 @@ public class MainMenuScreen implements Screen {
 		if (input.isTouchedUp()) {
 			if (hostGame.collided(input.getCoordinates())) {
 				// start the lobby as host
-				tendu.setScreen(new LobbyScreen(tendu, true));
+				Player.getInstance().setHost(true);
+				networkHandler.hostSession();
+				EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_LOBBY_SCREEN);
+				EventBus.INSTANCE.broadcast(message);
 			}
 
 			if (joinGame.collided(input.getCoordinates())) {
 				// start the lobby as client
-				tendu.setScreen(new LobbyScreen(tendu, false));
+				Player.getInstance().setHost(false);
+				networkHandler.joinLobby();
+				EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.CREATE_LOBBY_SCREEN);
+				EventBus.INSTANCE.broadcast(message);
 			}
 
 			// used for testing
 			if (testStuff.collided(input.getCoordinates())) {
-				tendu.getNetworkHandler().testSendMessage();
+				networkHandler.testSendMessage();
 			}
 
 			// used to change host type. Only for testing
 			if (hostType.collided(input.getCoordinates())) {
-				tendu.getNetworkHandler().toggleHostNumber();
+				networkHandler.toggleHostNumber();
 
 				if (hostNumber == 1) {
 					hostNumber = 2;
@@ -103,14 +116,14 @@ public class MainMenuScreen implements Screen {
 
 			// bluetooth selected
 			if (bluetooth.collided(input.getCoordinates())) {
-				tendu.getNetworkHandler().selectBluetooth();
+				networkHandler.selectBluetooth();
 				selected.setY(bluetooth.getY() + 5);
 			}
 
 			// wifi selected
 			if (wifi.collided(input.getCoordinates())) {
-				if (tendu.getNetworkHandler().isWifip2pAvailable()) {
-					tendu.getNetworkHandler().selectWifi();
+				if (networkHandler.isWifip2pAvailable()) {
+					networkHandler.selectWifi();
 					selected.setY(wifi.getY() + 5);
 				}
 			}
@@ -175,14 +188,14 @@ public class MainMenuScreen implements Screen {
 	}
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 		// draw all textWidgets
-		hostGame.draw(tendu.spriteBatch, font);
-		joinGame.draw(tendu.spriteBatch, font);
+		hostGame.draw(spriteBatch, font);
+		joinGame.draw(spriteBatch, font);
 
-		bluetooth.draw(tendu.spriteBatch, menuFont);
-		wifi.draw(tendu.spriteBatch, menuFont);
-		selected.draw(tendu.spriteBatch, menuFont);
+		bluetooth.draw(spriteBatch, menuFont);
+		wifi.draw(spriteBatch, menuFont);
+		selected.draw(spriteBatch, menuFont);
 
 		// only for testing
 		// hostType.draw(tendu.spriteBatch, menuFont);

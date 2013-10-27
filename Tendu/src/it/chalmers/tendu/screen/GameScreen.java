@@ -8,6 +8,8 @@ import it.chalmers.tendu.gamemodel.MiniGame;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -20,7 +22,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  */
 public abstract class GameScreen implements Screen {
 
-	final Tendu tendu; // reference to the main Tendu object
 	MiniGame model; // model of current minigame
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private List<Integer> otherPlayers; // list of other participating players,
@@ -34,8 +35,7 @@ public abstract class GameScreen implements Screen {
 	 * @param model
 	 *            The game to draw.
 	 */
-	public GameScreen(Tendu tendu, MiniGame model) {
-		this.tendu = tendu;
+	public GameScreen(MiniGame model) {
 		this.model = model;
 		shapeRenderer = new ShapeRenderer();
 
@@ -43,9 +43,9 @@ public abstract class GameScreen implements Screen {
 	}
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
 		// draw common graphics while game runs, hud, timer etc...
-		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
 
 		// Draw the timer
 		drawTimer();
