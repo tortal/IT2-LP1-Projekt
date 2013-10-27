@@ -210,19 +210,19 @@ public class NumberGame extends MiniGame {
 				break;
 			case TWO:
 				this.setGameTime(30000, extraTime);
-				answerList = createAnswer(5);
+				answerList = createAnswer(6);
 				break;
 			case THREE:
 				this.setGameTime(25000, extraTime);
-				answerList = createAnswer(7);
+				answerList = createAnswer(9);
 				break;
 			case FOUR:
 				this.setGameTime(25000, extraTime);
-				answerList = createAnswer(10);
+				answerList = createAnswer(12);
 				break;
 			case FIVE:
 				this.setGameTime(25000, extraTime);
-				answerList = createAnswer(14);
+				answerList = createAnswer(15);
 				break;
 			default:
 				answerList = null;
@@ -236,7 +236,7 @@ public class NumberGame extends MiniGame {
 				break;
 			case TWO:
 				this.setGameTime(30000, extraTime);
-				answerList = createAnswer(6);
+				answerList = createAnswer(8);
 				break;
 			case THREE:
 				this.setGameTime(25000, extraTime);
