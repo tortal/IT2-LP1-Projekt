@@ -99,7 +99,7 @@ public class NumberGameScreen extends GameScreen {
 		numberWidgets = new ArrayList<TextWidget>();
 
 		// create a list of colors which we shuffle so all numbers gets random
-		// colorss
+		// colors
 		colors = new ArrayList<Color>();
 		colors.add(Color.BLUE);
 		colors.add(Color.MAGENTA);
@@ -165,8 +165,7 @@ public class NumberGameScreen extends GameScreen {
 	private void drawCorrectlyGuessedNumbers(SpriteBatch spriteBatch) {
 		for (int i = 0; i < numbers.size(); i++) {
 			if (getModel().getAnsweredNbrs().contains(numbers.get(i))) {
-				numberWidgets.get(i).drawAtCenterPoint(spriteBatch,
-						numberFont);
+				numberWidgets.get(i).drawAtCenterPoint(spriteBatch, numberFont);
 			}
 		}
 	}
@@ -176,8 +175,7 @@ public class NumberGameScreen extends GameScreen {
 	 */
 	private void drawAllNumbers(SpriteBatch spriteBatch) {
 		for (int i = 0; i < numbers.size(); i++) {
-			numberWidgets.get(i).drawAtCenterPoint(spriteBatch,
-					numberFont);
+			numberWidgets.get(i).drawAtCenterPoint(spriteBatch, numberFont);
 		}
 	}
 
@@ -193,18 +191,26 @@ public class NumberGameScreen extends GameScreen {
 	/** Draw all graphics from here */
 	@Override
 	public void render(SpriteBatch spriteBatch, OrthographicCamera camera) {
+		// the game won't start to render anything until the controller "starts"
+		// the model
 		if (model.hasStarted()) {
 			super.render(spriteBatch, camera); // draws common ui-stuff
 
 			if (!instructionsTimer.isDone()) {
+
+				// Show all number and inform the player of what to do
 				memorizeText.draw(spriteBatch, font);
 				drawAllNumbers(spriteBatch);
+
 			} else {
 				font.setColor(Color.BLUE);
 				instructionText.draw(spriteBatch, font);
 
 				if (model.checkGameState() == GameState.LOST) {
+
+					// inform the player that he/she is out of time
 					timeOutText.draw(spriteBatch, font);
+
 				} else {
 					drawCorrectlyGuessedNumbers(spriteBatch);
 				}
@@ -219,24 +225,32 @@ public class NumberGameScreen extends GameScreen {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
 
+		// make sure the game has been started from the Controller
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
-				model.stopTimer();
-				gameCompletedTimer.start(1500);
+				// the game is finished
+				model.stopTimer(); // TODO do in controller
+				gameCompletedTimer.start(1500); // let the game run for a brief
+												// time before it's ended
 
 				if (gameCompletedTimer.isDone()) {
 
 					// Received by GameSessionController.
-					sendEndMessage();
+					broadCastEndMessage();
 				}
 
 				return;
 
 			} else if (model.checkGameState() == GameState.RUNNING) {
-				instructionsTimer.start(time); // only starts once
+				instructionsTimer.start(time); // only starts once, makes sure
+												// we don't handle any input
+												// until the game actually
+												// starts
 
 				if (instructionsTimer.isDone()) {
-					model.startGameTimer();
+					model.startGameTimer(); // TODO do in controller
+
+					// check input and tell controller what needs to be done
 					if (input.isTouchedUp()) {
 						for (int i = 0; i < guessNumbers.size(); i++) {
 							if (guessNumbersWidgets.get(i).collided(
@@ -248,6 +262,7 @@ public class NumberGameScreen extends GameScreen {
 														.getGameId(),
 												guessNumbers.get(i)));
 							}
+							// reset scale on guessed number
 							guessNumbersWidgets.get(i).setScale(-0.15f);
 							guessNumbersWidgets.get(i).setY(130);
 
@@ -255,6 +270,8 @@ public class NumberGameScreen extends GameScreen {
 					}
 
 					if (input.isTouchedDown()) {
+						// give visual and haptic feedback when you guess on a
+						// number
 						for (int i = 0; i < guessNumbers.size(); i++) {
 							if (guessNumbersWidgets.get(i).collided(
 									input.getCoordinates())) {
@@ -273,7 +290,10 @@ public class NumberGameScreen extends GameScreen {
 	// this message must be sent only once
 	private boolean ended = false;
 
-	private void sendEndMessage() {
+	/**
+	 * BroadCasts a message to the controller that the game is done
+	 */
+	private void broadCastEndMessage() {
 		if (!ended) {
 			// Received by GameSessionController.
 			EventMessage message = new EventMessage(C.Tag.TO_SELF,
@@ -284,6 +304,10 @@ public class NumberGameScreen extends GameScreen {
 		ended = true;
 	}
 
+	/**
+	 * 
+	 * @return the model from the Controller.
+	 */
 	private NumberGame getModel() {
 		return controller.getModel();
 	}
