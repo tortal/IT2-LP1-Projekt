@@ -4,8 +4,8 @@ import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.C.Msg;
 import it.chalmers.tendu.event.C.Tag;
 import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.event.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.GameSession;
 import it.chalmers.tendu.gamemodel.LobbyModel;
 import it.chalmers.tendu.gamemodel.Player;
@@ -62,17 +62,18 @@ public class LobbyController implements EventBusListener {
 				// Start the game for all players if they are ready.
 				if (model.arePlayersReady()) {
 					Gdx.app.log(TAG, "ALL PLAYERS ARE READY");
-					
+
 					// Received by Tendu.
-					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF, C.Msg.STOP_ACCEPTING_CONNECTIONS);
+					EventMessage stopMessage = new EventMessage(C.Tag.TO_SELF,
+							C.Msg.STOP_ACCEPTING_CONNECTIONS);
 					EventBus.INSTANCE.broadcast(stopMessage);
-					
+
 					GameSession gameSession = new GameSession(
 							model.getLobbyMembers());
-					
+
 					// MiniGame miniGame = gameSession.getNextMiniGame();
 					// gameSession.setCurrentMiniGame(miniGame);
-					
+
 					new GameSessionController(gameSession);
 
 					// Received by clients in LobbyController through the
@@ -89,8 +90,8 @@ public class LobbyController implements EventBusListener {
 				Gdx.app.error(TAG, "Incorrect C.msg broadcasted");
 				break;
 			}
-		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION){
-			if(message.msg == C.Msg.PLAYER_DISCONNECTED){
+		} else if (message.tag == C.Tag.NETWORK_NOTIFICATION) {
+			if (message.msg == C.Msg.PLAYER_DISCONNECTED) {
 				model.removePlayer((String) message.content);
 			}
 		}

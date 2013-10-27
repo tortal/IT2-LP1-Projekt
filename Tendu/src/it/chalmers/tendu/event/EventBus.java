@@ -8,8 +8,8 @@ import com.badlogic.gdx.Gdx;
 
 /**
  * The EventBus broadcasts {@link EventMessage}s to any registered
- * {@link EventBusListener}. Parallel connects Model-View-Controller in such way that
- * these OOP objects may communicated with each other through a "dynamic"
+ * {@link EventBusListener}. Parallel connects Model-View-Controller in such way
+ * that these OOP objects may communicated with each other through a "dynamic"
  * self-defined protocol. Tendu uses the bus mainly for inter-controller
  * 
  */

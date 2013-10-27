@@ -211,14 +211,14 @@ public class NumberGameScreen extends GameScreen {
 	public void tick(InputController input) {
 		model = getModel(); // make sure we have the new model (the host might
 							// have changed it)
-		
+
 		if (model.hasStarted()) {
 			if (model.checkGameState() != GameState.RUNNING) {
 				model.stopTimer();
 				gameCompletedTimer.start(1500);
-				
-				if (gameCompletedTimer.isDone()) {					
-					
+
+				if (gameCompletedTimer.isDone()) {
+
 					// Received by GameSessionController.
 					sendEndMessage();
 				}
@@ -262,17 +262,18 @@ public class NumberGameScreen extends GameScreen {
 			}
 		}
 	}
-	
-	//this message must be sent only once
+
+	// this message must be sent only once
 	private boolean ended = false;
+
 	private void sendEndMessage() {
-		if(!ended) {
+		if (!ended) {
 			// Received by GameSessionController.
 			EventMessage message = new EventMessage(C.Tag.TO_SELF,
 					C.Msg.GAME_RESULT, model.getGameResult());
 			EventBus.INSTANCE.broadcast(message);
 		}
-		
+
 		ended = true;
 	}
 

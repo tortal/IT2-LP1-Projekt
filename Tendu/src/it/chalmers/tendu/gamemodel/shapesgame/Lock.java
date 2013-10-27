@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * The puzzle to be solved. Every player has a lock which represents n numbers
  * of slots to be fitted with the given shapes. Every player should have one of
@@ -80,9 +78,11 @@ public class Lock {
 	/**
 	 * Checks if it is possible to lock a shape into a lock
 	 * 
-	 * @param shape The shape to lock
-	 * @param lockShape The lock to lock the shape in
-	 * @return true if it is possible. 
+	 * @param shape
+	 *            The shape to lock
+	 * @param lockShape
+	 *            The lock to lock the shape in
+	 * @return true if it is possible.
 	 */
 	public boolean fitsIntoSlot(Shape shape, Shape lockShape) {
 		if (this.lockSequence.contains(lockShape)) {

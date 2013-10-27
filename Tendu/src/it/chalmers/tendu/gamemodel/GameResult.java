@@ -12,8 +12,8 @@ public class GameResult {
 	private final GameState gameState;
 
 	/**
-	 * Construct this when a minigame has been completed and its results are to be
-	 * saved in cache/persistence.
+	 * Construct this when a minigame has been completed and its results are to
+	 * be saved in cache/persistence.
 	 * 
 	 * @param gameId
 	 * @param timeSpent

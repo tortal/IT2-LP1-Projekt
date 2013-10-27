@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * Puzzle game
  * 
@@ -193,12 +191,15 @@ public class ShapeGame extends MiniGame {
 	}
 
 	/**
-	 * Finds out if it is possible to put a specific shape 
-	 * into a slot, without actually changing anything. 
+	 * Finds out if it is possible to put a specific shape into a slot, without
+	 * actually changing anything.
 	 * 
-	 * @param player The player that attempts the locking
-	 * @param shape The shape to put into the lock
-	 * @param lockShape the lock to put the shape in
+	 * @param player
+	 *            The player that attempts the locking
+	 * @param shape
+	 *            The shape to put into the lock
+	 * @param lockShape
+	 *            the lock to put the shape in
 	 * @return
 	 */
 	public boolean shapeFitIntoLock(int player, Shape shape, Shape lockShape) {
@@ -209,7 +210,7 @@ public class ShapeGame extends MiniGame {
 	 * @param player
 	 *            that is inserting the shape
 	 * @param shape
-
+	 * 
 	 * @return <code>true</code> if shape and slot fitted.
 	 */
 	public boolean insertShapeIntoSlot(int player, Shape shape, Shape lockShape) {
@@ -326,25 +327,26 @@ public class ShapeGame extends MiniGame {
 	}
 
 	/**
-	 * Receives a map of the latest shapes received mapped to
-	 * the player they where sent from. 
+	 * Receives a map of the latest shapes received mapped to the player they
+	 * where sent from.
 	 * 
 	 * for a specific player.
 	 * 
-	 * @param player The players number 
+	 * @param player
+	 *            The players number
 	 * 
-	 * @return A map with all the shapes received of a player mapped
-	 * to the player they where sent from.
+	 * @return A map with all the shapes received of a player mapped to the
+	 *         player they where sent from.
 	 */
 	public Map<Integer, Shape> getLatestReceivedShape(int player) {
 		return latestReceivedShapes.get(player);
 	}
 
 	/**
-	 * Receives a list of the latest sent shapes
-	 * of a specific player. 
+	 * Receives a list of the latest sent shapes of a specific player.
 	 * 
-	 * @param player The players number
+	 * @param player
+	 *            The players number
 	 * 
 	 * @return A list of the latest sent shapes for a specific player.
 	 */

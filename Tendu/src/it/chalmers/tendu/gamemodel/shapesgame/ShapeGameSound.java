@@ -2,8 +2,8 @@ package it.chalmers.tendu.gamemodel.shapesgame;
 
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.event.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

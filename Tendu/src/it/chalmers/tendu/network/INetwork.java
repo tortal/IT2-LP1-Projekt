@@ -39,22 +39,27 @@ public interface INetwork {
 
 	/** Returns network to virgin state */
 	public void resetNetwork();
-	
-	/** Stops the network from accepting any 
-	 * more incoming connections. No more matchmaking */
+
+	/**
+	 * Stops the network from accepting any more incoming connections. No more
+	 * matchmaking
+	 */
 	public void stopAcceptingConnections();
-	
-	/** Method for easing multiple simultaneous testing of app 
-	 * @return */ 
+
+	/**
+	 * Method for easing multiple simultaneous testing of app
+	 * 
+	 * @return
+	 */
 	public int toggleHostNumber();
-	
+
 	/** Selects wifi for use in network communication */
 	public void selectWifi();
-	
+
 	/** Selects bluetooth for use in network communication */
 	public void selectBluetooth();
 
 	/** Returns whether handset supports wifip2p */
 	boolean isWifip2pAvailable();
-	
+
 }

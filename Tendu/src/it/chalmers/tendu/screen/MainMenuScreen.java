@@ -19,11 +19,11 @@ public class MainMenuScreen implements Screen {
 	private TextWidget joinGame;
 	private TextWidget testStuff;
 	private TextWidget hostType;
-	
+
 	private TextWidget wifi;
 	private TextWidget bluetooth;
 	private TextWidget selected;
-	private int hostNumber; //used for testing
+	private int hostNumber; // used for testing
 
 	private boolean dark;
 
@@ -33,7 +33,7 @@ public class MainMenuScreen implements Screen {
 		this.tendu = tendu;
 		font = new BitmapFont(Gdx.files.internal("fonts/mainMenuTendu.fnt"),
 				Gdx.files.internal("fonts/mainMenuTendu.png"), false);
-		
+
 		menuFont = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 
@@ -43,17 +43,17 @@ public class MainMenuScreen implements Screen {
 				Constants.MENU_FONT_COLOR);
 		testStuff = new TextWidget("test stuff", new Vector2(785, 680),
 				Constants.MENU_FONT_COLOR);
-		
-		hostType = new TextWidget("Host = " + hostNumber, new Vector2(925, 130),
-				Constants.MENU_FONT_COLOR);
-		
-		bluetooth = new TextWidget("BLUETOOTH", new Vector2(90, Constants.SCREEN_HEIGHT - 50),
-				Constants.MENU_FONT_COLOR);
-		wifi = new TextWidget("WIFI", new Vector2(90, Constants.SCREEN_HEIGHT - 140),
-				Constants.MENU_FONT_COLOR);
-		
-		selected = new TextWidget(">", new Vector2(bluetooth.getX() - 55, bluetooth.getY() + 5),
-				Constants.MENU_FONT_COLOR);
+
+		hostType = new TextWidget("Host = " + hostNumber,
+				new Vector2(925, 130), Constants.MENU_FONT_COLOR);
+
+		bluetooth = new TextWidget("BLUETOOTH", new Vector2(90,
+				Constants.SCREEN_HEIGHT - 50), Constants.MENU_FONT_COLOR);
+		wifi = new TextWidget("WIFI", new Vector2(90,
+				Constants.SCREEN_HEIGHT - 140), Constants.MENU_FONT_COLOR);
+
+		selected = new TextWidget(">", new Vector2(bluetooth.getX() - 55,
+				bluetooth.getY() + 5), Constants.MENU_FONT_COLOR);
 
 		dark = true;
 	}
@@ -73,28 +73,28 @@ public class MainMenuScreen implements Screen {
 			if (testStuff.collided(input.getCoordinates())) {
 				tendu.getNetworkHandler().testSendMessage();
 			}
-			
-			if(hostType.collided(input.getCoordinates())) {
+
+			if (hostType.collided(input.getCoordinates())) {
 				tendu.getNetworkHandler().toggleHostNumber();
-				
-				if(hostNumber == 1) {
+
+				if (hostNumber == 1) {
 					hostNumber = 2;
 				} else {
 					hostNumber = 1;
 				}
-				
+
 				hostType.setText("Host = " + hostNumber);
 			}
-			
-			if(bluetooth.collided(input.getCoordinates())) {
+
+			if (bluetooth.collided(input.getCoordinates())) {
 				tendu.getNetworkHandler().selectBluetooth();
-				selected.setY(bluetooth.getY()+5);
-			} 
-			
-			if(wifi.collided(input.getCoordinates())) {
-				if(tendu.getNetworkHandler().isWifip2pAvailable()) {
+				selected.setY(bluetooth.getY() + 5);
+			}
+
+			if (wifi.collided(input.getCoordinates())) {
+				if (tendu.getNetworkHandler().isWifip2pAvailable()) {
 					tendu.getNetworkHandler().selectWifi();
-					selected.setY(wifi.getY()+5);
+					selected.setY(wifi.getY() + 5);
 				}
 			}
 
@@ -114,7 +114,7 @@ public class MainMenuScreen implements Screen {
 					Constants.MENU_FONT_COLOR = Color.WHITE;
 					Constants.MENU_FONT_COLOR_PRESSED = Color.LIGHT_GRAY;
 					dark = true;
-				} 
+				}
 			}
 
 			hostGame.setColor(Constants.MENU_FONT_COLOR);
@@ -122,7 +122,6 @@ public class MainMenuScreen implements Screen {
 			testStuff.setColor(Constants.MENU_FONT_COLOR);
 			wifi.setColor(Constants.MENU_FONT_COLOR);
 			bluetooth.setColor(Constants.MENU_FONT_COLOR);
-
 
 		} else if (input.isTouchedDown()) {
 			if (hostGame.collided(input.getCoordinates())) {
@@ -139,13 +138,13 @@ public class MainMenuScreen implements Screen {
 				Gdx.input.vibrate(25);
 				testStuff.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
-			
-			if(bluetooth.collided(input.getCoordinates())) {
+
+			if (bluetooth.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
 				bluetooth.setColor(Constants.MENU_FONT_COLOR_PRESSED);
-			} 
-			
-			if(wifi.collided(input.getCoordinates())) {
+			}
+
+			if (wifi.collided(input.getCoordinates())) {
 				Gdx.input.vibrate(25);
 				wifi.setColor(Constants.MENU_FONT_COLOR_PRESSED);
 			}
@@ -160,9 +159,9 @@ public class MainMenuScreen implements Screen {
 		bluetooth.draw(tendu.spriteBatch, menuFont);
 		wifi.draw(tendu.spriteBatch, menuFont);
 		selected.draw(tendu.spriteBatch, menuFont);
-		
-		//hostType.draw(tendu.spriteBatch, menuFont);
-		//testStuff.draw(tendu.spriteBatch, font);
+
+		// hostType.draw(tendu.spriteBatch, menuFont);
+		// testStuff.draw(tendu.spriteBatch, font);
 
 	}
 

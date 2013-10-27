@@ -4,12 +4,12 @@ import it.chalmers.tendu.gamemodel.GameId;
 
 /**
  * An EventMessage may be sent using the
- * {@link EventBus#broadcast(EventMessage)} method. Any {@link EventBusListener} that is
- * registered on the bus will receive that EventMessage.
+ * {@link EventBus#broadcast(EventMessage)} method. Any {@link EventBusListener}
+ * that is registered on the bus will receive that EventMessage.
  * 
- * {@link EventBusListener}s and broadcasters can define their internal protocol based
- * on isolated needs specific for the context. Some of the EventMessages member
- * variables have a generic re-usable protocol defined in {@link C}.
+ * {@link EventBusListener}s and broadcasters can define their internal protocol
+ * based on isolated needs specific for the context. Some of the EventMessages
+ * member variables have a generic re-usable protocol defined in {@link C}.
  */
 public class EventMessage {
 

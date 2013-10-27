@@ -18,15 +18,15 @@ public class NumberGameTest {
 
 	// TODO fix setup
 	@Before
-	public void setUp(){
+	public void setUp() {
 		Map<String, Integer> players = new HashMap<String, Integer>();
 		players.put("player1", 0);
 		players.put("player2", 1);
 
-		
 		nbrGameEasy = new NumberGame(0, Difficulty.ONE, players);
 		nbrGameHard = new NumberGame(0, Difficulty.TWO, players);
 	}
+
 	@Test
 	public void testNumberGameIntDifficulty() {
 		// Hard game should have 8 answers, easy should have 4
@@ -41,7 +41,7 @@ public class NumberGameTest {
 
 	@Test
 	public void testCheckNbrInt() {
-		assertTrue(nbrGameEasy !=  null);
+		assertTrue(nbrGameEasy != null);
 		assertTrue(nbrGameEasy.checkNbr(nbrGameEasy.getAnswerList().get(0)));
 		assertTrue(!nbrGameEasy.checkNbr(-1));
 	}

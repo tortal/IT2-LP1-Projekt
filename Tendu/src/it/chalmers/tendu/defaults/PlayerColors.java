@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * Convenience method to return corresponding libgdx color.
- *
+ * 
  */
 public class PlayerColors {
 
@@ -18,7 +18,7 @@ public class PlayerColors {
 		} else if (player == 3) {
 			return Constants.PLAYER_3_COLOR;
 		}
-		
+
 		return null;
 
 	}

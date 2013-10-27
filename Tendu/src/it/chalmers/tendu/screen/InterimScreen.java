@@ -22,20 +22,22 @@ public class InterimScreen implements Screen {
 	private TextWidget levelText;
 	private TextWidget timeText;
 	private SimpleTimer timer;
-	
-	public InterimScreen(Tendu tendu,  SessionResult sessionResult) {
+
+	public InterimScreen(Tendu tendu, SessionResult sessionResult) {
 		this.tendu = tendu;
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
-		
+
 		time = sessionResult.getLastResult().getRemainingTime();
-		time = time/1000;
-		
+		time = time / 1000;
+
 		level = sessionResult.gamesPlayed();
-		
-		levelText = new TextWidget(TextLabels.LEVEL + ":  " + level, new Vector2(120, 280), Constants.MENU_FONT_COLOR);
-		timeText = new TextWidget(TextLabels.BONUS_TIME + ":  " + time, new Vector2(120, 180), Constants.MENU_FONT_COLOR);
-		
+
+		levelText = new TextWidget(TextLabels.LEVEL + ":  " + level,
+				new Vector2(120, 280), Constants.MENU_FONT_COLOR);
+		timeText = new TextWidget(TextLabels.BONUS_TIME + ":  " + time,
+				new Vector2(120, 180), Constants.MENU_FONT_COLOR);
+
 		timer = new SimpleTimer();
 		timer.start(3000);
 	}
@@ -47,11 +49,12 @@ public class InterimScreen implements Screen {
 	}
 
 	@Override
-	public void tick(InputController input) {		
-		if(timer.getRemainingTime() <= 0) {
-			
+	public void tick(InputController input) {
+		if (timer.getRemainingTime() <= 0) {
+
 			// Received by host in GameSessionController.
-			EventMessage message = new EventMessage(C.Tag.TO_SELF, C.Msg.INTERIM_FINISHED);
+			EventMessage message = new EventMessage(C.Tag.TO_SELF,
+					C.Msg.INTERIM_FINISHED);
 			EventBus.INSTANCE.broadcast(message);
 		}
 	}

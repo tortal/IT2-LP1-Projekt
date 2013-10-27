@@ -50,8 +50,8 @@ public interface INetworkHandler {
 	public void resetNetwork();
 
 	/**
-	 * Halts this device from accepting any additional connection attempts. No more
-	 * matchmaking!
+	 * Halts this device from accepting any additional connection attempts. No
+	 * more matchmaking!
 	 */
 	public void stopAcceptingConnections();
 

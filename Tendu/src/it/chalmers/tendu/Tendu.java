@@ -4,12 +4,11 @@ import it.chalmers.tendu.controller.InputController;
 import it.chalmers.tendu.defaults.Constants;
 import it.chalmers.tendu.event.C;
 import it.chalmers.tendu.event.EventBus;
-import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.event.EventBusListener;
+import it.chalmers.tendu.event.EventMessage;
 import it.chalmers.tendu.gamemodel.MiniGame;
 import it.chalmers.tendu.gamemodel.Player;
 import it.chalmers.tendu.gamemodel.SessionResult;
-
 import it.chalmers.tendu.network.INetwork;
 import it.chalmers.tendu.network.INetworkHandler;
 import it.chalmers.tendu.screen.GameOverScreen;
@@ -23,8 +22,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-
 
 /**
  * ENTRY CLASS of Tendu.
@@ -159,7 +156,8 @@ public class Tendu implements ApplicationListener, EventBusListener {
 								// check should be removed in order to have a
 								// fail-fast mechanism.
 								// it is null the first time it's called.
-								// it can be avoided by sett the Main Menu screen directly the at game startup
+								// it can be avoided by sett the Main Menu
+								// screen directly the at game startup
 			screen.dispose();
 		}
 		screen = newScreen;
@@ -201,25 +199,28 @@ public class Tendu implements ApplicationListener, EventBusListener {
 				Screen screen = new InterimScreen(this, sessionResult);
 				setScreen(screen);
 
-			} 
-			
+			}
+
 			// Show the game over screen
 			else if (message.msg == C.Msg.SHOW_GAME_OVER_SCREEN) {
 				SessionResult sessionResult = (SessionResult) message.content;
 				Screen screen = new GameOverScreen(this, sessionResult);
 				setScreen(screen);
 
-			} 
-			//Resets the network and loads the Main menu screen
-			//The message is received when the connection to the other players is lost (a better solution would be to show a connection lost screen first)
-			//It's also received if you go back from the lobby or pressing Main menu when the game is over
+			}
+			// Resets the network and loads the Main menu screen
+			// The message is received when the connection to the other players
+			// is lost (a better solution would be to show a connection lost
+			// screen first)
+			// It's also received if you go back from the lobby or pressing Main
+			// menu when the game is over
 			else if (message.msg == C.Msg.RESTART) {
 				networkHandler.resetNetwork();
 				Screen screen = new MainMenuScreen(this);
 				setScreen(screen);
 
-			} 
-			//Stop accepting more connections if a game session has started
+			}
+			// Stop accepting more connections if a game session has started
 			else if (message.msg == C.Msg.STOP_ACCEPTING_CONNECTIONS) {
 				networkHandler.stopAcceptingConnections();
 			}

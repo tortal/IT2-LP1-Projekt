@@ -22,7 +22,6 @@ public abstract class GameScreen implements Screen {
 	final private ShapeRenderer shapeRenderer; // used to render vector graphics
 	private List<Integer> otherPlayers;
 
-
 	/**
 	 * Returns a {@link Screen} of the given {@link MiniGame}.
 	 * 
@@ -34,7 +33,7 @@ public abstract class GameScreen implements Screen {
 		this.tendu = tendu;
 		this.model = model;
 		shapeRenderer = new ShapeRenderer();
-		
+
 		otherPlayers = model.getOtherPlayerNumbers();
 	}
 
@@ -42,8 +41,8 @@ public abstract class GameScreen implements Screen {
 	public void render() {
 		// draw common graphics while game runs, hud, timer etc...
 		shapeRenderer.setProjectionMatrix(tendu.getCamera().combined);
-		
-		//Draw the timer
+
+		// Draw the timer
 		drawTimer();
 		renderPlayerIndicator();
 	}
@@ -70,10 +69,11 @@ public abstract class GameScreen implements Screen {
 		double timerWitdth = Math.abs(quota * (Constants.SCREEN_WIDTH - 100));
 		return (int) timerWitdth;
 	}
-	
+
 	private void drawTimer() {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
+		shapeRenderer
+				.setColor(PlayerColors.getPlayerColor(model.getplayerNbr()));
 		shapeRenderer.filledRect(50, 40, calculateTimerWidth(), 10);
 		shapeRenderer.end();
 	}
@@ -86,7 +86,8 @@ public abstract class GameScreen implements Screen {
 		// First player
 		if (otherPlayers.size() >= 1) {
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(0)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(0)));
 			shapeRenderer.filledRect(0, Constants.SCREEN_HEIGHT - 5,
 					Constants.SCREEN_WIDTH, 5);
 			shapeRenderer.end();
@@ -95,7 +96,8 @@ public abstract class GameScreen implements Screen {
 		if (otherPlayers.size() >= 2) {
 			// second player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(1)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(1)));
 			shapeRenderer.filledRect(0, 0, 5, Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();
 
@@ -103,7 +105,8 @@ public abstract class GameScreen implements Screen {
 		if (otherPlayers.size() >= 3) {
 			// third player
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers.get(2)));
+			shapeRenderer.setColor(PlayerColors.getPlayerColor(otherPlayers
+					.get(2)));
 			shapeRenderer.filledRect(Constants.SCREEN_WIDTH - 5, 0, 5,
 					Constants.SCREEN_HEIGHT);
 			shapeRenderer.end();

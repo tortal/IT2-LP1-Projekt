@@ -64,7 +64,8 @@ public class SessionResult {
 	}
 
 	/**
-	 * @param index index of result wanted
+	 * @param index
+	 *            index of result wanted
 	 * @return the specified {@link GameResult}
 	 */
 	public GameResult getResult(int index) {

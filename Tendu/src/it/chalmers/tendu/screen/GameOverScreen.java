@@ -27,7 +27,7 @@ public class GameOverScreen implements Screen {
 	public GameOverScreen(Tendu tendu, SessionResult sessionResult) {
 
 		this.tendu = tendu;
-		
+
 		font = new BitmapFont(Gdx.files.internal("fonts/menuFont.fnt"),
 				Gdx.files.internal("fonts/menuFont.png"), false);
 
@@ -35,13 +35,17 @@ public class GameOverScreen implements Screen {
 
 		gameOver = new TextWidget(TextLabels.GAME_OVER, new Vector2(
 				Constants.SCREEN_WIDTH / 2, 640), Constants.MENU_FONT_COLOR);
-		
-		levelText = new TextWidget(TextLabels.LEVEL_REACHED +": " + level, new Vector2(
-				Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2 + 60), Constants.MENU_FONT_COLOR);
 
-		mainMenu = new TextWidget(TextLabels.MAIN_MENU, new Vector2(100, 150), Constants.MENU_FONT_COLOR);
-		
-		replay = new TextWidget(TextLabels.PLAY_AGAIN, new Vector2(800, 150), Constants.MENU_FONT_COLOR);
+		levelText = new TextWidget(TextLabels.LEVEL_REACHED + ": " + level,
+				new Vector2(Constants.SCREEN_WIDTH / 2,
+						Constants.SCREEN_HEIGHT / 2 + 60),
+				Constants.MENU_FONT_COLOR);
+
+		mainMenu = new TextWidget(TextLabels.MAIN_MENU, new Vector2(100, 150),
+				Constants.MENU_FONT_COLOR);
+
+		replay = new TextWidget(TextLabels.PLAY_AGAIN, new Vector2(800, 150),
+				Constants.MENU_FONT_COLOR);
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public class GameOverScreen implements Screen {
 	public void tick(InputController input) {
 		if (input.isTouchedUp()) {
 			if (mainMenu.collided(input.getCoordinates())) {
-				
+
 				// TODO: Restart network
 				// Received by GameSessionController.
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
@@ -65,7 +69,7 @@ public class GameOverScreen implements Screen {
 			}
 
 			if (replay.collided(input.getCoordinates())) {
-				
+
 				// Received by GameSessionController.
 				EventMessage message = new EventMessage(C.Tag.TO_SELF,
 						C.Msg.PLAYER_REPLAY_READY, Player.getInstance()
